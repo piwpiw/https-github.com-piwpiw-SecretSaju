@@ -21,7 +21,7 @@ https://github.com/piwpiw/SecretSaju.git
 ### 2. Supabase 환경 변수 (필수)
 브라우저에서 열린 Supabase 페이지에서:
 - Settings → API → Project URL 복사
-- Settings → API → anon public 복사  
+- Settings → API → anon public 복사
 - Settings → API → service_role secret 복사
 
 ### 3. 마이그레이션 실행 (필수)
@@ -31,11 +31,11 @@ https://github.com/piwpiw/SecretSaju.git
 
 ## 🎯 자동으로 처리되는 것들
 
-✅ Git 초기화 및 커밋  
-✅ GitHub 원격 저장소 연결  
-✅ 환경 변수 파일 생성  
-✅ Vercel 로그인 및 배포  
-✅ GitHub 푸시  
+✅ Git 초기화 및 커밋
+✅ GitHub 원격 저장소 연결
+✅ 환경 변수 파일 생성
+✅ Vercel 로그인 및 배포
+✅ GitHub 푸시
 
 ## 🚨 문제 해결
 
@@ -59,7 +59,7 @@ git push -u origin main
 
 모든 설정 페이지가 이미 브라우저에 열려있습니다:
 - ✅ Supabase Dashboard
-- ✅ Vercel Login  
+- ✅ Vercel Login
 - ✅ GitHub New Repository
 - ✅ Kakao Developers
 - ✅ Toss Payments

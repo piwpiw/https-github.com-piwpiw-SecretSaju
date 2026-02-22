@@ -19,7 +19,7 @@ https://github.com/piwpiw/SecretSaju.git
 ### 2. Supabase 값 3개 (필수)
 브라우저에 열린 Supabase 페이지에서:
 - Project URL
-- anon key  
+- anon key
 - service_role key
 
 ### 3. 마이그레이션 실행 (필수)

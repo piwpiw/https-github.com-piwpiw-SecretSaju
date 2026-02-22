@@ -21,10 +21,10 @@ function question(query) {
 
 function exec(command, options = {}) {
   try {
-    return execSync(command, { 
-      stdio: 'inherit', 
+    return execSync(command, {
+      stdio: 'inherit',
       encoding: 'utf-8',
-      ...options 
+      ...options
     });
   } catch (error) {
     if (!options.ignoreError) {
@@ -57,7 +57,7 @@ async function main() {
     console.log('\n📝 GitHub 저장소 URL이 필요합니다.');
     console.log('   예: https://github.com/piwpiw/SecretSaju.git');
     const githubUrl = await question('GitHub 저장소 URL: ');
-    
+
     if (githubUrl) {
       exec(`git remote add origin ${githubUrl}`, { ignoreError: true });
       exec(`git remote set-url origin ${githubUrl}`, { ignoreError: true });
@@ -86,10 +86,10 @@ async function main() {
   console.log('🗄️  4단계: Supabase 설정...');
   const envFile = path.join(process.cwd(), '.env.local');
   let hasSupabase = false;
-  
+
   if (fs.existsSync(envFile)) {
     const envContent = fs.readFileSync(envFile, 'utf-8');
-    hasSupabase = envContent.includes('NEXT_PUBLIC_SUPABASE_URL') && 
+    hasSupabase = envContent.includes('NEXT_PUBLIC_SUPABASE_URL') &&
                   envContent.includes('NEXT_PUBLIC_SUPABASE_ANON_KEY');
   }
 
@@ -97,7 +97,7 @@ async function main() {
     console.log('\n📝 Supabase 환경 변수가 필요합니다.');
     console.log('   https://supabase.com/dashboard/project/jyrdihklwkbeypfxbiwp 접속');
     console.log('   Settings → API에서 다음 값들을 복사하세요:\n');
-    
+
     const supabaseUrl = await question('NEXT_PUBLIC_SUPABASE_URL: ');
     const supabaseAnonKey = await question('NEXT_PUBLIC_SUPABASE_ANON_KEY: ');
     const supabaseServiceKey = await question('SUPABASE_SERVICE_ROLE_KEY: ');
@@ -120,30 +120,30 @@ SUPABASE_SERVICE_ROLE_KEY=${supabaseServiceKey}
   console.log('\n브라우저를 열어 Supabase Dashboard에서 마이그레이션을 실행하세요.');
   console.log('자동으로 브라우저를 열까요? (y/n)');
   const openBrowser = await question('브라우저 열기 (y/n): ');
-  
+
   if (openBrowser.toLowerCase() === 'y') {
     const { exec: execAsync } = require('child_process');
     const url = 'https://supabase.com/dashboard/project/jyrdihklwkbeypfxbiwp/sql/new';
-    const command = process.platform === 'win32' 
+    const command = process.platform === 'win32'
       ? `start ${url}`
       : process.platform === 'darwin'
       ? `open ${url}`
       : `xdg-open ${url}`;
-    
+
     execAsync(command);
     console.log('✅ 브라우저 열림\n');
-    
+
     console.log('📝 SQL Editor에서 다음 파일들을 실행하세요:');
     console.log('   1. supabase/migrations/001_initial_schema.sql');
     console.log('   2. supabase/migrations/002_add_orders_table.sql\n');
-    
+
     await question('마이그레이션 완료 후 Enter를 누르세요...');
   }
 
   // 6. Vercel 배포
   console.log('\n🌐 6단계: Vercel 배포...');
   const hasVercel = exec('vercel whoami', { encoding: 'utf-8', ignoreError: true });
-  
+
   if (!hasVercel) {
     console.log('Vercel CLI 로그인이 필요합니다.');
     console.log('브라우저에서 로그인하세요...\n');
@@ -156,7 +156,7 @@ SUPABASE_SERVICE_ROLE_KEY=${supabaseServiceKey}
   // 7. GitHub 푸시
   console.log('\n📤 7단계: GitHub에 푸시...');
   const push = await question('GitHub에 푸시하시겠습니까? (y/n): ');
-  
+
   if (push.toLowerCase() === 'y') {
     try {
       exec('git branch -M main', { ignoreError: true });

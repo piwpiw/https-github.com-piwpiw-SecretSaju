@@ -35,12 +35,12 @@ const pages = [
 ];
 
 function openBrowser(url) {
-  const command = process.platform === 'win32' 
+  const command = process.platform === 'win32'
     ? `start ${url}`
     : process.platform === 'darwin'
     ? `open ${url}`
     : `xdg-open ${url}`;
-  
+
   return new Promise((resolve) => {
     exec(command, (error) => {
       if (error) {
@@ -53,14 +53,14 @@ function openBrowser(url) {
 
 async function main() {
   console.log('🌐 필요한 설정 페이지들을 엽니다...\n');
-  
+
   for (const page of pages) {
     console.log(`📂 ${page.name} 열기 중...`);
     console.log(`   ${page.description}`);
     await openBrowser(page.url);
     await new Promise(resolve => setTimeout(resolve, 1000)); // 1초 대기
   }
-  
+
   console.log('\n✅ 모든 페이지가 열렸습니다!');
   console.log('\n📋 다음 단계:');
   console.log('1. Supabase: SQL Editor에서 마이그레이션 실행');
