@@ -17,6 +17,8 @@
     "setup:github": "bash scripts/setup-github.sh",
     "setup:vercel": "bash scripts/setup-vercel.sh",
     "setup:complete": "bash scripts/complete-setup.sh",
+    "setup:auto": "node scripts/auto-deploy.js",
+    "open:setup": "node scripts/open-setup-pages.js",
     "migrate:db": "node scripts/migrate-db.js",
     "pre-deploy": "node scripts/pre-deploy.js"
   },

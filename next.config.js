@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
-  
+
   // 과금 최소화: 이미지 최적화
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -12,7 +12,7 @@ const nextConfig = {
     dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  
+
   // 빌드 최적화: 번들 크기 감소
   swcMinify: true,
   compiler: {
@@ -20,16 +20,16 @@ const nextConfig = {
       exclude: ['error', 'warn'],
     } : false,
   },
-  
+
   // 압축 최적화
   compress: true,
-  
+
   // 실험적 기능: 과금 절감
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
-  
+
   // 헤더 최적화: 캐싱 강화
   async headers() {
     return [

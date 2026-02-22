@@ -24,7 +24,7 @@ if [ -z "$REMOTE_URL" ]; then
     echo "GitHub 저장소 URL을 입력하세요:"
     echo "예: https://github.com/piwpiw/SecretSaju.git"
     read -p "URL: " GITHUB_URL
-    
+
     if [ ! -z "$GITHUB_URL" ]; then
         git remote add origin "$GITHUB_URL"
         echo "✅ GitHub 원격 저장소 추가"
