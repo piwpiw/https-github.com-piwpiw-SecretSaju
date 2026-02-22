@@ -1,0 +1,38 @@
+[
+  {
+    "id": "SOL_FIRE_LOW",
+    "trigger_condition": "사주에 화(Fire)가 없거나 약함",
+    "symptom_display": "요즘 세상이 흑백 같고, 의욕이 없으며 소화가 안 되나요?",
+    "prescription_card": {
+      "title": "🔥 처방전: 고음 발사 요법",
+      "mission_title": "지금 당장 코노(코인노래방) 예약해.",
+      "mission_desc": "발라드 금지. 무조건 고음 지르는 락이나 댄스곡 3곡 예약해. 삑사리 나도 상관없음. 심장에 쌓인 화기를 입으로 뱉어내야 네 운이 뚫린다.",
+      "lucky_action": "햇빛 쬐며 산책하기",
+      "lucky_item": "빨간색 속옷, 매운 떡볶이"
+    }
+  },
+  {
+    "id": "SOL_WATER_EXCESS",
+    "trigger_condition": "사주에 수(Water)가 과다함",
+    "symptom_display": "밤마다 잡생각 꼬리를 물고, 우울감이 덮쳐오나요?",
+    "prescription_card": {
+      "title": "📝 처방전: 감정 배설의 글쓰기",
+      "mission_title": "아무도 안 보는 '비공개 블로그'를 켜.",
+      "mission_desc": "예쁘게 쓰려고 하지 마. 머릿속에 둥둥 떠다니는 쓰레기 같은 생각들을 글로 다 배설해. 욕을 써도 좋고, 소설을 써도 좋아. 물을 흘려보내야 네가 산다.",
+      "lucky_action": "반신욕 하기",
+      "lucky_item": "검정 뿔테 안경, 아이스 아메리카노"
+    }
+  },
+  {
+    "id": "SOL_NO_EXPRESSION",
+    "trigger_condition": "무식상(No Expression Star)",
+    "symptom_display": "할 말은 많은데 입 밖으로 안 나와서 답답해 미치겠죠?",
+    "prescription_card": {
+      "title": "💃 처방전: 몸으로 말해요",
+      "mission_title": "뇌를 끄고 몸을 굴려.",
+      "mission_desc": "말로 표현 못 하겠으면 몸으로 풀어야 해. 러닝을 뛰든, 댄스 학원을 끊든, 심장이 터질 때까지 움직여. 땀구멍이 열려야 말문도 트인다.",
+      "lucky_action": "노래 부르기",
+      "lucky_item": "화려한 악세사리"
+    }
+  }
+]

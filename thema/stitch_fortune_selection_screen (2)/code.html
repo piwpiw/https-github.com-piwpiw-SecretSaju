@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cyber-Chic Saju Home</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans+KR:wght@300;400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f0df2",
+                        "accent": "#00f0ff",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#050505",
+                        "surface-dark": "#121212",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "Noto Sans KR", "sans-serif"],
+                        "body": ["Noto Sans KR", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                    boxShadow: {
+                        'neon': '0 0 10px rgba(127, 13, 242, 0.5), 0 0 20px rgba(127, 13, 242, 0.3)',
+                        'neon-cyan': '0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3)',
+                        'hard': '4px 4px 0px 0px rgba(0, 240, 255, 1)',
+                        'hard-purple': '4px 4px 0px 0px rgba(127, 13, 242, 1)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: "Space Grotesk", "Noto Sans KR", sans-serif;
+        }
+        .scrolling-wrapper {
+            -webkit-overflow-scrolling: touch;
+        }
+        .scrolling-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+        }
+        .text-stroke-cyan {
+            -webkit-text-stroke: 1px #00f0ff;
+            color: transparent;
+        }
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.15;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-gray-900 dark:text-white overflow-x-hidden selection:bg-accent selection:text-black">
+<div class="relative max-w-md mx-auto min-h-screen flex flex-col bg-background-light dark:bg-background-dark shadow-2xl overflow-hidden">
+<!-- Scanline Overlay -->
+<div class="scanlines"></div>
+<!-- Sticky Header -->
+<header class="sticky top-0 z-50 flex items-center justify-between p-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-white/10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[28px]">token</span>
+<h1 class="text-xl font-bold tracking-tight text-black dark:text-white font-display">CYBER SAJU</h1>
+</div>
+<button class="relative group">
+<div class="absolute inset-0 bg-accent translate-x-1 translate-y-1 transition-transform group-active:translate-x-0 group-active:translate-y-0"></div>
+<div class="relative bg-black border border-accent p-2 flex items-center justify-center transition-transform group-active:translate-x-1 group-active:translate-y-1">
+<span class="material-symbols-outlined text-white text-[20px]">wallet</span>
+</div>
+</button>
+</header>
+<!-- Marquee Ticker -->
+<div class="relative flex overflow-x-hidden bg-primary py-2 border-y border-black dark:border-white/20">
+<div class="animate-marquee whitespace-nowrap flex gap-8 items-center">
+<span class="text-white text-xs font-bold tracking-widest">#DAILY_FORTUNE</span>
+<span class="text-black/40 text-[10px] font-mono">●</span>
+<span class="text-white text-xs font-bold tracking-widest">#SAJU_2024</span>
+<span class="text-black/40 text-[10px] font-mono">●</span>
+<span class="text-white text-xs font-bold tracking-widest">#CYBER_FATE</span>
+<span class="text-black/40 text-[10px] font-mono">●</span>
+<span class="text-white text-xs font-bold tracking-widest">#LEVEL_UP</span>
+<span class="text-black/40 text-[10px] font-mono">●</span>
+<span class="text-white text-xs font-bold tracking-widest">#SYSTEM_ONLINE</span>
+<span class="text-black/40 text-[10px] font-mono">●</span>
+<span class="text-white text-xs font-bold tracking-widest">#DAILY_FORTUNE</span>
+<span class="text-black/40 text-[10px] font-mono">●</span>
+<span class="text-white text-xs font-bold tracking-widest">#SAJU_2024</span>
+</div>
+</div>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col p-5 gap-8">
+<!-- Headline -->
+<div class="flex flex-col items-center text-center space-y-2 pt-4">
+<span class="text-accent text-xs font-mono tracking-[0.2em] uppercase">System Ready</span>
+<h2 class="text-3xl md:text-4xl font-bold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-gray-500">
+                    당신의 디지털 운명을<br/>확인하세요
+                </h2>
+<p class="text-gray-400 text-sm font-light">YOUR DIGITAL FATE AWAITS</p>
+</div>
+<!-- Hero Card: 3D Crystal Membership -->
+<div class="relative w-full aspect-[4/5] sm:aspect-video perspective-1000 group">
+<!-- Glow effect behind -->
+<div class="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-xl blur opacity-30 group-hover:opacity-60 transition duration-500 animate-pulse"></div>
+<!-- Main Card Container -->
+<div class="relative w-full h-full bg-surface-dark border border-white/10 rounded-xl overflow-hidden shadow-2xl flex flex-col">
+<!-- Image Background -->
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-60 mix-blend-overlay" data-alt="Abstract dark holographic crystal texture reflecting neon lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdQkPtcaYnTM6EO5aT_G0oCrOFtbNigZ4XxpFG1R9miP6npVw3VFq8uBRifzW1aE1BDTZ2cqKUv4p9BHA5EC3lu-mKz4icRG_haBx2K70w065qgKTIHjYqwadMFZ9AkPd95A8XaeLpzJt2Fv4J3pPAd9AQv1_YXdOkBf_Qf4fkE9g1Hq-QLAsj-cJuXk_Hm7d4fO3wNAGcl-sdj7YGRMZNUzi0FxOwfxTujbxAuJR0l6sgSzFHxaI34NQwGyKXl_AOJXk7CNh-4M8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+</div>
+<!-- Card Content -->
+<div class="relative z-10 flex flex-col justify-between h-full p-6">
+<div class="flex justify-between items-start">
+<div class="bg-black/50 backdrop-blur border border-accent/30 px-3 py-1 rounded text-[10px] text-accent font-mono">
+                                GENESIS ACCESS
+                            </div>
+<span class="material-symbols-outlined text-white/50">nfc</span>
+</div>
+<div class="space-y-4">
+<div>
+<h3 class="text-3xl font-bold text-white tracking-tighter mb-1">TODAY'S SAJU</h3>
+<p class="text-gray-400 text-xs tracking-wider uppercase">Algorithm v3.2 // Daily Scan</p>
+</div>
+<div class="flex items-center justify-between border-t border-white/10 pt-4">
+<div class="flex flex-col">
+<span class="text-gray-500 text-xs line-through decoration-primary">5,900 KRW</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-bold text-accent">990</span>
+<span class="text-sm text-accent">KRW</span>
+</div>
+</div>
+<div class="h-10 w-10 rounded-full border border-white/20 flex items-center justify-center bg-white/5 backdrop-blur">
+<span class="material-symbols-outlined text-white text-sm">lock_open</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Holographic sheen overlay -->
+<div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"></div>
+</div>
+</div>
+<!-- Primary Action Button -->
+<div class="relative group cursor-pointer w-full">
+<div class="absolute inset-0 bg-accent translate-x-1.5 translate-y-1.5 rounded transition-transform duration-100 group-active:translate-x-0 group-active:translate-y-0"></div>
+<button class="relative w-full h-16 bg-primary rounded border border-white/20 flex items-center justify-center gap-3 overflow-hidden transition-transform duration-100 group-active:translate-x-1.5 group-active:translate-y-1.5 hover:bg-[#8f2df2]">
+<!-- Button texture -->
+<div class="absolute inset-0 opacity-20" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 11px);"></div>
+<span class="material-symbols-outlined text-white relative z-10">key</span>
+<span class="text-white text-lg font-bold tracking-wider relative z-10">UNLOCK DESTINY <span class="opacity-60 font-normal ml-1">/ 990 KRW</span></span>
+</button>
+</div>
+<!-- Bento Grid Menu -->
+<div class="grid grid-cols-2 gap-4 pb-20">
+<!-- Love Luck -->
+<div class="col-span-1 bg-surface-dark border border-white/10 p-4 rounded hover:border-accent/50 transition-colors group cursor-pointer relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-accent">arrow_outward</span>
+</div>
+<div class="flex flex-col h-full justify-between gap-6">
+<div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex items-center justify-center text-white shadow-lg shadow-pink-500/20">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+<div>
+<h4 class="text-white font-bold mb-1">애정운</h4>
+<p class="text-gray-500 text-xs">Romantic Algorithm</p>
+</div>
+</div>
+</div>
+<!-- Wealth Luck -->
+<div class="col-span-1 bg-surface-dark border border-white/10 p-4 rounded hover:border-accent/50 transition-colors group cursor-pointer relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-accent">arrow_outward</span>
+</div>
+<div class="flex flex-col h-full justify-between gap-6">
+<div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded flex items-center justify-center text-white shadow-lg shadow-yellow-500/20">
+<span class="material-symbols-outlined">currency_bitcoin</span>
+</div>
+<div>
+<h4 class="text-white font-bold mb-1">재물운</h4>
+<p class="text-gray-500 text-xs">Crypto &amp; Cash Flow</p>
+</div>
+</div>
+</div>
+<!-- Career Luck (Full Width) -->
+<div class="col-span-2 bg-surface-dark border border-white/10 p-4 rounded hover:border-accent/50 transition-colors group cursor-pointer relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-accent">arrow_outward</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 shrink-0">
+<span class="material-symbols-outlined">rocket_launch</span>
+</div>
+<div class="flex-1">
+<h4 class="text-white font-bold mb-1">직업운 업데이트</h4>
+<p class="text-gray-500 text-xs">Server Upgrade &amp; Career Path</p>
+</div>
+<div class="bg-white/5 px-2 py-1 rounded text-[10px] text-gray-400 border border-white/10 font-mono">
+                            v2.0
+                        </div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button (Oracle) -->
+<div class="fixed bottom-6 right-6 z-40">
+<button class="relative group h-14 w-14">
+<div class="absolute inset-0 bg-accent rotate-45 group-hover:rotate-90 transition-transform duration-300 blur-sm opacity-50"></div>
+<div class="absolute inset-0 bg-black border border-accent rotate-45 flex items-center justify-center shadow-neon-cyan">
+<span class="material-symbols-outlined text-accent -rotate-45 text-2xl group-hover:scale-110 transition-transform">smart_toy</span>
+</div>
+</button>
+</div>
+<!-- Footer System Status -->
+<footer class="bg-black border-t border-white/10 p-4 pb-8 text-center">
+<div class="flex justify-center items-center gap-2 mb-2">
+<div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></div>
+<p class="text-green-500 text-[10px] font-mono tracking-widest uppercase">System Online</p>
+</div>
+<p class="text-gray-600 text-[10px]">CYBER SAJU Ver 3.0.4 // SEOUL, KR</p>
+</footer>
+</div>
+<script>
+        // Simple parallax effect for the card
+        const card = document.querySelector('.perspective-1000');
+        if(card) {
+            document.addEventListener('mousemove', (e) => {
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+                const innerCard = card.querySelector('div'); // targeting the first child div
+                
+                // Only apply if mouse is somewhat near center to avoid extreme rotation on edges
+                if (Math.abs(xAxis) < 20 && Math.abs(yAxis) < 20) {
+                   // This is a simplified JS interaction for preview, in a real React/Vue app this would be cleaner
+                   // innerCard.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+                }
+            });
+        }
+    </script>
+</body></html>

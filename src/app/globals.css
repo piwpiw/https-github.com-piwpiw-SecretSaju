@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Theme Tokens */
+  --primary: #7c3aed;
+  --secondary: #f59e0b;
+  --background: #09090b;
+  --surface: rgba(255, 255, 255, 0.05);
+  --foreground: #fafafa;
+  --radius: 1rem;
+
+  /* Y2K Neon Colors */
+  --neon-pink: #FF006E;
+  --neon-cyan: #00F5FF;
+  --neon-purple: #BB00FF;
+  --neon-yellow: #FFEA00;
+  --neon-green: #39FF14;
+
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+  /* Y2K Gradients */
+  --gradient-cyber: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+  --gradient-sunset: linear-gradient(135deg, var(--neon-pink), var(--neon-yellow));
+  --gradient-rainbow: linear-gradient(135deg, var(--neon-pink), var(--neon-purple), var(--neon-cyan));
+
+  /* Dark Backgrounds */
+  --bg-dark: #0A0A0F;
+  --bg-card: #1A1A2E;
+}
+
+body {
+  @apply bg-[var(--background)] text-[var(--foreground)] antialiased transition-colors duration-300;
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Glassmorphism */
+.glass {
+  @apply bg-[var(--surface)] backdrop-blur-xl border border-white/10;
+}
+
+/* Theme Specific Backgrounds */
+.theme-mystic {
+  background: radial-gradient(circle at 50% 0%, #1e2c4f 0%, #0a1128 70%);
+}
+
+.theme-minimal {
+  background-size: 24px 24px;
+  background-image: linear-gradient(to right, rgba(32, 223, 64, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(32, 223, 64, 0.05) 1px, transparent 1px);
+}
+
+.theme-cyber {
+  background-image: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0) 50%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.2));
+  background-size: 100% 4px;
+}
+
+/* Antigravity float animation */
+.antigravity {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}

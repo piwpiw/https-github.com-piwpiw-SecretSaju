@@ -1,0 +1,1529 @@
+{
+  "archetypes": [
+    {
+      "code": "GAP_JA",
+      "animal_name": "골든 리트리버",
+      "base_traits": {
+        "mask": "일잘러 코스프레",
+        "hashtags": [
+          "#일잘러_코스프레",
+          "#자본주의_미소"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "반에서 눈치없이 다가가는 스타일"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "겉으로는 쿨한데 속으로는 불타오름"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "현실에 짓눌린 로맨티스트"
+        }
+      }
+    },
+    {
+      "code": "EUL_CHUK",
+      "animal_name": "웰시 코기",
+      "base_traits": {
+        "mask": "겉순이 아님",
+        "hashtags": [
+          "#겉순이_아님",
+          "#속마음_폭발"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "너무 잘해주려다 역효과"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "수동적인 척 하지만 주도권 원함"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "경제적 안정 뒤에 숨은 불안"
+        }
+      }
+    },
+    {
+      "code": "BYEONG_IN",
+      "animal_name": "시베리안 허스키",
+      "base_traits": {
+        "mask": "무던한 척",
+        "hashtags": [
+          "#무던한_척",
+          "#내면_폭풍"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "고백 타이밍을 영원히 놓침"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "겉: 무덤덤 / 속: 불꽃"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "취미로 도피하는 스타일"
+        }
+      }
+    },
+    {
+      "code": "JEONG_MYO",
+      "animal_name": "페르시안",
+      "base_traits": {
+        "mask": "우아함 유지",
+        "hashtags": [
+          "#완벽주의_집착",
+          "#유리멘탈"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "상처받기 싫어서 먼저 피함"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "로맨틱 분위기 필수, 아니면 냉동"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "인정받고 싶은데 티 안내려 함"
+        }
+      }
+    },
+    {
+      "code": "MU_JIN",
+      "animal_name": "메인 쿤",
+      "base_traits": {
+        "mask": "대범한 리더",
+        "hashtags": [
+          "#고집불통",
+          "#내가_곧_법"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "내 방식 아니면 관심 없음"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "주도권 100% 가져가려는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "권력욕을 성취욕으로 포장"
+        }
+      }
+    },
+    {
+      "code": "GI_SA",
+      "animal_name": "비글",
+      "base_traits": {
+        "mask": "착하고 순함",
+        "hashtags": [
+          "#관종본능",
+          "#눈치_제로"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "친구로만 보인다는 소리 듣는 1순위"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "열정은 있는데 테크닉이..."
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "인정욕구를 배려로 착각"
+        }
+      }
+    },
+    {
+      "code": "GYEONG_O",
+      "animal_name": "푸들",
+      "base_traits": {
+        "mask": "똑부러짐",
+        "hashtags": [
+          "#완벽주의_지옥",
+          "#통제욕"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "상대방 단점만 보임"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "계획적이고 절제된 스타일"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "완벽한 삶을 쫓다 지침"
+        }
+      }
+    },
+    {
+      "code": "SIN_MI",
+      "animal_name": "치와와",
+      "base_traits": {
+        "mask": "귀여움 장착",
+        "hashtags": [
+          "#쎈언니_코스프레",
+          "#불안형_인간"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "츤데레인 줄 알았는데 그냥 츤"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "예민하고 까칠, 근데 집착형"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "인정받고 싶은데 자존심이 방해"
+        }
+      }
+    },
+    {
+      "code": "IM_SIN",
+      "animal_name": "닥스훈트",
+      "base_traits": {
+        "mask": "성실함",
+        "hashtags": [
+          "#워커홀릭",
+          "#감정빈곤"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "연애보다 공부가 우선"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "효율성 추구, 감정은 나중에"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "일 안하면 불안한 타입"
+        }
+      }
+    },
+    {
+      "code": "GYE_YU",
+      "animal_name": "러시안 블루",
+      "base_traits": {
+        "mask": "조용하고 신비",
+        "hashtags": [
+          "#속내_안보임",
+          "#불신의_화신"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "먼저 다가가는 법을 모름"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "신뢰 쌓인 후에만 열림"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "외로운데 사람이 무서움"
+        }
+      }
+    },
+    {
+      "code": "GAP_SUL",
+      "animal_name": "진돗개",
+      "base_traits": {
+        "mask": "의리파",
+        "hashtags": [
+          "#고집쟁이",
+          "#내_편_아니면_적"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "집착을 사랑으로 착각"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "소유욕 MAX, 질투심 폭발"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "충성심을 강요하는 스타일"
+        }
+      }
+    },
+    {
+      "code": "EUL_HAE",
+      "animal_name": "스피츠",
+      "base_traits": {
+        "mask": "상냥함",
+        "hashtags": [
+          "#피해망상",
+          "#타인_눈치"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "싫어하는 줄 알고 포기"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "눈치보느라 즐기지 못함"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "행복한 척 하느라 지침"
+        }
+      }
+    },
+    {
+      "code": "BYEONG_JA",
+      "animal_name": "포메라니안",
+      "base_traits": {
+        "mask": "활발함",
+        "hashtags": [
+          "#멘탈_롤러코스터",
+          "#극단의_감정"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "감정 기복 심해서 피곤하다는 소리 들음"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "불타올랐다가 급냉각"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "안정 원하지만 자극에 약함"
+        }
+      }
+    },
+    {
+      "code": "JEONG_CHUK",
+      "animal_name": "샤르페이",
+      "base_traits": {
+        "mask": "묵직함",
+        "hashtags": [
+          "#고민_과다",
+          "#우울_체질"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "생각만 하고 행동 안 함"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "머릿속은 복잡한데 표현은 서툼"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "과거에 갇혀 사는 스타일"
+        }
+      }
+    },
+    {
+      "code": "MU_IN",
+      "animal_name": "보더 콜리",
+      "base_traits": {
+        "mask": "똑똑함",
+        "hashtags": [
+          "#오버씽킹",
+          "#분석_강박"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "계산 끝에 포기 결정"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "머리로만 하는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "통제력 잃는 게 두려움"
+        }
+      }
+    },
+    {
+      "code": "GI_MYO",
+      "animal_name": "아메리칸 숏헤어",
+      "base_traits": {
+        "mask": "무난함",
+        "hashtags": [
+          "#속마음_깊음",
+          "#집착_숨김"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "관심 없는 척 하다 끝"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "집착하면서 쿨한 척"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "욕망을 합리화하는 달인"
+        }
+      }
+    },
+    {
+      "code": "GYEONG_JIN",
+      "animal_name": "스코티시 폴드",
+      "base_traits": {
+        "mask": "차분함",
+        "hashtags": [
+          "#고독_선호",
+          "#관계_피로"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "혼자 있는 게 편함"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "감정 개입 최소화"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "외로운데 사람은 귀찮음"
+        }
+      }
+    },
+    {
+      "code": "SIN_SA",
+      "animal_name": "뱅갈",
+      "base_traits": {
+        "mask": "야성미",
+        "hashtags": [
+          "#충동구매형",
+          "#ADHD_의심"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "한눈 파는 걸 들킴"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "자극적인 거 좋아하는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "정착을 두려워하는 영혼"
+        }
+      }
+    },
+    {
+      "code": "IM_O",
+      "animal_name": "아비시니안",
+      "base_traits": {
+        "mask": "활동적",
+        "hashtags": [
+          "#번아웃_예정",
+          "#휴식_모름"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "바빠서 연애 못함"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "에너지는 넘치는데 방향 상실"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "멈추면 불안한 타입"
+        }
+      }
+    },
+    {
+      "code": "GYE_MI",
+      "animal_name": "먼치킨",
+      "base_traits": {
+        "mask": "사랑스러움",
+        "hashtags": [
+          "#애교_과다",
+          "#의존형_인간"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "집착을 귀여움으로 착각"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "관심 받아야 만족하는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "독립 못하는 자기 합리화"
+        }
+      }
+    },
+    {
+      "code": "GAP_SIN",
+      "animal_name": "코리안 숏헤어",
+      "base_traits": {
+        "mask": "현실주의",
+        "hashtags": [
+          "#냉정함",
+          "#감정_절제"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "연애는 비효율적이라 생각"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "감정보다 조건 우선"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "외로움을 인정 못함"
+        }
+      }
+    },
+    {
+      "code": "EUL_YU",
+      "animal_name": "래브라도",
+      "base_traits": {
+        "mask": "친화력",
+        "hashtags": [
+          "#관계_중독",
+          "#혼자_못살아"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "너무 착해서 만만하게 보임"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "상대 맞추느라 나는 없음"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "버림받는 게 제일 무서움"
+        }
+      }
+    },
+    {
+      "code": "BYEONG_SUL",
+      "animal_name": "저먼 셰퍼드",
+      "base_traits": {
+        "mask": "책임감",
+        "hashtags": [
+          "#희생_강요",
+          "#순교자_코스프레"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "헌신을 사랑으로 착각"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "주는 것만 알고 받는 건 서툼"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "피해자 코스프레로 관심 구함"
+        }
+      }
+    },
+    {
+      "code": "JEONG_HAE",
+      "animal_name": "불독",
+      "base_traits": {
+        "mask": "뚝심",
+        "hashtags": [
+          "#고집_끝판왕",
+          "#융통성_제로"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "내 방식 아니면 안 됨"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "변화 싫어하는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "변하기 싫어서 고독 선택"
+        }
+      }
+    },
+    {
+      "code": "MU_JA",
+      "animal_name": "시츄",
+      "base_traits": {
+        "mask": "느긋함",
+        "hashtags": [
+          "#게으름_찬양",
+          "#현타_일상"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "노력하기 귀찮음"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "수동적이고 피동적"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "무기력을 여유로 포장"
+        }
+      }
+    },
+    {
+      "code": "GI_CHUK",
+      "animal_name": "페르시안 롱헤어",
+      "base_traits": {
+        "mask": "우아함",
+        "hashtags": [
+          "#프라이드_과다",
+          "#혼자_고독"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "자존심 때문에 먼저 못 다가감"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "완벽주의라 즐기지 못함"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "외로운데 타협은 싫음"
+        }
+      }
+    },
+    {
+      "code": "GYEONG_IN",
+      "animal_name": "노르웨이 숲",
+      "base_traits": {
+        "mask": "독립적",
+        "hashtags": [
+          "#감정_빈곤",
+          "#관계_피로"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "혼자가 편해서"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "감정 교류 싫어하는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "고독을 선택했다고 착각"
+        }
+      }
+    },
+    {
+      "code": "SIN_MYO",
+      "animal_name": "사모야드",
+      "base_traits": {
+        "mask": "미소",
+        "hashtags": [
+          "#억지_긍정",
+          "#웃음_뒤의_우울"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "착한 애로만 보임"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "밝은 척 하느라 진심 숨김"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "웃는 가면 벗기 무서움"
+        }
+      }
+    },
+    {
+      "code": "IM_JIN",
+      "animal_name": "알래스칸 말라뮤트",
+      "base_traits": {
+        "mask": "강인함",
+        "hashtags": [
+          "#독불장군",
+          "#외골수"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "내 길만 감"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "타협 모르는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "외로워도 굽히기 싫음"
+        }
+      }
+    },
+    {
+      "code": "GYE_SA",
+      "animal_name": "허스키 믹스",
+      "base_traits": {
+        "mask": "자유로움",
+        "hashtags": [
+          "#4차원",
+          "#예측불가"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "관심 지속 시간 3일"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "변덕쟁이, 패턴 없음"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "자유를 핑계로 책임 회피"
+        }
+      }
+    },
+    {
+      "code": "GAP_O",
+      "animal_name": "차우차우",
+      "base_traits": {
+        "mask": "무표정",
+        "hashtags": [
+          "#감정_읽기_불가",
+          "#속내_모름"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "무슨 생각하는지 모르겠다는 소리 들음"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "표현 안 해서 오해만 산다"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "소통 거부하는 외로움"
+        }
+      }
+    },
+    {
+      "code": "EUL_MI",
+      "animal_name": "아키타",
+      "base_traits": {
+        "mask": "충성심",
+        "hashtags": [
+          "#집착형",
+          "#소유욕_MAX"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "질투를 사랑으로 착각"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "독점욕 강한 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "통제를 보호로 포장"
+        }
+      }
+    },
+    {
+      "code": "BYEONG_SIN",
+      "animal_name": "쉬바",
+      "base_traits": {
+        "mask": "도도함",
+        "hashtags": [
+          "#츤데레",
+          "#실은_외로움"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "관심 없는 척이 진짜로 보임"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "원하면서도 밀어내는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "자존심이 인생 망침"
+        }
+      }
+    },
+    {
+      "code": "JEONG_YU",
+      "animal_name": "그레이하운드",
+      "base_traits": {
+        "mask": "우아함",
+        "hashtags": [
+          "#예민함",
+          "#완벽주의_지옥"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "까다로워서 아무도 못 맞춤"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "이상형 기준이 너무 높음"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "완벽 추구하다 혼자됨"
+        }
+      }
+    },
+    {
+      "code": "MU_SUL",
+      "animal_name": "달마시안",
+      "base_traits": {
+        "mask": "활발함",
+        "hashtags": [
+          "#산만함",
+          "#집중_못함"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "관심사가 너무 많아서 산만"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "새로운 거 좋아하는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "한 우물 파기 싫어함"
+        }
+      }
+    },
+    {
+      "code": "GI_HAE",
+      "animal_name": "스핑크스",
+      "base_traits": {
+        "mask": "독특함",
+        "hashtags": [
+          "#관종",
+          "#인정_갈망"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "튀는 걸 좋아해서 부담스럽다는 소리 들음"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "특별하다는 말 듣고 싶은 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "관심받기 위해 과장"
+        }
+      }
+    },
+    {
+      "code": "GYEONG_JA",
+      "animal_name": "데본렉스",
+      "base_traits": {
+        "mask": "귀여움",
+        "hashtags": [
+          "#장난_과다",
+          "#진지함_제로"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "진심 전달 못하고 장난으로만 넘김"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "가벼워 보여서 손해"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "어른 되기 싫은 피터팬"
+        }
+      }
+    },
+    {
+      "code": "SIN_CHUK",
+      "animal_name": "라가머핀",
+      "base_traits": {
+        "mask": "부드러움",
+        "hashtags": [
+          "#눈치_장인",
+          "#불안형_애착"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "눈치보느라 고백 못함"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "상대 기분 맞추느라 지침"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "버림받을까 봐 전전긍긍"
+        }
+      }
+    },
+    {
+      "code": "IM_IN",
+      "animal_name": "버만",
+      "base_traits": {
+        "mask": "차분함",
+        "hashtags": [
+          "#속마음_깊음",
+          "#감정_숨김"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "표현 안 해서 관심 없는 줄 알아"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "감정 표현 서툰 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "외로워도 티 안냄"
+        }
+      }
+    },
+    {
+      "code": "GYE_MYO",
+      "animal_name": "터키시 앙고라",
+      "base_traits": {
+        "mask": "우아함",
+        "hashtags": [
+          "#자유로움",
+          "#독립심_강함"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "속박 싫어서 피함"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "관계보다 자유 우선"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "책임 회피를 자유로 포장"
+        }
+      }
+    },
+    {
+      "code": "GAP_JIN",
+      "animal_name": "재패니즈 밥테일",
+      "base_traits": {
+        "mask": "활발함",
+        "hashtags": [
+          "#에너지_넘침",
+          "#산만함"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "한 사람한테 집중 못함"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "호기심 많은 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "정착이 무서움"
+        }
+      }
+    },
+    {
+      "code": "EUL_SA",
+      "animal_name": "이집션 마우",
+      "base_traits": {
+        "mask": "신비로움",
+        "hashtags": [
+          "#거리두기",
+          "#선_긋기"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "다가가기 어려운 분위기"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "친해지기까지 시간 오래 걸림"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "친밀감 두려워하는 타입"
+        }
+      }
+    },
+    {
+      "code": "BYEONG_O",
+      "animal_name": "오시캣",
+      "base_traits": {
+        "mask": "사교성",
+        "hashtags": [
+          "#팔방미인",
+          "#진심_없음"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "여기저기 다 잘해줘서 오해 삼"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "가벼워 보이는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "넓고 얕은 관계만"
+        }
+      }
+    },
+    {
+      "code": "JEONG_MI",
+      "animal_name": "토이거",
+      "base_traits": {
+        "mask": "카리스마",
+        "hashtags": [
+          "#허세",
+          "#인정욕구"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "튀려고 과하게 함"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "주목받고 싶은 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "허세로 내면 감춤"
+        }
+      }
+    },
+    {
+      "code": "MU_SIN",
+      "animal_name": "사바나",
+      "base_traits": {
+        "mask": "야성미",
+        "hashtags": [
+          "#통제_불가",
+          "#자유분방"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "규칙 싫어함"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "틀 깨는 거 좋아하는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "정착 못하는 영혼"
+        }
+      }
+    },
+    {
+      "code": "GI_YU",
+      "animal_name": "브리티시 숏헤어",
+      "base_traits": {
+        "mask": "침착함",
+        "hashtags": [
+          "#감정_절제",
+          "#무뚝뚝함"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "표현 못해서 차가워 보임"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "감정 교류 서툰 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "외로워도 표현 못함"
+        }
+      }
+    },
+    {
+      "code": "GYEONG_SUL",
+      "animal_name": "맨스",
+      "base_traits": {
+        "mask": "독특함",
+        "hashtags": [
+          "#외골수",
+          "#고집_있음"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "내 방식 고집"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "타협 모르는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "융통성 없어서 외로움"
+        }
+      }
+    },
+    {
+      "code": "SIN_HAE",
+      "animal_name": "라펌",
+      "base_traits": {
+        "mask": "부드러움",
+        "hashtags": [
+          "#순응형",
+          "#의존적"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "주체성 없어 보임"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "상대에게 맞추기만 함"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "의존을 사랑으로 착각"
+        }
+      }
+    },
+    {
+      "code": "IM_JA",
+      "animal_name": "발리니즈",
+      "base_traits": {
+        "mask": "우아함",
+        "hashtags": [
+          "#감정_풍부",
+          "#집착형"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "너무 강렬해서 부담"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "감정 기복 심한 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "애착에 목숨 거는 스타일"
+        }
+      }
+    },
+    {
+      "code": "GYE_CHUK",
+      "animal_name": "히말라얀",
+      "base_traits": {
+        "mask": "온순함",
+        "hashtags": [
+          "#피해의식",
+          "#불안형"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "자신감 없어 보임"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "눈치보느라 못 즐김"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "불안해서 관계 못 유지"
+        }
+      }
+    },
+    {
+      "code": "GAP_IN",
+      "animal_name": "네벨룽",
+      "base_traits": {
+        "mask": "신비로움",
+        "hashtags": [
+          "#거리두기",
+          "#냉정함"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "감정 잘 안 드러냄"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "친해지기까지 시간 오래 걸림"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "친밀감 두려운 타입"
+        }
+      }
+    },
+    {
+      "code": "EUL_MYO",
+      "animal_name": "버밀라",
+      "base_traits": {
+        "mask": "사교성",
+        "hashtags": [
+          "#관계_피로",
+          "#속마음_숨김"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "밝은 척 하느라 진심 못 봄"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "겉과 속이 다른 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "가면 벗기 무서움"
+        }
+      }
+    },
+    {
+      "code": "BYEONG_JIN",
+      "animal_name": "통키니즈",
+      "base_traits": {
+        "mask": "활발함",
+        "hashtags": [
+          "#관종_본능",
+          "#애정_갈망"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "관심 받아야 살아"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "주목 받고 싶은 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "인정욕구 끝판왕"
+        }
+      }
+    },
+    {
+      "code": "JEONG_SA",
+      "animal_name": "세렌게티",
+      "base_traits": {
+        "mask": "자유로움",
+        "hashtags": [
+          "#방랑자",
+          "#정착_못함"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "한 곳에 오래 못 있음"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "책임 회피하는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "도망치는 게 습관"
+        }
+      }
+    },
+    {
+      "code": "MU_O",
+      "animal_name": "차우시",
+      "base_traits": {
+        "mask": "무표정",
+        "hashtags": [
+          "#감정_숨김",
+          "#독립적"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "무슨 생각하는지 모름"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "감정 표현 잘 안 함"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "혼자가 편한 타입"
+        }
+      }
+    },
+    {
+      "code": "GI_MI",
+      "animal_name": "파스타 카나리오",
+      "base_traits": {
+        "mask": "강인함",
+        "hashtags": [
+          "#통제욕",
+          "#권력지향"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "주도권 놓기 싫어함"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "지배욕 있는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "통제하려는 성향"
+        }
+      }
+    },
+    {
+      "code": "GYEONG_SIN",
+      "animal_name": "레온베르거",
+      "base_traits": {
+        "mask": "온화함",
+        "hashtags": [
+          "#착한_척",
+          "#속내_따로"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "착하기만 해서 밋밋"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "겉과 속이 다른 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "착한 사람 코스프레 피곤"
+        }
+      }
+    },
+    {
+      "code": "SIN_YU",
+      "animal_name": "그레이트 데인",
+      "base_traits": {
+        "mask": "위엄",
+        "hashtags": [
+          "#겉만_강함",
+          "#속은_약함"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "강한 척 하느라 약한 모습 못 봄"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "겉 바속 촉 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "강함으로 약함 포장"
+        }
+      }
+    },
+    {
+      "code": "IM_SUL",
+      "animal_name": "세인트 버나드",
+      "base_traits": {
+        "mask": "헌신적",
+        "hashtags": [
+          "#희생_강요",
+          "#순교자"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "희생을 사랑으로 착각"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "주기만 하고 받지 못함"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "피해자 코스프레"
+        }
+      }
+    },
+    {
+      "code": "GYE_HAE",
+      "animal_name": "티베탄 마스티프",
+      "base_traits": {
+        "mask": "충성심",
+        "hashtags": [
+          "#고집_센",
+          "#독단적"
+        ]
+      },
+      "age_context": {
+        "10s": {
+          "hook": "너 짝사랑 망하는 이유",
+          "secret_preview": "내 방식 아니면 안 됨"
+        },
+        "20s": {
+          "hook": "19금 침대 성향 & 도화살 수치",
+          "secret_preview": "융통성 없는 타입"
+        },
+        "30s": {
+          "hook": "진짜 원하는 것 vs 말하는 것",
+          "secret_preview": "고집으로 외로움"
+        }
+      }
+    }
+  ],
+  "template": {
+    "code": "PILLAR_CODE",
+    "animal_name": "동물 캐릭터명",
+    "base_traits": {
+      "mask": "사회적 가면 한줄",
+      "hashtags": [
+        "#해시태그1",
+        "#해시태그2"
+      ]
+    },
+    "age_context": {
+      "10s": {
+        "hook": "10대용 유혹 문구",
+        "secret_preview": "미리보기 한줄"
+      },
+      "20s": {
+        "hook": "2030 유혹 문구",
+        "secret_preview": "미리보기 한줄"
+      },
+      "30s": {
+        "hook": "30대+ 유혹 문구",
+        "secret_preview": "미리보기 한줄"
+      }
+    }
+  }
+}

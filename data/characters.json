@@ -1,0 +1,125 @@
+[
+  {
+    "code": "GAP_JA",
+    "name_ko": "갑자일주",
+    "animal_type": "욕망의 우두머리 쥐 (Blue Rat)",
+    "visual_guide": {
+      "prompt": "3d clay render of a rat wearing a royal crown, holding a golden scepter, dark purple neon lighting, cinematic texture, cute but arrogant expression",
+      "color_code": "#5D3FD3"
+    },
+    "persona": {
+      "title": "대장 안 시켜주면 삐지는 독재자",
+      "subtitle": "차가운 이성 뒤에 숨겨진 뜨거운 인정욕구",
+      "summary": "당신은 남 밑에서 일 못 합니다. 자존심이 밥 먹여주는 타입이죠. 겉으로는 쿨하고 이성적인 척하지만, 집에 가서 '아까 걔가 나 무시했나?' 하고 밤새 이불 킥하는 소심함도 있습니다.",
+      "tags": [
+        "#자존심킹",
+        "#인정욕구_빌런",
+        "#마이웨이",
+        "#폼생폼사"
+      ],
+      "validation_hook": {
+        "desc": "너 남한테 무시당한 거 같으면 며칠씩 곱씹지 않아? '걔가 날 무시한 건가?' 하면서. 근데 표정은 아무렇지 않은 척. 혼자 있을 때 열불 터지는 거 딱 걸렸네.",
+        "purpose": "Cold reading - validates hidden emotional reaction patterns"
+      }
+    },
+    "wealth_analysis": {
+      "type": "귀 얇은 팔랑귀 투자자",
+      "desc": "똑똑한 척은 혼자 다 하는데, 의외로 사기 잘 당함. 누가 '이거 대박이래' 하면 혹해서 대출까지 받음. 당신은 '공부'로 돈 버는 사주지, '투기'로 돈 버는 사주가 아님.",
+      "action_item": {
+        "mission": "주식 앱 3일간 삭제하고 자격증 정보 검색하기",
+        "reason": "너의 뇌는 '단기 도박'이 아니라 '장기 승부'에 최적화되어 있음. 자격증, 학위, 경력이 너의 진짜 재산이야."
+      }
+    },
+    "love_analysis": {
+      "style": "내로남불 선생님",
+      "desc": "나는 간섭받기 싫어하면서 애인은 통제하려고 함. 상대를 가르치려 들지 마세요. 당신을 '숭배'해주는 사람 아니면 3개월도 못 갑니다.",
+      "ideal": "당신의 징징거림을 다 받아주는 '흙(土)' 기운의 보살 같은 사람."
+    },
+    "hidden_truth": {
+      "blur_keyword": "모친의 간섭",
+      "text": "사실 당신 인생의 가장 큰 걸림돌이자 조력자는 '엄마'입니다. 독립하지 않으면 연애도 결혼도 쉽지 않을 걸요?"
+    }
+  },
+  {
+    "code": "EUL_CHUK",
+    "name_ko": "을축일주",
+    "animal_type": "진흙 속의 악바리 소 (Green Ox)",
+    "visual_guide": {
+      "prompt": "3d clay render of a cute ox pushing a cart full of gold coins, muddy boots, sweating but smiling, cyberpunk city background",
+      "color_code": "#2E8B57"
+    },
+    "persona": {
+      "title": "웃고 있지만 속으론 계산기 두드림",
+      "subtitle": "밟혀도 죽지 않는 좀비 같은 생존력",
+      "summary": "생활력 하나는 우주 최강입니다. 남들이 다 포기해도 당신은 끝까지 남아서 이삭줍기라도 하는 사람입니다. 겉으론 순해 보이죠? 10년 전 빌려준 500원도 기억하는 무서운 사람입니다.",
+      "tags": [
+        "#존버정신",
+        "#알뜰살뜰",
+        "#뒤끝작렬",
+        "#현실주의자"
+      ],
+      "validation_hook": {
+        "desc": "너 최저가 검색 몇 분씩 하지? 100원 아끼려고. 근데 스트레스 받으면 갑자기 몇십만 원짜리 충동구매 하잖아. 그 모순 알면서도 반복하는 거, 네가 제일 잘 알지.",
+        "purpose": "Cold reading - validates spending/saving behavioral contradictions"
+      }
+    },
+    "wealth_analysis": {
+      "type": "티끌 모아 태산 (근데 티끌이 다이아몬드)",
+      "desc": "100원 아끼려고 최저가 검색함. 근데 스트레스 받으면 보상심리로 50만 원 긁어버림. '시발비용'만 줄이면 건물주 됩니다.",
+      "action_item": {
+        "mission": "한 달간 '보상 소비' 금지. 스트레스 받으면 산책하기",
+        "reason": "너의 진짜 적은 '작은 지출'이 아니라 '스트레스 보상 소비'야. 이것만 끊으면 자동으로 부자됨."
+      }
+    },
+    "love_analysis": {
+      "style": "돌다리 두드려보고 안 건넘",
+      "desc": "의심이 너무 많아서 썸만 타다가 끝남. 나쁜 남자/여자한테는 절대 안 끌리는 안전제일주의. 근데 너무 재다가 똥차만 남음.",
+      "ideal": "나를 리드해주는 화끈한 '불(火)' 기운의 사람."
+    },
+    "hidden_truth": {
+      "blur_keyword": "숨겨진 꽁돈",
+      "text": "당신은 남 모르게 챙겨둔 비상금이 무조건 있습니다. 배우자 몰래 숨겨둔 그 통장, 절대 들키지 마세요. 그게 당신의 자존심입니다."
+    }
+  },
+  {
+    "code": "BYEONG_IN",
+    "name_ko": "병인일주",
+    "animal_type": "조명빨 받는 호랑이 (Red Tiger)",
+    "visual_guide": {
+      "prompt": "3d clay render of a tiger wearing sunglasses and a colorful suit, standing on a stage, spotlight, confident pose",
+      "color_code": "#FF4500"
+    },
+    "persona": {
+      "title": "관심 못 받으면 시드는 관종 꽃",
+      "subtitle": "시작은 창대하나 끝은 미약하리라",
+      "summary": "리액션 좋고, 밝고, 화끈합니다. 어딜 가나 주인공이어야 직성이 풀리죠. 근데 멘탈이 두부입니다. 불타올랐다가 금방 식어버리는 '양은냄비' 같은 성격 좀 고치세요.",
+      "tags": [
+        "#금사빠",
+        "#용두사미",
+        "#패션피플",
+        "#기분파"
+      ],
+      "validation_hook": {
+        "desc": "너 새로운 거 시작할 때 엄청 열정적이지? '이번엔 진짜다!' 하면서. 근데 2주 지나면 시들해지고 결국 흐지부지. 작심삼일 전문가잖아. 인정해, 맞잖아?",
+        "purpose": "Cold reading - validates pattern of enthusiasm → abandonment"
+      }
+    },
+    "wealth_analysis": {
+      "type": "기분파 소비요정",
+      "desc": "기분 좋으면 한턱 쏘고, 기분 나쁘면 쇼핑함. 통장이 아니라 '텅장'임. 당신은 돈을 모으는 게 아니라, 버는 족족 써야 더 잘 벌리는 특이한 사주.",
+      "action_item": {
+        "mission": "매달 수입의 20%를 '자기개발비'로 쓰기 (강제 지출)",
+        "reason": "너는 돈 모으면 답답해서 미쳐. 어차피 쓸 거, 미래의 너한테 투자해. 그게 너의 부자 공식이야."
+      }
+    },
+    "love_analysis": {
+      "style": "직진하는 불도저",
+      "desc": "꽂히면 앞뒤 안 가리고 직진. 근데 식는 것도 LTE급. 상대방이 잡으려고 하면 도망감. 밀당하지 말고 그냥 표현하세요.",
+      "ideal": "당신의 변덕을 잠재워줄 차분한 '물(水)' 기운의 사람."
+    },
+    "hidden_truth": {
+      "blur_keyword": "새벽 감성",
+      "text": "낮에는 세상 밝은 척하지만, 밤만 되면 외로워서 전 애인 인스타 염탐하죠? 그 손가락 당장 멈추세요."
+    }
+  }
+]
