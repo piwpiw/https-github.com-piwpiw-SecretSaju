@@ -15,7 +15,7 @@ export type AuthResult =
 export async function getAuthenticatedUser(request: NextRequest): Promise<AuthResult> {
     const accessToken = request.cookies.get(STORAGE_KEYS.KAKAO_TOKEN)?.value;
 
-    if (!accessToken) {
+    if (!accessToken && process.env.NEXT_PUBLIC_USE_MOCK_DATA !== 'true') {
         return {
             user: null,
             error: NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 })
@@ -23,7 +23,7 @@ export async function getAuthenticatedUser(request: NextRequest): Promise<AuthRe
     }
 
     // Verify with Kakao
-    const kakaoUser = await getKakaoUser(accessToken);
+    const kakaoUser = await getKakaoUser(accessToken || '');
     if (!kakaoUser) {
         return {
             user: null,

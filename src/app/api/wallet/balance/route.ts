@@ -9,12 +9,12 @@ export async function GET(request: NextRequest) {
     try {
         // 1. Auth Check (via Kakao Token)
         const accessToken = request.cookies.get(STORAGE_KEYS.KAKAO_TOKEN)?.value;
-        if (!accessToken) {
+        if (!accessToken && process.env.NEXT_PUBLIC_USE_MOCK_DATA !== 'true') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         // 2. Resolve Kakao User ID
-        const kakaoUser = await getKakaoUser(accessToken);
+        const kakaoUser = await getKakaoUser(accessToken || '');
         if (!kakaoUser) {
             return NextResponse.json({ error: 'Invalid Session' }, { status: 401 });
         }
@@ -67,3 +67,4 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
+

@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { getProfiles, SajuProfile } from '@/lib/storage';
 import Link from 'next/link';
-import { ChevronDown } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ChevronDown, Star, Calendar, Sparkles, Crown } from 'lucide-react';
 
 export default function SelectionPage() {
     const [profiles, setProfiles] = useState<SajuProfile[]>([]);
@@ -17,113 +18,126 @@ export default function SelectionPage() {
         }
     }, []);
 
+    const services = [
+        {
+            icon: Crown,
+            title: '2026 신년운세',
+            subtitle: '丙午年 한 해 총운',
+            description: '올해의 전체적인 흐름과 월별 핵심 조언',
+            color: 'from-red-500 to-pink-600',
+            badge: '일별 무료',
+            badgeColor: 'bg-red-500',
+            href: '/fortune',
+            emoji: '🎊',
+        },
+        {
+            icon: Calendar,
+            title: '오늘의 운세',
+            subtitle: '매일 새로운 운세',
+            description: '오늘 하루 주의할 점과 행운의 시간대',
+            color: 'from-orange-500 to-amber-600',
+            badge: '무료',
+            badgeColor: 'bg-green-500',
+            href: '/fortune',
+            emoji: '📅',
+        },
+        {
+            icon: Sparkles,
+            title: '프리미엄 운세 풀이',
+            subtitle: '사주 전문 AI 풀이',
+            description: '12운성, 십신, 오행 밸런스까지 한눈에',
+            color: 'from-purple-500 to-violet-600',
+            badge: '젤리 3개',
+            badgeColor: 'bg-purple-500',
+            href: '/',
+            emoji: '🔮',
+        },
+    ];
+
     return (
-        <main className="min-h-screen bg-background">
+        <main className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950">
             <div className="max-w-2xl mx-auto pb-12">
-                {/* Yellow Banner */}
-                <div className="bg-yellow-400 text-black px-4 py-6 mb-6">
-                    <h1 className="text-xl font-bold text-center">문제를 할 사람을 선택해주세요</h1>
+                {/* Header */}
+                <div className="bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 text-black px-4 py-8 text-center">
+                    <Star className="w-8 h-8 mx-auto mb-2" />
+                    <h1 className="text-2xl font-bold">운세 서비스 선택</h1>
+                    <p className="text-black/70 text-sm mt-1">원하는 운세를 골라보세요</p>
                 </div>
 
                 {/* Profile Selector */}
-                <div className="px-4 mb-8">
-                    <div className="relative">
-                        <select
-                            value={selectedProfile}
-                            onChange={(e) => setSelectedProfile(e.target.value)}
-                            className="w-full px-4 py-4 pr-10 rounded-lg bg-surface border border-white/10 text-foreground appearance-none font-medium"
-                        >
-                            <option value="">누구의 운세를 볼까요?</option>
-                            {profiles.map((p) => (
-                                <option key={p.id} value={p.id}>
-                                    {p.name} ({p.relationship})
-                                </option>
-                            ))}
-                        </select>
-                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 pointer-events-none" />
+                {profiles.length > 0 && (
+                    <div className="px-4 mt-6 mb-6">
+                        <div className="relative">
+                            <select
+                                value={selectedProfile}
+                                onChange={(e) => setSelectedProfile(e.target.value)}
+                                className="w-full px-4 py-4 pr-10 rounded-xl bg-white/5 border border-white/10 text-white appearance-none font-medium"
+                            >
+                                <option value="">누구의 운세를 볼까요?</option>
+                                {profiles.map((p) => (
+                                    <option key={p.id} value={p.id}>
+                                        {p.name} ({p.relationship})
+                                    </option>
+                                ))}
+                            </select>
+                            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* Service Cards */}
-                <div className="px-4 space-y-6">
-                    {/* New Year Fortune - Premium */}
-                    <div className="glass rounded-2xl overflow-hidden">
-                        <div className="flex items-center gap-2 px-4 py-2 bg-red-500/20">
-                            <span className="text-xl">🎁</span>
-                            <span className="text-sm font-medium text-foreground">신년운세</span>
-                            <span className="px-2 py-0.5 rounded-full bg-red-500 text-white text-xs font-bold ml-auto">
-                                일별 무료
-                            </span>
-                        </div>
-                        <div className="bg-gradient-to-br from-pink-500 to-red-600 p-8 text-center">
-                            <div className="mb-4">
-                                <p className="text-white text-sm mb-2">🎊 꿀이 팡팡 들어가!</p>
-                                <h2 className="text-4xl font-black text-white mb-1" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
-                                    2026
-                                </h2>
-                                <h3 className="text-5xl font-black text-yellow-300 mb-2" style={{
-                                    textShadow: '3px 3px 6px rgba(0,0,0,0.5)',
-                                    WebkitTextStroke: '2px black'
-                                }}>
-                                    丙午年
-                                </h3>
-                                <p className="text-white text-sm font-bold">
-                                    11주대마 봐란 말만! 너너로써!
-                                </p>
-                            </div>
-                        </div>
-                        <button className="w-full bg-black text-white py-4 font-bold hover:bg-black/80">
-                            지금 바로 확인하기
-                        </button>
-                    </div>
-
-                    {/* Daily Fortune Premium */}
-                    <div className="glass rounded-2xl overflow-hidden">
-                        <div className="flex items-center gap-2 px-4 py-2 bg-orange-500/20">
-                            <span className="text-xl">📅</span>
-                            <span className="text-sm font-medium text-foreground">오늘의 운세 프리미엄</span>
-                            <span className="px-2 py-0.5 rounded-full bg-orange-500 text-white text-xs font-bold ml-auto">
-                                4일
-                            </span>
-                        </div>
-                        <div className="p-6 bg-gradient-to-br from-orange-100 to-yellow-50">
-                            <div className="flex items-center gap-4">
-                                <div className="bg-yellow-400 rounded-full px-4 py-2">
-                                    <p className="text-black text-sm font-bold">단 330일</p>
+                <div className="px-4 space-y-4">
+                    {services.map((svc, i) => (
+                        <motion.div
+                            key={svc.title}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.1 }}
+                        >
+                            <Link href={svc.href} className="block">
+                                <div className="border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all hover:scale-[1.01]">
+                                    {/* Badge bar */}
+                                    <div className="flex items-center gap-2 px-4 py-2 bg-white/5">
+                                        <span className="text-xl">{svc.emoji}</span>
+                                        <span className="text-sm font-medium text-white">{svc.title}</span>
+                                        <span className={`px-2 py-0.5 rounded-full ${svc.badgeColor} text-white text-xs font-bold ml-auto`}>
+                                            {svc.badge}
+                                        </span>
+                                    </div>
+                                    {/* Content */}
+                                    <div className={`bg-gradient-to-br ${svc.color} p-6`}>
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex-1">
+                                                <h3 className="text-2xl font-black text-white mb-1">{svc.subtitle}</h3>
+                                                <p className="text-white/80 text-sm">{svc.description}</p>
+                                            </div>
+                                            <svc.icon className="w-12 h-12 text-white/80 flex-shrink-0" />
+                                        </div>
+                                    </div>
+                                    {/* CTA */}
+                                    <button className="w-full bg-black/50 text-white py-4 font-bold hover:bg-black/70 transition-colors text-sm">
+                                        지금 확인하기 →
+                                    </button>
                                 </div>
-                                <div className="flex-1">
-                                    <h3 className="text-2xl font-black text-orange-600 mb-1">더 자세한</h3>
-                                    <p className="text-lg font-bold text-gray-800">오늘의 운세가</p>
-                                    <p className="text-lg font-bold text-gray-800">궁금하다면?</p>
-                                </div>
-                                <div className="text-5xl">💁</div>
-                            </div>
-                        </div>
-                        <button className="w-full bg-pink-500 text-white py-4 font-bold hover:bg-pink-600">
-                            지금 바로 확인하기
-                        </button>
-                        <p className="text-center text-xs text-zinc-500 py-2">
-                            선택 오뚜기 거로 보기
-                        </p>
-                    </div>
-
-                    {/* Daily Fortune Free */}
-                    <div className="glass rounded-2xl overflow-hidden">
-                        <div className="flex items-center gap-2 px-4 py-2 bg-green-500/20">
-                            <span className="text-xl">📅</span>
-                            <span className="text-sm font-medium text-foreground">오늘의 운세</span>
-                            <span className="px-2 py-0.5 rounded-full bg-green-500 text-white text-xs font-bold ml-auto">
-                                무료
-                            </span>
-                        </div>
-                        <div className="p-12 text-center">
-                            <div className="text-6xl mb-4">❓</div>
-                        </div>
-                        <button className="w-full bg-green-600 text-white py-4 font-bold hover:bg-green-700">
-                            무료로 확인하기
-                        </button>
-                    </div>
+                            </Link>
+                        </motion.div>
+                    ))}
                 </div>
+
+                {/* No profiles state */}
+                {profiles.length === 0 && (
+                    <div className="px-4 mt-6">
+                        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
+                            <p className="text-slate-400 mb-4">먼저 프로필을 등록해주세요</p>
+                            <Link
+                                href="/my-saju/add"
+                                className="inline-block px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold hover:from-purple-600 hover:to-pink-600 transition-all"
+                            >
+                                프로필 등록하기
+                            </Link>
+                        </div>
+                    </div>
+                )}
             </div>
         </main>
     );

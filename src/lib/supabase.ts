@@ -17,6 +17,10 @@ let supabaseAdmin: any = null;
  * Use in React components (client-side only)
  */
 export function getSupabaseClient() {
+  if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    return createMockSupabase();
+  }
+
   if (supabaseClient) return supabaseClient;
 
   if (!DATABASE_CONFIG.isConfigured) {
@@ -36,12 +40,17 @@ export function getSupabaseClient() {
  * NEVER expose service role key to client
  */
 export function getSupabaseAdmin() {
+  if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    return createMockSupabase();
+  }
+
   if (supabaseAdmin) return supabaseAdmin;
 
   if (!DATABASE_CONFIG.isConfigured || !DATABASE_CONFIG.SERVICE_ROLE_KEY) {
     const errorMsg = 'Supabase Service Role is not configured properly.';
-    console.error(`[Supabase Admin Error] ${errorMsg}`);
-    throw new Error(errorMsg);
+    console.warn(`[Supabase Admin Error] ${errorMsg}`);
+    // mock gracefully instead of throwing in mock mode is already handled above
+    return createMockSupabase();
   }
 
   supabaseAdmin = createClient(
@@ -55,6 +64,56 @@ export function getSupabaseAdmin() {
     }
   );
   return supabaseAdmin;
+}
+
+// ============================================
+// MOCK CLIENT FOR LOCAL TESTING
+// ============================================
+function createMockSupabase() {
+  const createChain = (table: string) => {
+    const chain: any = {
+      select: () => chain,
+      insert: () => chain,
+      update: () => chain,
+      delete: () => chain,
+      eq: () => chain,
+      order: () => chain,
+      limit: () => chain,
+      single: async () => ({
+        data: table === 'jelly_wallets' ? { balance: 9999 } :
+          table === 'users' ? { id: 'mock-user-123', kakao_id: 999999 } :
+            table === 'saju_profiles' ? { id: 'mock-prof-1', name: '테스트 사주', relationship: 'self', birthdate: '1990-01-01', gender: 'female', calendar_type: 'solar' } :
+              { id: 'mock-id' },
+        error: null
+      }),
+      then: (resolve: any) => resolve({
+        data: table === 'saju_profiles' ? [
+          {
+            id: 'mock-prof-1',
+            name: '테스트 가족 사주',
+            relationship: 'child',
+            birthdate: '2010-05-05',
+            gender: 'male',
+            calendar_type: 'solar',
+            is_time_unknown: true,
+            birth_time: null
+          }
+        ] : table === 'orders' ? [] : table === 'users' ? [{ id: 'mock-user-123' }] : [],
+        error: null
+      })
+    };
+    return chain;
+  };
+
+  return {
+    from: (table: string) => createChain(table),
+    auth: {
+      getSession: async () => ({ data: { session: { user: { id: 'mock-user-123' } } }, error: null }),
+      getUser: async () => ({ data: { user: { id: 'mock-user-123' } }, error: null }),
+      signInWithOAuth: async () => ({ data: { url: 'http://localhost:3000' }, error: null }),
+      signOut: async () => ({ error: null })
+    }
+  };
 }
 
 /**

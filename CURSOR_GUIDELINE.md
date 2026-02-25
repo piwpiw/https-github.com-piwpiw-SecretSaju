@@ -25,3 +25,12 @@
 - `src/app/admin/page.tsx` — 관리자 전체 검증 (20명 교차 검증용)
 
 새 기능 추가 시 **docs/MASTER_PRD.md**의 Phase 2/3 섹션과 **docs/BLUEPRINT.md** 10단계를 따르세요. 예외·에러는 **docs/ERROR_CATALOG.md** 한 줄 체크를 반영하세요.
+
+## 🤖 Multi-Agent System
+
+- **[.agent/AGENT_SYSTEM.md](./.agent/AGENT_SYSTEM.md)** — 대표 에이전트 + 10개 팀 디스패치 시스템
+- **[.agent/COST_RULES.md](./.agent/COST_RULES.md)** — 과금 최소화 5대 원칙
+- **[.agent/teams/](./.agent/teams/)** — 10개 팀 에이전트 스펙 (Planning, Frontend, Backend, Engine, Data, Design, QA, DevOps, Security, Growth)
+- **[.agent/workflows/](./.agent/workflows/)** — 디스패치 / 바이브 코딩 워크플로우
+
+작업 요청 시 `AGENT_SYSTEM.md`의 Dispatch Rules에 따라 적절한 팀 스펙을 참조하세요.

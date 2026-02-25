@@ -8,10 +8,13 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- 사용자 관리
 -- ============================================
 
--- 사용자 기본 정보 (Kakao OAuth)
+-- 사용자 기본 정보 (다중 OAuth 지원)
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  kakao_id BIGINT UNIQUE NOT NULL,
+  kakao_id BIGINT UNIQUE,
+  auth_provider TEXT DEFAULT 'kakao' CHECK (auth_provider IN ('kakao', 'naver', 'google', 'mcp')),
+  mcp_access_token TEXT,
+  mcp_refresh_token TEXT,
   email TEXT,
   name TEXT,
   profile_image TEXT,

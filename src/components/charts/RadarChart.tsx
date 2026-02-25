@@ -44,10 +44,10 @@ export default function RadarChart({
 
     return (
         <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
-            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
-                {/* Background Grids */}
+            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                {/* Background Grids with Stitch Animation */}
                 {gridLevels.map((level, i) => (
-                    <polygon
+                    <motion.polygon
                         key={i}
                         points={labels.map((_, j) => {
                             const angle = j * angleStep - Math.PI / 2;
@@ -59,24 +59,31 @@ export default function RadarChart({
                         stroke="white"
                         strokeOpacity="0.1"
                         strokeWidth="1"
+                        strokeDasharray="4 4"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
+                        transition={{ duration: 1.5, delay: i * 0.2, ease: "easeInOut" }}
                     />
                 ))}
 
-                {/* Axis Lines */}
+                {/* Axis Lines with Stitch Animation */}
                 {labels.map((_, i) => {
                     const angle = i * angleStep - Math.PI / 2;
                     const x = center + radius * Math.cos(angle);
                     const y = center + radius * Math.sin(angle);
                     return (
-                        <line
-                            key={i}
+                        <motion.line
+                            key={`axis-${i}`}
                             x1={center}
                             y1={center}
                             x2={x}
                             y2={y}
                             stroke="white"
-                            strokeOpacity="0.1"
+                            strokeOpacity="0.15"
                             strokeWidth="1"
+                            initial={{ pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ duration: 1, delay: 0.5 + i * 0.1, ease: "easeOut" }}
                         />
                     );
                 })}
@@ -104,23 +111,41 @@ export default function RadarChart({
 
                 {/* Data A (Main) */}
                 <motion.path
-                    initial={{ d: labels.map((_, i) => `${i === 0 ? 'M' : 'L'} ${center} ${center}`).join(' ') + ' Z' }}
-                    animate={{ d: getPathData(dataA) }}
-                    transition={{ duration: 1, ease: "easeOut" }}
+                    initial={{
+                        d: labels.map((_, i) => `${i === 0 ? 'M' : 'L'} ${center} ${center}`).join(' ') + ' Z',
+                        pathLength: 0,
+                        opacity: 0
+                    }}
+                    animate={{
+                        d: getPathData(dataA),
+                        pathLength: 1,
+                        opacity: 1
+                    }}
+                    transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
                     fill="rgba(250, 204, 21, 0.3)" // Yellow-400
                     stroke="#facc15"
                     strokeWidth="3"
+                    className="drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]"
                 />
 
                 {/* Data B (Relationship) */}
                 {dataB && (
                     <motion.path
-                        initial={{ d: labels.map((_, i) => `${i === 0 ? 'M' : 'L'} ${center} ${center}`).join(' ') + ' Z' }}
-                        animate={{ d: getPathData(dataB) }}
-                        transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+                        initial={{
+                            d: labels.map((_, i) => `${i === 0 ? 'M' : 'L'} ${center} ${center}`).join(' ') + ' Z',
+                            pathLength: 0,
+                            opacity: 0
+                        }}
+                        animate={{
+                            d: getPathData(dataB),
+                            pathLength: 1,
+                            opacity: 1
+                        }}
+                        transition={{ duration: 1.5, ease: "easeOut", delay: 0.8 }}
                         fill="rgba(56, 189, 248, 0.3)" // Sky-400
                         stroke="#38bdf8"
                         strokeWidth="3"
+                        className="drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]"
                     />
                 )}
             </svg>

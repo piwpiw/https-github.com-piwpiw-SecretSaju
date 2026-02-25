@@ -72,6 +72,7 @@ export default function VSModePage() {
         };
 
         loadSajuData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profileId]);
 
     const calculateWinners = (a: HighPrecisionSajuResult, b: HighPrecisionSajuResult): TraitWinner[] => {

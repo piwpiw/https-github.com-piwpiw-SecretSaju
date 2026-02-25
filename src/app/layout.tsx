@@ -80,6 +80,9 @@ export const metadata: Metadata = {
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { GlobalCompliance } from "@/components/GlobalCompliance";
 import { WalletProvider } from "@/components/WalletProvider";
+import { Footer } from "@/components/Footer";
+import GlowCursor from "@/components/ui/GlowCursor";
+import ScrollProgress from "@/components/ui/ScrollProgress";
 
 export default function RootLayout({
   children,
@@ -121,8 +124,15 @@ export default function RootLayout({
       <body className={`${notoSansKr.variable} ${doHyeon.variable}`}>
         <ThemeProvider>
           <WalletProvider>
-            <Nav />
-            {children}
+            <GlowCursor />
+            <ScrollProgress />
+            <div className="flex flex-col min-h-screen">
+              <Nav />
+              <div className="flex-grow flex flex-col">
+                {children}
+              </div>
+              <Footer />
+            </div>
             <GlobalCompliance />
           </WalletProvider>
         </ThemeProvider>

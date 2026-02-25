@@ -29,6 +29,7 @@ export default function RelationshipDetailPage() {
             await loadRelationship();
         };
         fetchRelationship();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profileId]);
 
     const loadRelationship = async () => {

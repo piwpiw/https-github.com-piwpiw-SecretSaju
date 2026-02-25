@@ -25,6 +25,7 @@ export default function DashboardPage() {
 
     useEffect(() => {
         loadDashboard();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const loadDashboard = async () => {
@@ -243,25 +244,29 @@ export default function DashboardPage() {
                 )}
 
                 {/* Relationship Map */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
                     {/* Main Profile (Center) */}
                     <div className="lg:col-start-2">
                         <motion.div
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            className="bg-gradient-to-br from-yellow-400/20 to-amber-500/20 border-2 border-yellow-400 rounded-2xl p-6 text-center"
+                            className="relative group cursor-pointer"
                         >
-                            <div className="w-24 h-24 bg-yellow-400 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <span className="text-4xl">👤</span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 rounded-3xl blur-xl opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                            <div className="relative bg-black/40 backdrop-blur-xl border border-yellow-400/30 rounded-3xl p-8 text-center shadow-2xl overflow-hidden">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500"></div>
+                                <div className="w-28 h-28 bg-gradient-to-tr from-yellow-500/20 to-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-5 border border-yellow-400/40 shadow-[0_0_30px_rgba(250,204,21,0.2)]">
+                                    <span className="text-5xl">👑</span>
+                                </div>
+                                <h3 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500 tracking-tight">{mainProfile.name}</h3>
+                                <p className="text-sm font-medium text-yellow-500/70 mt-1 uppercase tracking-widest">{mainProfile.relationship}</p>
                             </div>
-                            <h3 className="text-lg font-bold text-foreground">{mainProfile.name}</h3>
-                            <p className="text-sm text-zinc-400">({mainProfile.relationship})</p>
                         </motion.div>
                     </div>
                 </div>
 
                 {/* Relationship Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {relationships.map((rel, index) => (
                         <motion.div
                             key={rel.profile.id}
@@ -269,59 +274,59 @@ export default function DashboardPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
                             onClick={() => router.push(`/relationship/${rel.profile.id}`)}
-                            className="bg-surface border border-white/10 rounded-xl p-5 hover:border-yellow-400/50 transition cursor-pointer group"
+                            className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 hover:bg-white/10 hover:border-yellow-400/30 hover:shadow-[0_0_30px_rgba(250,204,21,0.1)] transition-all duration-300 cursor-pointer group"
                         >
                             {/* Profile Info */}
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center">
-                                    <span className="text-2xl">👤</span>
+                            <div className="flex items-center gap-4 mb-6 pb-4 border-b border-white/5">
+                                <div className="w-14 h-14 bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-2xl flex items-center justify-center shadow-inner">
+                                    <span className="text-3xl">👤</span>
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="font-bold text-foreground group-hover:text-yellow-400 transition">
+                                    <h4 className="text-lg font-bold text-white group-hover:text-yellow-400 transition-colors">
                                         {rel.profile.name}
                                     </h4>
-                                    <p className="text-xs text-zinc-500">{rel.profile.relationship}</p>
+                                    <p className="text-xs text-yellow-500/70 uppercase tracking-wider font-semibold mt-1">{rel.profile.relationship}</p>
                                 </div>
                             </div>
 
                             {rel.analysis && (
                                 <>
                                     {/* Compatibility Score */}
-                                    <div className="mb-3">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="text-sm text-zinc-400">궁합</span>
-                                            <div className={`flex items-center gap-1 ${getCompatibilityColor(rel.analysis.score)}`}>
+                                    <div className="mb-5 bg-black/20 rounded-2xl p-4 border border-black/20">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <span className="text-sm font-medium text-slate-400">종합 궁합</span>
+                                            <div className={`flex items-center gap-1.5 ${getCompatibilityColor(rel.analysis.score)}`}>
                                                 {getCompatibilityIcon(rel.analysis.score)}
-                                                <span className="font-bold text-lg">{rel.analysis.score}%</span>
+                                                <span className="font-black text-2xl">{rel.analysis.score}<span className="text-lg opacity-70">%</span></span>
                                             </div>
                                         </div>
-                                        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                                        <div className="h-2.5 bg-black/40 rounded-full overflow-hidden shadow-inner">
                                             <motion.div
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${rel.analysis.score}%` }}
-                                                transition={{ delay: index * 0.1 + 0.3, duration: 0.5 }}
+                                                transition={{ delay: index * 0.1 + 0.3, duration: 1, ease: "easeOut" }}
                                                 className={`h-full ${rel.analysis.score >= 80
-                                                    ? 'bg-green-400'
+                                                    ? 'bg-gradient-to-r from-green-500 to-emerald-400'
                                                     : rel.analysis.score >= 60
-                                                        ? 'bg-yellow-400'
+                                                        ? 'bg-gradient-to-r from-yellow-500 to-amber-400'
                                                         : rel.analysis.score >= 40
-                                                            ? 'bg-orange-400'
-                                                            : 'bg-red-400'
-                                                    }`}
+                                                            ? 'bg-gradient-to-r from-orange-500 to-amber-500'
+                                                            : 'bg-gradient-to-r from-red-500 to-rose-400'
+                                                    } shadow-[0_0_10px_currentColor]`}
                                             />
                                         </div>
                                     </div>
 
                                     {/* Quick Info */}
-                                    <div className="space-y-2 text-sm">
-                                        <div className="flex items-start gap-2">
-                                            <span className="text-zinc-500 text-xs">•</span>
-                                            <p className="text-zinc-400 line-clamp-2">{rel.analysis.chemistry}</p>
+                                    <div className="space-y-3 mb-6">
+                                        <div className="flex items-start gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
+                                            <Sparkles className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" />
+                                            <p className="text-slate-300 text-sm leading-relaxed">{rel.analysis.chemistry}</p>
                                         </div>
                                         {rel.analysis.tension && (
-                                            <div className="flex items-start gap-2">
-                                                <AlertTriangle className="w-3 h-3 text-orange-400 flex-shrink-0 mt-0.5" />
-                                                <p className="text-orange-400/80 text-xs line-clamp-2">
+                                            <div className="flex items-start gap-3 bg-red-500/10 p-3 rounded-xl border border-red-500/20">
+                                                <AlertTriangle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
+                                                <p className="text-rose-300/90 text-sm leading-relaxed">
                                                     {rel.analysis.tension}
                                                 </p>
                                             </div>
@@ -329,13 +334,13 @@ export default function DashboardPage() {
                                     </div>
 
                                     {/* Action Buttons */}
-                                    <div className="mt-4 pt-4 border-t border-white/10 flex gap-2">
+                                    <div className="grid grid-cols-2 gap-3 mt-auto">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 router.push(`/relationship/${rel.profile.id}`);
                                             }}
-                                            className="flex-1 py-2 px-4 rounded-lg bg-white/5 text-zinc-300 text-sm font-medium hover:bg-white/10 transition"
+                                            className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-bold transition-all shadow-sm"
                                         >
                                             상세 분석
                                         </button>
@@ -344,10 +349,10 @@ export default function DashboardPage() {
                                                 e.stopPropagation();
                                                 router.push(`/relationship/${rel.profile.id}/vs`);
                                             }}
-                                            className="flex-1 py-2 px-4 rounded-lg bg-yellow-400/20 text-yellow-400 text-sm font-black italic hover:bg-yellow-400/30 transition flex items-center justify-center gap-1"
+                                            className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black text-sm font-black italic transition-all shadow-lg flex items-center justify-center gap-1.5"
                                         >
                                             VS 비교
-                                            <Zap className="w-3 h-3" />
+                                            <Zap className="w-4 h-4 fill-black" />
                                         </button>
                                     </div>
                                 </>

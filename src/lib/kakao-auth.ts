@@ -29,6 +29,13 @@ export function initKakao() {
  * Redirects to Kakao OAuth page
  */
 export function loginWithKakao() {
+    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        console.log('[MOCK] Bypassing Kakao Login');
+        document.cookie = `${STORAGE_KEYS.USER_DATA}=${encodeURIComponent(JSON.stringify({ id: 999999, nickname: '테스트유저(Mock)' }))}; path=/; max-age=86400`;
+        window.location.href = '/dashboard';
+        return;
+    }
+
     if (!window.Kakao) {
         console.error('Kakao SDK not loaded');
         alert('카카오 로그인을 사용할 수 없습니다. 페이지를 새로고침해주세요.');
@@ -76,6 +83,13 @@ export interface KakaoUser {
  * @param accessToken - Kakao access token
  */
 export async function getKakaoUser(accessToken: string): Promise<KakaoUser | null> {
+    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        return {
+            id: 999999,
+            kakao_account: { profile: { nickname: '테스트유저(Mock)' }, email: 'mock@secretsaju.com' }
+        };
+    }
+
     try {
         const response = await fetch('https://kapi.kakao.com/v2/user/me', {
             headers: {
@@ -99,6 +113,14 @@ export async function getKakaoUser(accessToken: string): Promise<KakaoUser | nul
  */
 export function getUserFromCookie(): { id: number; nickname: string; email?: string } | null {
     if (typeof window === 'undefined') return null;
+
+    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        return {
+            id: 999999,
+            nickname: '테스트유저(Mock)',
+            email: 'mock@secretsaju.com'
+        };
+    }
 
     const userCookie = document.cookie
         .split('; ')

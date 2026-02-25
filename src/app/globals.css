@@ -33,9 +33,13 @@
   --bg-card: #1A1A2E;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   @apply bg-[var(--background)] text-[var(--foreground)] antialiased transition-colors duration-300;
-  font-family: var(--font-sans);
+  font-family: var(--font-pretendard), system-ui, sans-serif;
 }
 
 h1,
@@ -43,7 +47,7 @@ h2,
 h3,
 h4,
 .font-display {
-  font-family: var(--font-display);
+  font-family: var(--font-do-hyeon), sans-serif;
 }
 
 /* Glassmorphism */

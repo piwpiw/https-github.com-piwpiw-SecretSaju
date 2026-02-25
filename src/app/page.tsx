@@ -57,21 +57,31 @@ export default function HomePage() {
       <div className="relative z-10 container mx-auto px-4 py-12">
         {/* Hero Section */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12"
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="text-center mb-16 relative"
         >
-          <h1
-            className="text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent"
-            style={{
-              textShadow: "0 0 40px rgba(255, 105, 180, 0.3)",
-            }}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] max-w-3xl h-64 bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-cyan-500/20 blur-3xl rounded-full pointer-events-none" />
+
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.2, delay: 0.2 }}
+            className="inline-block px-6 py-2 bg-white/5 backdrop-blur-md border border-white/10 rounded-full mb-6 shadow-inner"
           >
-            멍냥의 이중생활
+            <span className="text-sm font-bold tracking-widest bg-gradient-to-r from-yellow-300 to-amber-500 bg-clip-text text-transparent uppercase">
+              프리미엄 사주 프로파일링 시스템
+            </span>
+          </motion.div>
+
+          <h1
+            className="text-6xl md:text-8xl font-black mb-6 tracking-tight leading-tight"
+          >
+            <span className="bg-gradient-to-r from-pink-300 via-purple-300 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]">멍냥의 이중생활</span>
           </h1>
-          <p className="text-xl text-slate-300 mb-2">Secret Paws</p>
-          <p className="text-sm text-slate-400 font-mono">
+          <p className="text-2xl md:text-3xl font-bold text-slate-200 mb-3 tracking-wide">SECRET PAWS</p>
+          <p className="text-sm md:text-base text-cyan-400/80 font-mono tracking-[0.2em] uppercase">
             Digital Acrylic Keyring Fortune Telling
           </p>
         </motion.div>
@@ -87,28 +97,40 @@ export default function HomePage() {
 
             {/* About Section */}
             <motion.div
-              className="mt-12 max-w-2xl mx-auto text-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
+              className="mt-16 max-w-4xl mx-auto"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 1 }}
             >
-              <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-8">
-                <h3 className="text-2xl font-bold mb-4 text-cyan-400">
-                  🎭 사회적 가면 vs 본능
-                </h3>
-                <p className="text-slate-300 mb-4">
-                  60가지 동물 아키타입으로 당신의 이중생활을 폭로합니다.
-                </p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  <span className="px-4 py-2 bg-pink-500/20 border border-pink-400/30 rounded-full text-sm text-pink-300">
-                    #Y2K_디지털_굿즈
-                  </span>
-                  <span className="px-4 py-2 bg-purple-500/20 border border-purple-400/30 rounded-full text-sm text-purple-300">
-                    #팩폭_주의
-                  </span>
-                  <span className="px-4 py-2 bg-cyan-500/20 border border-cyan-400/30 rounded-full text-sm text-cyan-300">
-                    #바이럴_밈
-                  </span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="md:col-span-3 bg-black/40 backdrop-blur-3xl border border-white/10 rounded-3xl p-10 text-center shadow-2xl relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-cyan-500/10 opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  <h3 className="text-3xl font-black mb-6 bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">
+                    🎭 대국민 사주 프로파일링
+                  </h3>
+                  <p className="text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto font-medium">
+                    &quot;내 안의 또 다른 자아를 발견하다.&quot;<br />
+                    60가지 동물 아키타입과 음양오행 빅데이터가 폭로하는<br />
+                    당신의 완벽한 사회적 가면과 은밀한 진짜 본능.
+                  </p>
+                </div>
+
+                <div className="bg-gradient-to-br from-pink-500/10 to-transparent border border-pink-500/20 rounded-3xl p-8 backdrop-blur-xl shadow-inner text-center">
+                  <div className="text-4xl mb-4 drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]">🔑</div>
+                  <h4 className="font-bold text-pink-300 mb-2 tracking-widest text-sm">Y2K KEYRING</h4>
+                  <p className="text-slate-400 text-sm">소장 욕구를 자극하는 디지털 아크릴 키링 굿즈 발급</p>
+                </div>
+
+                <div className="bg-gradient-to-br from-purple-500/10 to-transparent border border-purple-500/20 rounded-3xl p-8 backdrop-blur-xl shadow-inner text-center">
+                  <div className="text-4xl mb-4 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]">💣</div>
+                  <h4 className="font-bold text-purple-300 mb-2 tracking-widest text-sm">FACT BOMB</h4>
+                  <p className="text-slate-400 text-sm">MBTI를 가볍게 뛰어넘는 뼈 때리는 찐 팩폭 분석</p>
+                </div>
+
+                <div className="bg-gradient-to-br from-cyan-500/10 to-transparent border border-cyan-500/20 rounded-3xl p-8 backdrop-blur-xl shadow-inner text-center">
+                  <div className="text-4xl mb-4 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">✨</div>
+                  <h4 className="font-bold text-cyan-300 mb-2 tracking-widest text-sm">VIRAL TREND</h4>
+                  <p className="text-slate-400 text-sm">인스타 스토리, X(트위터) 등에 완벽히 최적화된 공유</p>
                 </div>
               </div>
             </motion.div>

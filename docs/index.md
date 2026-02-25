@@ -1,158 +1,28 @@
-# Secret Saju - Documentation Hub
+# 📚 SecretSaju Documentation Index (Knowledge Base)
 
-**Welcome to the complete knowledge base for Secret Saju (멍냥의 이중생활)**
+이 문서는 AI 에이전트 다중 협업 환경에서 모든 컨텍스트와 기획, 아키텍처 규칙을 빠르게 인덱싱하기 위한 최상위 목차(Root Index)입니다.
 
-> "누구든 쉽고 명확하게 접근하고 이해할 수 있어야 한다"
+## 🌀 개발 방법론 및 규칙 (Methodology & Rules)
+- **[AI Collaboration Cycle](../.agent/workflows/ai-collaboration.md)**: 전체 개발 프로세스, 지식 트리 구조, 10분 마이크로 타임박싱 및 다중 에이전트 협업 기준.
+- **[Architecture & Maintenance](../.agent/workflows/architecture.md)**: 폴더 구조, Mocking 바이패스, Next.js 컴포넌트 추가/삭제 규칙, 토큰 최적화 방안.
+- **[Zero Script QA](../scripts/zero-script-qa.mjs)**: 코드 커밋 전 자동으로 코드 퀄리티를 통제하여 중복 에러 발생을 근본적으로 차단하는 스크립트.
 
----
+## 📖 기획 및 설계서 (Planning & Specifications)
+- **[MASTER PRD](./MASTER_PRD.md)**: 전체 서비스의 제품 요구사항 정의서 (Phase 1 ~ Phase 3 로드맵 포함).
+- **[UI/UX DESIGN SPEC](./UI_UX_DESIGN_SPEC.md)**: 글래스모피즘(Glassmorphism) 및 SVG Stitch 기반 동적 차트 등 프론트엔드 디자인 원칙 가이드.
+- **[BLUEPRINT](./BLUEPRINT.md)**: 10단계 초격차 럭셔리 플랫폼 구축을 위한 마일스톤 안내서.
+- **[GitHub Issues (Tasks)](./GITHUB_ISSUES.md)**: 백로그 관리 및 Phase 2 고도화 체크리스트 명세서.
 
-## 🚀 Quick Start by Role
+## 🛠 아키텍처 및 코어 상세 (Technical Details)
+- **[Saju Layers](./SAJU_LAYERS.md)**: 사주 코어 명리학 엔진(DACRE)의 레이어 구조 및 알고리즘 해설 문서.
+- **[Error Catalog](./ERROR_CATALOG.md)**: 프로젝트 내에서 식별되어 관리되는 에러 카탈로그 및 대처 매뉴얼 (Zoro QA에 의해 검증됨).
+- **[User Verification](./USER_VERIFICATION.md)**: 사용자 입장에서 E2E (End-to-End) 테스트를 검증하기 위한 시나리오 리스트.
 
-| Your Role | Start Here |
-|-----------|------------|
-| **CEO** | [CEO Dashboard](./01-team/c-level/ceo-dashboard.md) |
-| **CTO** | [CTO Technical Strategy](./01-team/c-level/cto-technical-strategy.md) |
-| **CFO** | [CFO Financial Overview](./01-team/c-level/cfo-financial-overview.md) |
-| **PM/PO** | [PM Guide](./01-team/product/pm-guide.md) |
-| **Designer** | [Design System](./01-team/product/design-system.md) |
-| **Developer** | [Developer Onboarding](./01-team/engineering/onboarding.md) |
-| **QA** | [Test Scenarios](./01-team/qa/test-scenarios.md) |
-| **Marketing** | [Marketing Strategy](./01-team/marketing/content-strategy.md) |
-| **CS/Operations** | [CS Guide](./01-team/operations/cs-guide.md) |
-| **Investor** | [Executive Summary](./05-external/investors/executive-summary.md) |
-| **Partner** | [Partnership Overview](./05-external/partners/partnership-overview.md) |
-
----
-
-## 📚 Documentation Structure
-
-### 🎯 [00-overview](./00-overview/) - Project Overview
-프로젝트 전체 개요 (모든 역할 공통)
-- [README](./00-overview/README.md) - 프로젝트 소개
-- [Vision & Mission](./00-overview/vision-mission.md) - 비전 & 미션
-- [Tech Stack](./00-overview/tech-stack.md) - 기술 스택
-- [Roadmap](./00-overview/roadmap.md) - 제품 로드맵
-- [Glossary](./00-overview/glossary.md) - 용어집
-
-### 👥 [01-team](./01-team/) - Role-Based Guides
-역할별 맞춤 가이드
-- **[C-Level](./01-team/c-level/)** - 경영진 (CEO, CTO, CFO, CMO)
-- **[Product](./01-team/product/)** - 제품 팀 (PM, Designer, UX)
-- **[Engineering](./01-team/engineering/)** - 개발 팀
-- **[QA](./01-team/qa/)** - 품질 보증
-- **[Marketing](./01-team/marketing/)** - 마케팅
-- **[Operations](./01-team/operations/)** - 운영 팀 (CS, DevOps)
-
-### 🔧 [02-technical](./02-technical/) - Technical Documentation
-기술 문서 (개발자 + CTO)
-- **[Architecture](./02-technical/architecture/)** - 시스템 아키텍처
-- **[API](./02-technical/api/)** - API 레퍼런스
-- **[Core Engine](./02-technical/core-engine/)** - 사주 엔진 상세
-- **[Integrations](./02-technical/integrations/)** - 외부 서비스 통합
-- **[Troubleshooting](./02-technical/troubleshooting/)** - 문제 해결
-
-### 💼 [03-business](./03-business/) - Business Documentation
-비즈니스 문서 (CEO + PM + Marketing)
-- **[Strategy](./03-business/strategy/)** - 비즈니스 전략
-- **[Financials](./03-business/financials/)** - 재무 정보
-- **[Product Management](./03-business/product-management/)** - 제품 관리
-
-### ⚙️ [04-operations](./04-operations/) - Operations Guide
-운영 가이드
-- **[Processes](./04-operations/processes/)** - 프로세스 문서
-- **[Runbooks](./04-operations/runbooks/)** - 실행 절차서
-- **[Monitoring](./04-operations/monitoring/)** - 모니터링
-
-### 🌍 [05-external](./05-external/) - External-Facing
-외부 공개 문서
-- **[Investors](./05-external/investors/)** - 투자자용 (IR)
-- **[Partners](./05-external/partners/)** - 파트너용
-- **[Press](./05-external/press/)** - 언론용
-
-### 📦 [06-resources](./06-resources/) - Common Resources
-공통 리소스
-- **[Templates](./06-resources/templates/)** - 문서 템플릿
-- **[Checklists](./06-resources/checklists/)** - 체크리스트
-- **[Assets](./06-resources/assets/)** - 다이어그램, 스크린샷
+## 👥 팀 명세서 (Team Specifics)
+- **기획 팀 (Planning)**: `01-team/TEAM_SPEC_기획자.md`
+- **디자인 팀 (Design)**: `01-team/TEAM_SPEC_디자이너.md`
+- **단일 기능 개발 팀 (Feature Dev)**: `01-team/TEAM_SPEC_개발자.md`
+- **콘텐츠 및 운세 데이터 팀 (Content)**: `01-team/TEAM_SPEC_콘텐츠.md`
 
 ---
-
-## 🔍 How to Use This Documentation
-
-### For New Team Members
-1. Read [Project Overview](./00-overview/README.md)
-2. Go to your role-specific guide in `/01-team`
-3. Follow the onboarding checklist
-4. Explore technical docs as needed
-
-### For Leadership
-- **Weekly**: Check [CEO Dashboard](./01-team/c-level/ceo-dashboard.md) for key metrics
-- **Monthly**: Review [Roadmap](./00-overview/roadmap.md) and strategy docs
-- **Quarterly**: Use [IR materials](./05-external/investors/) for investor updates
-
-### For Developers
-- **Day 1**: [Onboarding Guide](./01-team/engineering/onboarding.md)
-- **Daily**: [API Reference](./02-technical/api/)
-- **When Stuck**: [Troubleshooting](./02-technical/troubleshooting/)
-
-### For External Stakeholders
-- **Investors**: [Executive Summary](./05-external/investors/executive-summary.md)
-- **Partners**: [Partnership Overview](./05-external/partners/partnership-overview.md)
-- **Press**: [Press Kit](./05-external/press/press-kit.md)
-
----
-
-## 📝 Document Standards
-
-All documents in this repository follow these standards:
-
-### Frontmatter
-```yaml
----
-title: Document Title
-role: [ceo|cto|developer|pm|designer|qa|marketing|cs]
-audience: [executive|technical|business|external]
-lastUpdated: YYYY-MM-DD
-status: [draft|review|approved]
----
-```
-
-### Structure
-1. **Summary** (3 sentences max)
-2. **Main Content** (organized with headers)
-3. **Related Documents** (links to related docs)
-4. **Changelog** (for important updates)
-
----
-
-## 🔄 Keeping Docs Up-to-Date
-
-| Document Type | Update Frequency | Owner |
-|---------------|------------------|-------|
-| Technical Specs | After each release | CTO/Tech Lead |
-| Business Strategy | Quarterly | CEO/PM |
-| Processes | As needed | Operations Manager |
-| API Docs | With each API change | Backend Team |
-
----
-
-## 🤝 Contributing
-
-1. Create a new document using [templates](./06-resources/templates/)
-2. Follow the document standards above
-3. Submit for review (if applicable)
-4. Update the relevant index file
-
----
-
-## 📞 Need Help?
-
-- **Technical Questions**: [#dev-support](https://slack.com) or [CTO](./01-team/c-level/cto-technical-strategy.md)
-- **Business Questions**: [#product](https://slack.com) or [CEO](./01-team/c-level/ceo-dashboard.md)
-- **Document Issues**: Create an issue in GitHub
-
----
-
-**Last Updated**: 2026-01-31  
-**Maintained by**: Secret Paws Team  
-**Version**: 1.0.0
+> ⚠️ **에이전트 행동 강령**: 새로운 모듈 개발 전 반드시 이 Index를 읽고 관련 문서를 `grep_search` 또는 `view_file`로 확인한 후, 설계 동기화를 거쳐 작업을 시작하십시오.
