@@ -24,17 +24,39 @@ const nextConfig = {
   // 압축 최적화
   compress: true,
 
-  // 실험적 기능: 과금 절감
+  // 실험적 기능
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
 
-  // 헤더 최적화: 캐싱 강화
+  // 보안 헤더 + 캐싱 최적화
   async headers() {
     return [
       {
+        // 모든 페이지에 보안 헤더 적용
         source: '/:path*',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+        ],
+      },
+      {
+        // 정적 에셋만 장기 캐싱
+        source: '/_next/static/:path*',
         headers: [
           {
             key: 'Cache-Control',
@@ -43,11 +65,12 @@ const nextConfig = {
         ],
       },
       {
+        // API는 캐시 금지
         source: '/api/:path*',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, s-maxage=60, stale-while-revalidate=300',
+            value: 'no-store, no-cache, must-revalidate',
           },
         ],
       },

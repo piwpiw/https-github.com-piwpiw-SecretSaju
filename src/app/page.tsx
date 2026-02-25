@@ -7,12 +7,15 @@ import LoadingGlitch from "@/components/LoadingGlitch";
 import ResultCard from "@/components/ResultCard";
 import { calculateSaju, getPillarNameKo } from "@/lib/saju";
 import { getArchetypeByCode } from "@/lib/archetypes";
+import JellyShopModal from "@/components/shop/JellyShopModal";
 
 type FlowState = "input" | "loading" | "result";
 
 export default function HomePage() {
   const [flowState, setFlowState] = useState<FlowState>("input");
   const [sajuData, setSajuData] = useState<ReturnType<typeof calculateSaju> | null>(null);
+  const [showShop, setShowShop] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const handleBirthSubmit = (data: { year: number; month: number; day: number }) => {
     setFlowState("loading");
@@ -27,7 +30,12 @@ export default function HomePage() {
   };
 
   const handleUnlockClick = () => {
-    alert("💳 결제 기능은 Phase 4에서 구현됩니다!\n지금은 테스트 모드입니다.");
+    setShowShop(true);
+  };
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
   };
 
   const handleRestart = () => {
@@ -130,14 +138,66 @@ export default function HomePage() {
                 나는 {archetype.animal_name}래... {archetype.displaySecretPreview} ㅋㅋㅋ
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <button className="px-6 py-3 bg-yellow-500/20 border border-yellow-400/30 rounded-xl hover:bg-yellow-500/30 transition-all">
+                <button
+                  onClick={() => {
+                    const w = window as any;
+                    if (w.Kakao && w.Kakao.Share) {
+                      w.Kakao.Share.sendDefault({
+                        objectType: 'feed',
+                        content: {
+                          title: `나의 이중생활: ${archetype.animal_name}`,
+                          description: `${archetype.displaySecretPreview} — 너도 해볼래?`,
+                          imageUrl: `${window.location.origin}/og-image.png`,
+                          link: {
+                            mobileWebUrl: window.location.origin,
+                            webUrl: window.location.origin,
+                          },
+                        },
+                        buttons: [
+                          {
+                            title: '나도 해보기',
+                            link: {
+                              mobileWebUrl: window.location.origin,
+                              webUrl: window.location.origin,
+                            },
+                          },
+                        ],
+                      });
+                    } else {
+                      showToast('카카오 SDK를 불러오는 중입니다...');
+                    }
+                  }}
+                  className="px-6 py-3 bg-yellow-500/20 border border-yellow-400/30 rounded-xl hover:bg-yellow-500/30 hover:scale-105 transition-all"
+                >
                   💬 카카오톡 공유
                 </button>
-                <button className="px-6 py-3 bg-pink-500/20 border border-pink-400/30 rounded-xl hover:bg-pink-500/30 transition-all">
-                  📷 인스타 스토리
+                <button
+                  onClick={() => {
+                    const shareText = `나의 이중생활 결과: ${archetype.animal_name} — ${archetype.displaySecretPreview} 😹`;
+                    const shareUrl = window.location.origin;
+                    window.open(
+                      `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
+                      '_blank',
+                      'width=550,height=420'
+                    );
+                  }}
+                  className="px-6 py-3 bg-cyan-500/20 border border-cyan-400/30 rounded-xl hover:bg-cyan-500/30 hover:scale-105 transition-all"
+                >
+                  � 트위터 공유
                 </button>
-                <button className="px-6 py-3 bg-cyan-500/20 border border-cyan-400/30 rounded-xl hover:bg-cyan-500/30 transition-all">
-                  🐦 트위터 공유
+                <button
+                  onClick={async () => {
+                    const shareText = `🐾 멍냥의 이중생활 결과: ${archetype.animal_name}\n${archetype.displaySecretPreview}\n\n👉 ${window.location.origin}`;
+                    try {
+                      await navigator.clipboard.writeText(shareText);
+                      showToast('📋 텍스트가 복사되었어요! 인스타 스토리에 붙여넣기 하세요');
+                    } catch {
+                      showToast('복사 실패 — 브라우저 설정을 확인해주세요');
+                    }
+                  }}
+                  className="px-6 py-3 bg-pink-500/20 border border-pink-400/30 rounded-xl hover:bg-pink-500/30 hover:scale-105 transition-all"
+                >
+                  � 인스타 스토리
                 </button>
               </div>
 
@@ -163,6 +223,28 @@ export default function HomePage() {
           </motion.div>
         )}
       </div>
+
+      {/* Jelly Shop Modal */}
+      <JellyShopModal
+        isOpen={showShop}
+        onClose={() => setShowShop(false)}
+        onPurchaseSuccess={(jellies) => {
+          setShowShop(false);
+          showToast(`🎉 젤리 ${jellies}개가 충전되었습니다!`);
+        }}
+      />
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 50 }}
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 bg-slate-800/95 backdrop-blur-lg border border-white/20 rounded-2xl shadow-2xl text-white text-sm font-medium"
+        >
+          {toastMessage}
+        </motion.div>
+      )}
 
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">

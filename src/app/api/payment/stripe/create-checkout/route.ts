@@ -4,9 +4,11 @@ import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api-auth';
 import { APP_CONFIG } from '@/config';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-12-18.acacia',
-});
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error('STRIPE_SECRET_KEY is not configured');
+  return new Stripe(key, { apiVersion: '2026-01-28.clover' });
+}
 
 const packages = {
   TRIAL: { jellies: 1, bonus: 0, amount: 990, name: '체험팩 - 젤리 1개' },
@@ -30,7 +32,7 @@ export async function POST(req: NextRequest) {
 
     const selectedPackage = packages[package_type as keyof typeof packages];
     const authResult = await getAuthenticatedUser(req);
-    
+
     if (!authResult.user) {
       return authResult.error || NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -48,7 +50,7 @@ export async function POST(req: NextRequest) {
       metadata: { tierId, provider: 'stripe' },
     });
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [{
         price_data: {

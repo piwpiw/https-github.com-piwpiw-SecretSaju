@@ -3,7 +3,9 @@
   "devCommand": "npm run dev",
   "installCommand": "npm ci --prefer-offline --no-audit",
   "framework": "nextjs",
-  "regions": ["icn1"],
+  "regions": [
+    "icn1"
+  ],
   "env": {
     "NODE_ENV": "production"
   },
@@ -18,10 +20,6 @@
       "source": "/api/(.*)",
       "headers": [
         {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
           "key": "Access-Control-Allow-Methods",
           "value": "GET, POST, PUT, DELETE, OPTIONS"
         },
@@ -31,7 +29,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, s-maxage=60, stale-while-revalidate=300"
+          "value": "no-store, no-cache, must-revalidate"
         }
       ]
     },

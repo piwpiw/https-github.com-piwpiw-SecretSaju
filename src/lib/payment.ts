@@ -1,6 +1,12 @@
 /**
- * 결제 훅 (Toss Payments Widget Mode 연동 준비)
- * Phase 4: 토스 페이먼츠 SDK 연동 시 이 모듈에서 위젯 호출
+ * Payment Types & Constants
+ * 
+ * 실제 결제 플로우는 JellyShopModal → /api/payment/initialize → Toss SDK 순서로 처리됩니다.
+ * 이 모듈은 타입 및 상수 제공 용도로 유지됩니다.
+ * 
+ * @see src/components/shop/JellyShopModal.tsx (클라이언트 결제 UI)
+ * @see src/app/api/payment/initialize/route.ts (서버 결제 초기화)
+ * @see src/app/api/payment/verify/route.ts (서버 결제 검증)
  */
 
 export type PaymentRequest = {
@@ -19,19 +25,9 @@ export type PaymentResult = {
   error?: string;
 };
 
-/**
- * 결제 요청 (스텁 - 실제 연동 시 Toss Widget 호출)
- */
-export async function requestPayment(req: PaymentRequest): Promise<PaymentResult> {
-  // TODO: @tosspayments/payment-sdk 또는 위젯 스크립트 로드 후 호출
-  // 예: window.TossPayments.requestPayment('카드', { ... })
-  if (typeof window === "undefined") {
-    return { success: false, error: "Client only" };
-  }
-  return {
-    success: false,
-    error: "토스 페이먼츠 연동 준비 중. Phase 4에서 적용됩니다.",
-  };
-}
+/** 섹션 잠금해제 가격 (젤리 단위) */
+export const UNLOCK_PRICE_JELLY = 1;
 
-export const UNLOCK_PRICE = 300;
+/** 프리미엄 운세 가격 (젤리 단위) */
+export const PREMIUM_FORTUNE_PRICE_JELLY = 3;
+

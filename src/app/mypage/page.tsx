@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useWallet } from '@/components/WalletProvider';
 import { getUserFromCookie, clearUserSession, isLoggedIn } from '@/lib/kakao-auth';
 import KakaoLoginButton from '@/components/KakaoLoginButton';
-import { User, Gift, MessageSquare, LogOut, History } from 'lucide-react';
+import JellyShopModal from '@/components/shop/JellyShopModal';
+import { User, Gift, MessageSquare, LogOut, History, ShoppingBag, FileText, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -21,6 +22,7 @@ export default function MyPage() {
     const { churu, nyang, addChuru } = useWallet();
     const [user, setUser] = useState<UserData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [showShop, setShowShop] = useState(false);
 
     useEffect(() => {
         // Check authentication status
@@ -30,9 +32,7 @@ export default function MyPage() {
     }, []);
 
     const handleCharge = () => {
-        // Mock charging
-        addChuru(100);
-        alert('100츄르가 충전되었습니다!');
+        setShowShop(true);
     };
 
     const handleLogout = () => {
@@ -42,6 +42,7 @@ export default function MyPage() {
     };
 
     const menuItems = [
+        { icon: ShoppingBag, label: '젤리 충전소', href: '#', onClick: () => setShowShop(true) },
         { icon: History, label: '사용내역', href: '/usage-history' },
         { icon: Gift, label: '선물하기', href: '/gift' },
         { icon: MessageSquare, label: '문의하기', href: '/inquiry' },
@@ -91,7 +92,7 @@ export default function MyPage() {
         <main className="min-h-screen bg-background">
             <div className="max-w-2xl mx-auto">
                 {/* Header */}
-                <div className="bg-green-600 text-white px-4 py-6">
+                <div className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-6">
                     <h1 className="text-xl font-bold mb-1">마이페이지</h1>
                 </div>
 
@@ -118,7 +119,11 @@ export default function MyPage() {
                 {/* Wallet Cards */}
                 <div className="p-4 space-y-4">
                     {/* Churu Card */}
-                    <div className="glass rounded-2xl p-6">
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="glass rounded-2xl p-6"
+                    >
                         <div className="flex items-center gap-2 mb-4">
                             <span className="text-2xl">🐟</span>
                             <h2 className="font-display text-lg text-foreground">내 츄르</h2>
@@ -129,14 +134,19 @@ export default function MyPage() {
                         )}
                         <button
                             onClick={handleCharge}
-                            className="w-full py-3 rounded-xl bg-yellow-400 text-black font-bold hover:bg-yellow-500"
+                            className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-bold hover:from-yellow-500 hover:to-amber-600 transition-all hover:scale-[1.02] shadow-lg"
                         >
-                            츄르 충전하기
+                            💎 젤리 충전하기
                         </button>
-                    </div>
+                    </motion.div>
 
                     {/* Nyang Card */}
-                    <div className="glass rounded-2xl p-6">
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="glass rounded-2xl p-6"
+                    >
                         <div className="flex items-center gap-2 mb-4">
                             <span className="text-2xl">🐾</span>
                             <h2 className="font-display text-lg text-foreground">내 냥</h2>
@@ -145,10 +155,10 @@ export default function MyPage() {
                         <p className="text-xs text-zinc-500 mb-4">
                             냥은 <span className="text-secondary">오뚜기 운세 프리미엄</span>에 사용할 수 있어요!
                         </p>
-                        <button className="w-full py-3 rounded-xl bg-pink-500 text-white font-bold hover:bg-pink-600">
+                        <button className="w-full py-3 rounded-xl bg-pink-500 text-white font-bold hover:bg-pink-600 transition-all hover:scale-[1.02]">
                             냥을 츄르로 바꾸기
                         </button>
-                    </div>
+                    </motion.div>
                 </div>
 
                 {/* Menu */}
@@ -169,11 +179,29 @@ export default function MyPage() {
 
                 {/* Footer Links */}
                 <div className="px-4 py-8 flex justify-center gap-4 text-sm text-zinc-500">
-                    <button className="hover:text-foreground">회사소개</button>
-                    <button className="hover:text-foreground">이용약관</button>
-                    <button className="hover:text-foreground">개인정보 처리방침</button>
+                    <Link href="/terms" className="hover:text-foreground transition-colors flex items-center gap-1">
+                        <FileText className="w-3 h-3" />
+                        이용약관
+                    </Link>
+                    <Link href="/privacy" className="hover:text-foreground transition-colors flex items-center gap-1">
+                        <Shield className="w-3 h-3" />
+                        개인정보 처리방침
+                    </Link>
+                    <Link href="/refund" className="hover:text-foreground transition-colors">
+                        환불정책
+                    </Link>
                 </div>
             </div>
+
+            {/* Jelly Shop Modal */}
+            <JellyShopModal
+                isOpen={showShop}
+                onClose={() => setShowShop(false)}
+                onPurchaseSuccess={(jellies) => {
+                    setShowShop(false);
+                }}
+            />
         </main>
     );
 }
+

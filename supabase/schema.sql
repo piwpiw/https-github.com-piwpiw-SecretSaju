@@ -38,6 +38,25 @@ CREATE TABLE saju_profiles (
 );
 
 -- ============================================
+-- 주문 관리 (결제)
+-- ============================================
+
+-- 결제 주문 내역
+CREATE TABLE orders (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  order_id TEXT UNIQUE NOT NULL,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  package_type TEXT NOT NULL CHECK (package_type IN ('TRIAL', 'SMART', 'PRO')),
+  amount INTEGER NOT NULL CHECK (amount > 0),
+  jellies INTEGER NOT NULL CHECK (jellies > 0),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'failed', 'refunded')),
+  payment_key TEXT,
+  metadata JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================
 -- 젤리 시스템 (결제 & 보상)
 -- ============================================
 
@@ -143,6 +162,9 @@ CREATE INDEX idx_rewards_user ON rewards(user_id);
 CREATE INDEX idx_rewards_type ON rewards(reward_type);
 CREATE INDEX idx_inquiries_user ON inquiries(user_id);
 CREATE INDEX idx_inquiries_status ON inquiries(status);
+CREATE INDEX idx_orders_user ON orders(user_id);
+CREATE INDEX idx_orders_order_id ON orders(order_id);
+CREATE INDEX idx_orders_status ON orders(status);
 
 -- ============================================
 -- 트리거 (자동화)
@@ -242,6 +264,12 @@ CREATE POLICY "Users can view own rewards" ON rewards
 -- Inquiries: 자기 문의만 CRUD
 CREATE POLICY "Users can manage own inquiries" ON inquiries
   FOR ALL USING (auth.uid() = user_id);
+
+-- Orders: RLS 활성화 및 정책
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own orders" ON orders
+  FOR SELECT USING (auth.uid() = user_id);
 
 -- ============================================
 -- 초기 데이터 (선택 사항)

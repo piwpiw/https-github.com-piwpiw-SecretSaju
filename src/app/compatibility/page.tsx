@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { calculateHighPrecisionSaju } from '@/core/api/saju-engine';
 import { analyzeRelationship } from '@/lib/compatibility';
 import { validateBirthInput } from '@/lib/validation';
 import { getProfiles, SajuProfile } from '@/lib/storage';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Heart, Share2, Copy } from 'lucide-react';
 
 export default function CompatibilityPage() {
   const [profiles, setProfiles] = useState<SajuProfile[]>([]);
@@ -68,11 +68,13 @@ export default function CompatibilityPage() {
   const selectedPersonB = profiles.find(p => p.id === personBId);
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="bg-green-600 text-white px-4 py-6">
-          <h1 className="text-xl font-bold text-center">새로운 궁합 추가하기</h1>
+        <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 text-white px-4 py-8 text-center">
+          <div className="text-3xl mb-2">💕</div>
+          <h1 className="text-2xl font-bold">새로운 궁합 보기</h1>
+          <p className="text-green-100/80 text-sm mt-1">두 사람의 운명적 케미를 확인하세요</p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-4 space-y-6">
@@ -217,27 +219,83 @@ export default function CompatibilityPage() {
           <button
             type="submit"
             disabled={loading || !personAId || !personBId}
-            className="w-full py-4 rounded-xl bg-yellow-400 text-black font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-500"
+            className="w-full py-4 rounded-xl bg-gradient-to-r from-green-400 to-emerald-500 text-black font-bold hover:from-green-500 hover:to-emerald-600 transition-all hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center justify-center gap-2"
           >
-            {loading ? '궁합 보는 중...' : '궁합 추가하기'}
+            <Heart className={`w-5 h-5 ${loading ? 'animate-pulse' : ''}`} />
+            {loading ? '궁합 분석 중...' : '궁합 보기'}
           </button>
         </form>
 
         {/* Result */}
-        {result && (
-          <motion.div
-            className="mt-8 mx-4 glass rounded-2xl p-6 text-center"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <p className="text-zinc-400 text-sm mb-2">
-              {result.pillarA} · {result.pillarB}
-            </p>
-            <p className="font-display text-5xl text-primary mb-2">{result.score}</p>
-            <p className="text-foreground font-medium mb-2">점</p>
-            <p className="text-zinc-300 text-sm">{result.message}</p>
-          </motion.div>
-        )}
+        <AnimatePresence>
+          {result && (
+            <motion.div
+              className="mt-6 mx-4 mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              {/* Score Card */}
+              <div className="bg-gradient-to-br from-green-900/50 to-emerald-900/30 border border-green-400/20 rounded-2xl p-8 text-center mb-4">
+                <p className="text-slate-400 text-sm mb-4">
+                  {result.pillarA} × {result.pillarB}
+                </p>
+                <div className="relative inline-flex items-center justify-center w-36 h-36 mb-4">
+                  <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="8" />
+                    <motion.circle
+                      cx="50" cy="50" r="42" fill="none"
+                      stroke="url(#compat-grad)" strokeWidth="8" strokeLinecap="round"
+                      strokeDasharray={`${2 * Math.PI * 42}`}
+                      initial={{ strokeDashoffset: 2 * Math.PI * 42 }}
+                      animate={{ strokeDashoffset: 2 * Math.PI * 42 * (1 - result.score / 100) }}
+                      transition={{ duration: 1.5, ease: 'easeOut' }}
+                    />
+                    <defs>
+                      <linearGradient id="compat-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#4ade80" />
+                        <stop offset="100%" stopColor="#06b6d4" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div>
+                    <p className="text-5xl font-bold text-white">{result.score}</p>
+                    <p className="text-slate-400 text-xs">/ 100점</p>
+                  </div>
+                </div>
+                <p className="text-white font-bold text-lg mb-2">{result.message}</p>
+              </div>
+
+              {/* Share */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    const w = window as any;
+                    if (w.Kakao?.Share) {
+                      w.Kakao.Share.sendDefault({
+                        objectType: 'feed',
+                        content: {
+                          title: `우리 궁합 ${result.score}점!`,
+                          description: result.message,
+                          imageUrl: `${window.location.origin}/og-image.png`,
+                          link: { mobileWebUrl: window.location.origin, webUrl: window.location.origin },
+                        },
+                      });
+                    }
+                  }}
+                  className="flex-1 py-3 rounded-xl bg-yellow-400 text-black font-bold hover:bg-yellow-500 transition-all flex items-center justify-center gap-2 text-sm"
+                >
+                  💬 카카오로 공유
+                </button>
+                <button
+                  onClick={() => navigator.clipboard.writeText(`우리 궁합 ${result.score}점! ${result.message} — ${window.location.origin}/compatibility`)}
+                  className="flex-1 py-3 rounded-xl bg-white/10 text-white font-medium hover:bg-white/20 transition-all flex items-center justify-center gap-2 text-sm"
+                >
+                  <Copy className="w-4 h-4" /> 결과 복사
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </main>
   );

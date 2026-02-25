@@ -205,6 +205,36 @@ export type Database = {
           admin_response?: string | null;
         };
       };
+      orders: {
+        Row: {
+          id: string;
+          order_id: string;
+          user_id: string;
+          package_type: 'TRIAL' | 'SMART' | 'PRO';
+          amount: number;
+          jellies: number;
+          status: 'pending' | 'completed' | 'failed' | 'refunded';
+          payment_key: string | null;
+          metadata: Record<string, any>;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          order_id: string;
+          user_id: string;
+          package_type: 'TRIAL' | 'SMART' | 'PRO';
+          amount: number;
+          jellies: number;
+          status?: 'pending' | 'completed' | 'failed' | 'refunded';
+          payment_key?: string | null;
+          metadata?: Record<string, any>;
+        };
+        Update: {
+          status?: 'pending' | 'completed' | 'failed' | 'refunded';
+          payment_key?: string | null;
+          updated_at?: string;
+        };
+      };
     };
   };
 };

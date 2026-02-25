@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, TrendingUp } from 'lucide-react';
+import { X, Sparkles, TrendingUp, CreditCard, Wallet, Building2, Smartphone } from 'lucide-react';
 import { useState } from 'react';
 import {
     PRICING_TIERS,
@@ -28,6 +28,15 @@ export default function JellyShopModal({
     );
     const [isPurchasing, setIsPurchasing] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    type TossPaymentMethod = '카드' | '계좌이체' | '토스페이' | '휴대폰';
+    const [paymentMethod, setPaymentMethod] = useState<TossPaymentMethod>('카드');
+
+    const PAYMENT_METHODS: { id: TossPaymentMethod; label: string; icon: any; color: string; desc: string }[] = [
+        { id: '카드', label: '카드결제', icon: CreditCard, color: 'from-blue-500 to-indigo-500', desc: '신용/체크/카카오페이' },
+        { id: '계좌이체', label: '계좌이체', icon: Building2, color: 'from-green-500 to-emerald-500', desc: '은행 계좌 직접 이체' },
+        { id: '토스페이', label: '토스페이', icon: Smartphone, color: 'from-blue-400 to-cyan-400', desc: '토스 앱 간편결제' },
+        { id: '휴대폰', label: '휴대폰 결제', icon: Wallet, color: 'from-purple-500 to-pink-500', desc: '통신사 청구' },
+    ];
 
     const handlePurchase = async (tier: PricingTier) => {
         setIsPurchasing(true);
@@ -53,9 +62,9 @@ export default function JellyShopModal({
 
             const tossPayments = await loadTossPayments(PAYMENT_CONFIG.CLIENT_KEY);
 
-            // 3. Request Payment
+            // 3. Request Payment (사용자가 선택한 결제 수단 적용)
             // Note: This will redirect the page to Toss
-            await tossPayments.requestPayment('카드', {
+            await tossPayments.requestPayment(paymentMethod, {
                 amount: data.amount,
                 orderId: data.orderId,
                 orderName: data.orderName,
@@ -201,21 +210,64 @@ export default function JellyShopModal({
                                 })}
                             </div>
 
+                            {/* Payment Method Selection */}
+                            <div className="px-6 pb-4">
+                                <h3 className="text-sm font-semibold text-zinc-400 mb-3">결제 수단 선택</h3>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {PAYMENT_METHODS.map((method) => {
+                                        const isActive = paymentMethod === method.id;
+                                        const Icon = method.icon;
+                                        return (
+                                            <button
+                                                key={method.id}
+                                                onClick={() => setPaymentMethod(method.id)}
+                                                className={`
+                                                    flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left
+                                                    ${isActive
+                                                        ? 'border-yellow-400 bg-yellow-400/10 shadow-md'
+                                                        : 'border-white/10 bg-white/5 hover:border-white/20'
+                                                    }
+                                                `}
+                                            >
+                                                <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${method.color} flex items-center justify-center flex-shrink-0`}>
+                                                    <Icon className="w-5 h-5 text-white" />
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <p className={`text-sm font-bold ${isActive ? 'text-yellow-400' : 'text-foreground'}`}>
+                                                        {method.label}
+                                                    </p>
+                                                    <p className="text-xs text-zinc-500 truncate">{method.desc}</p>
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
                             {/* Purchase Button */}
-                            <div className="p-6 pt-0">
+                            <div className="p-6 pt-2">
                                 <button
                                     onClick={() => {
                                         const tier = PRICING_TIERS.find((t) => t.id === selectedTier);
                                         if (tier) handlePurchase(tier);
                                     }}
                                     disabled={isPurchasing || !selectedTier}
-                                    className="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-bold text-lg hover:from-yellow-500 hover:to-amber-600 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                                    className="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-bold text-lg hover:from-yellow-500 hover:to-amber-600 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-[1.01]"
                                 >
-                                    {isPurchasing ? '처리 중...' : '충전하기'}
+                                    {isPurchasing ? (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
+                                                <Sparkles className="w-5 h-5" />
+                                            </motion.div>
+                                            결제 진행 중...
+                                        </span>
+                                    ) : (
+                                        `${PAYMENT_METHODS.find(m => m.id === paymentMethod)?.label || '카드'}로 충전하기`
+                                    )}
                                 </button>
 
                                 <p className="text-center text-xs text-zinc-500 mt-3">
-                                    💳 안전한 결제 시스템으로 보호됩니다
+                                    🔒 토스페이먼츠 보안 결제 · 개인정보 암호화
                                 </p>
                             </div>
 
