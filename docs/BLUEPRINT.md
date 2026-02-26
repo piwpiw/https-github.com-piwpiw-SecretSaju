@@ -19,6 +19,7 @@
 | **8** | **런칭 준비** | 404/500/에러 바운더리·로깅 | `error.tsx`, `not-found.tsx`, 로그 포맷 |
 | **9** | **Content DB** | Supabase 콘텐츠 테이블·마이그레이션 | animal_archetypes 보강, 음식/제품 DB화 |
 | **10** | **AI 연동** | 콘텐츠 다듬기·개인화 문구 | OpenAI 연동, 연령/성별 맞춤 문구 생성 |
+| **11** | **무인 자동화** | n8n Webhook 연동 & Zero-Shot Fix | CRM, 마케팅 자동화, CI/CD 단일 픽스 체계 확립 |
 
 ---
 
