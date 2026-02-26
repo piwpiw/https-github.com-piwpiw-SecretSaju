@@ -146,6 +146,24 @@ export async function POST(req: NextRequest) {
       totalJellies += 1; // Add bonus to return value
     }
 
+    // UPDATE REAL JELLY WALLET BALANCE
+    const { data: wallet } = await supabase
+      .from('jelly_wallets')
+      .select('balance')
+      .eq('user_id', userId)
+      .single();
+
+    if (wallet) {
+      await supabase
+        .from('jelly_wallets')
+        .update({ balance: wallet.balance + totalJellies })
+        .eq('user_id', userId);
+    } else {
+      await supabase
+        .from('jelly_wallets')
+        .insert({ user_id: userId, balance: totalJellies });
+    }
+
     return NextResponse.json({
       success: true,
       jellies_credited: totalJellies,
