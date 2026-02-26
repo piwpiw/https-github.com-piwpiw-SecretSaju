@@ -1,0 +1,16 @@
+# 🤖 COST CONTROL & MAX LOOP RULES 🤖
+
+1. **MAX_TURNS & MAX_ITERATIONS (루프 제한)**
+   - No infinite "test -> fix -> test" loops.
+   - Limit bug fixing iterations to 2 turns max. Do it right or stop.
+   - Do NOT try to test every single UI interaction; run exactly one `npm run qa` script instead of scattered individual file changes if you are doing a sweeping change.
+
+2. **MIN_CONTEXT (큰 파일 읽기 금지)**
+   - DO NOT read large or entire files without line number limits.
+   - ALWAYS use `StartLine` and `EndLine` (e.g., N-10 to N+10 from grep search).
+   - Use `diff` or `grep` output to find precisely what to rewrite.
+
+3. **NO SUMMARIES (요약 금지)**
+   - Do NOT generate full document summaries.
+   - Return one-sentence results highlighting the core fix.
+   - Do NOT rewrite or overwrite entire markdown files unnecessarily.
