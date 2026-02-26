@@ -1,0 +1,45 @@
+name: AutoPilot CI
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate-and-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Build and QA
+        run: npm run qa
+        
+      - name: Automerge
+        if: success() && startsWith(github.head_ref, 'auto/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --squash --auto "${{ github.event.pull_request.number }}"
+
+      - name: Report Failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "❌ AutoPilot CI failed during `npm run qa`. Please inspect the Actions tab."
+            })
