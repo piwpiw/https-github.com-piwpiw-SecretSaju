@@ -4,7 +4,7 @@ import { getSupabaseAdmin } from '@/lib/supabase';
 import { getKakaoUser } from '@/lib/kakao-auth';
 
 export type AuthResult =
-    | { user: { id: string; kakaoId: number }; error: null }
+    | { user: { id: string; kakaoId: number; email?: string | null }; error: null }
     | { user: null; error: NextResponse };
 
 /**
@@ -40,21 +40,41 @@ export async function getAuthenticatedUser(request: NextRequest): Promise<AuthRe
         };
     }
 
+    // [Token Diet] Zero-Waste UPSERT: Create user if not exists, and return ID in one DB call.
     const { data: user, error: userError } = await supabase
         .from('users')
+        .upsert({
+            kakao_id: kakaoUser.id,
+            email: kakaoUser.kakao_account?.email || null,
+            name: kakaoUser.kakao_account?.profile?.nickname || '익명 동물',
+            profile_image_url: kakaoUser.kakao_account?.profile?.profile_image_url || null,
+            last_login_at: new Date().toISOString(),
+        }, { onConflict: 'kakao_id' })
         .select('id')
-        .eq('kakao_id', kakaoUser.id)
         .single();
 
     if (userError || !user) {
+        console.error('[API-AUTH] User UPSERT Failed:', userError);
         return {
             user: null,
-            error: NextResponse.json({ error: 'User not synced', code: 'USER_NOT_FOUND' }, { status: 404 })
+            error: NextResponse.json({ error: 'User sync failed', code: 'USER_SYNC_ERROR' }, { status: 500 })
         };
     }
 
+    // Auto-create Wallet if not exists (Zero-Waste Insert)
+    const { error: walletError } = await supabase
+        .from('jelly_wallets')
+        .insert({ user_id: user.id, balance: 1000 }) // 신규 가입 축하금 1000 젤리
+        .select()
+        .single();
+
+    // Ignore wallet conflict error (already exists)
+    if (walletError && walletError.code !== '23505') {
+        console.error('[API-AUTH] Wallet Creation Failed:', walletError);
+    }
+
     return {
-        user: { id: user.id, kakaoId: kakaoUser.id },
+        user: { id: user.id, kakaoId: kakaoUser.id, email: kakaoUser.kakao_account?.email },
         error: null
     };
 }

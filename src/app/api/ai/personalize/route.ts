@@ -31,7 +31,27 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Invalid animal code' }, { status: 400 });
         }
 
-        // 4. OpenAI Generate (Mock bypass built-in)
+        // 4. Token Diet: Caching Layer to Prevent OpenAI Billing Bombs
+        const cacheHash = `${code}_${ageGroup}_${gender}_mini_v1`;
+        const supabase = await import('@/lib/supabase').then(m => m.getSupabaseAdmin());
+
+        if (supabase && !isMock) {
+            const { data: cached } = await supabase
+                .from('ai_responses')
+                .select('response_text')
+                .eq('request_hash', cacheHash)
+                .single();
+
+            if (cached?.response_text) {
+                console.log(`[AI Cache Hit] Reusing generated text for: ${cacheHash}`);
+                // 5. Future: Deduct 500 Jellies
+                // await deductJelly(user.id, 500);
+                return NextResponse.json({ success: true, text: cached.response_text, cached: true });
+            }
+        }
+
+        // 5. OpenAI Generate (Cache Miss or Mock)
+        console.log(`[AI Cache Miss] Calling OpenAI for: ${cacheHash}`);
         const aiText = await generatePersonalizedFortune(
             archetype.animal_name,
             ageGroup,
@@ -40,10 +60,21 @@ export async function POST(req: Request) {
             isMock
         );
 
-        // 5. Future: Deduct 500 Jellies
+        // 6. Save to Cache
+        if (supabase && !isMock && aiText) {
+            await supabase.from('ai_responses').upsert({
+                request_hash: cacheHash,
+                animal_code: code,
+                age_group: ageGroup,
+                gender: gender,
+                response_text: aiText
+            }, { onConflict: 'request_hash' });
+        }
+
+        // 7. Future: Deduct 500 Jellies
         // await deductJelly(user.id, 500);
 
-        return NextResponse.json({ success: true, text: aiText });
+        return NextResponse.json({ success: true, text: aiText, cached: false });
 
     } catch (error: any) {
         console.error('[API/AI] Error:', error);
