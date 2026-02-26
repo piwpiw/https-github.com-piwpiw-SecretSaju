@@ -137,6 +137,9 @@ export default function ResultCard({
   secretUnlocked = false,
   onUnlockClick,
 }: ResultCardProps) {
+  const [aiText, setAiText] = useState<string | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+
   const ageLabel = ageGroup === "10s" ? "10대" : ageGroup === "20s" ? "20대" : "30대+";
   const elementScores = getElementScores(archetype.code);
 
@@ -278,6 +281,59 @@ export default function ResultCard({
                 <span className="text-xs font-bold text-purple-400 tracking-widest uppercase">19+ 시크릿 미리보기</span>
               </div>
               <p className="text-slate-200 text-sm leading-relaxed font-medium">{archetype.displaySecretPreview}</p>
+            </div>
+
+            {/* AI Personalization Section */}
+            <div className="mt-4 p-6 bg-purple-900/20 rounded-2xl border border-purple-500/30 relative overflow-hidden group/ai">
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-purple-500/10 opacity-0 group-hover/ai:opacity-100 transition-opacity" />
+              <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-yellow-400" /> AI 맞춤 팩폭 해설
+                  </h3>
+                  <p className="text-xs text-slate-400">당신의 나이와 성별을 기반으로 가장 직설적인 해석을 제공합니다.</p>
+                </div>
+                {!aiText && (
+                  <button
+                    onClick={async () => {
+                      setIsAiLoading(true);
+                      try {
+                        const res = await fetch('/api/ai/personalize', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ code: archetype.code, ageGroup, gender: 'M' }) // Defaulted fallback
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                          setAiText(data.text);
+                        }
+                      } catch (err) {
+                        console.error(err);
+                      } finally {
+                        setIsAiLoading(false);
+                      }
+                    }}
+                    disabled={isAiLoading}
+                    className="shrink-0 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl text-white font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(219,39,119,0.3)] disabled:opacity-50"
+                  >
+                    {isAiLoading ? '분석 중...' : '맞춤 해설 보기 (300 젤리)'}
+                  </button>
+                )}
+              </div>
+
+              <AnimatePresence>
+                {aiText && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                    animate={{ height: 'auto', opacity: 1, marginTop: 16 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-4 bg-black/40 rounded-xl border border-white/10 text-sm text-slate-200 leading-relaxed font-medium">
+                      {aiText}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>

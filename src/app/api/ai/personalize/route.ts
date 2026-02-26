@@ -1,0 +1,52 @@
+import { NextResponse } from 'next/server';
+import { generatePersonalizedFortune } from '@/lib/ai';
+import { getAuthenticatedUser } from '@/lib/api-auth';
+import { getArchetypeByCode } from '@/lib/archetypes';
+
+/**
+ * [gem-backend] POST /api/ai/personalize
+ * 인증된 유저만 젤리를 소모하고 AI 텍스트 생성 API 호출 가능.
+ */
+export async function POST(req: Request) {
+    try {
+        // 1. Auth Validation (Using the gem-backend optimized pattern)
+        const { user, error } = await getAuthenticatedUser(req as any);
+        const isMock = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+
+        if (!user && !isMock) {
+            return error;
+        }
+
+        // 2. Request Parsing
+        const body = await req.json();
+        const { code, ageGroup, gender } = body;
+
+        if (!code || !ageGroup || !gender) {
+            return NextResponse.json({ error: 'Missing code, ageGroup, or gender' }, { status: 400 });
+        }
+
+        // 3. Archetype Fetching
+        const archetype = getArchetypeByCode(code, ageGroup);
+        if (!archetype) {
+            return NextResponse.json({ error: 'Invalid animal code' }, { status: 400 });
+        }
+
+        // 4. OpenAI Generate (Mock bypass built-in)
+        const aiText = await generatePersonalizedFortune(
+            archetype.animal_name,
+            ageGroup,
+            gender,
+            archetype.base_traits,
+            isMock
+        );
+
+        // 5. Future: Deduct 500 Jellies
+        // await deductJelly(user.id, 500);
+
+        return NextResponse.json({ success: true, text: aiText });
+
+    } catch (error: any) {
+        console.error('[API/AI] Error:', error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    }
+}
