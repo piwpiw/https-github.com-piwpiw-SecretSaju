@@ -1,141 +1,62 @@
-import type { Metadata } from "next";
-import { Do_Hyeon, Noto_Sans_KR } from "next/font/google";
-import { Nav } from "@/components/Nav";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { Nav } from '@/components/Nav';
+import { Footer } from '@/components/Footer';
+import { WalletProvider } from '@/components/WalletProvider';
+import { Analytics } from "@vercel/analytics/react"
 
-const notoSansKr = Noto_Sans_KR({
-  subsets: ["latin"],
-  variable: "--font-pretendard",
-  display: "swap",
-});
-
-const doHyeon = Do_Hyeon({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-do-hyeon",
-  display: "swap",
-});
+const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
-  title: {
-    template: '%s | Secret Saju',
-    default: '멍냥의 이중생활 | Secret Saju - 990 사주마미',
-  },
-  description:
-    '사회적 가면 뒤에 숨겨진 본능을 밈과 데이터로 폭로한다. 60갑자 기반 정밀 사주 계산, 궁합 분석, 개인화된 운세 제공. 너 요즘 왜 그렇게 살아?',
-  keywords: [
-    '사주',
-    '사주팔자',
-    '운세',
-    '궁합',
-    '타로',
-    '오늘의 운세',
-    '60갑자',
-    '명리학',
-    '사주 계산',
-    '무료 사주',
-    '사주 보기',
-  ],
-  authors: [{ name: 'Secret Paws Team' }],
-  creator: 'Secret Paws',
-  publisher: 'Secret Paws',
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
+  title: '사주라떼 - 멍냥의 이중생활',
+  description: '당신의 가면에 숨겨진 본능을 깨워줄 가장 트렌디한 사주 명리학',
+  themeColor: '#09090b',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1, // Prevent iOS zoom on inputs to improve UX
   },
   openGraph: {
-    type: 'website',
+    title: '사주라떼 - 당신의 진짜 모습을 만나다',
+    description: '사회적 가면 뒤에 숨겨진 나의 본능을 데이터 기반 사주 명리로 폭로합니다.',
+    url: 'https://secret-saju.vercel.app',
+    siteName: '사주라떼',
+    images: [
+      {
+        url: 'https://secret-saju.vercel.app/og-image.jpg', // Placeholder for actual OG image
+        width: 1200,
+        height: 630,
+        alt: '사주라떼 멍냥의 이중생활 결과',
+      },
+    ],
     locale: 'ko_KR',
-    url: '/',
-    title: '멍냥의 이중생활 | Secret Saju - 990 사주마미',
-    description: '사회적 가면 뒤에 숨겨진 본능을 밝혀드립니다. 60갑자 기반 정밀 사주 계산',
-    siteName: 'Secret Saju',
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: '멍냥의 이중생활 | Secret Saju',
-    description: '사회적 가면 뒤에 숨겨진 본능을 밝혀드립니다',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  verification: {
-    // Add when available
-    // google: 'verification_token',
-    // other: 'verification_token',
+    title: '사주라떼',
+    description: '가면 뒤에 숨겨진 당신의 본능은 무엇인가요?',
+    images: ['https://secret-saju.vercel.app/og-image.jpg'], // Placeholder
   },
 };
 
-
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { GlobalCompliance } from "@/components/GlobalCompliance";
-import { WalletProvider } from "@/components/WalletProvider";
-import { Footer } from "@/components/Footer";
-import GlowCursor from "@/components/ui/GlowCursor";
-import ScrollProgress from "@/components/ui/ScrollProgress";
-
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="ko">
-      <head>
-        {/* Kakao SDK */}
-        <script
-          src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
-          integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
-          crossOrigin="anonymous"
-          async
-        />
-        {/* Google Analytics 4 */}
-        {process.env.NEXT_PUBLIC_GA_ID && (
-          <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
-            />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
-                    page_path: window.location.pathname,
-                  });
-                `,
-              }}
-            />
-          </>
-        )}
-      </head>
-      <body className={`${notoSansKr.variable} ${doHyeon.variable}`}>
-        <ThemeProvider>
-          <WalletProvider>
-            <GlowCursor />
-            <ScrollProgress />
-            <div className="flex flex-col min-h-screen">
-              <Nav />
-              <div className="flex-grow flex flex-col">
-                {children}
-              </div>
-              <Footer />
-            </div>
-            <GlobalCompliance />
-          </WalletProvider>
-        </ThemeProvider>
+    <html lang="ko" className="dark">
+      <body className={`${inter.className} bg-slate-950 text-white antialiased min-h-screen flex flex-col selection:bg-purple-500/30`}>
+        <WalletProvider>
+          <Nav />
+          <div className="flex-1 w-full max-w-sm mx-auto relative content-wrapper">
+            {children}
+          </div>
+          <Footer />
+        </WalletProvider>
+        <Analytics />
       </body>
     </html>
   );

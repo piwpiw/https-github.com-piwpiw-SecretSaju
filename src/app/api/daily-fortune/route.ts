@@ -19,6 +19,9 @@ const DAILY_LINES: string[] = [
   "오늘은 돈 쓰는 걸 멈추면 이득.",
 ];
 
+export const dynamic = 'force-dynamic';
+// For future edge optimization if needed: export const runtime = 'edge';
+
 export async function GET() {
   try {
     const today = new Date();

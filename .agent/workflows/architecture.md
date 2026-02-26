@@ -1,6 +1,7 @@
 ---
 description: [SecretSaju 아키텍처 및 유지보수 가이드라인]
 ---
+// turbo-all
 
 # 🚀 SecretSaju 개발 전술 지침서 (Architecture & Maintenance)
 
