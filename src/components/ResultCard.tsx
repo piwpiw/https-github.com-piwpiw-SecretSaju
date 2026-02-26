@@ -9,6 +9,7 @@ import { useState, useRef } from "react";
 import LuxuryToast from "@/components/ui/LuxuryToast";
 import { AnimatePresence } from "framer-motion";
 import ElementPolygon from "@/components/ui/ElementPolygon";
+import { QRCodeSVG } from "qrcode.react";
 
 interface ResultCardProps {
   archetype: AnimalArchetype & {
@@ -178,17 +179,26 @@ export default function ResultCard({
     frame();
   };
 
+  const [isExporting, setIsExporting] = useState(false);
+
   const handleExportImage = async () => {
     if (!cardRef.current) return;
     try {
-      setToastMessage("이미지를 생성 중입니다...");
+      setIsExporting(true); // 워터마크 표시용 렌더링 트리거
+
+      // 상태 반영을 위한 미세 딜레이
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      setToastMessage("인스타그램 9:16 맞춤 렌더링 중...");
       setShowToast(true);
 
       const canvas = await html2canvas(cardRef.current, {
-        scale: 2,
+        scale: 3, // 초고화질
         backgroundColor: "#020617", // slate-950
         logging: false,
         useCORS: true,
+        windowWidth: 1080,
+        windowHeight: 1920,
       });
 
       const image = canvas.toDataURL("image/png", 1.0);
@@ -198,13 +208,15 @@ export default function ResultCard({
       link.click();
 
       triggerConfetti();
-      setToastMessage("갤러리에 성공적으로 저장되었습니다!");
+      setToastMessage("인스타그램 맞춤 저장 완료! 스토리에 공유해보세요 ✨");
 
       setTimeout(() => setShowToast(false), 3000);
     } catch (err) {
       console.error(err);
       setToastMessage("이미지 저장에 실패했습니다.");
       setTimeout(() => setShowToast(false), 3000);
+    } finally {
+      setIsExporting(false); // 렌더링 원복
     }
   };
 
@@ -217,34 +229,46 @@ export default function ResultCard({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-2xl mx-auto space-y-4 bg-slate-950 p-4 sm:p-6 rounded-[2.5rem]"
+        className={`w-full max-w-2xl mx-auto space-y-4 bg-slate-950 rounded-[2.5rem] relative ${isExporting ? "w-[1080px] h-[1920px] p-16 flex flex-col justify-center items-center scale-[0.3]" : "p-4 sm:p-6"
+          }`}
+        style={isExporting ? { transformOrigin: "top left" } : {}}
       >
+        {/* Export Watermark Header */}
+        {isExporting && (
+          <div className="absolute top-20 left-0 w-full text-center space-y-4">
+            <h1 className="text-4xl font-black text-white tracking-widest uppercase">Secret Paws</h1>
+            <p className="text-2xl text-slate-400">당신의 본능을 마주하세요</p>
+          </div>
+        )}
+
         {/* Main Card — Identity */}
-        <div className="relative bg-black/40 backdrop-blur-3xl rounded-3xl p-8 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden group">
+        <div className={`relative bg-black/40 backdrop-blur-3xl rounded-3xl p-8 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden group ${isExporting ? "w-[900px] mt-32" : ""}`}>
           <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-cyan-500/10 rounded-3xl opacity-50 group-hover:opacity-80 transition-opacity duration-700" />
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500" />
           <div className="relative z-10">
             {/* Header */}
             <div className="text-center mb-8">
               <motion.div
-                className="text-7xl mb-6 relative drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                className={`${isExporting ? "text-9xl mb-12" : "text-7xl mb-6"} relative drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]`}
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               >
                 🐾
               </motion.div>
-              <div className="inline-block px-3 py-1 bg-cyan-500/10 border border-cyan-400/20 rounded-full text-xs font-mono text-cyan-400 mb-3 tracking-widest shadow-inner">
+              <div className={`inline-block px-3 py-1 bg-cyan-500/10 border border-cyan-400/20 rounded-full font-mono text-cyan-400 mb-3 tracking-widest shadow-inner ${isExporting ? "text-xl px-6 py-2" : "text-xs"}`}>
                 CLASS {archetype.code}
               </div>
-              <h2 className="text-5xl font-black mb-3 bg-gradient-to-r from-pink-300 via-purple-300 to-cyan-300 bg-clip-text text-transparent drop-shadow-sm tracking-tight">
+              <h2 className={`${isExporting ? "text-7xl" : "text-5xl"} font-black mb-3 bg-gradient-to-r from-pink-300 via-purple-300 to-cyan-300 bg-clip-text text-transparent drop-shadow-sm tracking-tight`}>
                 {archetype.animal_name}
               </h2>
-              <div className="text-lg font-medium text-slate-300 uppercase tracking-widest">{pillarNameKo} 일주</div>
-              <div className="flex justify-center mt-4">
-                <div className="px-5 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-full text-xs font-bold text-white shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-                  <span className="mr-2">👤</span> {ageLabel} 프리미엄 분석
+              <div className={`${isExporting ? "text-3xl" : "text-lg"} font-medium text-slate-300 uppercase tracking-widest`}>{pillarNameKo} 일주</div>
+              {!isExporting && (
+                <div className="flex justify-center mt-4">
+                  <div className="px-5 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-full text-xs font-bold text-white shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                    <span className="mr-2">👤</span> {ageLabel} 프리미엄 분석
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -476,17 +500,59 @@ export default function ResultCard({
           <span className="inline-block px-5 py-2 bg-cyan-500/10 border border-cyan-400/20 rounded-full text-xs text-cyan-300 font-mono mb-4">
             ✨ DIGITAL ACRYLIC KEYRING · {pillarNameKo} · 60 ARCHETYPES ✨
           </span>
-
-          {/* Export Button inside the ref area so it looks good, but we can hide it during html2canvas if we wanted. Actually outside is better */}
         </div>
+
+        {/* Export Viral Watermark Footer */}
+        {isExporting && (
+          <div className="absolute bottom-12 left-0 w-full flex flex-col items-center justify-center space-y-6">
+            <div className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
+              <QRCodeSVG
+                value={`https://${process.env.NEXT_PUBLIC_BASE_URL || "secret-saju.vercel.app"}/?ref=viral_${archetype.code}`}
+                size={120}
+                bgColor={"#ffffff"}
+                fgColor={"#000000"}
+                level={"H"}
+                className="rounded-lg"
+              />
+            </div>
+            <p className="text-xl font-bold text-white bg-gradient-to-r from-pink-500 to-cyan-500 px-6 py-2 rounded-full">
+              카메라로 스캔해서 내 동물 확인하기 🐾
+            </p>
+          </div>
+        )}
       </motion.div>
-      <div className="max-w-2xl mx-auto mt-6 px-4 pb-10">
+      <div className="max-w-2xl mx-auto mt-6 px-4 pb-10 flex flex-col sm:flex-row gap-4">
         <button
           onClick={handleExportImage}
-          className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-black text-white text-lg shadow-[0_10px_30px_rgba(168,85,247,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+          className="flex-1 py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-black text-white text-lg shadow-[0_10px_30px_rgba(168,85,247,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
         >
           <Download className="w-6 h-6" />
-          분석 카드 고화질로 저장하기
+          인스타 맞춤 티켓 캡처
+        </button>
+        <button
+          onClick={async () => {
+            const shareUrl = `https://${process.env.NEXT_PUBLIC_BASE_URL || "secret-saju.vercel.app"}/?ref=viral_${archetype.code}`;
+            if (navigator.share) {
+              try {
+                await navigator.share({
+                  title: 'Secret Paws: 나의 본능 테스트',
+                  text: `나는 [${archetype.animal_name}] 팩폭을 맞았어... 너의 숨겨진 동물은 뭘까? 지금 바로 확인해봐!`,
+                  url: shareUrl,
+                });
+              } catch (err) {
+                console.error("Share failed:", err);
+              }
+            } else {
+              navigator.clipboard.writeText(shareUrl);
+              setToastMessage("공유 링크가 복사되었습니다!");
+              setShowToast(true);
+              setTimeout(() => setShowToast(false), 3000);
+            }
+          }}
+          className="flex-1 py-4 bg-white/10 backdrop-blur-md rounded-2xl font-black text-white text-lg border border-white/20 hover:bg-white/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+        >
+          <Sparkles className="w-6 h-6 text-yellow-400" />
+          친구 본능 찌르기 (공유)
         </button>
       </div>
     </>
