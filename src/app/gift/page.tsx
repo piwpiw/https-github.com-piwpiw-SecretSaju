@@ -1,305 +1,174 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Gift, Copy, Share2, ChevronLeft, Loader2, CheckCircle2, ExternalLink } from 'lucide-react';
-import Link from 'next/link';
-import { calculateSaju } from '@/lib/saju';
-import { getArchetypeByCode } from '@/lib/archetypes';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Gift, Sparkles, Send, Mail } from "lucide-react";
 
-type Step = 'input' | 'preview' | 'share';
-
+/**
+ * [gem-frontend] Glassmorphism & Micro-interaction 적용
+ * [gem-architect] 상태 분리 및 서버 연동 스코프 명확화
+ */
 export default function GiftPage() {
-  const [step, setStep] = useState<Step>('input');
-  const [year, setYear] = useState('');
-  const [month, setMonth] = useState('');
-  const [day, setDay] = useState('');
-  const [recipientName, setRecipientName] = useState('');
-  const [message, setMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [giftData, setGiftData] = useState<{
-    archetype: any;
-    giftUrl: string;
-    shortCode: string;
-  } | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [formData, setFormData] = useState({ name: "", birthDate: "", email: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const handleGenerate = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setIsSubmitting(true);
 
-    const y = parseInt(year, 10);
-    const m = parseInt(month, 10);
-    const d = parseInt(day, 10);
-
-    if (!y || !m || !d || y < 1900 || y > 2010 || m < 1 || m > 12 || d < 1 || d > 31) {
-      setError('올바른 생년월일을 입력해주세요.');
-      return;
-    }
-
-    setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-
+    // Call /api/gift/send
     try {
-      const birthDate = new Date(y, m - 1, d);
-      const saju = calculateSaju(birthDate);
-      const archetype = getArchetypeByCode(saju.code, saju.ageGroup);
-
-      // Generate a short code for sharing (client-side for now)
-      const shortCode = btoa(`${y}-${m}-${d}`).replace(/[^a-zA-Z0-9]/g, '').substring(0, 8);
-      const giftUrl = `${window.location.origin}/?gift=${shortCode}&name=${encodeURIComponent(recipientName || '친구')}`;
-
-      setGiftData({ archetype, giftUrl, shortCode });
-      setStep('preview');
-    } catch (err) {
-      setError('사주 계산 중 오류가 발생했습니다.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleCopy = async () => {
-    if (!giftData) return;
-    try {
-      await navigator.clipboard.writeText(giftData.giftUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      alert('복사 실패 — 링크를 직접 복사해주세요.');
-    }
-  };
-
-  const handleKakaoShare = () => {
-    if (!giftData) return;
-    const w = window as any;
-    if (w.Kakao?.Share) {
-      w.Kakao.Share.sendDefault({
-        objectType: 'feed',
-        content: {
-          title: `🎁 ${recipientName || '친구'}에게 사주 선물`,
-          description: `비밀 결과: ${giftData.archetype.animal_name} — 링크를 눌러 확인해봐!`,
-          imageUrl: `${window.location.origin}/og-image.png`,
-          link: {
-            mobileWebUrl: giftData.giftUrl,
-            webUrl: giftData.giftUrl,
-          },
-        },
-        buttons: [{ title: '선물 확인하기', link: { mobileWebUrl: giftData.giftUrl, webUrl: giftData.giftUrl } }],
+      const res = await fetch('/api/gift/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          targetName: formData.name,
+          targetBirthDate: formData.birthDate,
+          targetEmail: formData.email,
+        }),
       });
-    } else {
-      handleCopy();
+
+      if (!res.ok) throw new Error('API Error');
+      setSuccess(true);
+    } catch (error) {
+      console.error(error);
+      alert('발송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950">
-      <div className="max-w-lg mx-auto px-4 py-8">
+    <div className="flex flex-col items-center justify-center min-h-[85vh] px-4 py-8">
+      {/* Header */}
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="text-center mb-8 relative"
+      >
+        <div className="absolute -inset-4 bg-purple-500/20 blur-3xl -z-10 rounded-full" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 mb-4 shadow-[0_0_30px_rgba(168,85,247,0.4)]">
+          <Gift className="w-8 h-8 text-white" />
+        </div>
+        <h1 className="text-3xl font-black bg-gradient-to-r from-pink-300 via-purple-300 to-cyan-300 bg-clip-text text-transparent">
+          익명 사주 선물하기
+        </h1>
+        <p className="text-slate-400 mt-2 text-sm flex items-center justify-center gap-1.5">
+          <Sparkles className="w-4 h-4 text-yellow-400" />
+          친구의 생일로 진짜 본능을 폭로하세요
+        </p>
+      </motion.div>
+
+      {/* Form Container (Glassmorphism) */}
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 20 }}
+        className="w-full max-w-sm bg-slate-900/60 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
 
         <AnimatePresence mode="wait">
-
-          {/* Step 1: Input */}
-          {step === 'input' && (
-            <motion.div
-              key="input"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+          {!success ? (
+            <motion.form
+              key="form"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              onSubmit={handleSubmit}
+              className="space-y-5 relative z-10"
             >
-              <div className="text-center mb-8">
-                <motion.div
-                  animate={{ rotate: [0, -10, 10, -10, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
-                  className="text-6xl mb-4"
-                >
-                  🎁
-                </motion.div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-                  익명으로 선물하기
-                </h1>
-                <p className="text-slate-400 text-sm">
-                  친구의 생년월일을 입력하면<br />
-                  사주 결과 링크를 만들어 드려요 🐾
-                </p>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-slate-300 ml-1">받는 사람 이름 (또는 닉네임)</label>
+                <input
+                  required
+                  type="text"
+                  placeholder="예: 홍길동"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all font-medium"
+                />
               </div>
 
-              <form onSubmit={handleGenerate} className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 space-y-5">
-                {/* Recipient name */}
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    받는 사람 이름 <span className="text-slate-500 font-normal">(선택)</span>
-                  </label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-slate-300 ml-1">받는 사람 생년월일</label>
+                <input
+                  required
+                  type="date"
+                  value={formData.birthDate}
+                  onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
+                  className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all [color-scheme:dark]"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-slate-300 ml-1 whitespace-nowrap overflow-hidden text-ellipsis">결과지를 받을 이메일 (친구가 모르게 전달)</label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                   <input
-                    type="text"
-                    value={recipientName}
-                    onChange={(e) => setRecipientName(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 transition-colors"
-                    placeholder="예: 지연이, 오빠, 상사 ㅋ"
-                    maxLength={20}
+                    required
+                    type="email"
+                    placeholder="friend@example.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full bg-black/50 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm"
                   />
                 </div>
+              </div>
 
-                {/* Birth date */}
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">친구 생년월일</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      value={year}
-                      onChange={(e) => setYear(e.target.value)}
-                      className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 transition-colors text-center"
-                      placeholder="년도"
-                      min={1900}
-                      max={2010}
-                      required
-                    />
-                    <input
-                      type="number"
-                      value={month}
-                      onChange={(e) => setMonth(e.target.value)}
-                      className="w-20 bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 transition-colors text-center"
-                      placeholder="월"
-                      min={1}
-                      max={12}
-                      required
-                    />
-                    <input
-                      type="number"
-                      value={day}
-                      onChange={(e) => setDay(e.target.value)}
-                      className="w-20 bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 transition-colors text-center"
-                      placeholder="일"
-                      min={1}
-                      max={31}
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Gift message */}
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    선물 메시지 <span className="text-slate-500 font-normal">(선택)</span>
-                  </label>
-                  <textarea
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    rows={2}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 transition-colors resize-none text-sm"
-                    placeholder="예: 너 궁금해서 봐봤는데 ㅋㅋ 우리 궁합 어때?"
-                    maxLength={100}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full mt-2 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(219,39,119,0.4)] transition-all active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none group"
+              >
+                {isSubmitting ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                    className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
                   />
-                </div>
-
-                {error && (
-                  <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm">
-                    {error}
-                  </div>
+                ) : (
+                  <>
+                    <span>결과지 익명 발송 (300 젤리)</span>
+                    <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </>
                 )}
-
-                <button
-                  type="submit"
-                  disabled={isLoading || !year || !month || !day}
-                  className="w-full py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold hover:from-pink-600 hover:to-purple-600 transition-all hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
-                >
-                  {isLoading ? (
-                    <><Loader2 className="w-5 h-5 animate-spin" /> 사주 분석 중...</>
-                  ) : (
-                    <><Gift className="w-5 h-5" /> 선물 링크 만들기</>
-                  )}
-                </button>
-              </form>
-            </motion.div>
-          )}
-
-          {/* Step 2: Preview & Share */}
-          {step === 'preview' && giftData && (
+              </button>
+            </motion.form>
+          ) : (
             <motion.div
-              key="preview"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              key="success"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="py-10 text-center relative z-10 flex flex-col items-center"
             >
-              <div className="flex items-center gap-3 mb-6">
-                <button
-                  onClick={() => setStep('input')}
-                  className="p-2 rounded-xl hover:bg-white/10 transition-colors"
+              <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mb-6">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", damping: 15, delay: 0.2 }}
+                  className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center"
                 >
-                  <ChevronLeft className="w-5 h-5 text-slate-400" />
-                </button>
-                <h2 className="text-xl font-bold text-white">선물 준비 완료! 🎉</h2>
+                  <Send className="w-6 h-6 text-white translate-x-0.5 -translate-y-0.5" />
+                </motion.div>
               </div>
-
-              {/* Preview Card */}
-              <div className="bg-gradient-to-br from-purple-900/60 to-pink-900/40 border border-purple-400/20 rounded-2xl p-6 mb-6 text-center">
-                <p className="text-slate-400 text-sm mb-1">
-                  {recipientName || '친구'}의 사주 결과
-                </p>
-                <p className="text-4xl mb-2">{giftData.archetype.emoji || '🐾'}</p>
-                <h3 className="text-2xl font-bold text-white mb-1">{giftData.archetype.animal_name}</h3>
-                <p className="text-slate-300 text-sm mb-4">{giftData.archetype.displaySecretPreview}</p>
-                {message && (
-                  <div className="bg-white/5 rounded-xl px-4 py-3 text-slate-300 text-sm italic">
-                    &ldquo;{message}&rdquo;
-                  </div>
-                )}
-              </div>
-
-              {/* Link */}
-              <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3 mb-4">
-                <ExternalLink className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                <p className="text-slate-400 text-xs flex-1 truncate">{giftData.giftUrl}</p>
-              </div>
-
-              {/* Share buttons */}
-              <div className="space-y-3">
-                <button
-                  onClick={handleKakaoShare}
-                  className="w-full py-4 rounded-xl bg-yellow-400 text-black font-bold hover:bg-yellow-500 transition-all hover:scale-[1.01] flex items-center justify-center gap-2 shadow-lg"
-                >
-                  💬 카카오톡으로 선물하기
-                </button>
-
-                <button
-                  onClick={handleCopy}
-                  className="w-full py-4 rounded-xl bg-white/10 text-white font-bold hover:bg-white/20 transition-all hover:scale-[1.01] flex items-center justify-center gap-2"
-                >
-                  {copied ? (
-                    <><CheckCircle2 className="w-5 h-5 text-green-400" /> 복사됨!</>
-                  ) : (
-                    <><Copy className="w-5 h-5" /> 링크 복사</>
-                  )}
-                </button>
-
-                <button
-                  onClick={() => {
-                    const text = `🎁 ${recipientName || '친구'}에게 사주 선물!\n${message ? `"${message}"\n` : ''}👉 ${giftData.giftUrl}`;
-                    window.open(
-                      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
-                      '_blank',
-                      'width=550,height=420'
-                    );
-                  }}
-                  className="w-full py-3 rounded-xl bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 font-medium hover:bg-cyan-500/30 transition-all flex items-center justify-center gap-2"
-                >
-                  <Share2 className="w-4 h-4" /> 트위터에 공유
-                </button>
-              </div>
-
-              <p className="text-center text-xs text-slate-500 mt-6">
-                링크를 받은 친구는 자신의 사주 결과를 바로 확인할 수 있어요
+              <h3 className="text-xl font-bold text-white mb-2">발송 완료!</h3>
+              <p className="text-slate-400 text-sm mb-8 leading-relaxed">
+                성공적으로 사주 분석을 완료하고<br />
+                지정하신 이메일로 결과를 전송했습니다.
               </p>
-
-              <div className="mt-4 text-center">
-                <Link href="/" className="text-sm text-purple-400 hover:text-purple-300 transition-colors">
-                  나도 내 사주 보기 →
-                </Link>
-              </div>
+              <button
+                onClick={() => setSuccess(false)}
+                className="text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors px-6 py-2 rounded-full border border-purple-500/30 hover:bg-purple-500/10"
+              >
+                다른 친구에게 또 보내기
+              </button>
             </motion.div>
           )}
-
         </AnimatePresence>
-      </div>
-    </main>
+      </motion.div>
+    </div>
   );
 }

@@ -39,6 +39,11 @@ export const metadata: Metadata = {
     description: '가면 뒤에 숨겨진 당신의 본능은 무엇인가요?',
     images: ['https://secret-saju.vercel.app/og-image.jpg'], // Placeholder
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Secret Paws',
+  },
 };
 
 export default function RootLayout({
