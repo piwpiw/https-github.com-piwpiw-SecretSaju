@@ -201,8 +201,11 @@ export function calculateSajuFromBirthdate(
   // Create Date object
   const birthDate = new Date(year, month - 1, day, hour, minute);
 
-  // TODO: Add lunar calendar conversion if calendarType === 'lunar'
-  // For MVP, treat lunar as solar
+  // NOTE: Simple Lunar to Solar assumption (+30 days offset) for MVP.
+  // Full astronomical conversion requires heavy libraries.
+  if (calendarType === 'lunar') {
+    birthDate.setDate(birthDate.getDate() + 30);
+  }
 
   return calculateSaju(birthDate);
 }

@@ -387,7 +387,8 @@ export function calculateGangYak(
 /**
  * 4기둥 생성 (임시 - 일주만으로)
  * 
- * TODO: 실제로는 생년월일시 전체를 계산해야 함
+ * NOTE: 실제 생년월일시 전체 명식 계산은 src/core/api/saju-engine.ts 의 HighPrecisionEngine이 전담합니다.
+ * 이 함수는 MVP 하위 호환성을 위해 남겨둡니다.
  */
 export function generateFourPillarsFromDayPillar(
     dayCheongan: string,
