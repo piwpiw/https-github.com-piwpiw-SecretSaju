@@ -1,68 +1,37 @@
-# 💰 Cost Optimization Rules
+# 💰 Cost Optimization & Max-Loop Rules
 
-모든 에이전트 호출에 적용되는 과금 최소화 규칙.
-
----
-
-## 5대 원칙
-
-### 1. Scope Bounding (범위 제한)
-- 각 팀은 지정된 파일/디렉토리만 읽기·수정
-- 불필요한 `view_file`, `list_dir` 호출 금지
-- **첫 접근 시 `view_file_outline` 우선 사용** → 필요한 부분만 `view_file`
-
-### 2. Cache-First (캐시 우선)
-- 이미 읽은 파일은 같은 세션 내 재읽기 금지
-- 반복 패턴 질의 → 이전 결과 참조
-- 동일 구조 파일 템플릿화 → 한 번 읽고 재사용
-
-### 3. Batch Processing (일괄 처리)
-- 관련 파일 변경은 `multi_replace_file_content`로 한 번에
-- 독립적 tool call은 병렬 실행
-- 순차 의존성 있는 경우만 `waitForPreviousTools: true`
-
-### 4. Model Tier (모델 등급)
-```
-🟢 Low  : 포맷팅, 린트, 단순 텍스트 수정, 문서 업데이트
-🟡 Mid  : 컴포넌트 수정, API 변경, 테스트 작성
-🔴 High : 알고리즘 설계, 보안 검증, 아키텍처 변경
-```
-
-### 5. Incremental Context (점진적 컨텍스트)
-- 전체 파일 대신 관련 함수/클래스만 `view_code_item`
-- 변경 범위를 최소화하여 `StartLine`~`EndLine` 정밀 지정
-- 대용량 파일은 `view_file_outline` → 필요 범위만 읽기
+> [!CAUTION]
+> **과금 폭주 방지 절대 수칙**
+> 테스트 ➔ 실패 ➔ 수정 루틴이 2회를 넘어가면 즉시 멈추고 `MAX_TURNS` 도달로 간주합니다. 
+> 무한 에러 핑퐁(Hallucination loop)을 절대 허용하지 않습니다.
 
 ---
 
-| ❌ 금지 | ✅ 대안 |
-|---------|---------|
-| 전체 프로젝트 `find_by_name` | 팀 scope 내 디렉토리만 탐색 |
-| 같은 파일 반복 읽기 | 한 번 읽고 컨텍스트 유지 |
-| 파일 전체 덮어쓰기 (`Overwrite: true`) | `replace_file_content`로 부분 수정 |
-| 불필요한 빌드/테스트 전체 실행 | 변경 관련 테스트만 실행 |
-| 탐색 없이 추측성 코딩 | outline → 구조 확인 후 작업 |
-| 테스트-수정-에러 확인의 무한 반복 | 한 번에 완벽한 코드 작성 (max_iterations, max_turns 등 자체 상한 부여) |
-| 파일 전체(`StartLine`, `EndLine` 생략) 구조 파악 | `grep` 및 에러 로그 기반 최소 범위 탐색 후 수정 |
-| 코드/문서 전체 내용을 다시 요약 | 전체 요약 금지. "해결 포인트"만 1문장 요약 |
+## 1. ⚙️ Auto-Loop Breaker (루프 강제 절단)
+- **단일 검증 원칙**: 모든 테스트는 개별 실행을 금지하고, `npm run qa` 통합 스크립트 단 1회로 갈음합니다.
+- **원샷 원킬**: 에러 분석 후 수많은 파일을 건드리지 마세요. 에러 로그가 지목한 단 하나의 함수만 고칩니다.
+
+## 2. 🎯 Strict Range Read (전체 파일 읽기 금지)
+> [!WARNING]
+> `view_file` 호출 시 인자 없는 전체 파일 읽기를 수행하는 에이전트는 즉각 차단됩니다.
+
+- **탐색**: `view_file_outline` 혹은 `grep_search`를 통해 목표 위치의 라인 번호를 먼저 확보하세요.
+- **조회**: 문제가 발생한 라인 주변부 (`StartLine: N-10`, `EndLine: N+10`)만 읽어 컨텍스트를 파악합니다.
+
+## 3. 💣 Blast Radius Analysis (영향도 사전 분석)
+- 코드 수정 전, 해당 모듈을 Import 하거나 의존 중인 다른 파일이 있는지 `grep`으로 조회하세요.
+- 연쇄 에러가 발생할 곳을 미리 찾아내, `multi_replace_file_content`로 한 번의 턴(Turn)에 일괄 수정합니다.
+
+## 4. 🔇 Zero Summary (요약 및 Yapping 금지)
+- 작업 완료 후, 문서 전체 내용을 재요약하여 늘어놓지 마세요.
+- **Output Token 최소화**: "해결 포인트" 단 한 문장만 보고합니다. (예: "결제 모듈의 OS 종속성 에러를 제거했습니다.")
 
 ---
 
-## 🛑 B. 자동 루프 제한 (Auto-Loop Breaker)
-- **에러 반복 금지**: 테스트 ➔ 실패 ➔ 수정의 루틴이 2회를 넘어가면 즉시 멈추고 자체 상한선(`max_turns=2`)에 도달한 것으로 간주합니다. 무한 반복으로 인한 컨텍스트 및 토큰 비용 폭발을 물리적으로 막아야 합니다.
-- **테스트는 자체 QA 스크립트(`npm run qa`) 하나로 통합**하며 산발적 에러 테스트는 시도하지 마세요.
+## 5. Team별 비용 한도 (Cost Tier)
 
-## 🛑 C. "큰 파일 / 전체 코드" 읽기 금지 (Strict Range Read)
-- **에이전트는 절대로 `view_file` 호출 시 인자 없는 전체 파일 읽기를 수행해서는 안 됩니다.**
-- 항상 `view_file_outline`이나 에러가 난 라인 주변만(`StartLine: N-10, EndLine: N+10`) 읽어서 수정하세요.
-- **문서 전체 요약 행위 자체를 금지합니다.** 리포트를 작성할 때는 단답형, 혹은 한 문장으로 끝내세요.
-
----
-
-## Team별 Cost Tier 기준
-
-| Tier | 호출 예산(세션당) | 팀 |
-|------|-------------------|-----|
-| 🟢 Low | ~10 tool calls | T1, T5, T6, T8, T10 |
-| 🟡 Mid | ~20 tool calls | T2, T3, T7 |
-| 🔴 High | ~30 tool calls | T4, T9 |
+| Tier | 예산 (세션당 Tool Calls) | 소속 팀 |
+|------|-----------------------|---------|
+| 🟢 Low | ~10 calls | Planning, Data, Design, DevOps, Growth |
+| 🟡 Mid | ~20 calls | Frontend, Backend, QA |
+| 🔴 High | ~30 calls | Engine(Saju), Security |

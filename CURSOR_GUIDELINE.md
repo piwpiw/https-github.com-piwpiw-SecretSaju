@@ -1,36 +1,31 @@
-# Cursor 업데이트 요청용 지침
+# 🚀 Cursor / AI Coding Guidelines
 
-**이 프로젝트를 수정·확장할 때 반드시 아래 문서를 기준으로 하세요.**
+> [!IMPORTANT]
+> **Secret Paws (시크릿사쥬)** 프로젝트를 수정하거나 확장할 때 AI가 반드시 지켜야 할 최상위 행동 지침입니다.
 
-## 📁 상세 명세
+---
 
-- **[docs/MASTER_PRD.md](./docs/MASTER_PRD.md)** — 전체 PRD (v4.0), Tech Stack, DACRE, UX Flow, 구현 체크리스트, 검증·Content DB·AI
-- **[docs/BLUEPRINT.md](./docs/BLUEPRINT.md)** — 10단계 고도화 로드맵, 관리자/사용자 검증, Content DB·AI 연동
-- **[docs/ERROR_CATALOG.md](./docs/ERROR_CATALOG.md)** — 예상 오류 한 줄 체크 (E1~E30)
-- **[docs/USER_VERIFICATION.md](./docs/USER_VERIFICATION.md)** — 사용자 E2E 체크리스트
+## 🏗️ 1. Architecture Blueprint
+새 기능 추가 시, **[docs/MASTER_PRD.md](./docs/MASTER_PRD.md)** 와 **[docs/BLUEPRINT.md](./docs/BLUEPRINT.md)** 를 벗어나는 구조 변경을 절대 금지합니다.
+* 예외(Exception)와 에러는 **[docs/ERROR_CATALOG.md](./docs/ERROR_CATALOG.md)** 에 한 줄로 요약해 기록하세요.
+* 새로운 프로세스 도입 시, 단독 행동하지 말고 Representative(대표 에이전트)의 Workflow를 따릅니다.
 
-## ⚡ 최소 동작 기준 (사주아이 수준)
+## ⚡ 2. Minimum Viable Functionality (절대 유지 영역)
+아래 핵심 로직은 어떠한 리팩토링 중에도 **정상 동작**이 보장되어야 합니다.
+- `src/lib/saju.ts`: 일주 계산 / 60갑자 매핑 로직
+- `src/components/SecretPawsFlow.tsx`: 메인 깔때기 (생년월일 입력 ➔ 결과 ➔ 추천 ➔ 공유/결제)
+- DB Schema (`supabase/schema.sql`): `users`, `animal_archetypes`, `jelly_transactions` 구조 변경 주의
 
-- 생년월일·성별 입력 → **일주 기반 60동물 결과** + **추천 음식 3종** + **추천 제품 3종** 즉시 표시
-- 공유 시 Lv.2(카드 뒷면) 해금, 결제 CTA 시 Lv.3 블러 해금(스텁)
-- 메인에 **오늘의 개소리** 배너 (`/api/daily-fortune`)
+## 🤖 3. Multi-Agent Ecosystem (운영 수칙)
+> [!CAUTION]
+> 과금 폭발을 막기 위한 **극단적 효율성 시스템**이 가동 중입니다. 모든 AI는 다음을 준수하십시오.
 
-## 🚫 유지할 것
+1. **[AGENT_SYSTEM.md](./.agent/AGENT_SYSTEM.md)**: 소속 팀의 Scope 내에서만 파일 접근(Read/Write)을 혀용합니다. 대상에 맞게 디스패치하세요.
+2. **[COST_RULES.md](./.agent/COST_RULES.md)**: 반복 에러 루프, 무임승차 파일 읽기, 장황한 Summary를 물리적으로 차단합니다.
+   - 단일 원샷(`Zero-Shot Fix`) 픽스 원칙
+   - `view_file` 전체 조회 벤(Ban): 라인 `Start/End` 엄수
+   - 요약 및 대화(Yapping) 전면 금지
 
-- `src/lib/saju.ts` — 일주 계산 로직 및 `PILLAR_CODES` (60갑자)
-- `src/data/foodRecommendations.ts`, `productRecommendations.ts` — 코드별 추천 풀
-- `src/components/SecretPawsFlow.tsx` — 메인 플로우 (입력 → 결과 → 추천 → 공유 → SecretBlur)
-- `supabase/schema.sql` — users, animal_archetypes(food/product JSONB), unlock_logs
-- `src/lib/validation.ts` — 생년월일 유효성, ageGroup 화이트리스트
-- `src/app/admin/page.tsx` — 관리자 전체 검증 (20명 교차 검증용)
-
-새 기능 추가 시 **docs/MASTER_PRD.md**의 Phase 2/3 섹션과 **docs/BLUEPRINT.md** 10단계를 따르세요. 예외·에러는 **docs/ERROR_CATALOG.md** 한 줄 체크를 반영하세요.
-
-## 🤖 Multi-Agent System
-
-- **[.agent/AGENT_SYSTEM.md](./.agent/AGENT_SYSTEM.md)** — 대표 에이전트 + 10개 팀 디스패치 시스템
-- **[.agent/COST_RULES.md](./.agent/COST_RULES.md)** — 과금 최소화 5대 원칙
-- **[.agent/teams/](./.agent/teams/)** — 10개 팀 에이전트 스펙 (Planning, Frontend, Backend, Engine, Data, Design, QA, DevOps, Security, Growth)
-- **[.agent/workflows/](./.agent/workflows/)** — 디스패치 / 바이브 코딩 워크플로우
-
-작업 요청 시 `AGENT_SYSTEM.md`의 Dispatch Rules에 따라 적절한 팀 스펙을 참조하세요.
+## 🛠️ 4. Action Registry
+- 단순 에러 핫픽스는 `.agent/skills/zero-shot-fix/SKILL.md` 체계로 단 1턴 내에 종료.
+- 자동 린트 및 통합 테스트는 개별 `npm test`가 아닌, 단일 스크립트 **`npm run qa`** 로 검증합니다.
