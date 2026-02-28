@@ -22,13 +22,13 @@ export default function WikiPage() {
     const { t, locale } = useLocale();
 
     const docs: DocLink[] = [
-        { titleKo: 'CEO 대시보드', titleEn: 'CEO Dashboard', slug: 'ceo-dashboard', categoryKo: '경영', categoryEn: 'Business', icon: Activity, color: 'text-amber-500' },
-        { titleKo: 'CTO 기술 전략', titleEn: 'CTO Strategy', slug: 'cto-technical-strategy', categoryKo: '경영', categoryEn: 'Business', icon: Cpu, color: 'text-blue-500' },
-        { titleKo: '사업 요약', titleEn: 'Exec Summary', slug: 'executive-summary', categoryKo: '경영', categoryEn: 'Business', icon: Shield, color: 'text-emerald-500' },
+        { titleKo: 'CEO 대시보드', titleEn: 'CEO Dashboard', slug: 'ceo-dashboard', categoryKo: '비즈니스', categoryEn: 'Business', icon: Activity, color: 'text-amber-500' },
+        { titleKo: 'CTO 전략', titleEn: 'CTO Strategy', slug: 'cto-technical-strategy', categoryKo: '비즈니스', categoryEn: 'Business', icon: Cpu, color: 'text-blue-500' },
+        { titleKo: '임원 요약', titleEn: 'Exec Summary', slug: 'executive-summary', categoryKo: '비즈니스', categoryEn: 'Business', icon: Shield, color: 'text-emerald-500' },
         { titleKo: '개발자 온보딩', titleEn: 'Dev Onboarding', slug: 'developer-onboarding', categoryKo: '개발', categoryEn: 'Development', icon: Code, color: 'text-purple-500' },
-        { titleKo: '코딩 가이드라인', titleEn: 'Coding Standards', slug: 'coding-standards', categoryKo: '개발', categoryEn: 'Development', icon: Terminal, color: 'text-cyan-500' },
-        { titleKo: '아키텍처 개요', titleEn: 'Architecture', slug: 'architecture-overview', categoryKo: '개발', categoryEn: 'Development', icon: Layout, color: 'text-pink-500' },
-        { titleKo: 'Git 워크플로우', titleEn: 'Git Workflow', slug: 'git-workflow', categoryKo: '개발', categoryEn: 'Development', icon: Globe, color: 'text-orange-500' },
+        { titleKo: '코딩 가이드', titleEn: 'Coding Standards', slug: 'coding-standards', categoryKo: '개발', categoryEn: 'Development', icon: Terminal, color: 'text-cyan-500' },
+        { titleKo: '아키텍처', titleEn: 'Architecture', slug: 'architecture-overview', categoryKo: '개발', categoryEn: 'Development', icon: Layout, color: 'text-pink-500' },
+        { titleKo: 'Git 작업 방식', titleEn: 'Git Workflow', slug: 'git-workflow', categoryKo: '개발', categoryEn: 'Development', icon: Globe, color: 'text-orange-500' },
         { titleKo: 'API 레퍼런스', titleEn: 'API Reference', slug: 'api-reference', categoryKo: '개발', categoryEn: 'Development', icon: Book, color: 'text-indigo-500' },
     ];
 
@@ -45,7 +45,6 @@ export default function WikiPage() {
         <main className="min-h-screen relative overflow-hidden pb-40 text-foreground">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,var(--primary)_0%,transparent_30%)] opacity-5" />
             <div className="max-w-5xl mx-auto px-6 py-16 relative z-10">
-                {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 border-b border-border-color pb-16">
                     <div>
                         <button
@@ -61,14 +60,14 @@ export default function WikiPage() {
                             className="inline-flex px-4 py-2 rounded-full mb-6 bg-surface border border-border-color"
                         >
                             <span className="text-sm font-bold text-primary tracking-widest leading-none uppercase">
-                                {locale === 'ko' ? '지식 보관소' : 'Knowledge Base'}
+                                {locale === 'ko' ? '지식 베이스' : 'Knowledge Base'}
                             </span>
                         </motion.div>
                         <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase mb-2">
-                            {locale === 'ko' ? '사주' : 'Saju'} <span className="text-primary italic">{locale === 'ko' ? '사전' : 'Wiki'}</span>
+                            {locale === 'ko' ? '사주' : 'Saju'} <span className="text-primary italic">{locale === 'ko' ? 'Wiki' : 'Wiki'}</span>
                         </h1>
                         <p className="text-xl md:text-2xl text-secondary font-medium italic opacity-70">
-                            {locale === 'ko' ? '시크릿사주 전체 기술 사양 및 아키텍처 문서' : 'Comprehensive technical specifications & docs'}
+                            {locale === 'ko' ? '사주 도메인 전체 문서·기술 명세를 정리한 지식 공간입니다.' : 'Comprehensive technical specifications & docs'}
                         </p>
                     </div>
 
@@ -81,13 +80,12 @@ export default function WikiPage() {
                             <div className="text-sm font-bold text-secondary uppercase tracking-widest mb-1">{locale === 'ko' ? '상태' : 'Status'}</div>
                             <div className="text-xl font-black text-emerald-500 flex items-center gap-2">
                                 <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse" />
-                                {locale === 'ko' ? '운영 중' : 'Active'}
+                                {locale === 'ko' ? '활성' : 'Active'}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Categories Grid */}
                 <div className="grid grid-cols-1 gap-16">
                     {categoryKeys.map((cat, idx) => (
                         <motion.div
@@ -129,7 +127,7 @@ export default function WikiPage() {
                                 ) : (
                                     <div className="col-span-full p-12 rounded-4xl bg-surface border border-dashed border-border-color flex flex-col items-center justify-center gap-4">
                                         <Sparkles className="w-10 h-10 text-secondary opacity-50" />
-                                        <span className="text-xl font-bold text-secondary uppercase tracking-widest">{locale === 'ko' ? '문서 준비중' : 'Coming Soon'}</span>
+                                        <span className="text-xl font-bold text-secondary uppercase tracking-widest">{locale === 'ko' ? '문서 없음' : 'No Documents'}</span>
                                     </div>
                                 )}
                             </div>
@@ -137,7 +135,6 @@ export default function WikiPage() {
                     ))}
                 </div>
 
-                {/* Terminal Footer Indicator */}
                 <div className="mt-32 p-10 rounded-4xl bg-background border-2 border-border-color backdrop-blur-xl shadow-xl flex items-center justify-between">
                     <div className="flex items-center gap-6">
                         <div className="flex gap-3">
@@ -149,7 +146,7 @@ export default function WikiPage() {
                         <span className="text-xl font-black text-secondary tracking-widest uppercase hidden sm:block">Secret Node</span>
                     </div>
                     <div className="text-right text-lg">
-                        <p className="font-bold text-primary italic">&gt; LOAD_COMPLETE_</p>
+                        <p className="font-black text-primary italic">&gt; LOAD_COMPLETE_</p>
                     </div>
                 </div>
             </div>

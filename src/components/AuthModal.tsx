@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Github, Loader2 } from 'lucide-react';
+import { X, Mail, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useLocale } from '@/lib/i18n';
 import { loginWithKakao } from '@/lib/kakao-auth';
@@ -13,8 +13,11 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
-    const { t, locale } = useLocale();
+    const { locale } = useLocale();
     const [isLoading, setIsLoading] = useState<string | null>(null);
+    const [email, setEmail] = useState('');
+    const [emailMessage, setEmailMessage] = useState('');
+    const [emailError, setEmailError] = useState('');
 
     const handleGoogleLogin = async () => {
         setIsLoading('google');
@@ -40,10 +43,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const handleNaverLogin = async () => {
         setIsLoading('naver');
         try {
-            // NOTE: NextJS doesn't natively support Naver in Supabase out of the box unless configured in dashboard.
-            // We provide the UI trigger.
+            // NOTE: Naver OAuth is not always configured in Supabase providers.
+            // Keep behavior consistent with existing setup by preserving current fallback.
             await supabase.auth.signInWithOAuth({
-                provider: 'notion', // fallback mock
+                provider: 'notion',
                 options: { redirectTo: `${window.location.origin}/auth/callback` }
             });
         } catch (error) {
@@ -52,11 +55,57 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         }
     };
 
+    const handleEmailLogin = async () => {
+        setEmailMessage('');
+        setEmailError('');
+
+        if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+            setEmailError(locale === 'ko' ? '이메일 주소를 정확히 입력해 주세요.' : 'Please enter a valid email address.');
+            return;
+        }
+
+        if (typeof supabase?.auth?.signInWithOtp !== 'function') {
+            setEmailError(
+                locale === 'ko'
+                    ? '현재 이메일 로그인 기능을 사용할 수 없습니다. 잠시 후 다시 시도해 주세요.'
+                    : 'Email login is not available right now. Please try again later.'
+            );
+            return;
+        }
+
+        setIsLoading('email');
+        try {
+            const { error } = await supabase.auth.signInWithOtp({
+                email,
+                options: { emailRedirectTo: `${window.location.origin}/auth/callback` }
+            });
+
+            if (error) {
+                console.error(error);
+                setEmailError(
+                    locale === 'ko'
+                        ? '이메일 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.'
+                        : 'Failed to send email. Please try again later.'
+                );
+            } else {
+                setEmailMessage(
+                    locale === 'ko'
+                        ? '인증 메일을 보냈습니다. 메일함을 확인해 주세요.'
+                        : 'We sent a sign-in email. Please check your inbox.'
+                );
+            }
+        } catch (error) {
+            console.error(error);
+            setEmailError(locale === 'ko' ? '일시적인 오류가 발생했습니다.' : 'A temporary error occurred.');
+        } finally {
+            setIsLoading(null);
+        }
+    };
+
     return (
         <AnimatePresence>
             {isOpen && (
                 <>
-                    {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -65,7 +114,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-auto"
                     />
 
-                    {/* Modal */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -83,19 +131,26 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                             </button>
 
                             <div className="mb-10 mt-4">
-                                <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-flex px-4 py-2 rounded-full mb-6 bg-background border border-border-color">
-                                    <span className="text-sm font-bold text-primary tracking-widest uppercase">{locale === 'ko' ? '운명의 접속' : 'Destiny Access'}</span>
+                                <motion.div
+                                    initial={{ y: -10, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    className="inline-flex px-4 py-2 rounded-full mb-6 bg-background border border-border-color"
+                                >
+                                    <span className="text-sm font-bold text-primary tracking-widest uppercase">
+                                        {locale === 'ko' ? '운명 접근' : 'Destiny Access'}
+                                    </span>
                                 </motion.div>
                                 <h2 className="text-3xl font-black italic tracking-tighter uppercase mb-4 text-foreground">
-                                    {locale === 'ko' ? '시크릿사주 시작하기' : 'Join Secret Saju'}
+                                    {locale === 'ko' ? '회원가입 및 로그인' : 'Join Secret Saju'}
                                 </h2>
                                 <p className="text-secondary font-medium">
-                                    {locale === 'ko' ? '최초 로그인 시 10 젤리가 지급됩니다!' : 'Get 10 Jellies upon your first login!'}
+                                    {locale === 'ko'
+                                        ? '첫 로그인 시 10 젤리를 지급합니다.'
+                                        : 'Get 10 Jellies upon your first login!'}
                                 </p>
                             </div>
 
                             <div className="space-y-4">
-                                {/* Kakao */}
                                 <button
                                     onClick={handleKakaoLogin}
                                     disabled={!!isLoading}
@@ -111,7 +166,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                     )}
                                 </button>
 
-                                {/* Google */}
                                 <button
                                     onClick={handleGoogleLogin}
                                     disabled={!!isLoading}
@@ -130,7 +184,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                     )}
                                 </button>
 
-                                {/* Naver */}
                                 <button
                                     onClick={handleNaverLogin}
                                     disabled={!!isLoading}
@@ -148,22 +201,43 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
                                 <div className="py-2 flex items-center justify-center gap-4">
                                     <div className="flex-1 h-px bg-border-color" />
-                                    <span className="text-sm font-bold text-secondary uppercase tracking-widest">{locale === 'ko' ? '또는' : 'OR'}</span>
+                                    <span className="text-sm font-bold text-secondary uppercase tracking-widest">
+                                        {locale === 'ko' ? '또는' : 'OR'}
+                                    </span>
                                     <div className="flex-1 h-px bg-border-color" />
                                 </div>
 
-                                {/* Email Fallback UI */}
-                                <button
-                                    onClick={() => alert(locale === 'ko' ? "이메일 로그인 준비 중입니다." : "Email login coming soon.")}
-                                    className="w-full flex items-center justify-center gap-3 bg-background border border-border-color text-foreground font-bold text-sm py-4 rounded-xl hover:bg-surface transition-all disabled:opacity-50"
-                                >
-                                    <Mail className="w-5 h-5 opacity-70" /> {locale === 'ko' ? '이메일로 계속하기' : 'Continue with Email'}
-                                </button>
+                                <div className="space-y-3">
+                                    <input
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleEmailLogin()}
+                                        type="email"
+                                        placeholder="name@example.com"
+                                        className="w-full rounded-xl bg-background border border-border-color px-4 py-4 text-sm text-foreground placeholder:text-secondary font-medium focus:outline-none focus:border-primary"
+                                        disabled={!!isLoading}
+                                    />
+                                    {emailError ? <p className="text-sm text-rose-400 px-1 text-left">{emailError}</p> : null}
+                                    {emailMessage ? <p className="text-sm text-emerald-400 px-1 text-left">{emailMessage}</p> : null}
+                                    <button
+                                        onClick={handleEmailLogin}
+                                        disabled={!!isLoading}
+                                        className="w-full flex items-center justify-center gap-3 bg-background border border-border-color text-foreground font-bold text-sm py-4 rounded-xl hover:bg-surface transition-all disabled:opacity-50"
+                                    >
+                                        <Mail className="w-5 h-5 opacity-70" />
+                                        {isLoading === 'email'
+                                            ? <Loader2 className="w-5 h-5 animate-spin" />
+                                            : locale === 'ko'
+                                                ? '이메일로 로그인'
+                                                : 'Continue with Email'
+                                        }
+                                    </button>
+                                </div>
                             </div>
 
                             <p className="mt-10 text-xs text-secondary opacity-60 px-4 leading-relaxed font-medium">
                                 {locale === 'ko'
-                                    ? '진행 시 당사의 이용약관 및 개인정보처리방침에 동의하는 것으로 간주됩니다.'
+                                    ? '계속 진행하면 이용약관 및 개인정보 처리방침에 동의하게 됩니다.'
                                     : 'By continuing, you agree to our Terms of Service and Privacy Policy.'}
                             </p>
                         </div>
