@@ -80,11 +80,11 @@ export function AppOnlyModal({ isOpen, onClose, title = "앱 전용 기능" }: A
                                     className="w-full py-4 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-md shadow-red-600/20 transition-all active:scale-[0.98]"
                                     onClick={() => {
                                         // TODO: Replace with actual App Store intent link
-                                        alert("앱스토어 다운로드 페이지로 이동합니다.");
+                                        alert("시크릿 사주 앱 다운로드 페이지로 이동합니다.");
                                         onClose();
                                     }}
                                 >
-                                    점신 앱 무료로 설치하기
+                                    시크릿 사주 앱 무료로 설치하기
                                 </button>
                                 <button
                                     className="w-full py-4 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold transition-all"

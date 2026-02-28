@@ -105,7 +105,7 @@ export function getPerUnitPrice(tier: PricingTier): number {
 }
 
 /**
- * Purchase Jellies (Mock for MVP - will integrate with payment.ts)
+ * Purchase Jellies - Initialize payment
  */
 export async function purchaseJellies(tierId: string): Promise<PurchaseResult> {
     const tier = getPricingTier(tierId);
@@ -117,34 +117,32 @@ export async function purchaseJellies(tierId: string): Promise<PurchaseResult> {
         };
     }
 
-    // TODO: Integrate with actual payment system (payment.ts)
-    // For MVP, we'll simulate successful purchase
+    try {
+        const response = await fetch('/api/payment/initialize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tierId }),
+        });
 
-    const wallet = getWallet();
-    const totalJellies = tier.jellies + tier.bonus;
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || '결제 초기화 실패');
+        }
 
-    const transaction: Transaction = {
-        id: crypto.randomUUID(),
-        type: 'purchase',
-        amount: tier.price,
-        jellies: totalJellies,
-        purpose: 'purchase',
-        metadata: { tierId: tier.id },
-        timestamp: Date.now(),
-    };
+        const data = await response.json();
 
-    wallet.balance += totalJellies;
-    wallet.totalPurchased += totalJellies;
-    wallet.history.unshift(transaction);
-
-    saveWallet(wallet);
-
-    return {
-        success: true,
-        jellies: totalJellies,
-        newBalance: wallet.balance,
-        transactionId: transaction.id,
-    };
+        // This will be used by the UI to trigger Toss Payments Widget
+        return {
+            success: true,
+            jellies: tier.jellies + tier.bonus,
+            paymentConfig: data, // clientKey, orderId, amount, etc.
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.message || '결제 시스템 연결 오류',
+        };
+    }
 }
 
 /**

@@ -56,9 +56,8 @@ function calculateOneSipsong(selfStem: Stem, target: Stem): string {
     return samePolarity ? '편인' : '정인';
 }
 
-export async function generateDailyFortune(profile: SajuProfile, locale: 'ko' | 'en' = 'ko'): Promise<DailyFortuneResult> {
-    const today = new Date();
-    const todayPillar = getDayPillar(today);
+export async function generateDailyFortune(profile: SajuProfile, locale: 'ko' | 'en' = 'ko', targetDate: Date = new Date()): Promise<DailyFortuneResult> {
+    const todayPillar = getDayPillar(targetDate);
 
     const saju = await calculateHighPrecisionSaju({
         birthDate: new Date(profile.birthdate),
@@ -86,7 +85,7 @@ export async function generateDailyFortune(profile: SajuProfile, locale: 'ko' | 
         weather = 'cloudy';
     }
 
-    const dateStr = today.toLocaleDateString(locale === 'ko' ? 'ko-KR' : 'en-US', {
+    const dateStr = targetDate.toLocaleDateString(locale === 'ko' ? 'ko-KR' : 'en-US', {
         month: 'long',
         day: 'numeric',
         weekday: 'long',
@@ -128,8 +127,8 @@ export async function generateDailyFortune(profile: SajuProfile, locale: 'ko' | 
     const health = locale === 'ko' ? "충분한 휴식과 수분 섭취가 에너지를 보충해줍니다." : "Rest and hydration will boost your energy.";
 
     const premiumInsight = locale === 'ko'
-        ? `당신의 ${selfStem} 일간과 오늘의 ${todayStem} 기운이 만나 '${sipsong}'의 작용이 일어납니다. 특히 대인관계에서 이 점을 활용하면 유리한 흐름을 탈 수 있습니다.`
-        : `Your ${selfStem} Day Master meets today's ${todayStem} energy, activating '${sipsong}'. Utilizing this in relationships will bring favorable results.`;
+        ? `당신의 ${selfStem} 일간과 해당 일의 ${todayStem} 기운이 만나 '${sipsong}'의 작용이 일어납니다. 특히 대인관계에서 이 점을 활용하면 유리한 흐름을 탈 수 있습니다.`
+        : `Your ${selfStem} Day Master meets the target day's ${todayStem} energy, activating '${sipsong}'. Utilizing this in relationships will bring favorable results.`;
 
     return {
         date: dateStr,

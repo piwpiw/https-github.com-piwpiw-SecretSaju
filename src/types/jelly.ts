@@ -41,6 +41,7 @@ export interface PurchaseResult {
     jellies?: number;
     newBalance?: number;
     transactionId?: string;
+    paymentConfig?: any; // For Toss Payments Wiget initialization
     error?: string;
 }
 

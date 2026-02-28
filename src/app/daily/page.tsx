@@ -31,6 +31,12 @@ export default function DailyFortunePage() {
         }
     }, []);
 
+    useEffect(() => {
+        if (profile) {
+            handleAnalyze();
+        }
+    }, [activeTab, profile]);
+
     const handleAnalyze = async () => {
         if (!profile) return router.push("/my-saju/add");
 
@@ -38,7 +44,15 @@ export default function DailyFortunePage() {
         consumeChuru(0); // 일별 무료
 
         try {
-            const fortune = await generateDailyFortune(profile, locale);
+            const targetDate = new Date();
+            if (activeTab === "tomorrow") {
+                targetDate.setDate(targetDate.getDate() + 1);
+            } else if (activeTab === "month") {
+                targetDate.setMonth(targetDate.getMonth() + 1);
+                targetDate.setDate(1); // Next month start
+            }
+
+            const fortune = await generateDailyFortune(profile, locale, targetDate);
             setResult(fortune);
         } catch (error) {
             console.error("Daily fortune generation error:", error);
