@@ -11,9 +11,8 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setThemeState] = useState<ThemeType>('mystic');
+    const [theme, setThemeState] = useState<ThemeType>('dark');
 
-    // Load theme from localStorage on mount
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme') as ThemeType;
         if (savedTheme && THEMES[savedTheme]) {
@@ -30,27 +29,36 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const tokens = THEMES[theme];
         const root = document.documentElement;
 
-        // Standard CSS Variables
         root.style.setProperty('--primary', tokens.colors.primary);
         root.style.setProperty('--secondary', tokens.colors.secondary);
         root.style.setProperty('--background', tokens.colors.background);
         root.style.setProperty('--surface', tokens.colors.surface);
         root.style.setProperty('--text-foreground', tokens.colors.text);
+        root.style.setProperty('--text-secondary', tokens.colors.textSecondary);
+        root.style.setProperty('--border-color', tokens.colors.border);
         root.style.setProperty('--font-display', tokens.fonts.display);
         root.style.setProperty('--font-sans', tokens.fonts.sans);
+        root.style.setProperty('--font-size-base', tokens.fonts.sizeBase);
         root.style.setProperty('--radius', tokens.borderRadius);
 
         if (tokens.colors.accent) {
             root.style.setProperty('--accent', tokens.colors.accent);
         }
 
-        // Theme-specific class for Tailwind variants
-        root.className = `theme-${theme}`;
+        root.className = theme === 'dark' ? 'dark' : '';
     }, [theme]);
 
     return (
         <ThemeContext.Provider value={{ theme, setTheme }}>
-            <div className={`theme-${theme} min-h-screen bg-[var(--background)] text-[var(--text-foreground)] font-sans`}>
+            <div
+                className="min-h-screen transition-colors duration-300"
+                style={{
+                    backgroundColor: 'var(--background)',
+                    color: 'var(--text-foreground)',
+                    fontSize: 'var(--font-size-base)',
+                    fontFamily: 'var(--font-sans)',
+                }}
+            >
                 {children}
             </div>
         </ThemeContext.Provider>

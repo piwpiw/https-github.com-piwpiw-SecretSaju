@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
                 birth_time: body.birthTime ? `${body.birthTime}:00` : null,
                 is_time_unknown: body.isTimeUnknown || false,
                 calendar_type: body.calendarType,
+                is_leap_month: body.isLeapMonth || false,
                 gender: body.gender,
             })
             .select()

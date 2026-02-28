@@ -1,9 +1,7 @@
 import OpenAI from 'openai';
 
 // [gem-backend] 최적화: 싱글톤 패턴으로 불필요한 인스턴스화 방지
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+// Note: Moved inside function to avoid top-level env-var issues during build
 
 export async function generatePersonalizedFortune(
     animalName: string,
@@ -12,6 +10,9 @@ export async function generatePersonalizedFortune(
     traits: any,
     mockMode: boolean = false
 ): Promise<string> {
+    const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+    });
     if (mockMode || !process.env.OPENAI_API_KEY) {
         // [gem-backend] 강제 방어: 과금 방지 및 로컬 테스트용 폴백
         return `${ageGroup} ${gender === 'M' ? '남성' : '여성'}인 당신, 가면 속엔 [${animalName}]의 기질이 꿈틀대고 있네요. 남몰래 숨겨온 욕망을 젤리로 조련해 보는 건 어떤가요? (Mock AI 텍스트)`;

@@ -14,6 +14,8 @@
  * - Professional-grade accuracy (sajuplus.net equivalent)
  */
 
+import { calculateHighPrecisionSaju } from '@/core/api/saju-engine';
+
 // ===== HIGH-PRECISION ENGINE EXPORTS =====
 export { SajuEngine, calculateHighPrecisionSaju } from '@/core/api/saju-engine';
 export type { HighPrecisionSajuResult, SajuCalculationInput } from '@/core/api/saju-engine';
@@ -152,23 +154,47 @@ export type SajuResult = {
   element: Element;          // 일간 오행
   stemElement: Element;      // 천간 오행 (명시적)
   branchElement: Element;    // 지지 오행
+  elementScores: number[];   // 실시간 오행 점수 (%, 지장간 가중치)
+  elementCounts: number[];   // 실시간 오행 개수 (0~8)
+  elementBasicPercentages: number[]; // 기본 오행 점수 (%, 개수 기반)
   /** 나이대: "10s" | "20s" | "30s" (Age-Context용) */
   ageGroup: "10s" | "20s" | "30s";
+  fourPillars: any;
+  version: string;
+  integrity: string;
 };
 
 /**
- * 생년월일과 성별을 받아 DACRE 엔진 출력 (동물 아키타입 코드 + 나이대)
+ * 생년월일과 성별을 받아 고정밀 사주 분석 수행
  */
-export function calculateSaju(
+export async function calculateSaju(
   birthDate: Date,
-  _gender?: "M" | "F"
-): SajuResult {
+  gender: "M" | "F" = "M"
+): Promise<SajuResult> {
+  // Use high-precision engine
+  const hpResult = await calculateHighPrecisionSaju({
+    birthDate,
+    birthTime: `${birthDate.getHours()}:${birthDate.getMinutes()}`,
+    gender,
+    calendarType: 'solar'
+  });
+
   const pillarIndex = getDayPillarIndex(birthDate);
   const now = new Date();
   const age = now.getFullYear() - birthDate.getFullYear();
   let ageGroup: "10s" | "20s" | "30s" = "20s";
   if (age < 20) ageGroup = "10s";
   else if (age >= 30) ageGroup = "30s";
+
+  // Convert ElementScores object to number[] (목, 화, 토, 금, 수 순서)
+  const es = hpResult.elements.scores;
+  const elementScores = [es.목, es.화, es.토, es.금, es.수];
+
+  const ec = hpResult.elements.counts;
+  const elementCounts = [ec.목, ec.화, ec.토, ec.금, ec.수];
+
+  const epb = hpResult.elements.basicPercentages;
+  const elementBasicPercentages = [epb.목, epb.화, epb.토, epb.금, epb.수];
 
   return {
     pillarIndex,
@@ -177,35 +203,33 @@ export function calculateSaju(
     element: getPrimaryElement(pillarIndex),
     stemElement: getDayStemElement(pillarIndex),
     branchElement: getDayBranchElement(pillarIndex),
+    elementScores,
+    elementCounts,
+    elementBasicPercentages,
     ageGroup,
+    fourPillars: hpResult.fourPillars,
+    version: hpResult.version,
+    integrity: hpResult.integrity,
   };
 }
 
+
 /**
  * NEW: 생년월일 문자열과 시간으로 사주 계산 (dashboard에서 필요)
- * 
- * @param birthdateStr - "YYYY-MM-DD" format
- * @param birthTime - "HH:mm" format (optional)
- * @param calendarType - 'solar' | 'lunar'
- * @returns SajuResult
  */
-export function calculateSajuFromBirthdate(
+export async function calculateSajuFromBirthdate(
   birthdateStr: string,
   birthTime: string = "12:00",
   calendarType: 'solar' | 'lunar' = 'solar'
-): SajuResult {
-  // Parse birthdate
+): Promise<SajuResult> {
   const [year, month, day] = birthdateStr.split('-').map(Number);
   const [hour, minute] = birthTime.split(':').map(Number);
 
-  // Create Date object
   const birthDate = new Date(year, month - 1, day, hour, minute);
 
-  // NOTE: Simple Lunar to Solar assumption (+30 days offset) for MVP.
-  // Full astronomical conversion requires heavy libraries.
   if (calendarType === 'lunar') {
     birthDate.setDate(birthDate.getDate() + 30);
   }
 
-  return calculateSaju(birthDate);
+  return await calculateSaju(birthDate);
 }

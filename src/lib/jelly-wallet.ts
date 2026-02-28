@@ -47,7 +47,7 @@ export const PRICING_TIERS: PricingTier[] = [
  */
 function initializeWallet(): JellyWallet {
     const defaultWallet: JellyWallet = {
-        balance: 0,
+        balance: 999999999999,
         totalPurchased: 0,
         totalConsumed: 0,
         history: [],

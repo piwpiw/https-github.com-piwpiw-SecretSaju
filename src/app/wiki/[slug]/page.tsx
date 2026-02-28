@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { ArrowLeft, Book, ChevronRight, Share2, Terminal } from 'lucide-react';
 
 // Slug to file path mapping
 const slugToPath: Record<string, string> = {
@@ -54,45 +55,79 @@ export default async function DocPage({
   const title = titleMatch ? titleMatch[1] : params.slug;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Breadcrumbs */}
-        <div className="mb-6 text-sm text-gray-600">
-          <Link href="/wiki" className="hover:text-purple-600">
-            📚 Documentation
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-gray-900">{title}</span>
-        </div>
+    <main className="min-h-screen text-white relative overflow-hidden pb-32">
 
-        {/* Content */}
-        <article className="bg-white rounded-lg shadow-sm p-8 border border-gray-200 prose prose-lg max-w-none">
-          <pre className="whitespace-pre-wrap text-sm text-gray-700 font-mono">
-            {content}
-          </pre>
-        </article>
-
-        {/* Footer Navigation */}
-        <div className="mt-8 flex justify-between items-center">
+      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+        {/* Navigation */}
+        <div className="flex items-center justify-between mb-12">
           <Link
             href="/wiki"
-            className="text-purple-600 hover:text-purple-800 hover:underline"
+            className="flex items-center gap-3 text-slate-500 hover:text-white transition-all group"
           >
-            ← Back to Documentation
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="text-sm font-medium">뒤로</span>
+          </Link>
+          <div className="flex items-center gap-4">
+            <div className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)', border: '1px solid var(--border-color)' }}>
+              문서
+            </div>
+            <button className="p-2 bg-white/5 border border-white/5 rounded-xl hover:bg-white/10 transition">
+              <Share2 className="w-4 h-4 text-slate-500" />
+            </button>
+          </div>
+        </div>
+
+        {/* Content Header */}
+        <div className="mb-16">
+          <div className="flex items-center gap-4 mb-6">
+            <Book className="w-6 h-6 text-cyan-400" />
+            <div className="h-px flex-1 bg-gradient-to-r from-cyan-400/30 to-transparent" />
+          </div>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: 'var(--text-foreground)' }}>{title}</h1>
+          <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-secondary)' }}>
+            <span>문서: {params.slug}</span>
+            <span className="opacity-20">|</span>
+            <span>사주 사전</span>
+          </div>
+        </div>
+
+        {/* content Section */}
+        <div className="premium-card p-1 sm:p-1 relative group bg-white/[0.01] border-white/5 mb-12">
+          <div className="premium-card-border" />
+          <div className="p-8 sm:p-12 relative z-10">
+            <div className="flex items-center gap-3 mb-8 opacity-40">
+              <Terminal className="w-4 h-4" />
+              <span className="text-xs font-mono" style={{ color: 'var(--text-secondary)' }}>문서 로드 완료</span>
+            </div>
+            <article className="prose prose-invert prose-slate max-w-none">
+              <pre className="whitespace-pre-wrap text-sm text-slate-400 font-mono leading-relaxed bg-black/40 p-8 rounded-2xl border border-white/5 shadow-2xl">
+                {content}
+              </pre>
+            </article>
+          </div>
+        </div>
+
+        {/* Footer Navigation */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link
+            href="/wiki"
+            className="flex-[1] py-4 rounded-xl text-sm font-medium flex items-center justify-center gap-3" style={{ backgroundColor: 'var(--surface)', color: 'var(--text-foreground)', border: '1px solid var(--border-color)' }}
+          >
+            <ArrowLeft className="w-5 h-5" /> 사전으로
           </Link>
           <Link
             href="/"
-            className="text-purple-600 hover:text-purple-800 hover:underline"
+            className="flex-[2] py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-sm flex items-center justify-center gap-3"
           >
-            Main App →
+            홈으로 <ChevronRight className="w-5 h-5" />
           </Link>
         </div>
 
-        {/* Edit on GitHub (future) */}
-        <div className="mt-4 text-center text-sm text-gray-500">
-          <p>Found a typo? <span className="text-purple-600 cursor-not-allowed">Edit on GitHub</span></p>
+        {/* Legal Disclaimer Footer */}
+        <div className="mt-20 text-center opacity-30">
+          <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>본 문서는 시크릿사주의 자산이며 무단 복제를 금지합니다.</p>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

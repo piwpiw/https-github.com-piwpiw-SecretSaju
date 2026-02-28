@@ -10,6 +10,8 @@ import LuxuryToast from "@/components/ui/LuxuryToast";
 import { AnimatePresence } from "framer-motion";
 import ElementPolygon from "@/components/ui/ElementPolygon";
 import { QRCodeSVG } from "qrcode.react";
+import { useWallet } from "./WalletProvider";
+import { handleShare } from "@/lib/share";
 
 interface ResultCardProps {
   archetype: AnimalArchetype & {
@@ -18,27 +20,41 @@ interface ResultCardProps {
   };
   pillarNameKo: string;
   ageGroup: AgeGroup;
+  elementScores: number[]; // Required: Weighted scores [Wood, Fire, Earth, Metal, Water]
+  elementCounts: number[]; // Required: Basic counts (0-8)
+  elementBasicPercentages: number[]; // Required: Percentages based on counts
+  fourPillars?: any; // High precision pillars
+  version?: string;
+  integrity?: string;
   secretUnlocked?: boolean;
   onUnlockClick?: () => void;
+  onInsufficientJelly?: () => void;
 }
 
-// 오행 색상/설명 맵
+// 오행 색상/설명 맵 (Fact-based Standard Colors)
 const FIVE_ELEMENTS = [
-  { name: "木 (목)", color: "from-green-400 to-emerald-500", desc: "성장·인자·활동적", icon: "🌿" },
-  { name: "火 (화)", color: "from-red-400 to-orange-500", desc: "열정·표현·리더십", icon: "🔥" },
-  { name: "土 (토)", color: "from-yellow-500 to-amber-600", desc: "안정·신뢰·중재력", icon: "🏔️" },
-  { name: "金 (금)", color: "from-slate-300 to-zinc-400", desc: "결단·정의·냉철함", icon: "⚔️" },
-  { name: "水 (수)", color: "from-blue-400 to-cyan-500", desc: "지혜·유연·적응력", icon: "💧" },
+  { name: "木 (목)", color: "from-green-500 to-emerald-600", bg: "bg-emerald-500/20", borderColor: "border-emerald-500/50", textColor: "text-emerald-400", desc: "성장·인자·활동적", icon: "🌿" },
+  { name: "火 (화)", color: "from-red-500 to-rose-600", bg: "bg-rose-500/20", borderColor: "border-rose-500/50", textColor: "text-rose-400", desc: "열정·표현·리더십", icon: "🔥" },
+  { name: "土 (토)", color: "from-yellow-400 to-amber-600", bg: "bg-amber-500/20", borderColor: "border-amber-500/50", textColor: "text-amber-400", desc: "안정·신뢰·중재력", icon: "🏔️" },
+  { name: "金 (금)", color: "from-slate-100 to-zinc-300", bg: "bg-white/10", borderColor: "border-white/30", textColor: "text-white", desc: "결단·정의·냉철함", icon: "⚔️" },
+  { name: "水 (수)", color: "from-blue-600 to-indigo-900", bg: "bg-indigo-500/20", borderColor: "border-indigo-500/50", textColor: "text-indigo-400", desc: "지혜·유연·적응력", icon: "💧" },
 ];
 
-function getElementScores(code: string): number[] {
-  // Generate deterministic element balance from archetype code
-  const base = code.charCodeAt(0) + (code.charCodeAt(1) || 0);
-  return FIVE_ELEMENTS.map((_, i) => Math.min(95, Math.max(15, ((base * (i + 7)) % 65) + 20)));
-}
+const STEM_HANJA: Record<string, string> = {
+  '갑': '甲', '을': '乙', '병': '丙', '정': '丁', '무': '戊', '기': '己', '경': '庚', '신': '辛', '임': '壬', '계': '癸'
+};
 
-function ElementBar({ name, score, color, icon, desc, delay }: {
-  name: string; score: number; color: string; icon: string; desc: string; delay: number;
+const BRANCH_HANJA: Record<string, string> = {
+  '자': '子', '축': '丑', '인': '寅', '묘': '卯', '진': '辰', '사': '巳', '오': '午', '미': '未', '신': '申', '유': '酉', '술': '戌', '해': '亥'
+};
+
+const ELEMENT_MAP: Record<string, number> = {
+  '목': 0, '화': 1, '토': 2, '금': 3, '수': 4
+};
+
+
+function ElementBar({ name, score, color, icon, desc, delay, count }: {
+  name: string; score: number; color: string; icon: string; desc: string; delay: number; count: number;
 }) {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -58,10 +74,11 @@ function ElementBar({ name, score, color, icon, desc, delay }: {
         <span className="text-lg w-7 text-center drop-shadow-md">{icon}</span>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-bold text-slate-300">{name}</span>
-            <Info className="w-3 h-3 text-slate-500" />
+            <span className="text-sm font-bold text-slate-200 tracking-wide">{name}</span>
+            <Info className="w-4 h-4 text-slate-500 hover:text-cyan-400 transition-colors" />
           </div>
-          <div className="h-2.5 bg-white/5 rounded-full overflow-hidden shadow-inner">
+          <div className="h-3 bg-white/5 rounded-full overflow-hidden shadow-inner relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent w-[200%] animate-[shimmer_2s_infinite]" />
             <motion.div
               className={`h-full bg-gradient-to-r ${color} rounded-full`}
               initial={{ width: 0 }}
@@ -82,10 +99,10 @@ function ElementBar({ name, score, color, icon, desc, delay }: {
             className="absolute z-50 bottom-full left-10 mb-2 w-48 p-3 bg-slate-900/90 backdrop-blur-xl border border-white/20 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
           >
             <div className="text-xs font-bold text-white mb-1 flex items-center gap-2">
-              <span>{icon}</span> {name}의 기운
+              <span>{icon}</span> {name}의 기운 ({count}개)
             </div>
             <p className="text-[10px] text-slate-300 leading-relaxed">
-              사주에 이 기운이 {score > 60 ? '강하게' : score > 30 ? '적절히' : '약하게'} 작용합니다. {desc} 성향을 의미합니다.
+              사주 8글자 중 {count}개가 {name}에 해당하며, 전체 기운 중 {score}%의 비중을 차지합니다. {desc} 성향을 의미합니다.
             </p>
             {/* Arrow */}
             <div className="absolute top-full left-4 -mt-px border-4 border-transparent border-t-slate-900/90" />
@@ -131,18 +148,38 @@ function getSecretAnalysis(code: string) {
   };
 }
 
+const ELEMENT_REMEDIES: Record<string, { color: string; items: string; direction: string; numbers: string }> = {
+  "목": { color: "청색, 초록색", items: "나무 화분, 책, 섬유 소품", direction: "동쪽", numbers: "3, 8" },
+  "화": { color: "적색, 분홍색", items: "밝은 조명, 화려한 액세서리", direction: "남쪽", numbers: "2, 7" },
+  "토": { color: "황색, 브라운", items: "도자기, 원석 팔찌, 흙 화분", direction: "중앙", numbers: "5, 10" },
+  "금": { color: "백색, 금색, 은색", items: "금속 장신구, 금반지, 시계", direction: "서쪽", numbers: "4, 9" },
+  "수": { color: "흑색, 청색", items: "어항, 분수 소품, 매끄러운 소재", direction: "북쪽", numbers: "1, 6" }
+};
+
 export default function ResultCard({
   archetype,
   pillarNameKo,
   ageGroup,
   secretUnlocked = false,
   onUnlockClick,
+  onInsufficientJelly,
+  elementScores: propElementScores,
+  elementCounts: propElementCounts,
+  elementBasicPercentages: propElementBasicPercentages,
+  fourPillars,
+  version,
+  integrity
 }: ResultCardProps) {
   const [aiText, setAiText] = useState<string | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [analysisMode, setAnalysisMode] = useState<'basic' | 'advanced'>('advanced');
+  const { consumeChuru, churu } = useWallet();
 
   const ageLabel = ageGroup === "10s" ? "10대" : ageGroup === "20s" ? "20대" : "30대+";
-  const elementScores = getElementScores(archetype.code);
+
+  // Choose which scores to show based on mode
+  const elementScores = analysisMode === 'advanced' ? propElementScores : propElementBasicPercentages;
+  const elementCounts = propElementCounts;
 
   const maxIdx = elementScores.indexOf(Math.max(...elementScores));
   const dominantElement = FIVE_ELEMENTS[maxIdx];
@@ -151,6 +188,44 @@ export default function ResultCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+
+  const handlePersonalize = async () => {
+    if (churu < 300) {
+      onInsufficientJelly?.();
+      return;
+    }
+
+    setIsAiLoading(true);
+    try {
+      const res = await fetch('/api/ai/personalize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: archetype.code, ageGroup, gender: 'M' })
+      });
+
+      const data = await res.json();
+
+      if (res.status === 402 || data.code === 'INSUFFICIENT_JELLIES') {
+        onInsufficientJelly?.();
+        return;
+      }
+
+      if (data.success) {
+        setAiText(data.text);
+        consumeChuru(300); // UI sync
+        triggerConfetti();
+      } else {
+        setToastMessage(data.error || "분석 중 오류가 발생했습니다.");
+        setShowToast(true);
+      }
+    } catch (err) {
+      console.error(err);
+      setToastMessage("서버 연결에 실패했습니다.");
+      setShowToast(true);
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
 
   const triggerConfetti = () => {
     const duration = 2000;
@@ -226,24 +301,26 @@ export default function ResultCard({
 
       <motion.div
         ref={cardRef}
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className={`w-full max-w-2xl mx-auto space-y-4 bg-slate-950 rounded-[2.5rem] relative ${isExporting ? "w-[1080px] h-[1920px] p-16 flex flex-col justify-center items-center scale-[0.3]" : "p-4 sm:p-6"
+        transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
+        className={`w-full max-w-4xl mx-auto space-y-6 bg-slate-950/80 backdrop-blur-2xl rounded-[2.5rem] relative ${isExporting ? "w-[1080px] h-[1920px] p-16 flex flex-col justify-center items-center scale-[0.3]" : "p-6 sm:p-8 lg:p-12 border border-white/5 shadow-2xl"
           }`}
         style={isExporting ? { transformOrigin: "top left" } : {}}
       >
         {/* Export Watermark Header */}
         {isExporting && (
           <div className="absolute top-20 left-0 w-full text-center space-y-4">
-            <h1 className="text-4xl font-black text-white tracking-widest uppercase">Secret Paws</h1>
-            <p className="text-2xl text-slate-400">당신의 본능을 마주하세요</p>
+            <h1 className="text-4xl font-black text-white tracking-widest uppercase">Secret Paws: 나의 본능 성적표</h1>
+            <p className="text-2xl text-slate-400">당신의 본능적 아키텍처를 마주하세요</p>
           </div>
         )}
 
         {/* Main Card — Identity */}
         <div className={`relative bg-black/40 backdrop-blur-3xl rounded-3xl p-8 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden group ${isExporting ? "w-[900px] mt-32" : ""}`}>
           <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-cyan-500/10 rounded-3xl opacity-50 group-hover:opacity-80 transition-opacity duration-700" />
+          {/* Traditional Lattice Pattern Overlay */}
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm2 2h36v36H2V2zm18 1V2h2v36h-2V3zm1-1h18v2H21V2zM2 21v-2h36v2H2z' fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E")` }} />
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500" />
           <div className="relative z-10">
             {/* Header */}
@@ -256,16 +333,43 @@ export default function ResultCard({
                 🐾
               </motion.div>
               <div className={`inline-block px-3 py-1 bg-cyan-500/10 border border-cyan-400/20 rounded-full font-mono text-cyan-400 mb-3 tracking-widest shadow-inner ${isExporting ? "text-xl px-6 py-2" : "text-xs"}`}>
-                CLASS {archetype.code}
+                天機 (천기) · {archetype.code}
               </div>
-              <h2 className={`${isExporting ? "text-7xl" : "text-5xl"} font-black mb-3 bg-gradient-to-r from-pink-300 via-purple-300 to-cyan-300 bg-clip-text text-transparent drop-shadow-sm tracking-tight`}>
+              <h2 className={`${isExporting ? "text-7xl" : "text-5xl md:text-6xl"} font-black mb-3 bg-gradient-to-r from-pink-300 via-purple-300 to-cyan-300 bg-clip-text text-transparent drop-shadow-sm tracking-tight`}>
                 {archetype.animal_name}
               </h2>
-              <div className={`${isExporting ? "text-3xl" : "text-lg"} font-medium text-slate-300 uppercase tracking-widest`}>{pillarNameKo} 일주</div>
+              <div className={`${isExporting ? "text-3xl" : "text-lg md:text-xl"} font-medium text-slate-200 uppercase tracking-widest`}>{pillarNameKo} 일주</div>
+
+              {/* Professional Manse-ryeok Grid (8 Characters) */}
+              {fourPillars && (
+                <div className="mt-8 grid grid-cols-4 gap-2 max-w-sm mx-auto">
+                  {['hour', 'day', 'month', 'year'].map((pKey) => {
+                    const p = (fourPillars as any)[pKey];
+                    const stemElIdx = ELEMENT_MAP[p.stemElement || '토']; // Fallback for color
+                    const branchElIdx = ELEMENT_MAP[p.branchElement || '토'];
+
+                    return (
+                      <div key={pKey} className="flex flex-col gap-2">
+                        <span className="text-[10px] text-slate-500 font-bold uppercase">{pKey === 'year' ? '년' : pKey === 'month' ? '월' : pKey === 'day' ? '일' : '시'}</span>
+                        {/* Stem */}
+                        <div className={`aspect-square flex flex-col items-center justify-center rounded-xl border ${FIVE_ELEMENTS[stemElIdx].borderColor} ${FIVE_ELEMENTS[stemElIdx].bg} shadow-sm`}>
+                          <span className="text-2xl font-black text-white">{STEM_HANJA[p.stem] || p.stem}</span>
+                          <span className="text-[9px] font-bold opacity-80 text-white">{p.stem}</span>
+                        </div>
+                        {/* Branch */}
+                        <div className={`aspect-square flex flex-col items-center justify-center rounded-xl border ${FIVE_ELEMENTS[branchElIdx].borderColor} ${FIVE_ELEMENTS[branchElIdx].bg} shadow-sm`}>
+                          <span className="text-2xl font-black text-white">{BRANCH_HANJA[p.branch] || p.branch}</span>
+                          <span className="text-[9px] font-bold opacity-80 text-white">{p.branch}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
               {!isExporting && (
                 <div className="flex justify-center mt-4">
                   <div className="px-5 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-full text-xs font-bold text-white shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-                    <span className="mr-2">👤</span> {ageLabel} 프리미엄 분석
+                    <span className="mr-2">✨</span> {ageLabel} 프리미엄 운명 분석
                   </div>
                 </div>
               )}
@@ -273,12 +377,12 @@ export default function ResultCard({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Social Mask */}
-              <div className="p-5 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 hover:border-cyan-500/30 transition-colors shadow-inner">
-                <div className="flex items-center gap-2 mb-3">
-                  <Shield className="w-4 h-4 text-cyan-400" />
-                  <span className="text-xs font-bold text-cyan-400 tracking-widest uppercase">사회적 가면</span>
+              <motion.div whileHover={{ scale: 1.02 }} className="p-6 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 hover:border-cyan-500/50 transition-colors shadow-inner">
+                <div className="flex items-center gap-2 mb-4">
+                  <Shield className="w-5 h-5 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                  <span className="text-sm font-bold text-cyan-400 tracking-widest uppercase">사회적 가면</span>
                 </div>
-                <p className="text-lg font-bold text-white mb-4 leading-snug">&quot;{archetype.base_traits.mask}&quot;</p>
+                <p className="text-xl font-bold text-white mb-5 leading-relaxed">&quot;{archetype.base_traits.mask}&quot;</p>
                 <div className="flex flex-wrap gap-2">
                   {archetype.base_traits.hashtags.map((tag, idx) => (
                     <span key={idx} className="px-3 py-1.5 bg-black/40 border border-cyan-400/20 rounded-full text-[10px] font-bold text-cyan-300">
@@ -286,16 +390,16 @@ export default function ResultCard({
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
 
               {/* Age-specific Hook */}
-              <div className="p-5 bg-gradient-to-br from-amber-500/10 to-orange-500/5 backdrop-blur-md rounded-2xl border border-amber-500/20 hover:border-amber-500/40 transition-colors shadow-inner">
-                <div className="flex items-center gap-2 mb-3">
-                  <Zap className="w-4 h-4 text-amber-400" />
-                  <span className="text-xs font-bold text-amber-400 tracking-widest uppercase">{ageLabel} 전용 인사이트</span>
+              <motion.div whileHover={{ scale: 1.02 }} className="p-6 bg-gradient-to-br from-amber-500/10 to-orange-500/5 backdrop-blur-md rounded-2xl border border-amber-500/20 hover:border-amber-500/50 transition-colors shadow-inner">
+                <div className="flex items-center gap-2 mb-4">
+                  <Zap className="w-5 h-5 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
+                  <span className="text-sm font-bold text-amber-400 tracking-widest uppercase">{ageLabel} 전용 인사이트</span>
                 </div>
-                <p className="text-base font-bold text-amber-100 leading-relaxed">{archetype.displayHook}</p>
-              </div>
+                <p className="text-[1.1rem] font-medium text-amber-100 leading-relaxed tracking-wide">{archetype.displayHook}</p>
+              </motion.div>
             </div>
 
             {/* Secret Preview */}
@@ -319,24 +423,7 @@ export default function ResultCard({
                 </div>
                 {!aiText && (
                   <button
-                    onClick={async () => {
-                      setIsAiLoading(true);
-                      try {
-                        const res = await fetch('/api/ai/personalize', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ code: archetype.code, ageGroup, gender: 'M' }) // Defaulted fallback
-                        });
-                        const data = await res.json();
-                        if (data.success) {
-                          setAiText(data.text);
-                        }
-                      } catch (err) {
-                        console.error(err);
-                      } finally {
-                        setIsAiLoading(false);
-                      }
-                    }}
+                    onClick={handlePersonalize}
                     disabled={isAiLoading}
                     className="shrink-0 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl text-white font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(219,39,119,0.3)] disabled:opacity-50"
                   >
@@ -369,9 +456,26 @@ export default function ResultCard({
           transition={{ delay: 0.3 }}
           className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6"
         >
-          <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <h3 className="font-bold text-white">오행 (五行) 밸런스</h3>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <h3 className="font-bold text-white">오행 (五行) 밸런스</h3>
+            </div>
+            {/* Calculation Mode Toggle */}
+            <div className="flex items-center bg-white/5 rounded-full p-1 border border-white/10">
+              <button
+                onClick={() => setAnalysisMode('basic')}
+                className={`text-[10px] px-3 py-1 rounded-full transition-all ${analysisMode === 'basic' ? 'bg-indigo-500 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+              >
+                기본
+              </button>
+              <button
+                onClick={() => setAnalysisMode('advanced')}
+                className={`text-[10px] px-3 py-1 rounded-full transition-all ${analysisMode === 'advanced' ? 'bg-indigo-500 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+              >
+                지장간
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
@@ -395,12 +499,67 @@ export default function ResultCard({
                 key={el.name}
                 name={el.name}
                 score={elementScores[i]}
+                count={elementCounts[i]}
                 color={el.color}
                 icon={el.icon}
                 desc={el.desc}
                 delay={i * 0.08}
               />
             ))}
+          </div>
+        </motion.div>
+
+        {/* Card: 부족한 기운 보완 (개운법) */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-gradient-to-br from-indigo-900/30 to-slate-900/30 backdrop-blur-xl border border-indigo-500/30 rounded-2xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.3)]"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <Zap className="w-4 h-4 text-indigo-400" />
+            <h3 className="font-bold text-white italic">부족한 기운 채우기 (개운법)</h3>
+          </div>
+
+          <div className="space-y-4">
+            {FIVE_ELEMENTS.filter((_, i) => elementCounts[i] === 0).length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {FIVE_ELEMENTS.filter((_, i) => elementCounts[i] === 0).map((el, i) => {
+                  const remedy = ELEMENT_REMEDIES[el.name.split(" ")[0]];
+                  return (
+                    <div key={i} className="bg-black/40 rounded-xl p-4 border border-white/5 shadow-inner">
+                      <p className="text-xs font-bold text-indigo-400 mb-2 flex items-center gap-2">
+                        <span>{el.icon}</span> {el.name} 보충 솔루션
+                      </p>
+                      <ul className="space-y-2">
+                        <li className="text-[11px] text-slate-300 flex justify-between">
+                          <span className="text-slate-500">추천 아이템</span>
+                          <span className="font-bold text-white">{remedy.items}</span>
+                        </li>
+                        <li className="text-[11px] text-slate-300 flex justify-between">
+                          <span className="text-slate-500">행운의 색상</span>
+                          <span className="font-bold text-white">{remedy.color}</span>
+                        </li>
+                        <li className="text-[11px] text-slate-300 flex justify-between">
+                          <span className="text-slate-500">길한 방향</span>
+                          <span className="font-bold text-white">{remedy.direction}</span>
+                        </li>
+                      </ul>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-xs text-slate-400 text-center py-4 bg-white/5 rounded-xl border border-dashed border-white/10">
+                당신은 모든 오행을 골고루 갖춘 완벽한 균형의 소유자입니다! ✨
+              </p>
+            )}
+            <div className="p-3 bg-indigo-500/10 rounded-lg border border-indigo-500/20">
+              <p className="text-[10px] text-slate-400 leading-relaxed text-center">
+                &quot;비어있는 기운을 채우면 운의 흐름이 바뀝니다&quot;<br />
+                전문 상담가들이 1순위로 권장하는 정통 명리학적 보완법입니다.
+              </p>
+            </div>
           </div>
         </motion.div>
 
@@ -496,10 +655,20 @@ export default function ResultCard({
         </motion.div>
 
         {/* Footer Badge */}
-        <div className="text-center pt-2">
-          <span className="inline-block px-5 py-2 bg-cyan-500/10 border border-cyan-400/20 rounded-full text-xs text-cyan-300 font-mono mb-4">
+        <div className="text-center pt-2 space-y-2">
+          <span className="inline-block px-5 py-2 bg-cyan-500/10 border border-cyan-400/20 rounded-full text-xs text-cyan-300 font-mono">
             ✨ DIGITAL ACRYLIC KEYRING · {pillarNameKo} · 60 ARCHETYPES ✨
           </span>
+          {version && integrity && (
+            <div className="flex flex-col items-center gap-1">
+              <p className="text-[9px] text-slate-600 font-mono tracking-tighter uppercase">
+                Engine: {version} · Model: HIDDEN_WEIGHTED_V1
+              </p>
+              <p className="text-[7px] text-slate-700 font-mono break-all max-w-[200px] leading-tight">
+                INTEGRITY: {integrity}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Export Viral Watermark Footer */}
@@ -520,31 +689,26 @@ export default function ResultCard({
             </p>
           </div>
         )}
-      </motion.div>
+      </motion.div >
       <div className="max-w-2xl mx-auto mt-6 px-4 pb-10 flex flex-col sm:flex-row gap-4">
         <button
           onClick={handleExportImage}
           className="flex-1 py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-black text-white text-lg shadow-[0_10px_30px_rgba(168,85,247,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
         >
           <Download className="w-6 h-6" />
-          인스타 맞춤 티켓 캡처
+          인스타 맞춤 티켓 소장
         </button>
         <button
           onClick={async () => {
             const shareUrl = `https://${process.env.NEXT_PUBLIC_BASE_URL || "secret-saju.vercel.app"}/?ref=viral_${archetype.code}`;
-            if (navigator.share) {
-              try {
-                await navigator.share({
-                  title: 'Secret Paws: 나의 본능 테스트',
-                  text: `나는 [${archetype.animal_name}] 팩폭을 맞았어... 너의 숨겨진 동물은 뭘까? 지금 바로 확인해봐!`,
-                  url: shareUrl,
-                });
-              } catch (err) {
-                console.error("Share failed:", err);
-              }
-            } else {
-              navigator.clipboard.writeText(shareUrl);
+            const result = await handleShare('Secret Paws: 나의 본능 성적표', `나는 [${archetype.animal_name}] 팩폭을 맞았어... 네 본질은 뭔지 확인해봐 🐾`, shareUrl);
+
+            if (result === 'copied') {
               setToastMessage("공유 링크가 복사되었습니다!");
+              setShowToast(true);
+              setTimeout(() => setShowToast(false), 3000);
+            } else if (result === 'shared') {
+              setToastMessage("친구에게 운명을 공유했습니다 🔮");
               setShowToast(true);
               setTimeout(() => setShowToast(false), 3000);
             }

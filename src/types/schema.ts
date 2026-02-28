@@ -76,6 +76,7 @@ export interface SajuProfile {
     birthTime: Date | null;
     isTimeUnknown: boolean;
     calendarType: CalendarType;
+    isLeapMonth: boolean; // Added
     gender: Gender;
     createdAt: Date;
     updatedAt: Date;
@@ -126,6 +127,7 @@ export interface SajuProfileDTO {
     birth_time: string | null;
     is_time_unknown: boolean;
     calendar_type: string;
+    is_leap_month: boolean; // Added
     gender: string;
     created_at: string; // ISO datetime string
     updated_at: string;
@@ -160,6 +162,7 @@ export interface CreateSajuProfileRequest {
     birthTime?: string;  // HH:mm
     isTimeUnknown?: boolean;
     calendarType: CalendarType;
+    isLeapMonth?: boolean; // Added
     gender: Gender;
 }
 
@@ -185,6 +188,7 @@ export class SajuProfileMapper {
             birthTime: dto.birth_time ? new Date(`1970-01-01T${dto.birth_time}`) : null,
             isTimeUnknown: dto.is_time_unknown,
             calendarType: dto.calendar_type as CalendarType,
+            isLeapMonth: dto.is_leap_month || false,
             gender: dto.gender as Gender,
             createdAt: new Date(dto.created_at),
             updatedAt: new Date(dto.updated_at),
@@ -239,6 +243,7 @@ export class SajuProfileMapper {
             birthTime: birthTimeDate,
             isTimeUnknown: req.isTimeUnknown || false,
             calendarType: req.calendarType,
+            isLeapMonth: req.isLeapMonth || false,
             gender: req.gender,
         };
     }

@@ -49,9 +49,7 @@ export const ENV = {
 export const APP_CONFIG = {
     NAME: 'Secret Paws - 990 사주마미',
     VERSION: '1.0.0',
-    // Fallback order: Explicit ENV -> Vercel PR URL -> Vercel Production URL -> localhost
-    BASE_URL: process.env.NEXT_PUBLIC_BASE_URL ||
-        (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : 'http://localhost:3000'),
+    BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : ''),
     API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || '/api',
 } as const;
 

@@ -41,6 +41,6 @@ export const SIGNUP_REWARDS = {
  * Share URL generator (for Kakao/SNS)
  */
 export function generateInviteUrl(referralCode: string, baseUrl?: string): string {
-    const domain = baseUrl || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const domain = baseUrl || process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : '');
     return `${domain}/invite/${referralCode}`;
 }

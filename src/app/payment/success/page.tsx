@@ -57,25 +57,25 @@ function SuccessContent() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-surface p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-white/10"
+        className="bg-surface p-8 md:p-12 rounded-4xl shadow-2xl max-w-md w-full text-center border border-border-color"
       >
         {status === 'loading' && (
           <div className="flex flex-col items-center">
-            <Loader2 className="w-16 h-16 text-yellow-400 animate-spin mb-4" />
-            <h2 className="text-xl font-bold mb-2">결제 확인 중</h2>
-            <p className="text-zinc-400">{message}</p>
+            <Loader2 className="w-16 h-16 text-primary animate-spin mb-6" />
+            <h2 className="text-2xl font-black text-foreground mb-3">결제 확인 중</h2>
+            <p className="text-secondary font-medium">{message}</p>
           </div>
         )}
 
         {status === 'success' && (
           <div className="flex flex-col items-center">
-            <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
-            <h2 className="text-2xl font-bold mb-2">결제 성공!</h2>
-            <p className="text-zinc-400 mb-6">{message}</p>
-            <p className="text-xs text-zinc-500">잠시 후 마이페이지로 이동합니다...</p>
+            <CheckCircle className="w-20 h-20 text-emerald-500 mb-6" />
+            <h2 className="text-3xl font-black text-foreground uppercase tracking-tight mb-4">결제 성공!</h2>
+            <p className="text-primary font-bold text-xl mb-8">{message}</p>
+            <p className="text-sm text-secondary font-medium italic mb-2">잠시 후 마이페이지로 이동합니다...</p>
             <button
               onClick={() => router.push('/mypage')}
-              className="mt-6 w-full py-3 bg-yellow-400 text-black font-bold rounded-xl hover:bg-yellow-500 transition"
+              className="mt-6 w-full py-5 bg-gradient-to-r from-primary to-indigo-600 text-white font-black text-lg rounded-2xl hover:scale-105 transition-all shadow-xl"
             >
               마이페이지로 이동
             </button>
@@ -84,12 +84,12 @@ function SuccessContent() {
 
         {status === 'error' && (
           <div className="flex flex-col items-center">
-            <XCircle className="w-16 h-16 text-red-500 mb-4" />
-            <h2 className="text-xl font-bold mb-2">결제 확인 실패</h2>
-            <p className="text-red-400 mb-6">{message}</p>
+            <XCircle className="w-20 h-20 text-rose-500 mb-6" />
+            <h2 className="text-3xl font-black text-foreground uppercase tracking-tight mb-4">결제 확인 실패</h2>
+            <p className="text-rose-400 font-bold mb-8">{message}</p>
             <button
               onClick={() => router.push('/mypage')}
-              className="w-full py-3 bg-zinc-800 text-white font-bold rounded-xl hover:bg-zinc-700 transition"
+              className="w-full py-5 bg-background border border-border-color text-secondary font-black text-lg rounded-2xl hover:text-foreground transition-all"
             >
               돌아가기
             </button>

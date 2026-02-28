@@ -106,23 +106,23 @@ export default function JellyShopModal({
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Header */}
-                            <div className="relative bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 p-6 text-center">
+                            <div className="relative p-6 text-center border-b" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--border-color)' }}>
                                 <button
                                     onClick={onClose}
-                                    className="absolute top-4 right-4 p-2 rounded-full bg-black/20 hover:bg-black/30 text-white transition"
+                                    className="absolute top-4 right-4 p-2 rounded-full transition"
+                                    style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)' }}
                                 >
                                     <X className="w-5 h-5" />
                                 </button>
 
                                 <div className="flex items-center justify-center gap-2 mb-2">
-                                    <Sparkles className="w-6 h-6 text-white" />
-                                    <h2 className="text-2xl font-bold text-white">
-                                        젤리 충전소
+                                    <Sparkles className="w-5 h-5" style={{ color: 'var(--primary)' }} />
+                                    <h2 className="text-xl font-bold" style={{ color: 'var(--text-foreground)' }}>
+                                        젤리 충전하기
                                     </h2>
-                                    <Sparkles className="w-6 h-6 text-white" />
                                 </div>
-                                <p className="text-white/90 text-sm">
-                                    지금 충전하고 운명의 비밀을 더 알아보세요!
+                                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                                    충전하고 비밀 분석을 잠금 해제하세요
                                 </p>
                             </div>
 

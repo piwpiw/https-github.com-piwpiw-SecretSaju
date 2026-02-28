@@ -13,10 +13,10 @@ export default function LoadingGlitch({ onComplete }: LoadingGlitchProps) {
     const [step, setStep] = useState(0);
 
     const steps = [
-        { title: "INITIALIZING SAJU ENGINE", icon: Cpu, color: "text-cyan-400", bg: "bg-cyan-500/20" },
-        { title: "EXTRACTING TEN-GODS (SIPSONG)", icon: Database, color: "text-purple-400", bg: "bg-purple-500/20" },
-        { title: "ANALYZING 60-PILLAR MATRIX", icon: Activity, color: "text-pink-400", bg: "bg-pink-500/20" },
-        { title: "DECRYPTING HIDDEN INSTINCTS", icon: ShieldCheck, color: "text-yellow-400", bg: "bg-yellow-500/20" },
+        { title: "사주 엔진 초기화 중", icon: Cpu, color: "text-indigo-400", bg: "bg-indigo-500/20" },
+        { title: "십신(十神) 분석 중", icon: Database, color: "text-purple-400", bg: "bg-purple-500/20" },
+        { title: "60갑자 매칭 중", icon: Activity, color: "text-pink-400", bg: "bg-pink-500/20" },
+        { title: "성격 유형 판별 중", icon: ShieldCheck, color: "text-amber-400", bg: "bg-amber-500/20" },
     ];
 
     useEffect(() => {
@@ -29,7 +29,6 @@ export default function LoadingGlitch({ onComplete }: LoadingGlitchProps) {
                 }
                 const nextProgress = prev + Math.random() * 15;
 
-                // Update step based on progress
                 if (nextProgress < 25) setStep(0);
                 else if (nextProgress < 50) setStep(1);
                 else if (nextProgress < 75) setStep(2);
@@ -45,34 +44,31 @@ export default function LoadingGlitch({ onComplete }: LoadingGlitchProps) {
     const CurrentIcon = steps[step].icon;
 
     return (
-        <div className="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden" style={{ backgroundColor: 'var(--background)' }}>
             {/* Ambient Background */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.1)_0%,transparent_70%)]"></div>
-            <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full pointer-events-none"></div>
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-pink-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.08)_0%,transparent_70%)]"></div>
 
             <div className="relative z-10 w-full max-w-md px-6 flex flex-col items-center">
                 {/* Visualizer Ring */}
-                <div className="relative w-48 h-48 mb-12 flex items-center justify-center">
+                <div className="relative w-40 h-40 mb-10 flex items-center justify-center">
                     <motion.div
-                        className="absolute inset-0 rounded-full border border-white/5 border-t-cyan-400/50 border-r-purple-400/50"
+                        className="absolute inset-0 rounded-full border-2 border-indigo-500/20"
                         animate={{ rotate: 360 }}
                         transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                     />
                     <motion.div
-                        className="absolute inset-2 rounded-full border border-white/5 border-b-pink-400/50 border-l-yellow-400/50"
+                        className="absolute inset-3 rounded-full border border-purple-500/15"
                         animate={{ rotate: -360 }}
                         transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
                     />
-                    <div className="absolute inset-4 rounded-full bg-black/40 backdrop-blur-xl border border-white/10 flex items-center justify-center shadow-[0_0_50px_rgba(56,189,248,0.2)]">
+                    <div className="absolute inset-6 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border-color)' }}>
                         <motion.div
                             key={step}
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.8, opacity: 0 }}
-                            className={`p-4 rounded-full ${steps[step].bg}`}
+                            className={`p-3 rounded-full ${steps[step].bg}`}
                         >
-                            <CurrentIcon className={`w-8 h-8 ${steps[step].color}`} />
+                            <CurrentIcon className={`w-7 h-7 ${steps[step].color}`} />
                         </motion.div>
                     </div>
                 </div>
@@ -83,39 +79,33 @@ export default function LoadingGlitch({ onComplete }: LoadingGlitchProps) {
                         key={step}
                         initial={{ y: 10, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        className={`text-sm font-black tracking-widest ${steps[step].color} mb-2`}
+                        className={`text-base font-bold ${steps[step].color} mb-2`}
                     >
                         {steps[step].title}
                     </motion.div>
-                    <div className="text-slate-400 text-xs font-mono">
-                        {Math.floor(progress)}% / 100%
+                    <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                        {Math.floor(progress)}%
                     </div>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/10 shadow-inner">
+                <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border-color)' }}>
                     <motion.div
-                        className="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500"
-                        style={{
-                            width: `${Math.min(progress, 100)}%`,
-                            boxShadow: "0 0 20px rgba(168,85,247,0.5)",
-                        }}
+                        className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full"
+                        style={{ width: `${Math.min(progress, 100)}%` }}
                         initial={{ width: "0%" }}
                         animate={{ width: `${Math.min(progress, 100)}%` }}
                         transition={{ type: "spring", stiffness: 50 }}
                     />
                 </div>
 
-                {/* Data Stream */}
-                <div className="mt-8 font-mono text-[10px] text-slate-600 tracking-widest flex flex-col items-center gap-1 opacity-50">
+                {/* Korean status lines */}
+                <div className="mt-6 text-xs flex flex-col items-center gap-1" style={{ color: 'var(--text-secondary)' }}>
                     <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity }}>
-                        {'>'} ANALYZING DEMOGRAPHIC VECTOR...
+                        음양오행 데이터 분석 중...
                     </motion.div>
                     <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, delay: 0.5, repeat: Infinity }}>
-                        {'>'} RESOLVING YIN-YANG CONFLICTS...
-                    </motion.div>
-                    <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, delay: 1, repeat: Infinity }}>
-                        {'>'} COMPILING ANIMAL ARCHETYPES...
+                        동물 아키타입 매칭 중...
                     </motion.div>
                 </div>
             </div>

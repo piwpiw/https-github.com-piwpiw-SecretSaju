@@ -6,9 +6,9 @@ interface WalletContextType {
     churu: number; // Coins
     nyang: number; // Points
     addChuru: (amount: number) => void;
-    useChuru: (amount: number) => boolean;
+    consumeChuru: (amount: number) => boolean;
     addNyang: (amount: number) => void;
-    useNyang: (amount: number) => boolean;
+    consumeNyang: (amount: number) => boolean;
 }
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
@@ -52,7 +52,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     }, [churu, nyang]);
 
     const addChuru = (amount: number) => setChuru((prev) => prev + amount);
-    const useChuru = (amount: number) => {
+    const consumeChuru = (amount: number) => {
         if (churu >= amount) {
             setChuru((prev) => prev - amount);
             return true;
@@ -61,7 +61,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     };
 
     const addNyang = (amount: number) => setNyang((prev) => prev + amount);
-    const useNyang = (amount: number) => {
+    const consumeNyang = (amount: number) => {
         if (nyang >= amount) {
             setNyang((prev) => prev - amount);
             return true;
@@ -70,7 +70,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <WalletContext.Provider value={{ churu, nyang, addChuru, useChuru, addNyang, useNyang }}>
+        <WalletContext.Provider value={{ churu, nyang, addChuru, consumeChuru, addNyang, consumeNyang }}>
             {children}
         </WalletContext.Provider>
     );

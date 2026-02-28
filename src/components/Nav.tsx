@@ -3,114 +3,279 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-
-import { useTheme } from "./ThemeProvider";
 import { useWallet } from "./WalletProvider";
-import { Palette, Menu } from "lucide-react";
+import { useTheme } from "./ThemeProvider";
+import { useLocale } from "@/lib/i18n";
+import { User, Menu, X, Sun, Moon, Eye, Globe, CloudSun, ChevronDown, Smartphone } from "lucide-react";
 import { motion } from "framer-motion";
-
-const LINKS = [
-  { href: "/", label: "일주 보기" },
-  { href: "/dashboard", label: "관계 지도" },
-  { href: "/compatibility", label: "궁합" },
-  { href: "/fortune", label: "신년운세" },
-] as const;
+import { useState } from "react";
+import { THEMES, ThemeType } from "@/lib/themes";
 
 export function Nav() {
   const pathname = usePathname();
+  const { churu } = useWallet();
   const { theme, setTheme } = useTheme();
-  const { churu, nyang } = useWallet();
+  const { locale, setLocale, t } = useLocale();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [activeProfile, setActiveProfile] = useState("게스트");
 
-  const toggleTheme = () => {
-    const themes: ('mystic' | 'minimal' | 'cyber')[] = ['mystic', 'minimal', 'cyber'];
-    const nextIndex = (themes.indexOf(theme) + 1) % themes.length;
-    setTheme(themes[nextIndex]);
+  const LINKS = [
+    { href: "/", label: "홈" },
+    { href: "/luck", label: "액운/행운" },
+    { href: "/destiny", label: "운명/궁합" },
+    { href: "/healing", label: "소원/힐링" },
+    { href: "/dreams", label: "꿈해몽" }
+  ];
+
+  const themeIcons: Record<ThemeType, typeof Sun> = {
+    dark: Moon,
+    light: Sun,
+    readable: Eye,
   };
 
+  const ThemeIcon = themeIcons[theme];
+
   return (
-    <>
-      <div className="bg-black/80 backdrop-blur-md border-b border-white/10 relative z-50">
-        <div className="max-w-6xl mx-auto px-6 py-2 flex items-center justify-between text-xs font-mono tracking-widest text-slate-400">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 opacity-80 cursor-default">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)] animate-pulse" />
-              SYSTEM.ONLINE
+    <nav className="sticky top-0 z-[60] w-full backdrop-blur-md border-b" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--border-color)' }}>
+      <div className="max-w-6xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2 shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center shadow-md">
+            <span className="text-white text-sm font-black">점</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-lg leading-tight hidden sm:block" style={{ color: 'var(--text-foreground)' }}>
+              점신사주
             </span>
+            <span className="text-[10px] text-slate-500 hidden sm:block leading-none">내 인생의 큐레이터</span>
+          </div>
+        </Link>
+
+        {/* Desktop Links */}
+        <div className="hidden md:flex items-center gap-1">
+          {LINKS.map(({ href, label }) => {
+            const isActive = pathname === href;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  "relative px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                  isActive ? "font-bold" : "opacity-60 hover:opacity-100"
+                )}
+                style={{ color: 'var(--text-foreground)' }}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="nav_active"
+                    className="absolute inset-0 rounded-lg"
+                    style={{ backgroundColor: 'var(--surface)' }}
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
+                  />
+                )}
+                <span className="relative z-10">{label}</span>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Center: Weather & Profile Widget (Desktop) */}
+        <div className="hidden lg:flex items-center gap-4">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800">
+            <CloudSun className="w-4 h-4 text-sky-500" />
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">서울 12℃</span>
+            <span className="text-[10px] text-green-500 font-medium ml-1">좋음</span>
           </div>
 
-          <div className="flex items-center gap-6">
-            <Link href="/mypage" className="flex items-center gap-2 hover:text-yellow-400 transition-colors group">
-              <span className="opacity-70 group-hover:opacity-100">Jelly</span>
-              <span className="font-black text-white group-hover:text-yellow-400">{churu || 0}</span>
-            </Link>
-            <div className="w-px h-3 bg-white/20" />
-            <Link href="/mypage" className="flex items-center gap-2 hover:text-pink-400 transition-colors group">
-              <span className="opacity-70 group-hover:opacity-100">Bonus</span>
-              <span className="font-black text-white group-hover:text-pink-400">{nyang || 0}</span>
-            </Link>
-            <div className="w-px h-3 bg-white/20" />
-            <Link href="/mypage" className="hover:text-white transition-colors">MY_ACCOUNT</Link>
+          <div className="relative">
+            <button
+              onClick={() => setProfileOpen(!profileOpen)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
+            >
+              <User className="w-3.5 h-3.5" />
+              <span className="text-xs font-bold">{activeProfile}님</span>
+              <ChevronDown className="w-3.5 h-3.5" />
+            </button>
+
+            {profileOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setProfileOpen(false)} />
+                <motion.div
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute top-10 right-0 z-50 w-48 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg overflow-hidden py-2"
+                >
+                  <div className="px-3 py-1.5 text-[10px] text-slate-500 font-medium uppercase tracking-wider">프로필 선택</div>
+                  {["본인 (게스트)", "가족 1", "친구 1", "+ 새 프로필"].map((name, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        if (!name.includes('+')) setActiveProfile(name.split(' ')[0]);
+                        setProfileOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
+                    >
+                      {name}
+                    </button>
+                  ))}
+                </motion.div>
+              </>
+            )}
           </div>
+        </div>
+
+        {/* Right Side */}
+        <div className="flex items-center gap-2">
+          {/* Jelly */}
+          <Link
+            href="/mypage"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors"
+            style={{ backgroundColor: 'var(--surface)' }}
+          >
+            <span className="font-bold" style={{ color: 'var(--primary)' }}>{churu || 0}</span>
+            <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>{t('nav.jelly')}</span>
+          </Link>
+
+          {/* Settings (theme + language) */}
+          <div className="relative">
+            <button
+              onClick={() => setSettingsOpen(!settingsOpen)}
+              className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
+              style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)' }}
+              aria-label="설정"
+            >
+              <ThemeIcon className="w-4 h-4" />
+            </button>
+
+            {settingsOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setSettingsOpen(false)} />
+                <motion.div
+                  initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  className="absolute right-0 top-12 z-50 w-56 rounded-xl shadow-2xl border overflow-hidden"
+                  style={{ backgroundColor: 'var(--background)', borderColor: 'var(--border-color)' }}
+                >
+                  {/* Theme Section */}
+                  <div className="p-3 border-b" style={{ borderColor: 'var(--border-color)' }}>
+                    <p className="text-[11px] font-medium mb-2 px-1" style={{ color: 'var(--text-secondary)' }}>테마</p>
+                    <div className="space-y-1">
+                      {(Object.keys(THEMES) as ThemeType[]).map((key) => {
+                        const Icon = themeIcons[key];
+                        return (
+                          <button
+                            key={key}
+                            onClick={() => { setTheme(key); }}
+                            className={cn(
+                              "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all text-left",
+                              theme === key ? "font-bold" : "opacity-60 hover:opacity-100"
+                            )}
+                            style={{
+                              color: 'var(--text-foreground)',
+                              backgroundColor: theme === key ? 'var(--surface)' : 'transparent',
+                            }}
+                          >
+                            <Icon className="w-4 h-4" />
+                            {THEMES[key].label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Language Section */}
+                  <div className="p-3">
+                    <p className="text-[11px] font-medium mb-2 px-1" style={{ color: 'var(--text-secondary)' }}>언어 / Language</p>
+                    <div className="space-y-1">
+                      {[
+                        { key: 'ko' as const, label: '한국어' },
+                        { key: 'en' as const, label: 'English' },
+                      ].map(({ key, label }) => (
+                        <button
+                          key={key}
+                          onClick={() => { setLocale(key); }}
+                          className={cn(
+                            "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all text-left",
+                            locale === key ? "font-bold" : "opacity-60 hover:opacity-100"
+                          )}
+                          style={{
+                            color: 'var(--text-foreground)',
+                            backgroundColor: locale === key ? 'var(--surface)' : 'transparent',
+                          }}
+                        >
+                          <Globe className="w-4 h-4" />
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </div>
+
+          {/* My Page */}
+          <Link
+            href="/mypage"
+            className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
+            style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)' }}
+            aria-label={t('nav.mypage')}
+          >
+            <User className="w-4 h-4" />
+          </Link>
+
+          {/* APP Download CTA */}
+          <button className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-bold shadow-sm transition-colors">
+            <Smartphone className="w-4 h-4" />
+            앱으로 보기
+          </button>
+
+          {/* Mobile Toggle */}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="md:hidden w-9 h-9 rounded-lg flex items-center justify-center"
+            style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)' }}
+            aria-label={t('nav.menu')}
+          >
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
       </div>
 
-      <nav className="sticky top-4 z-[60] mt-4 px-4 w-full pointer-events-none">
-        <div className="max-w-4xl mx-auto bg-black/40 backdrop-blur-2xl border border-white/15 rounded-full px-6 py-3 flex items-center justify-between shadow-2xl pointer-events-auto group/nav hover:border-white/30 transition-all duration-300">
-          <Link href="/" className="flex items-center gap-3 relative mr-8 group/logo">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-purple-500 p-[1px] shadow-lg">
-              <div className="w-full h-full bg-black rounded-full flex items-center justify-center overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-transparent" />
-                <span className="text-xl relative z-10">🐾</span>
-              </div>
-            </div>
-            <span className="font-black text-lg bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent hidden sm:block tracking-tight">
-              Secret Paws
-            </span>
-          </Link>
-
-          <div className="flex-1 flex items-center justify-center gap-2 overflow-x-auto no-scrollbar">
+      {/* Mobile Menu */}
+      {mobileOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="md:hidden border-t"
+          style={{ backgroundColor: 'var(--background)', borderColor: 'var(--border-color)' }}
+        >
+          <div className="px-4 py-3 space-y-1">
             {LINKS.map(({ href, label }) => {
               const isActive = pathname === href;
               return (
                 <Link
                   key={href}
                   href={href}
+                  onClick={() => setMobileOpen(false)}
                   className={cn(
-                    "relative px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap",
-                    isActive ? "text-white" : "text-slate-400 hover:text-slate-200"
+                    "block px-4 py-3 rounded-lg text-sm font-medium transition-all",
+                    isActive ? "font-bold" : "opacity-60"
                   )}
+                  style={{
+                    color: 'var(--text-foreground)',
+                    backgroundColor: isActive ? 'var(--surface)' : 'transparent',
+                  }}
                 >
-                  {isActive && (
-                    <motion.div
-                      layoutId="nav_indicator"
-                      className="absolute inset-0 bg-white/10 border border-white/20 rounded-full shadow-[inset_0_0_15px_rgba(255,255,255,0.05)]"
-                      transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
-                    />
-                  )}
-                  <span className="relative z-10 drop-shadow-sm">{label}</span>
+                  {label}
                 </Link>
               );
             })}
           </div>
-
-          <div className="flex items-center gap-3 ml-4 pl-4 border-l border-white/10">
-            <button
-              onClick={toggleTheme}
-              className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-slate-400 hover:text-white"
-              aria-label="Toggle Theme"
-            >
-              <Palette className="w-5 h-5 hover:scale-110 transition-transform" />
-            </button>
-            <Link
-              href="/mypage"
-              className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg hover:shadow-pink-500/25 hover:scale-105 transition-all"
-              aria-label="My Page"
-            >
-              <Menu className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </nav>
-    </>
+        </motion.div>
+      )}
+    </nav>
   );
 }

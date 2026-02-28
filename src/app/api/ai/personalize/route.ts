@@ -1,16 +1,20 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { generatePersonalizedFortune } from '@/lib/ai';
 import { getAuthenticatedUser } from '@/lib/api-auth';
 import { getArchetypeByCode } from '@/lib/archetypes';
+import { deductJelly } from '@/lib/wallet-server';
+import { getSupabaseAdmin } from "@/lib/supabase";
+
+export const dynamic = "force-dynamic";
 
 /**
  * [gem-backend] POST /api/ai/personalize
  * 인증된 유저만 젤리를 소모하고 AI 텍스트 생성 API 호출 가능.
  */
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
         // 1. Auth Validation (Using the gem-backend optimized pattern)
-        const { user, error } = await getAuthenticatedUser(req as any);
+        const { user, error } = await getAuthenticatedUser(req);
         const isMock = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
         if (!user && !isMock) {
@@ -33,7 +37,7 @@ export async function POST(req: Request) {
 
         // 4. Token Diet: Caching Layer to Prevent OpenAI Billing Bombs
         const cacheHash = `${code}_${ageGroup}_${gender}_mini_v1`;
-        const supabase = await import('@/lib/supabase').then(m => m.getSupabaseAdmin());
+        const supabase = getSupabaseAdmin();
 
         if (supabase && !isMock) {
             const { data: cached } = await supabase
@@ -44,8 +48,19 @@ export async function POST(req: Request) {
 
             if (cached?.response_text) {
                 console.log(`[AI Cache Hit] Reusing generated text for: ${cacheHash}`);
-                // 5. Future: Deduct 500 Jellies
-                // await deductJelly(user.id, 500);
+
+                // 5. Deduct 300 Jellies (MVP: Always deduct for the premium value)
+                if (!isMock && user) {
+                    const deduction = await deductJelly(user.id, 300, `Premium Analysis: ${code}`);
+                    if (!deduction.success) {
+                        return NextResponse.json({
+                            error: '젤리가 부족합니다.',
+                            code: 'INSUFFICIENT_JELLIES',
+                            balance: deduction.currentBalance
+                        }, { status: 402 });
+                    }
+                }
+
                 return NextResponse.json({ success: true, text: cached.response_text, cached: true });
             }
         }
@@ -71,8 +86,17 @@ export async function POST(req: Request) {
             }, { onConflict: 'request_hash' });
         }
 
-        // 7. Future: Deduct 500 Jellies
-        // await deductJelly(user.id, 500);
+        // 7. Deduct 300 Jellies for fresh generation
+        if (!isMock && user) {
+            const deduction = await deductJelly(user.id, 300, `Premium Analysis (Generated): ${code}`);
+            if (!deduction.success) {
+                return NextResponse.json({
+                    error: '젤리가 부족합니다.',
+                    code: 'INSUFFICIENT_JELLIES',
+                    balance: deduction.currentBalance
+                }, { status: 402 });
+            }
+        }
 
         return NextResponse.json({ success: true, text: aiText, cached: false });
 

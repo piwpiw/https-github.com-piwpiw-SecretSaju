@@ -6,7 +6,13 @@ import { getDayPillarIndex } from "@/lib/saju";
 import { getYearlyFortune } from "@/lib/yearlyFortune";
 import { validateBirthInput } from "@/lib/validation";
 import Link from "next/link";
-import { Sparkles, Star, TrendingUp, Heart, Briefcase, DollarSign, Activity } from "lucide-react";
+import {
+  Sparkles, Star, TrendingUp, Heart, Briefcase,
+  DollarSign, Activity, Loader2, ChevronRight,
+  ArrowLeft, History, Calculator, Target
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useLocale } from "@/lib/i18n";
 
 const YEARS = [2025, 2026, 2027, 2028];
 
@@ -18,32 +24,31 @@ const FORTUNE_COLORS = [
   "from-blue-400 to-indigo-500",
   "from-purple-400 to-violet-500",
 ];
-const FORTUNE_LABELS = ["총운", "애정운", "금전운", "직장운", "건강운"];
 
 function FortuneScoreBar({ label, score, color, icon: Icon, delay }: {
   label: string; score: number; color: string; icon: any; delay: number;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, x: -30 }}
+      whileInView={{ opacity: 1, x: 0 }}
       transition={{ delay }}
-      className="flex items-center gap-3"
+      className="flex items-center gap-8 group bg-surface p-6 rounded-3xl border border-border-color shadow-sm"
     >
-      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center flex-shrink-0`}>
-        <Icon className="w-4 h-4 text-white" />
+      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center flex-shrink-0 shadow-xl group-hover:rotate-6 transition-transform`}>
+        <Icon className="w-8 h-8 text-white" />
       </div>
       <div className="flex-1">
-        <div className="flex justify-between mb-1">
-          <span className="text-xs text-slate-400">{label}</span>
-          <span className="text-xs font-bold text-white">{score}%</span>
+        <div className="flex justify-between mb-4">
+          <span className="text-xl font-bold text-secondary">{label}</span>
+          <span className="text-2xl font-black text-foreground">{score}%</span>
         </div>
-        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+        <div className="h-3 bg-background rounded-full overflow-hidden border border-border-color">
           <motion.div
             className={`h-full bg-gradient-to-r ${color} rounded-full`}
             initial={{ width: 0 }}
-            animate={{ width: `${score}%` }}
-            transition={{ duration: 1, delay: delay + 0.2, ease: "easeOut" }}
+            whileInView={{ width: `${score}%` }}
+            transition={{ duration: 1.5, delay: delay + 0.3, ease: "easeOut" }}
           />
         </div>
       </div>
@@ -52,6 +57,8 @@ function FortuneScoreBar({ label, score, color, icon: Icon, delay }: {
 }
 
 export default function FortunePage() {
+  const router = useRouter();
+  const { t, locale } = useLocale();
   const [year, setYear] = useState(2026);
   const [yearInput, setYearInput] = useState("");
   const [month, setMonth] = useState("");
@@ -69,7 +76,7 @@ export default function FortunePage() {
     const mi = parseInt(month.trim(), 10);
     const di = parseInt(day.trim(), 10);
     if (Number.isNaN(yi) || Number.isNaN(mi) || Number.isNaN(di)) {
-      setError("생년월일을 올바르게 입력하세요.");
+      setError(locale === 'ko' ? "입력 데이터가 올바르지 않습니다." : "Invalid input data.");
       return;
     }
     const v = validateBirthInput({ year: yi, month: mi, day: di });
@@ -83,14 +90,20 @@ export default function FortunePage() {
       const idx = getDayPillarIndex(v.birth);
       setResult(getYearlyFortune(idx, year));
       setLoading(false);
-    }, 900);
+    }, 1200);
   };
 
-  // Generate deterministic scores from pillar index
   const getScores = () => {
     if (!result) return [];
     const base = result.pillarName.charCodeAt(0) + result.pillarName.charCodeAt(1);
-    return FORTUNE_LABELS.map((label, i) => ({
+    const labels = [
+      t('fortune.overall'),
+      t('fortune.love'),
+      t('fortune.money'),
+      t('fortune.career'),
+      t('fortune.health')
+    ];
+    return labels.map((label, i) => ({
       label,
       score: Math.min(95, Math.max(45, ((base * (i + 3)) % 55) + 40)),
       color: FORTUNE_COLORS[i],
@@ -99,169 +112,131 @@ export default function FortunePage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950">
-      <div className="max-w-md mx-auto px-4 py-8">
+    <main className="min-h-screen relative overflow-hidden pb-32">
+      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <motion.div
-            animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.1, 1] }}
-            transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
-            className="text-5xl mb-3"
-          >
-            ✨
-          </motion.div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent mb-2">
-            신년운세
-          </h1>
-          <p className="text-slate-400 text-sm">
-            {year}년 나의 운세를 확인해보세요
-          </p>
+        <div className="flex items-center justify-between mb-20 text-center">
+          <button onClick={() => router.back()} className="flex items-center gap-3 text-lg font-bold text-secondary hover:text-foreground transition-all">
+            <ArrowLeft className="w-6 h-6" /> {t('common.back')}
+          </button>
+          <div className="flex-1">
+            <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-flex px-4 py-2 rounded-full mb-4 bg-surface border border-border-color">
+              <span className="text-sm font-bold text-primary uppercase tracking-widest">{t('nav.fortune')}</span>
+            </motion.div>
+            <h1 className="text-4xl md:text-6xl font-black text-foreground italic tracking-tighter uppercase">{year} {t('nav.fortune')}</h1>
+            <p className="text-xl mt-2 text-secondary font-medium">{locale === 'ko' ? '사주팔자 기반 데이터 분석' : 'Precise yearly Saju analysis'}</p>
+          </div>
+          <div className="w-24" />
         </div>
 
-        {/* Form */}
         <motion.form
           onSubmit={handleSubmit}
-          className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 mb-6"
-          initial={{ opacity: 0, y: 10 }}
+          className="bg-surface rounded-5xl p-10 border border-border-color shadow-2xl mb-20"
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          {/* Year selector */}
-          <div className="mb-5">
-            <p className="text-sm font-medium text-slate-300 mb-3">운세 볼 연도</p>
-            <div className="grid grid-cols-4 gap-2">
-              {YEARS.map((y) => (
-                <button
-                  key={y}
-                  type="button"
-                  onClick={() => setYear(y)}
-                  className={`rounded-xl py-2.5 text-sm font-bold transition-all ${year === y
-                      ? "bg-gradient-to-br from-yellow-400 to-amber-500 text-black shadow-lg scale-105"
-                      : "bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white"
-                    }`}
-                >
-                  {y}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Birth date */}
-          <div className="mb-5">
-            <p className="text-sm font-medium text-slate-300 mb-3">생년월일</p>
-            <div className="flex gap-2">
-              <input
-                type="number"
-                min={1900}
-                max={2030}
-                placeholder="년도"
-                value={yearInput}
-                onChange={(e) => setYearInput(e.target.value)}
-                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-yellow-400 transition-colors text-center text-sm"
-              />
-              <input
-                type="number"
-                min={1}
-                max={12}
-                placeholder="월"
-                value={month}
-                onChange={(e) => setMonth(e.target.value)}
-                className="w-16 bg-white/5 border border-white/10 rounded-xl px-2 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-yellow-400 transition-colors text-center text-sm"
-              />
-              <input
-                type="number"
-                min={1}
-                max={31}
-                placeholder="일"
-                value={day}
-                onChange={(e) => setDay(e.target.value)}
-                className="w-16 bg-white/5 border border-white/10 rounded-xl px-2 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-yellow-400 transition-colors text-center text-sm"
-              />
-            </div>
-          </div>
-
-          {error && (
-            <div className="mb-4 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm">
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading || !yearInput || !month || !day}
-            className="w-full rounded-xl bg-gradient-to-r from-yellow-400 to-amber-500 text-black py-4 font-bold text-base hover:from-yellow-500 hover:to-amber-600 transition-all hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
-          >
-            {loading ? (
-              <>
-                <Sparkles className="w-5 h-5 animate-spin" />
-                운세 계산 중...
-              </>
-            ) : (
-              <>
-                <Star className="w-5 h-5" />
-                {year}년 신년운세 보기
-              </>
-            )}
-          </button>
-        </motion.form>
-
-        {/* Result */}
-        <AnimatePresence>
-          {result && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              {/* Main card */}
-              <div className="bg-gradient-to-br from-yellow-900/40 to-amber-900/30 border border-yellow-400/20 rounded-2xl p-6 mb-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <Star className="w-4 h-4 text-yellow-400" />
-                  <span className="text-yellow-400 text-sm font-bold">{result.year}년 총운</span>
-                  <span className="text-slate-400 text-sm">· {result.pillarName} 일주</span>
-                </div>
-                <p className="text-white font-bold text-lg mb-3">{result.summary}</p>
-                <p className="text-slate-300 text-sm leading-relaxed">{result.detail}</p>
-              </div>
-
-              {/* Fortune scores */}
-              <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 space-y-4">
-                <h3 className="text-sm font-bold text-slate-300 mb-4">세부 운세</h3>
-                {getScores().map((s, i) => (
-                  <FortuneScoreBar key={s.label} {...s} delay={i * 0.1} />
+          <div className="space-y-12">
+            <div className="space-y-6">
+              <label className="text-xl font-bold flex items-center gap-3 text-foreground">
+                <Target className="w-6 h-6 text-primary" /> {locale === 'ko' ? '분석할 연도 선택' : 'Select Target Year'}
+              </label>
+              <div className="grid grid-cols-4 gap-4">
+                {YEARS.map((y) => (
+                  <button
+                    key={y}
+                    type="button"
+                    onClick={() => setYear(y)}
+                    className={`py-5 rounded-3xl text-xl font-black transition-all border ${year === y
+                      ? "bg-primary border-primary text-white shadow-xl scale-105"
+                      : "bg-background text-secondary border-neutral-800 hover:border-primary/40"
+                      }`}
+                  >
+                    {y}
+                  </button>
                 ))}
               </div>
+            </div>
 
-              {/* CTA */}
-              <div className="mt-4 bg-gradient-to-r from-purple-900/40 to-pink-900/30 border border-purple-400/20 rounded-2xl p-5 text-center">
-                <p className="text-slate-300 text-sm mb-3">
-                  🔮 더 자세한 사주 풀이
-                </p>
-                <Link
-                  href="/"
-                  className="inline-block px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-sm hover:from-purple-600 hover:to-pink-600 transition-all hover:scale-[1.02]"
-                >
-                  비밀 사주 확인하기 →
-                </Link>
+            <div className="space-y-6">
+              <label className="text-xl font-bold flex items-center gap-3 text-foreground">
+                <History className="w-6 h-6 text-primary" /> {t('input.title')}
+              </label>
+              <div className="grid grid-cols-3 gap-6">
+                {[
+                  { val: yearInput, set: setYearInput, ph: t('input.year') },
+                  { val: month, set: setMonth, ph: t('input.month') },
+                  { val: day, set: setDay, ph: t('input.day') }
+                ].map((input, idx) => (
+                  <input
+                    key={idx}
+                    type="number"
+                    placeholder={input.ph}
+                    value={input.val}
+                    onChange={(e) => input.set(e.target.value)}
+                    className="bg-background border border-border-color rounded-3xl px-6 py-6 text-foreground text-center font-black text-2xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all italic"
+                  />
+                ))}
               </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading || !yearInput || !month || !day}
+              className="w-full py-8 rounded-4xl text-white font-black text-2xl tracking-[0.2em] shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 disabled:opacity-30"
+              style={{ background: 'linear-gradient(135deg, var(--primary), #8b5cf6)' }}
+            >
+              {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : <><Calculator className="w-8 h-8" /> {year}{locale === 'ko' ? '년 운세 분석하기' : ' Analysis'}</>}
+            </button>
+          </div>
+        </motion.form>
+
+        <AnimatePresence>
+          {result && (
+            <motion.div initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+              <div className="bg-surface rounded-5xl p-16 border border-primary/20 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-8">
+                  <span className="px-6 py-2 rounded-full text-lg font-black bg-primary/10 text-primary border border-primary/20">
+                    {result.pillarName}
+                  </span>
+                </div>
+                <div className="flex items-center gap-4 mb-10">
+                  <Star className="w-8 h-8 text-yellow-400 fill-yellow-400" />
+                  <span className="text-xl font-black text-secondary tracking-widest uppercase">{locale === 'ko' ? '핵심 분석' : 'CORE ANALYSIS'}</span>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black text-foreground italic leading-tight mb-10 drop-shadow-xl">{result.summary}</h2>
+                <div className="h-2 bg-gradient-to-r from-primary to-transparent w-32 mb-10 rounded-full" />
+                <p className="text-2xl text-secondary font-medium leading-relaxed tracking-tight">{result.detail}</p>
+              </div>
+
+              <div className="bg-surface rounded-5xl p-16 border border-border-color">
+                <div className="flex items-center gap-4 mb-16">
+                  <TrendingUp className="w-8 h-8 text-primary" />
+                  <h3 className="text-2xl font-black text-foreground">{locale === 'ko' ? '운세 지표' : 'Fortune Indicators'}</h3>
+                </div>
+                <div className="space-y-8">
+                  {getScores().map((s, i) => (
+                    <FortuneScoreBar key={s.label} {...s} delay={i * 0.1} />
+                  ))}
+                </div>
+              </div>
+
+              <Link href="/dashboard" className="block bg-surface rounded-5xl p-12 border border-border-color group hover:border-primary/50 transition-all shadow-xl hover:shadow-primary/5">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-10">
+                  <div className="w-24 h-24 bg-background rounded-4xl flex items-center justify-center text-primary group-hover:scale-110 transition-all duration-500 shadow-inner">
+                    <Sparkles className="w-12 h-12" />
+                  </div>
+                  <div className="flex-1 text-center md:text-left">
+                    <p className="text-xl text-secondary mb-3 font-bold">{locale === 'ko' ? '더 자세한 리포트가 궁금하신가요?' : 'Want a deeper analysis?'}</p>
+                    <div className="text-2xl font-black text-primary flex items-center justify-center md:justify-start gap-4">
+                      {locale === 'ko' ? '나의 인연 대시보드로 이동' : 'Go to Destiny Dashboard'} <ChevronRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
+                    </div>
+                  </div>
+                </div>
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Nav links */}
-        <p className="mt-8 text-center text-slate-500 text-sm">
-          <Link href="/" className="text-purple-400 hover:text-purple-300 transition-colors">
-            나의 일주 보기
-          </Link>
-          {" · "}
-          <Link href="/compatibility" className="text-purple-400 hover:text-purple-300 transition-colors">
-            궁합 보기
-          </Link>
-          {" · "}
-          <Link href="/gift" className="text-purple-400 hover:text-purple-300 transition-colors">
-            친구에게 선물
-          </Link>
-        </p>
       </div>
     </main>
   );

@@ -2,85 +2,88 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Instagram, Twitter, Mail, Info, Shield, HelpCircle, BookOpen, Sparkles } from "lucide-react";
+import { useLocale } from "@/lib/i18n";
 
 export function Footer() {
     const pathname = usePathname();
+    const { t } = useLocale();
 
-    // Admin pages or specific pages might hide the footer
     if (pathname?.startsWith('/admin')) {
         return null;
     }
 
     return (
-        <footer className="w-full border-t border-white/10 bg-background/80 backdrop-blur-xl mt-auto z-40">
-            <div className="max-w-6xl mx-auto px-4 py-12">
+        <footer className="w-full border-t mt-auto" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--border-color)' }}>
+            <div className="max-w-6xl mx-auto px-4 py-10">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                    {/* Brand & Description */}
-                    <div className="md:col-span-2 space-y-4">
+                    {/* 브랜드 */}
+                    <div className="md:col-span-2 space-y-3">
                         <Link href="/" className="inline-flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                                <span className="text-lg">🐶</span>
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                                <span className="text-white text-sm font-bold">사</span>
                             </div>
-                            <span className="text-xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                                990 사주마미
+                            <span className="text-lg font-bold" style={{ color: 'var(--text-foreground)' }}>
+                                시크릿<span style={{ color: 'var(--primary)' }}>사주</span>
                             </span>
                         </Link>
-                        <p className="text-sm text-zinc-400 max-w-sm leading-relaxed">
-                            사회적 가면 뒤에 숨겨진 짐승의 본능을 디지털 굿즈로 발급합니다. 명리학 기반 60갑자 동물 아키타입으로 나를 파헤쳐보세요.
+                        <p className="text-sm max-w-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                            {t('home.feature.desc')}
                         </p>
-                        <div className="flex gap-4 pt-2">
-                            <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors">
-                                <Instagram className="w-5 h-5" />
-                            </a>
-                            <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors">
-                                <Twitter className="w-5 h-5" />
-                            </a>
-                            <Link href="/inquiry" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors">
-                                <Mail className="w-5 h-5" />
-                            </Link>
-                        </div>
                     </div>
 
-                    {/* Service Links */}
+                    {/* 서비스 */}
                     <div>
-                        <h4 className="text-foreground font-bold mb-4 flex items-center gap-2">
-                            <Info className="w-4 h-4 text-cyan-400" />
-                            Services
-                        </h4>
-                        <ul className="space-y-3">
-                            <li><Link href="/" className="text-sm text-zinc-400 hover:text-cyan-400 transition-colors">일주 분석 (무료)</Link></li>
-                            <li><Link href="/dashboard" className="text-sm text-zinc-400 hover:text-cyan-400 transition-colors">관계 대시보드</Link></li>
-                            <li><Link href="/compatibility" className="text-sm text-zinc-400 hover:text-cyan-400 transition-colors">정밀 궁합 분석</Link></li>
-                            <li><Link href="/fortune" className="text-sm text-zinc-400 hover:text-cyan-400 transition-colors">2026 신년운세</Link></li>
-                            <li><Link href="/gift" className="text-sm text-yellow-400 hover:text-yellow-300 transition-colors font-medium">젤리 충전소 🎁</Link></li>
+                        <h4 className="font-bold text-sm mb-4" style={{ color: 'var(--text-foreground)' }}>{t('footer.service')}</h4>
+                        <ul className="grid grid-cols-2 gap-2.5 text-sm">
+                            <li><Link href="/luck" className="transition-colors hover:opacity-100 opacity-60" style={{ color: 'var(--text-foreground)' }}>액운/행운</Link></li>
+                            <li><Link href="/destiny" className="transition-colors hover:opacity-100 opacity-60" style={{ color: 'var(--text-foreground)' }}>운명/궁합</Link></li>
+                            <li><Link href="/healing" className="transition-colors hover:opacity-100 opacity-60" style={{ color: 'var(--text-foreground)' }}>소원/힐링</Link></li>
+                            <li><Link href="/dreams" className="transition-colors hover:opacity-100 opacity-60" style={{ color: 'var(--text-foreground)' }}>꿈해몽 검색</Link></li>
+                            <li><Link href="/daily" className="transition-colors hover:opacity-100 opacity-60" style={{ color: 'var(--text-foreground)' }}>오늘의 운세</Link></li>
+                            <li><Link href="/consulting" className="transition-colors hover:opacity-100 opacity-60" style={{ color: 'var(--text-foreground)' }}>전문가 상담</Link></li>
                         </ul>
                     </div>
 
-                    {/* Policy Links */}
+                    {/* 고객지원 */}
                     <div>
-                        <h4 className="text-foreground font-bold mb-4 flex items-center gap-2">
-                            <Shield className="w-4 h-4 text-purple-400" />
-                            Support & Policy
-                        </h4>
-                        <ul className="space-y-3">
-                            <li><Link href="/inquiry" className="text-sm text-zinc-400 hover:text-purple-400 transition-colors">자주 묻는 질문 / 문의</Link></li>
-                            <li><Link href="/terms" className="text-sm text-zinc-400 hover:text-purple-400 transition-colors">이용약관</Link></li>
-                            <li><Link href="/privacy" className="text-sm text-zinc-400 hover:text-purple-400 transition-colors">개인정보처리방침</Link></li>
-                            <li><Link href="/refund" className="text-sm text-zinc-400 hover:text-purple-400 transition-colors">취소 및 환불 정책</Link></li>
-                            <li><Link href="/wiki" className="text-sm text-zinc-400 hover:text-purple-400 transition-colors">Secret Docs 📚</Link></li>
+                        <h4 className="font-bold text-sm mb-4" style={{ color: 'var(--text-foreground)' }}>{t('footer.support')}</h4>
+                        <ul className="space-y-2.5 text-sm">
+                            <li><Link href="/faq" className="transition-colors hover:opacity-100 opacity-60" style={{ color: 'var(--text-foreground)' }}>{t('footer.faq')}</Link></li>
+                            <li><Link href="/terms" className="transition-colors hover:opacity-100 opacity-60" style={{ color: 'var(--text-foreground)' }}>{t('footer.terms')}</Link></li>
+                            <li><Link href="/privacy" className="transition-colors hover:opacity-100 opacity-60" style={{ color: 'var(--text-foreground)' }}>{t('footer.privacy')}</Link></li>
+                            <li><Link href="/refund" className="transition-colors hover:opacity-100 opacity-60" style={{ color: 'var(--text-foreground)' }}>{t('footer.refund')}</Link></li>
+                            <li><Link href="/wiki" className="transition-colors hover:opacity-100 opacity-60" style={{ color: 'var(--text-foreground)' }}>{t('footer.wiki')}</Link></li>
                         </ul>
                     </div>
                 </div>
 
-                {/* Bottom Banner */}
-                <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className="text-xs text-zinc-500">
-                        © {new Date().getFullYear()} Secret Paws. All rights reserved. 본 서비스는 오락용이며 법적/의학적 조언을 대체하지 않습니다.
-                    </p>
-                    <div className="text-xs font-mono text-zinc-600">
-                        v1.1.0-alpha · Next.JS 14
+                <div className="flex flex-col gap-2">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
+                        <Link href="/custom/terms" className="hover:underline">이용약관</Link>
+                        <span className="w-1 h-1 rounded-full bg-slate-400"></span>
+                        <Link href="/custom/privacy" className="font-bold hover:underline" style={{ color: 'var(--text-foreground)' }}>개인정보처리방침</Link>
+                        <span className="w-1 h-1 rounded-full bg-slate-400"></span>
+                        <Link href="/custom/refund" className="hover:underline">환불정책</Link>
+                        <span className="w-1 h-1 rounded-full bg-slate-400"></span>
+                        <Link href="/custom/partnership" className="hover:underline">광고/제휴 문의</Link>
                     </div>
+
+                    <div className="text-[11px] leading-relaxed mt-2" style={{ color: 'var(--text-secondary)' }}>
+                        <p className="font-bold mb-1" style={{ color: 'var(--text-foreground)' }}>주식회사 시크릿사주</p>
+                        <p>대표이사 : 강태공 | 사업자등록번호 : 123-45-67890 <a href="#" className="underline ml-1">사업자정보확인</a></p>
+                        <p>통신판매업신고 : 2026-서울강남-1234호 | 개인정보보호책임자 : 홍길동</p>
+                        <p>주소 : 서울특별시 강남구 테헤란로 123, 지하 1층 101호</p>
+                        <p className="mt-2">
+                            <span className="font-bold mr-2">고객센터 1811-9329</span>
+                            (평일 10:00 ~ 17:00 / 점심 12:00 ~ 13:00 / 주말 및 공휴일 휴무)
+                        </p>
+                        <p className="mt-4">
+                            © {new Date().getFullYear()} Secret Saju Corp. All rights reserved. {t('footer.disclaimer')}
+                        </p>
+                    </div>
+                </div>
+                <div className="flex flex-col items-end justify-between h-full">
+                    <span className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-md font-mono mt-auto" style={{ color: 'var(--text-secondary)' }}>v4.5.1 (Jeomsin)</span>
                 </div>
             </div>
         </footer>

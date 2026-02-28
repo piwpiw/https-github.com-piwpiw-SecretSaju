@@ -1,33 +1,32 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
 import { WalletProvider } from '@/components/WalletProvider';
 import { Analytics } from "@vercel/analytics/react"
-
-const inter = Inter({ subsets: ['latin'], display: 'swap' });
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { LocaleProvider } from '@/lib/i18n';
 
 export const metadata: Metadata = {
-  title: '사주라떼 - 멍냥의 이중생활',
-  description: '당신의 가면에 숨겨진 본능을 깨워줄 가장 트렌디한 사주 명리학',
-  themeColor: '#09090b',
+  title: '시크릿사주 | 사주팔자 정밀 분석',
+  description: '사주팔자와 음양오행 분석으로 당신의 성격, 운세, 궁합을 정확하게 알려드립니다.',
+  themeColor: '#0f0f1a',
   viewport: {
     width: 'device-width',
     initialScale: 1,
-    maximumScale: 1, // Prevent iOS zoom on inputs to improve UX
+    maximumScale: 1,
   },
   openGraph: {
-    title: '사주라떼 - 당신의 진짜 모습을 만나다',
-    description: '사회적 가면 뒤에 숨겨진 나의 본능을 데이터 기반 사주 명리로 폭로합니다.',
+    title: '시크릿사주 | 사주팔자 정밀 분석',
+    description: '사주팔자와 음양오행 분석으로 당신의 성격, 운세, 궁합을 알아보세요.',
     url: 'https://secret-saju.vercel.app',
-    siteName: '사주라떼',
+    siteName: '시크릿사주',
     images: [
       {
-        url: 'https://secret-saju.vercel.app/og-image.jpg', // Placeholder for actual OG image
+        url: 'https://secret-saju.vercel.app/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: '사주라떼 멍냥의 이중생활 결과',
+        alt: '시크릿사주 | 사주팔자 정밀 분석',
       },
     ],
     locale: 'ko_KR',
@@ -35,14 +34,14 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: '사주라떼',
-    description: '가면 뒤에 숨겨진 당신의 본능은 무엇인가요?',
-    images: ['https://secret-saju.vercel.app/og-image.jpg'], // Placeholder
+    title: '시크릿사주',
+    description: '사주팔자로 나의 성격과 운세를 정밀 분석해보세요.',
+    images: ['https://secret-saju.vercel.app/og-image.jpg'],
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Secret Paws',
+    title: '시크릿사주',
   },
 };
 
@@ -52,15 +51,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className="dark">
-      <body className={`${inter.className} bg-slate-950 text-white antialiased min-h-screen flex flex-col selection:bg-purple-500/30`}>
-        <WalletProvider>
-          <Nav />
-          <div className="flex-1 w-full max-w-sm mx-auto relative content-wrapper">
-            {children}
-          </div>
-          <Footer />
-        </WalletProvider>
+    <html lang="ko" suppressHydrationWarning>
+      <head>
+        <link
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="antialiased min-h-screen flex flex-col" style={{ fontFamily: '"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif' }}>
+        <LocaleProvider>
+          <ThemeProvider>
+            <WalletProvider>
+              <Nav />
+              <div className="flex-1 w-full max-w-7xl mx-auto relative px-4 md:px-8">
+                {children}
+              </div>
+              <Footer />
+            </WalletProvider>
+          </ThemeProvider>
+        </LocaleProvider>
         <Analytics />
       </body>
     </html>

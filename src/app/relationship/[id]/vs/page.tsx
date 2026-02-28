@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, Share2, Sparkles, TrendingUp, Heart, Zap, Shield } from 'lucide-react';
+import { ArrowLeft, Share2, Sparkles, TrendingUp, Heart, Zap, Shield, ChevronRight, Target, Loader2, Download } from 'lucide-react';
 import { getProfiles, SajuProfile } from '@/lib/storage';
 import { calculateHighPrecisionSaju, HighPrecisionSajuResult } from '@/core/api/saju-engine';
 import { analyzeRelationship, RelationshipAnalysis } from '@/lib/compatibility';
@@ -30,45 +30,51 @@ export default function VSModePage() {
     const [sajuB, setSajuB] = useState<HighPrecisionSajuResult | null>(null);
     const [analysis, setAnalysis] = useState<RelationshipAnalysis | null>(null);
     const [winners, setWinners] = useState<TraitWinner[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const loadSajuData = async () => {
-            const profiles = getProfiles();
-            if (profiles.length < 2) {
-                router.push('/dashboard');
-                return;
+            setIsLoading(true);
+            try {
+                const profiles = getProfiles();
+                if (profiles.length < 2) {
+                    router.push('/dashboard');
+                    return;
+                }
+
+                const main = profiles[0];
+                const target = profiles.find(p => p.id === profileId);
+
+                if (!target) {
+                    router.push('/dashboard');
+                    return;
+                }
+
+                const resA = await calculateHighPrecisionSaju({
+                    birthDate: new Date(main.birthdate),
+                    birthTime: main.birthTime || '12:00',
+                    gender: main.gender === 'male' ? 'M' : 'F',
+                    calendarType: main.calendarType
+                });
+
+                const resB = await calculateHighPrecisionSaju({
+                    birthDate: new Date(target.birthdate),
+                    birthTime: target.birthTime || '12:00',
+                    gender: target.gender === 'male' ? 'M' : 'F',
+                    calendarType: target.calendarType
+                });
+
+                setMainProfile(main);
+                setTargetProfile(target);
+                setSajuA(resA);
+                setSajuB(resB);
+                setAnalysis(analyzeRelationship(resA, resB, target.relationship as any));
+                setWinners(calculateWinners(resA, resB));
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setIsLoading(false);
             }
-
-            const main = profiles[0];
-            const target = profiles.find(p => p.id === profileId);
-
-            if (!target) {
-                router.push('/dashboard');
-                return;
-            }
-
-            const resA = await calculateHighPrecisionSaju({
-                birthDate: new Date(main.birthdate),
-                birthTime: main.birthTime || '12:00',
-                gender: main.gender === 'male' ? 'M' : 'F',
-                calendarType: main.calendarType
-            });
-
-            const resB = await calculateHighPrecisionSaju({
-                birthDate: new Date(target.birthdate),
-                birthTime: target.birthTime || '12:00',
-                gender: target.gender === 'male' ? 'M' : 'F',
-                calendarType: target.calendarType
-            });
-
-            setMainProfile(main);
-            setTargetProfile(target);
-            setSajuA(resA);
-            setSajuB(resB);
-            setAnalysis(analyzeRelationship(resA, resB, target.relationship as any));
-
-            // Calculate Winners
-            setWinners(calculateWinners(resA, resB));
         };
 
         loadSajuData();
@@ -119,129 +125,196 @@ export default function VSModePage() {
         });
     };
 
+    if (isLoading) {
+        return (
+            <main className="min-h-screen bg-background flex flex-col items-center justify-center space-y-6">
+                <Loader2 className="w-12 h-12 animate-spin text-primary" />
+                <p className="text-xl font-bold text-secondary">VS 분석 데이터 로딩 중...</p>
+            </main>
+        );
+    }
+
     if (!sajuA || !sajuB || !analysis) return null;
 
     return (
-        <main className="min-h-screen bg-slate-950 text-white overflow-x-hidden">
+        <main className="min-h-screen bg-background text-foreground overflow-x-hidden relative pb-40">
+
             {/* Header */}
-            <div className="p-6 flex items-center justify-between relative z-10">
-                <button onClick={() => router.back()} className="p-2 hover:bg-white/10 rounded-full transition">
-                    <ArrowLeft className="w-6 h-6" />
+            <div className="relative z-50 px-6 py-8 flex items-center justify-between max-w-7xl mx-auto">
+                <button
+                    onClick={() => router.back()}
+                    className="flex items-center gap-3 text-slate-500 hover:text-white transition-all group"
+                >
+                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                    <span className="text-sm font-medium">뒤로</span>
                 </button>
-                <h1 className="text-xl font-black italic tracking-tighter text-yellow-400">VS MODE</h1>
-                <button className="p-2 hover:bg-white/10 rounded-full transition">
-                    <Share2 className="w-6 h-6" />
+
+                <div className="flex flex-col items-center">
+                    <motion.div
+                        initial={{ y: -10, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        className="inline-flex px-3 py-1.5 rounded-full mb-2"
+                        style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border-color)' }}
+                    >
+                        <span className="text-xs font-medium" style={{ color: 'var(--primary)' }}>
+                            VS 비교 분석
+                        </span>
+                    </motion.div>
+                    <h1 className="text-2xl font-bold flex items-center gap-3" style={{ color: 'var(--text-foreground)' }}>
+                        <span style={{ color: 'var(--primary)' }}>{mainProfile?.name}</span>
+                        <span style={{ color: 'var(--text-secondary)' }}>vs</span>
+                        <span>{targetProfile?.name}</span>
+                    </h1>
+                </div>
+
+                <button className="p-3 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition">
+                    <Share2 className="w-5 h-5 text-slate-400" />
                 </button>
             </div>
 
             {/* VS Hero Section */}
-            <div className="relative pt-4 pb-12 px-6 flex justify-between items-center max-w-4xl mx-auto">
+            <div className="relative pt-12 pb-24 px-6 flex justify-between items-center max-w-5xl mx-auto">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+                    <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
+                    <div className="w-[1px] h-full bg-gradient-to-b from-transparent via-purple-500 to-transparent absolute" />
+                </div>
+
                 {/* Character A */}
                 <motion.div
-                    initial={{ x: -100, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    className="text-center z-10"
+                    initial={{ x: -100, opacity: 0, rotate: -5 }}
+                    animate={{ x: 0, opacity: 1, rotate: 0 }}
+                    transition={{ type: "spring", damping: 12 }}
+                    className="text-center z-10 relative group"
                 >
-                    <div className="w-32 h-32 md:w-40 md:h-40 bg-gradient-to-br from-yellow-400 to-amber-600 rounded-3xl rotate-3 flex items-center justify-center mb-4 shadow-2xl shadow-yellow-500/20">
-                        <span className="text-6xl md:text-7xl">👤</span>
+                    <div className="absolute inset-0 bg-cyan-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition duration-700" />
+                    <div className="w-32 h-32 sm:w-48 sm:h-48 rounded-[2.5rem] bg-gradient-to-br from-cyan-400 to-blue-600 p-1 flex items-center justify-center mb-8 shadow-2xl relative">
+                        <div className="absolute inset-0 bg-cyan-400/20 animate-pulse rounded-[2.5rem]" />
+                        <div className="w-full h-full rounded-[2.3rem] bg-[#09090b] flex items-center justify-center overflow-hidden border-2 border-white/10">
+                            <span className="text-6xl sm:text-7xl group-hover:scale-110 transition-transform duration-500">👑</span>
+                        </div>
                     </div>
-                    <div className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-black mb-1">
-                        {mainProfile?.name}
+                    <div className="space-y-2">
+                        <div className="text-xs font-medium" style={{ color: 'var(--primary)' }}>나</div>
+                        <h3 className="text-3xl font-black text-white italic tracking-tighter uppercase">{mainProfile?.name}</h3>
+                        <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest bg-white/5 px-2 py-1 rounded-md inline-block border border-white/5">{analysis.pillarA}</div>
                     </div>
-                    <div className="text-xs text-slate-500 font-mono tracking-widest">{analysis.pillarA}</div>
                 </motion.div>
 
-                {/* VS Text */}
+                {/* VS Center */}
                 <motion.div
-                    initial={{ scale: 0, rotate: -45 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
                 >
-                    <div className="text-8xl md:text-9xl font-black italic text-white/5 tracking-tighter">VS</div>
-                    <div className="text-4xl md:text-5xl font-black italic text-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,0.5)]">VS</div>
+                    <div className="relative">
+                        <div className="text-8xl font-black italic text-white/5 absolute inset-0 blur-sm flex items-center justify-center">VS</div>
+                        <div className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center font-black italic text-2xl shadow-[0_0_30px_rgba(255,255,255,0.4)] relative z-10">VS</div>
+                    </div>
                 </motion.div>
 
                 {/* Character B */}
                 <motion.div
-                    initial={{ x: 100, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    className="text-center z-10"
+                    initial={{ x: 100, opacity: 0, rotate: 5 }}
+                    animate={{ x: 0, opacity: 1, rotate: 0 }}
+                    transition={{ type: "spring", damping: 12 }}
+                    className="text-center z-10 relative group"
                 >
-                    <div className="w-32 h-32 md:w-40 md:h-40 bg-gradient-to-br from-sky-400 to-indigo-600 rounded-3xl -rotate-3 flex items-center justify-center mb-4 shadow-2xl shadow-sky-500/20">
-                        <span className="text-6xl md:text-7xl">👤</span>
+                    <div className="absolute inset-0 bg-purple-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition duration-700" />
+                    <div className="w-32 h-32 sm:w-48 sm:h-48 rounded-[2.5rem] bg-gradient-to-br from-purple-500 to-pink-600 p-1 flex items-center justify-center mb-8 shadow-2xl relative">
+                        <div className="absolute inset-0 bg-purple-400/20 animate-pulse rounded-[2.5rem]" />
+                        <div className="w-full h-full rounded-[2.3rem] bg-[#09090b] flex items-center justify-center overflow-hidden border-2 border-white/10">
+                            <span className="text-6xl sm:text-7xl group-hover:scale-110 transition-transform duration-500">👤</span>
+                        </div>
                     </div>
-                    <div className="bg-sky-400 text-white px-3 py-1 rounded-full text-sm font-black mb-1">
-                        {targetProfile?.name}
+                    <div className="space-y-2">
+                        <div className="text-xs font-medium text-purple-400">상대</div>
+                        <h3 className="text-3xl font-black text-white italic tracking-tighter uppercase">{targetProfile?.name}</h3>
+                        <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest bg-white/5 px-2 py-1 rounded-md inline-block border border-white/5">{analysis.pillarB}</div>
                     </div>
-                    <div className="text-xs text-slate-500 font-mono tracking-widest">{analysis.pillarB}</div>
                 </motion.div>
             </div>
 
-            {/* Radar Chart (Elements Balance) */}
-            <div className="bg-white/5 border-y border-white/10 py-12 flex flex-col items-center">
-                <div className="text-sm font-bold tracking-widest text-slate-500 mb-8 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-yellow-400" />
-                    ENERGY BALANCE COMPARISON
-                    <Sparkles className="w-4 h-4 text-sky-400" />
+            {/* Radar Comparison */}
+            <div className="p-8 sm:p-16 flex flex-col items-center relative overflow-hidden">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
+
+                <div className="text-[10px] font-black tracking-[0.4em] text-slate-500 uppercase mb-12 flex items-center gap-4">
+                    <div className="w-8 h-[1px] bg-slate-800" />
+                    오행 균형 차트
+                    <div className="w-8 h-[1px] bg-slate-800" />
                 </div>
-                <div className="relative">
+
+                <div className="relative group p-8 rounded-full">
+                    <div className="absolute inset-0 bg-white/[0.02] border border-white/5 rounded-full animate-pulse" />
                     <RadarChart
                         dataA={sajuA.elements.scores as any}
                         dataB={sajuB.elements.scores as any}
                         size={320}
                     />
                 </div>
-                <div className="flex gap-8 mt-8">
-                    <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.5)]"></div>
-                        <span className="text-xs font-bold text-slate-300">{mainProfile?.name}</span>
+
+                <div className="flex gap-12 mt-12 bg-white/5 px-8 py-4 rounded-2xl border border-white/5 backdrop-blur-md">
+                    <div className="flex items-center gap-3">
+                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
+                        <span className="text-[10px] font-black text-white uppercase tracking-widest">{mainProfile?.name}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
-                        <span className="text-xs font-bold text-slate-300">{targetProfile?.name}</span>
+                    <div className="flex items-center gap-3">
+                        <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
+                        <span className="text-[10px] font-black text-white uppercase tracking-widest">{targetProfile?.name}</span>
                     </div>
                 </div>
             </div>
 
-            {/* Who Wins Comparison */}
-            <div className="p-6 max-w-2xl mx-auto space-y-6">
-                <div className="text-center mb-4 pt-4">
-                    <h2 className="text-2xl font-black italic tracking-tight">WHO IS STRONGER?</h2>
-                    <p className="text-slate-500 text-sm">사주 십성(Sipsong) 데이터를 기반으로 한 능력치 비교</p>
+            {/* Battle Insights */}
+            <div className="max-w-3xl mx-auto px-6 space-y-16 py-16">
+                <div className="flex items-center justify-between border-b border-white/5 pb-8">
+                    <h2 className="text-2xl font-bold" style={{ color: 'var(--text-foreground)' }}>속성별 분석</h2>
+                    <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>상세 비교</div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
                     {winners.map((trait, idx) => (
                         <motion.div
                             key={trait.category}
                             initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 * idx }}
-                            className="bg-white/5 border border-white/10 rounded-2xl p-5"
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: idx * 0.1 }}
+                            className="bg-surface rounded-4xl p-1 relative group border border-border-color shadow-xl overflow-hidden"
                         >
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-slate-800 rounded-lg">
-                                        <trait.icon className="w-5 h-5 text-yellow-400" />
+                            <div className="p-8 sm:p-10 relative z-10">
+                                <div className="flex flex-col sm:flex-row items-center justify-between gap-8 mb-10">
+                                    <div className="flex items-center gap-6">
+                                        <div className="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl">
+                                            <trait.icon className={`w-8 h-8 ${trait.winner === 'A' ? 'text-cyan-400' : trait.winner === 'B' ? 'text-purple-400' : 'text-slate-500'}`} />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-2xl font-black text-white italic tracking-tighter uppercase mb-1">{trait.label}</h4>
+                                            <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>능력 지표</p>
+                                        </div>
                                     </div>
-                                    <span className="font-bold text-lg">{trait.label}</span>
-                                </div>
-                                <div className="bg-yellow-400/10 text-yellow-400 px-3 py-1 rounded-full text-xs font-black">
-                                    {trait.winner === 'A' ? mainProfile?.name : trait.winner === 'B' ? targetProfile?.name : 'DRAW'} WIN
-                                </div>
-                            </div>
 
-                            <div className="grid grid-cols-2 gap-4 relative">
-                                <div className={`p-4 rounded-xl border-2 transition ${trait.winner === 'A' ? 'bg-yellow-400/5 border-yellow-400' : 'bg-transparent border-white/5'}`}>
-                                    <div className="text-xs text-slate-500 mb-1">RANK</div>
-                                    <div className={`font-black text-xl ${trait.winner === 'A' ? 'text-yellow-400' : 'text-slate-500'}`}>{trait.descA}</div>
+                                    <div className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-[0.2em] border shadow-2xl transition-all ${trait.winner === 'A' ? 'border-primary/30 text-primary bg-primary/10' :
+                                        trait.winner === 'B' ? 'border-indigo-500/30 text-indigo-400 bg-indigo-500/10' :
+                                            'border-border-color text-secondary bg-background'
+                                        }`}>
+                                        {trait.winner === 'A' ? mainProfile?.name : trait.winner === 'B' ? targetProfile?.name : '균형'} 우세
+                                    </div>
                                 </div>
-                                <div className={`p-4 rounded-xl border-2 transition ${trait.winner === 'B' ? 'bg-sky-400/5 border-sky-400' : 'bg-transparent border-white/5'}`}>
-                                    <div className="text-xs text-slate-500 mb-1">RANK</div>
-                                    <div className={`font-black text-xl ${trait.winner === 'B' ? 'text-sky-400' : 'text-slate-500'}`}>{trait.descB}</div>
-                                </div>
-                                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-950 p-1 rounded-full border border-white/10">
-                                    <div className="text-[10px] font-black italic text-slate-600">VS</div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
+                                    <div className={`p-6 rounded-2xl border transition-all duration-700 ${trait.winner === 'A' ? 'bg-cyan-500/5 border-cyan-500/30 shadow-[0_0_30px_rgba(34,211,238,0.1)]' : 'border-white/5 opacity-20'}`}>
+                                        <div className="text-xs font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>{mainProfile?.name}</div>
+                                        <div className="text-lg font-bold" style={{ color: 'var(--text-foreground)' }}>{trait.descA}</div>
+                                    </div>
+                                    <div className={`p-6 rounded-2xl border transition-all duration-700 ${trait.winner === 'B' ? 'bg-purple-500/5 border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.1)]' : 'border-white/5 opacity-20'}`}>
+                                        <div className="text-xs font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>{targetProfile?.name}</div>
+                                        <div className="text-lg font-bold" style={{ color: 'var(--text-foreground)' }}>{trait.descB}</div>
+                                    </div>
+                                    {/* Link line */}
+                                    <div className="hidden sm:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#09090b] border border-white/10 flex items-center justify-center p-1 z-10">
+                                        <div className="w-full h-full rounded-full bg-gradient-to-br from-cyan-600 to-purple-600 flex items-center justify-center text-[8px] font-black italic text-white">VS</div>
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>
@@ -250,15 +323,20 @@ export default function VSModePage() {
             </div>
 
             {/* Bottom Actions */}
-            <div className="p-6 pt-12 text-center">
-                <p className="text-slate-600 text-xs mb-8 tracking-widest uppercase">Secret Paws Enterprise Engine Accuracy 99.8%</p>
-                <div className="flex flex-col gap-4 max-w-md mx-auto">
-                    <button className="w-full py-5 bg-yellow-400 text-black font-black text-lg rounded-2xl shadow-2xl shadow-yellow-500/30 hover:scale-[1.02] transition active:scale-[0.98] flex items-center justify-center gap-2">
-                        <Share2 className="w-6 h-6" />
-                        결과 이미지로 저장하기
+            <div className="max-w-2xl mx-auto px-6 mt-12 space-y-8">
+                <div className="text-center opacity-30">
+                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>시크릿사주 분석 엔진</p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 mb-20">
+                    <button className="flex-1 py-5 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                        <Download className="w-5 h-5" /> 결과 내보내기
                     </button>
-                    <Link href={`/relationship/${profileId}`} className="w-full py-4 bg-white/5 border border-white/10 text-slate-300 font-bold rounded-2xl hover:bg-white/10 transition">
-                        상세 관계 인사이트 보러가기
+                    <Link
+                        href={`/relationship/${profileId}`}
+                        className="flex-1 py-5 rounded-2xl text-sm font-medium flex items-center justify-center gap-3" style={{ backgroundColor: 'var(--surface)', color: 'var(--text-foreground)', border: '1px solid var(--border-color)' }}
+                    >
+                        상세 분석 보기 <ChevronRight className="w-5 h-5" />
                     </Link>
                 </div>
             </div>

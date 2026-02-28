@@ -57,7 +57,8 @@ npm run setup:env
 필수 변수:
 - Supabase (위에서 가져온 값)
 - Kakao OAuth (카카오 개발자 콘솔)
-- Toss Payments (토스페이먼츠)
+- Toss Payments V2 (결제위젯 API 키, Client/Secret Key)
+- Toss Webhook URL 및 Secret (결제 상태 동기화용)
 
 ### 4️⃣ Vercel 프로젝트 생성
 

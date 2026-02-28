@@ -1,38 +1,81 @@
-"use client";
+'use client';
 
 import { motion } from "framer-motion";
-import { Sparkles, Heart, Shield, Zap } from "lucide-react";
+import { Sparkles, Heart, Shield, Zap, ArrowLeft, Globe, Cpu, Zap as Bolt } from "lucide-react";
+import Link from 'next/link';
 
 export default function AboutPage() {
     return (
-        <main className="min-h-screen bg-background pt-24 pb-20 px-4">
-            <div className="max-w-3xl mx-auto space-y-12">
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-cyan-500/20 border border-cyan-400/30 mb-6">
-                        <span className="text-3xl">🐶</span>
-                    </div>
-                    <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                        사주라떼를 소개합니다
-                    </h1>
-                    <p className="text-slate-400 text-lg">
-                        사회적 가면 뒤에 숨겨진 짐승의 본능을 디지털 굿즈로 발급하는 명리학 기반 서비스입니다.
-                    </p>
-                </motion.div>
+        <main className="min-h-screen relative overflow-hidden pb-32">
+            <div className="max-w-4xl mx-auto px-6 pt-16 relative z-10">
+                <Link href="/" className="flex items-center gap-3 text-slate-500 hover:text-white transition-all group mb-16">
+                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                    <span className="text-[10px] font-black tracking-[0.3em] uppercase">Abort & Return</span>
+                </Link>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="text-center mb-24">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="inline-flex px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full mb-6"
+                    >
+                        <span className="text-[8px] font-black tracking-[0.4em] text-cyan-400 uppercase">
+                            Protocol Encryption Active
+                        </span>
+                    </motion.div>
+
+                    <h1 className="text-6xl md:text-8xl font-black text-white italic tracking-tighter uppercase mb-6 leading-none">
+                        Secret <span className="text-cyan-400">Saju</span>
+                    </h1>
+                    <p className="text-slate-400 text-xl font-medium max-w-2xl mx-auto leading-relaxed tracking-wide">
+                        사회적 가면 뒤에 숨겨진 <span className="text-white italic">본능적 아키텍처</span>를<br />
+                        최첨단 Quantum Sync 엔진으로 적출하는 명리학 프로토콜입니다.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-24">
                     {[
-                        { icon: Sparkles, title: "정통 명리학 분석", desc: "수천 년의 데이터를 현대적으로 재해석하여 정확하고 트렌디한 사주 결과를 제공합니다.", color: "text-amber-400", bg: "bg-amber-400/10" },
-                        { icon: Heart, title: "관계 대시보드", desc: "가족, 연인, 친구와의 궁합을 직관적인 점수와 팩폭 해설로 알려드립니다.", color: "text-pink-400", bg: "bg-pink-400/10" },
-                        { icon: Shield, title: "안전한 데이터 보관", desc: "사용자의 사주 정보는 안전하게 암호화되어 저장되며 다른 용도로 사용되지 않습니다.", color: "text-green-400", bg: "bg-green-400/10" },
-                        { icon: Zap, title: "빠르고 쉬운 해금", desc: "복잡한 용어 없이, 젤리 충전 하나로 모든 비밀을 시원하게 해금할 수 있습니다.", color: "text-purple-400", bg: "bg-purple-400/10" }
+                        { icon: Cpu, title: "Precision Algorithm", desc: "수천 년의 명리학 빅데이터와 최첨단 AI 엔진 DACRE를 통해 당신의 운명 노드를 정밀 분석합니다.", color: "text-cyan-400", bg: "from-cyan-500/20" },
+                        { icon: Globe, title: "Identity Sync", desc: "가족, 연인, 친구와의 관계 매트릭스를 입체적으로 가시화하여 유기적인 운명 지도를 완성합니다.", color: "text-purple-400", bg: "from-purple-500/20" },
+                        { icon: Shield, title: "Security Protocols", desc: "모든 운명 데이터는 종단간 암호화를 통해 보호되며, 오직 당신의 승인 하에만 동기화됩니다.", color: "text-emerald-400", bg: "from-emerald-500/20" },
+                        { icon: Bolt, title: "Energy Units", desc: "복잡한 결제 체계 없이 젤리(Jelly) 에너지 단위를 통해 모든 고급 인사이트를 즉각적으로 해금합니다.", color: "text-yellow-400", bg: "from-yellow-500/20" }
                     ].map((feature, i) => (
-                        <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="glass rounded-2xl p-6 border border-white/5">
-                            <feature.icon className={`w-8 h-8 mb-4 ${feature.color}`} />
-                            <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
-                            <p className="text-slate-400 text-sm leading-relaxed">{feature.desc}</p>
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.1 }}
+                            className="premium-card p-10 group bg-white/[0.01] border-white/5"
+                        >
+                            <div className={`mystic-glow ${feature.bg} opacity-0 group-hover:opacity-100 transition-opacity`} />
+                            <div className="relative z-10">
+                                <feature.icon className={`w-10 h-10 mb-6 ${feature.color}`} />
+                                <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase mb-4">{feature.title}</h3>
+                                <p className="text-slate-500 font-medium leading-relaxed">{feature.desc}</p>
+                            </div>
                         </motion.div>
                     ))}
                 </div>
+
+                {/* Bottom CTA */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6 }}
+                    className="premium-card p-1 border-white/5 bg-white/[0.01]"
+                >
+                    <div className="p-12 text-center relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[80px] -mr-32 -mt-32" />
+                        <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase mb-4">Start Your Sync</h2>
+                        <p className="text-slate-500 mb-8 max-w-md mx-auto">지금 바로 당신의 고유 주파수를 측정하고 운명의 타래를 분석하세요.</p>
+                        <Link
+                            href="/"
+                            className="inline-flex px-12 py-5 rounded-2xl bg-white text-black font-black text-sm uppercase tracking-widest hover:scale-105 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                        >
+                            Initialize System
+                        </Link>
+                    </div>
+                </motion.div>
             </div>
         </main>
     );

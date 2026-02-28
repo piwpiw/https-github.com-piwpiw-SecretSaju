@@ -26,6 +26,12 @@ type ResultState = {
   ageGroup: AgeGroup;
   foods: { name: string; reason: string; emoji: string }[];
   products: { name: string; category: string; reason: string; emoji: string }[];
+  elementScores: number[];
+  elementCounts: number[];
+  elementBasicPercentages: number[];
+  fourPillars: any;
+  version: string;
+  integrity: string;
 };
 
 const FALLBACK_RESULT: ResultState = {
@@ -39,6 +45,12 @@ const FALLBACK_RESULT: ResultState = {
   ageGroup: "20s",
   foods: [],
   products: [],
+  elementScores: [0, 0, 0, 0, 0],
+  elementCounts: [0, 0, 0, 0, 0],
+  elementBasicPercentages: [0, 0, 0, 0, 0],
+  fourPillars: null,
+  version: "",
+  integrity: ""
 };
 
 export function SecretPawsFlow() {
@@ -48,45 +60,53 @@ export function SecretPawsFlow() {
   const [unlockedLv2, setUnlockedLv2] = useState(false);
   const [unlockedLv3, setUnlockedLv3] = useState(false);
 
-  const handleSubmit = (
+  const handleSubmit = async (
     birth: { year: number; month: number; day: number },
-    gender?: "M" | "F"
+    gender: "M" | "F" = "M"
   ) => {
     setError(null);
     setLoading(true);
-    setTimeout(() => {
-      try {
-        const birthDate = new Date(birth.year, birth.month - 1, birth.day);
-        if (Number.isNaN(birthDate.getTime())) {
-          setError("올바른 날짜를 입력해 주세요.");
-          setLoading(false);
-          return;
-        }
-        const saju = calculateSaju(birthDate, gender);
-        const archetype = getArchetypeByCode(saju.code, saju.ageGroup);
-        const foods = getFoodRecommendationsByCode(saju.code, saju.ageGroup);
-        const products = getProductRecommendationsByCode(saju.code);
-        setResult({
-          code: saju.code,
-          animalName: archetype.animal_name,
-          pillarNameKo: saju.pillarNameKo,
-          mask: archetype.base_traits.mask,
-          hashtags: archetype.base_traits.hashtags ?? [],
-          displayHook: archetype.displayHook,
-          displaySecretPreview: archetype.displaySecretPreview,
-          ageGroup: saju.ageGroup as AgeGroup,
-          foods: foods?.length ? foods : FALLBACK_RESULT.foods,
-          products: products?.length ? products : FALLBACK_RESULT.products,
-        });
-      } catch (err) {
-        setError("결과를 불러오지 못했어요. 다시 시도해 주세요.");
-        if (process.env.NODE_ENV === "development") {
-          console.error("[SecretPawsFlow]", err);
-        }
-      } finally {
+
+    // Aesthetic delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    try {
+      const birthDate = new Date(birth.year, birth.month - 1, birth.day, 12, 0);
+      if (Number.isNaN(birthDate.getTime())) {
+        setError("올바른 날짜를 입력해 주세요.");
         setLoading(false);
+        return;
       }
-    }, 1200);
+
+      const saju = await calculateSaju(birthDate, gender);
+      const archetype = getArchetypeByCode(saju.code, saju.ageGroup);
+      const foods = getFoodRecommendationsByCode(saju.code, saju.ageGroup);
+      const products = getProductRecommendationsByCode(saju.code);
+
+      setResult({
+        code: saju.code,
+        animalName: archetype.animal_name,
+        pillarNameKo: saju.pillarNameKo,
+        mask: archetype.base_traits.mask,
+        hashtags: archetype.base_traits.hashtags ?? [],
+        displayHook: archetype.displayHook,
+        displaySecretPreview: archetype.displaySecretPreview,
+        ageGroup: saju.ageGroup as AgeGroup,
+        foods: foods?.length ? foods : FALLBACK_RESULT.foods,
+        products: products?.length ? products : FALLBACK_RESULT.products,
+        elementScores: saju.elementScores,
+        elementCounts: saju.elementCounts,
+        elementBasicPercentages: saju.elementBasicPercentages,
+        fourPillars: saju.fourPillars,
+        version: saju.version,
+        integrity: saju.integrity
+      });
+    } catch (err) {
+      setError("결과를 불러오지 못했어요. 다시 시도해 주세요.");
+      console.error("[SecretPawsFlow]", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -150,6 +170,12 @@ export function SecretPawsFlow() {
               } as any}
               pillarNameKo={result.pillarNameKo}
               ageGroup={result.ageGroup}
+              elementScores={result.elementScores}
+              elementCounts={result.elementCounts}
+              elementBasicPercentages={result.elementBasicPercentages}
+              fourPillars={result.fourPillars}
+              version={result.version}
+              integrity={result.integrity}
               secretUnlocked={unlockedLv3}
               onUnlockClick={() => setUnlockedLv3(true)}
             />

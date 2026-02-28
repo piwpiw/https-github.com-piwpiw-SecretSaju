@@ -48,6 +48,9 @@ export default function CompatibilityAdminPage() {
             sibiwoonseong: {} as any,
             daewun: {} as any,
             currentUn: {} as any,
+            version: "1.0.0",
+            model: "MOCK_MODEL",
+            integrity: "MOCK_HASH",
         };
     };
 

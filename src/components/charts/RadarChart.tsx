@@ -44,8 +44,26 @@ export default function RadarChart({
 
     return (
         <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
-            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-                {/* Background Grids with Stitch Animation */}
+            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible drop-shadow-[0_0_30px_rgba(255,255,255,0.05)]">
+                <defs>
+                    <linearGradient id="gradA" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#facc15" stopOpacity="0.8" />
+                        <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.4" />
+                    </linearGradient>
+                    <linearGradient id="gradB" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.8" />
+                        <stop offset="100%" stopColor="#818cf8" stopOpacity="0.4" />
+                    </linearGradient>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                        <feMerge>
+                            <feMergeNode in="coloredBlur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                {/* Background Grids */}
                 {gridLevels.map((level, i) => (
                     <motion.polygon
                         key={i}
@@ -57,16 +75,15 @@ export default function RadarChart({
                         }).join(' ')}
                         fill="none"
                         stroke="white"
-                        strokeOpacity="0.1"
+                        strokeOpacity={0.05 + (i * 0.03)}
                         strokeWidth="1"
-                        strokeDasharray="4 4"
                         initial={{ pathLength: 0, opacity: 0 }}
                         animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{ duration: 1.5, delay: i * 0.2, ease: "easeInOut" }}
+                        transition={{ duration: 2, delay: i * 0.3, ease: "easeInOut" }}
                     />
                 ))}
 
-                {/* Axis Lines with Stitch Animation */}
+                {/* Axis Lines */}
                 {labels.map((_, i) => {
                     const angle = i * angleStep - Math.PI / 2;
                     const x = center + radius * Math.cos(angle);
@@ -79,75 +96,77 @@ export default function RadarChart({
                             x2={x}
                             y2={y}
                             stroke="white"
-                            strokeOpacity="0.15"
+                            strokeOpacity="0.1"
                             strokeWidth="1"
                             initial={{ pathLength: 0 }}
                             animate={{ pathLength: 1 }}
-                            transition={{ duration: 1, delay: 0.5 + i * 0.1, ease: "easeOut" }}
+                            transition={{ duration: 1.5, delay: 0.5 + i * 0.1, ease: "easeOut" }}
                         />
                     );
                 })}
 
-                {/* Labels */}
-                {labels.map((label, i) => {
-                    const angle = i * angleStep - Math.PI / 2;
-                    const x = center + (radius + 20) * Math.cos(angle);
-                    const y = center + (radius + 20) * Math.sin(angle);
-                    return (
-                        <text
-                            key={i}
-                            x={x}
-                            y={y}
-                            fill="white"
-                            fontSize="14"
-                            textAnchor="middle"
-                            alignmentBaseline="middle"
-                            className="font-bold opacity-60"
-                        >
-                            {label}
-                        </text>
-                    );
-                })}
+                {/* Data B (Opponent) - Layered behind for better depth */}
+                {dataB && (
+                    <motion.path
+                        initial={{
+                            d: labels.map((_, i) => `${i === 0 ? 'M' : 'L'} ${center} ${center}`).join(' ') + ' Z',
+                            opacity: 0
+                        }}
+                        animate={{
+                            d: getPathData(dataB),
+                            opacity: 1
+                        }}
+                        transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1], delay: 1 }}
+                        fill="url(#gradB)"
+                        stroke="#22d3ee"
+                        strokeWidth="3"
+                        strokeLinejoin="round"
+                        filter="url(#glow)"
+                        className="drop-shadow-[0_0_15px_rgba(34,211,238,0.3)]"
+                    />
+                )}
 
                 {/* Data A (Main) */}
                 <motion.path
                     initial={{
                         d: labels.map((_, i) => `${i === 0 ? 'M' : 'L'} ${center} ${center}`).join(' ') + ' Z',
-                        pathLength: 0,
                         opacity: 0
                     }}
                     animate={{
                         d: getPathData(dataA),
-                        pathLength: 1,
                         opacity: 1
                     }}
-                    transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
-                    fill="rgba(250, 204, 21, 0.3)" // Yellow-400
+                    transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
+                    fill="url(#gradA)"
                     stroke="#facc15"
                     strokeWidth="3"
-                    className="drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]"
+                    strokeLinejoin="round"
+                    filter="url(#glow)"
+                    className="drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]"
                 />
 
-                {/* Data B (Relationship) */}
-                {dataB && (
-                    <motion.path
-                        initial={{
-                            d: labels.map((_, i) => `${i === 0 ? 'M' : 'L'} ${center} ${center}`).join(' ') + ' Z',
-                            pathLength: 0,
-                            opacity: 0
-                        }}
-                        animate={{
-                            d: getPathData(dataB),
-                            pathLength: 1,
-                            opacity: 1
-                        }}
-                        transition={{ duration: 1.5, ease: "easeOut", delay: 0.8 }}
-                        fill="rgba(56, 189, 248, 0.3)" // Sky-400
-                        stroke="#38bdf8"
-                        strokeWidth="3"
-                        className="drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]"
-                    />
-                )}
+                {/* Labels */}
+                {labels.map((label, i) => {
+                    const angle = i * angleStep - Math.PI / 2;
+                    const x = center + (radius + 28) * Math.cos(angle);
+                    const y = center + (radius + 28) * Math.sin(angle);
+                    return (
+                        <motion.text
+                            key={i}
+                            x={x}
+                            y={y}
+                            fill="white"
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 0.6, scale: 1 }}
+                            transition={{ delay: 1.5 + i * 0.1 }}
+                            className="text-[10px] font-black tracking-widest uppercase"
+                            textAnchor="middle"
+                            alignmentBaseline="middle"
+                        >
+                            {label}
+                        </motion.text>
+                    );
+                })}
             </svg>
         </div>
     );

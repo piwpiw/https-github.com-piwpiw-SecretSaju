@@ -4,63 +4,56 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SajuProfileRepository } from '@/lib/repositories/saju-profile.repository';
-// import { saveProfile, getProfiles } from '@/lib/storage'; // Removed
-import { getProfiles } from '@/lib/storage'; // Kept specifically for initial check, but strictly we should use Repository. 
-// However, getProfiles is synchronous and mostly for local check. 
-// For production consistency we should use Repository.findByUserId.
-// Let's migrate "isFirstProfile" check to use Repository too.
 import { hasSufficientBalance, consumeJelly } from '@/lib/jelly-wallet';
 import { triggerBalanceUpdate } from '@/components/shop/JellyBalance';
 import JellyShopModal from '@/components/shop/JellyShopModal';
 import { getUserFromCookie } from '@/lib/kakao-auth';
 import Link from 'next/link';
-import { X, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
+import {
+    Sparkles, Loader2, ArrowLeft, Calculator, Calendar,
+    User as UserIcon, Clock, Heart, Terminal, Database, ShieldCheck
+} from 'lucide-react';
 import { CalendarType, Gender, RelationshipType, CreateSajuProfileRequest } from '@/types/schema';
+import { useLocale } from '@/lib/i18n';
 
 export default function AddSajuPage() {
     const router = useRouter();
+    const { t, locale } = useLocale();
     const [name, setName] = useState('');
     const [relationship, setRelationship] = useState<RelationshipType>('self');
     const [birthdate, setBirthdate] = useState('');
-    const [birthTime, setBirthTime] = useState('14:30');
+    const [birthTime, setBirthTime] = useState('12:00');
     const [isTimeUnknown, setIsTimeUnknown] = useState(false);
     const [calendarType, setCalendarType] = useState<CalendarType>('solar');
+    const [isLeapMonth, setIsLeapMonth] = useState(false);
     const [gender, setGender] = useState<Gender>('female');
 
-    // Jelly system states
     const [showShopModal, setShowShopModal] = useState(false);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
-    const [isFirstProfile, setIsFirstProfile] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!name || !birthdate) {
-            alert('이름과 생년월일을 입력해주세요');
+            alert(locale === 'ko' ? '이름과 생년월일을 입력해 주세요.' : 'Name and birthdate are required.');
             return;
         }
 
         setIsSubmitting(true);
         try {
-            // Check if this is the first profile (using Repository)
             const user = getUserFromCookie();
             const userId = user ? String(user.id) : 'local-user';
             const existingProfiles = await SajuProfileRepository.findByUserId(userId);
             const isFirst = existingProfiles.length === 0;
-            setIsFirstProfile(isFirst);
 
             if (isFirst) {
-                // First profile is FREE - save immediately
                 await saveProfileAndNavigate(true);
             } else {
-                // Subsequent profiles require Jelly
                 if (!hasSufficientBalance(1)) {
                     setShowShopModal(true);
                     setIsSubmitting(false);
                 } else {
                     setShowConfirmModal(true);
-                    // stay creating... wait for confirm
                 }
             }
         } catch (error) {
@@ -82,15 +75,13 @@ export default function AddSajuPage() {
                 birthTime: isTimeUnknown ? undefined : birthTime,
                 isTimeUnknown,
                 calendarType,
+                isLeapMonth,
                 gender,
             };
 
             const newProfile = await SajuProfileRepository.create(request, userId);
 
-            // If not first profile, consume Jelly
             if (!isFirst) {
-                // Note: consumeJelly is synchronous and uses localStorage
-                // Ideally this should also be migrated to Repository eventually
                 consumeJelly(1, 'unlock_profile', {
                     profileId: newProfile.id,
                     profileName: name,
@@ -101,272 +92,221 @@ export default function AddSajuPage() {
             router.push(`/my-saju/list`);
         } catch (error) {
             console.error('Failed to save:', error);
-            alert('저장에 실패했습니다.');
+            alert(locale === 'ko' ? '오류: 프로필 저장에 실패했습니다.' : 'Error: Failed to save profile.');
             setIsSubmitting(false);
         }
     };
 
     return (
-        <main className="min-h-screen bg-background">
-            <div className="max-w-2xl mx-auto">
+        <main className="min-h-screen relative overflow-hidden pb-40">
+            <div className="max-w-4xl mx-auto px-6 py-16 relative z-10">
+
                 {/* Header */}
-                <div className="bg-green-600 text-white px-4 py-4 flex items-center justify-between">
-                    <h1 className="text-lg font-bold">새로운 사주 추가</h1>
-                    <button onClick={() => router.back()} className="p-1">
-                        <X className="w-6 h-6" />
-                    </button>
-                </div>
-
-                {/* Form */}
-                <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                    {/* Name */}
+                <div className="flex flex-col md:flex-row items-center justify-between gap-10 mb-20 text-center md:text-left border-b border-border-color pb-16">
                     <div>
-                        <label className="block text-foreground font-medium mb-2">
-                            이름 <span className="text-red-500">필수</span>
-                        </label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="소성으로만 입력하지 마시고, 전체 이름을 작성해주세요."
-                            className="w-full px-4 py-3 rounded-lg bg-surface border border-white/10 text-foreground placeholder:text-zinc-500 text-sm"
-                            disabled={isSubmitting}
-                        />
-                    </div>
-
-                    {/* Relationship */}
-                    <div>
-                        <label className="block text-foreground font-medium mb-2 flex items-center gap-2">
-                            관계 <span className="text-green-500">✓</span>
-                        </label>
-                        <select
-                            value={relationship}
-                            onChange={(e) => setRelationship(e.target.value as RelationshipType)}
-                            className="w-full px-4 py-3 rounded-lg bg-surface border border-white/10 text-foreground"
-                            disabled={isSubmitting}
-                        >
-                            <option value="self">본인</option>
-                            <option value="spouse">배우자</option>
-                            <option value="child">자녀</option>
-                            <option value="parent">부모</option>
-                            <option value="friend">친구</option>
-                            <option value="lover">연인</option>
-                            <option value="other">기타</option>
-                        </select>
-                    </div>
-
-                    {/* Birthdate */}
-                    <div>
-                        <label className="block text-foreground font-medium mb-2">
-                            생년월일 <span className="text-red-500">필수</span>
-                        </label>
-                        <input
-                            type="text"
-                            value={birthdate}
-                            onChange={(e) => setBirthdate(e.target.value)}
-                            placeholder="YYYY-MM-DD"
-                            className="w-full px-4 py-3 rounded-lg bg-surface border border-white/10 text-foreground placeholder:text-zinc-400"
-                            disabled={isSubmitting}
-                        />
-                    </div>
-
-                    {/* Birth Time */}
-                    <div>
-                        <label className="block text-foreground font-medium mb-2 flex items-center justify-between">
-                            <span>태어난 시간</span>
-                            <label className="flex items-center gap-2 text-sm font-normal">
-                                <input
-                                    type="checkbox"
-                                    checked={isTimeUnknown}
-                                    onChange={(e) => setIsTimeUnknown(e.target.checked)}
-                                    className="rounded"
-                                    disabled={isSubmitting}
-                                />
-                                시간 모름
-                            </label>
-                        </label>
-                        <input
-                            type="time"
-                            value={birthTime}
-                            onChange={(e) => setBirthTime(e.target.value)}
-                            disabled={isTimeUnknown || isSubmitting}
-                            className="w-full px-4 py-3 rounded-lg bg-surface border border-white/10 text-foreground disabled:opacity-50"
-                        />
-                        <p className="text-xs text-zinc-500 mt-2">
-                            밤 12시는 00:00, 낮 12시는 12:00으로 입력하세요.
+                        <button onClick={() => router.back()} className="flex items-center gap-3 text-lg font-bold text-secondary hover:text-foreground transition-all mb-8">
+                            <ArrowLeft className="w-6 h-6" /> {t('common.back')}
+                        </button>
+                        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-flex px-4 py-2 rounded-full mb-6 bg-surface border border-border-color">
+                            <span className="text-sm font-bold text-primary tracking-widest leading-none uppercase">{locale === 'ko' ? '사주 노드 추가' : 'NEW SAJU NODE'}</span>
+                        </motion.div>
+                        <h1 className="text-5xl font-black text-foreground italic tracking-tighter uppercase mb-2">
+                            {locale === 'ko' ? '새 프로필' : 'Add Profile'} <span className="text-primary italic">Registrar</span>
+                        </h1>
+                        <p className="text-xl text-secondary font-medium italic opacity-70">
+                            {locale === 'ko' ? '운명 분석을 위한 데이터를 입력합니다.' : 'Map the cosmic coordinates for analysis.'}
                         </p>
                     </div>
+                </div>
 
-                    {/* Calendar Type */}
-                    <div>
-                        <label className="block text-foreground font-medium mb-3">달력 종류</label>
-                        <div className="flex gap-4">
-                            <label className="flex items-center gap-2 cursor-pointer">
+                {/* Registration Form */}
+                <form onSubmit={handleSubmit} className="space-y-12">
+                    <div className="bg-surface rounded-5xl p-12 border border-border-color shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-2 h-full bg-primary" />
+
+                        <div className="space-y-16">
+                            {/* Name Input */}
+                            <div className="space-y-6">
+                                <label className="text-xl font-bold flex items-center gap-4 text-secondary">
+                                    <UserIcon className="w-6 h-6 text-primary" /> {locale === 'ko' ? '이름' : 'Name'}
+                                </label>
                                 <input
-                                    type="radio"
-                                    name="calendar"
-                                    value="solar"
-                                    checked={calendarType === 'solar'}
-                                    onChange={() => setCalendarType('solar')}
-                                    className="w-5 h-5"
-                                    disabled={isSubmitting}
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder={locale === 'ko' ? "실명을 입력해 주세요" : "Enter full name"}
+                                    className="w-full bg-transparent border-b-2 border-border-color text-5xl font-black text-foreground italic tracking-tighter placeholder:text-neutral-800 focus:outline-none focus:border-primary transition-all pb-4"
                                 />
-                                <span className="text-foreground">양력</span>
-                            </label>
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="calendar"
-                                    value="lunar"
-                                    checked={calendarType === 'lunar'}
-                                    onChange={() => setCalendarType('lunar')}
-                                    className="w-5 h-5"
-                                    disabled={isSubmitting}
-                                />
-                                <span className="text-foreground">음력</span>
-                            </label>
+                            </div>
+
+                            {/* Relationship Picker */}
+                            <div className="space-y-6">
+                                <label className="text-xl font-bold flex items-center gap-4 text-secondary">
+                                    <Heart className="w-6 h-6 text-primary" /> {t('compat.relationType')}
+                                </label>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                    {['self', 'lover', 'friend', 'spouse', 'child', 'parent', 'other'].map((rel) => (
+                                        <button
+                                            key={rel}
+                                            type="button"
+                                            onClick={() => setRelationship(rel as RelationshipType)}
+                                            className={`py-5 rounded-3xl text-lg font-black tracking-tight border transition-all ${relationship === rel
+                                                ? 'bg-primary border-primary text-white shadow-xl scale-105'
+                                                : 'bg-background border-border-color text-secondary hover:border-primary/50'
+                                                }`}
+                                        >
+                                            {t(`common.relation.${rel}`)}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Birthdate & Gender Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+                                <div className="space-y-8">
+                                    <label className="text-xl font-bold flex items-center gap-4 text-secondary uppercase tracking-widest">
+                                        <Calendar className="w-6 h-6 text-primary" /> Date of Origin
+                                    </label>
+                                    <div className="space-y-6">
+                                        <input
+                                            type="date"
+                                            value={birthdate}
+                                            onChange={(e) => setBirthdate(e.target.value)}
+                                            className="w-full bg-background border border-border-color rounded-4xl px-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-primary transition-all [color-scheme:dark] italic"
+                                        />
+                                        <div className="flex p-2 bg-background rounded-3xl border border-border-color">
+                                            {(['solar', 'lunar'] as CalendarType[]).map(type => (
+                                                <button
+                                                    key={type}
+                                                    type="button"
+                                                    onClick={() => setCalendarType(type)}
+                                                    className={`flex-1 py-4 rounded-2xl text-lg font-black tracking-widest uppercase transition-all ${calendarType === type ? 'bg-primary text-white shadow-lg' : 'text-secondary hover:text-foreground'}`}
+                                                >
+                                                    {type === 'solar' ? (locale === 'ko' ? '양력' : 'SOLAR') : (locale === 'ko' ? '음력' : 'LUNAR')}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-8">
+                                    <label className="text-xl font-bold flex items-center justify-between text-secondary uppercase tracking-widest">
+                                        <span className="flex items-center gap-4"><Clock className="w-6 h-6 text-primary" /> Temporal Coordinate</span>
+                                        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setIsTimeUnknown(!isTimeUnknown)}>
+                                            <div className={`w-4 h-4 rounded-full border-2 border-border-color transition-all ${isTimeUnknown ? 'bg-rose-500 border-rose-500 shadow-xl shadow-rose-500/20' : 'bg-transparent'}`} />
+                                            <span className="text-sm font-bold text-secondary group-hover:text-foreground">{locale === 'ko' ? '모름' : 'Unknown'}</span>
+                                        </div>
+                                    </label>
+                                    <div className="space-y-6">
+                                        <input
+                                            type="time"
+                                            value={birthTime}
+                                            onChange={(e) => setBirthTime(e.target.value)}
+                                            disabled={isTimeUnknown}
+                                            className="w-full bg-background border border-border-color rounded-4xl px-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-primary transition-all [color-scheme:dark] disabled:opacity-10 italic"
+                                        />
+                                        <div className="flex p-2 bg-background rounded-3xl border border-border-color">
+                                            {(['female', 'male'] as Gender[]).map(g => (
+                                                <button
+                                                    key={g}
+                                                    type="button"
+                                                    onClick={() => setGender(g)}
+                                                    className={`flex-1 py-4 rounded-2xl text-lg font-black tracking-widest uppercase transition-all ${gender === g
+                                                        ? 'bg-primary text-white shadow-lg'
+                                                        : 'text-secondary hover:text-foreground'}`}
+                                                >
+                                                    {t(`common.${g === 'female' ? 'female' : 'male'}`)}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Gender */}
-                    <div>
-                        <label className="block text-foreground font-medium mb-3">성별</label>
-                        <div className="flex gap-4">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="gender"
-                                    value="female"
-                                    checked={gender === 'female'}
-                                    onChange={() => setGender('female')}
-                                    className="w-5 h-5"
-                                    disabled={isSubmitting}
-                                />
-                                <span className="text-foreground">여자</span>
-                            </label>
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="gender"
-                                    value="male"
-                                    checked={gender === 'male'}
-                                    onChange={() => setGender('male')}
-                                    className="w-5 h-5"
-                                    disabled={isSubmitting}
-                                />
-                                <span className="text-foreground">남자</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-4 pt-4">
-                        <button
-                            type="button"
-                            onClick={() => router.back()}
-                            className="flex-1 py-3 rounded-lg border border-white/20 text-foreground font-medium hover:bg-white/5"
-                            disabled={isSubmitting}
-                        >
-                            취소
-                        </button>
-                        <button
-                            type="submit"
-                            className="flex-1 py-3 rounded-lg bg-yellow-400 text-black font-bold hover:bg-yellow-500 flex items-center justify-center gap-2"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
-                            저장하기
-                        </button>
-                    </div>
-
-                    {/* View All Link */}
-                    <div className="text-center pt-4">
-                        <Link href="/my-saju/list" className="text-sm text-primary hover:underline">
-                            전체 사주 목록 보러가기 →
-                        </Link>
-                    </div>
+                    {/* Submit Button */}
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full py-10 rounded-5xl bg-gradient-to-r from-primary via-indigo-600 to-purple-600 text-white font-black text-3xl tracking-[0.4em] uppercase shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-6 disabled:opacity-30"
+                    >
+                        {isSubmitting ? (
+                            <Loader2 className="w-10 h-10 animate-spin" />
+                        ) : (
+                            <>
+                                <Calculator className="w-10 h-10" />
+                                {locale === 'ko' ? '프로필 저장하기' : 'MAP & SAVE DESTINY'}
+                            </>
+                        )}
+                    </button>
                 </form>
 
-                {/* Jelly Confirmation Modal */}
+                {/* Secure Badge */}
+                <div className="mt-20 flex flex-col items-center gap-6 opacity-40">
+                    <div className="flex items-center gap-4 px-8 py-4 rounded-full bg-surface border border-border-color shadow-sm">
+                        <ShieldCheck className="w-6 h-6 text-emerald-500" />
+                        <span className="text-sm font-black text-foreground uppercase tracking-widest">End-to-End Fate Encryption Active</span>
+                    </div>
+                </div>
+
+                {/* Modals */}
                 <AnimatePresence>
                     {showConfirmModal && (
-                        <>
-                            {/* Backdrop */}
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-                                onClick={() => {
-                                    setShowConfirmModal(false);
-                                    setIsSubmitting(false);
-                                }}
-                            />
+                        <div className="fixed inset-0 bg-black/80 backdrop-blur-2xl flex items-center justify-center p-8 z-[100]">
+                            <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="bg-surface p-12 md:p-16 max-w-xl w-full text-center rounded-5xl border-2 border-primary/30 shadow-2xl shadow-primary/20 relative overflow-hidden">
+                                <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-primary via-indigo-500 to-purple-500" />
+                                <div className="absolute -top-32 -right-32 w-64 h-64 bg-primary/20 blur-3xl rounded-full" />
+                                <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-purple-500/20 blur-3xl rounded-full" />
 
-                            {/* Modal */}
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
-                            >
-                                <div
-                                    className="bg-surface rounded-2xl shadow-2xl max-w-md w-full pointer-events-auto p-6 border border-white/10"
-                                    onClick={(e) => e.stopPropagation()}
-                                >
-                                    <div className="text-center mb-6">
-                                        <div className="w-16 h-16 bg-yellow-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <Sparkles className="w-8 h-8 text-yellow-400" />
-                                        </div>
-                                        <h3 className="text-xl font-bold text-foreground mb-2">
-                                            새 프로필 추가
-                                        </h3>
-                                        <p className="text-sm text-zinc-400">
-                                            <strong className="text-foreground">{name}</strong> 님의 사주를 추가하려면<br />
-                                            <strong className="text-yellow-400">1 젤리</strong>가 필요해요
+                                <div className="relative z-10">
+                                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 8, repeat: Infinity, ease: 'linear' }} className="w-28 h-28 bg-background rounded-full flex items-center justify-center mx-auto mb-8 border-4 border-primary/20 shadow-xl">
+                                        <Database className="w-12 h-12 text-primary" />
+                                    </motion.div>
+
+                                    <h2 className="text-4xl font-black text-foreground italic tracking-tighter uppercase mb-4">
+                                        {locale === 'ko' ? '운명망 확장' : 'EXPAND DESTINY WEB'}
+                                    </h2>
+
+                                    <div className="bg-background rounded-3xl p-6 mb-8 border border-border-color">
+                                        <p className="text-2xl text-secondary font-medium leading-relaxed">
+                                            {locale === 'ko' ? (
+                                                <>새로운 인연 <span className="text-primary font-black">[{name}]</span>을(를)<br />동기화하시겠습니까?</>
+                                            ) : (
+                                                <>Sync new bond <span className="text-primary font-black">[{name}]</span><br />to your destiny web?</>
+                                            )}
                                         </p>
                                     </div>
 
-                                    <div className="flex gap-3">
-                                        <button
-                                            onClick={() => {
-                                                setShowConfirmModal(false);
-                                                setIsSubmitting(false);
-                                            }}
-                                            className="flex-1 py-3 px-6 rounded-xl border border-white/20 text-foreground hover:bg-white/5 transition"
-                                        >
-                                            취소
+                                    <div className="flex flex-col items-center gap-2 mb-10">
+                                        <span className="text-3xl font-black text-foreground flex items-center gap-3">
+                                            <Sparkles className="w-8 h-8 text-primary" />
+                                            {locale === 'ko' ? '1 젤리 소모' : '1 Jelly Required'}
+                                        </span>
+                                        <p className="text-sm font-bold text-secondary">
+                                            {locale === 'ko' ? '초대 링크를 공유하고 무료 젤리를 받으세요!' : 'Share referral link to get free jellies!'}
+                                        </p>
+                                    </div>
+
+                                    <div className="flex flex-col sm:flex-row gap-4">
+                                        <button onClick={() => { setShowConfirmModal(false); setIsSubmitting(false); }} className="w-full py-5 rounded-2xl bg-background border-2 border-border-color text-secondary font-black text-xl hover:text-foreground transition-all uppercase">
+                                            {locale === 'ko' ? '취소' : 'Cancel'}
                                         </button>
-                                        <button
-                                            onClick={() => {
-                                                setShowConfirmModal(false);
-                                                saveProfileAndNavigate(false);
-                                            }}
-                                            className="flex-1 py-3 px-6 rounded-xl bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-bold hover:from-yellow-500 hover:to-amber-600 transition flex items-center justify-center gap-2"
-                                            disabled={isSubmitting}
-                                        >
-                                            {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
-                                            확인
+                                        <button onClick={() => { setShowConfirmModal(false); saveProfileAndNavigate(false); }} className="w-full py-5 rounded-2xl bg-gradient-to-r from-primary to-indigo-600 text-white font-black text-xl shadow-xl hover:scale-105 transition-all uppercase flex items-center justify-center gap-2">
+                                            <ShieldCheck className="w-6 h-6" />
+                                            {locale === 'ko' ? '운명 동기화' : 'Sync Fate'}
                                         </button>
                                     </div>
                                 </div>
                             </motion.div>
-                        </>
+                        </div>
                     )}
                 </AnimatePresence>
 
-                {/* Jelly Shop Modal */}
                 <JellyShopModal
                     isOpen={showShopModal}
-                    onClose={() => {
-                        setShowShopModal(false);
-                        setIsSubmitting(false);
-                    }}
-                    onPurchaseSuccess={(jellies) => {
-                        setShowShopModal(false);
-                        // After purchase, show confirmation modal
-                        setShowConfirmModal(true);
-                    }}
+                    onClose={() => { setShowShopModal(false); setIsSubmitting(false); }}
+                    onPurchaseSuccess={() => { setShowShopModal(false); setShowConfirmModal(true); }}
                 />
             </div>
         </main>

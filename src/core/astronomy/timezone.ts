@@ -109,16 +109,40 @@ function parseMMDDHHmm(str: string): [number, number, number, number] {
 }
 
 /**
- * UTC → KST 변환
+ * 해당 시점의 대한민국 표준시 UTC 오프셋을 반환 (분 단위)
  * 
- * @param utcDate UTC 시간
- * @returns KST 시간
+ * 역사적 변천:
+ * 1. 1908-1911: UTC+8:30 (127.5도)
+ * 2. 1912-1954: UTC+9:00 (135도)
+ * 3. 1954-1961: UTC+8:30 (127.5도) - 이승만 정부
+ * 4. 1961-현재: UTC+9:00 (135도)
+ */
+export function getKoreaStandardOffsetMinutes(date: Date): number {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    // 1954년 3월 21일 ~ 1961년 8월 10일: UTC+8.5
+    if (year > 1954 && year < 1961) return 8.5 * 60;
+    if (year === 1954 && (month > 3 || (month === 3 && day >= 21))) return 8.5 * 60;
+    if (year === 1961 && (month < 8 || (month === 8 && day <= 10))) return 8.5 * 60;
+
+    // 1908년 4월 1일 ~ 1911년 12월 31일: UTC+8.5 (일제강점기 이전)
+    if (year > 1908 && year < 1911) return 8.5 * 60;
+    if (year === 1908 && (month > 4 || (month === 4 && day >= 1))) return 8.5 * 60;
+    if (year === 1911) return 8.5 * 60;
+
+    return 9 * 60; // 기본 UTC+9
+}
+
+/**
+ * UTC → KST 변환
  */
 export function utcToKST(utcDate: Date): Date {
     const kst = new Date(utcDate);
+    const standardOffset = getKoreaStandardOffsetMinutes(kst);
 
-    // 기본 UTC+9
-    kst.setHours(kst.getHours() + 9);
+    kst.setMinutes(kst.getMinutes() + standardOffset);
 
     // 서머타임 확인 및 추가 보정
     const summerTimeOffset = getKoreaSummerTimeOffset(kst);
@@ -131,18 +155,13 @@ export function utcToKST(utcDate: Date): Date {
 
 /**
  * KST → UTC 변환
- * 
- * @param kstDate KST 시간
- * @returns UTC 시간
  */
 export function kstToUTC(kstDate: Date): Date {
     const utc = new Date(kstDate);
-
-    // 서머타임 확인
+    const standardOffset = getKoreaStandardOffsetMinutes(kstDate);
     const summerTimeOffset = getKoreaSummerTimeOffset(kstDate);
 
-    // UTC로 변환 (KST = UTC+9 + 서머타임)
-    const totalOffset = 9 * 60 + summerTimeOffset;
+    const totalOffset = standardOffset + summerTimeOffset;
     utc.setMinutes(utc.getMinutes() - totalOffset);
 
     return utc;

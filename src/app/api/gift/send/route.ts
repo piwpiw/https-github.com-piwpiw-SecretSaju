@@ -28,7 +28,8 @@ export async function POST(req: Request) {
         // await db.insert('saju_profiles').values({ id: resultToken, ... })
 
         // 2. Send the email using Resend
-        const resultLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/result/${resultToken}`;
+        const domain = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+        const resultLink = `${domain}/result/${resultToken}`;
         const emailResult = await sendSajuResultEmail(targetEmail, senderName, resultLink);
 
         if (!emailResult.success) {

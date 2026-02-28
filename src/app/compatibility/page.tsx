@@ -3,26 +3,67 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { calculateHighPrecisionSaju } from '@/core/api/saju-engine';
-import { analyzeRelationship } from '@/lib/compatibility';
-import { validateBirthInput } from '@/lib/validation';
+import { analyzeRelationship, RelationshipType } from '@/lib/compatibility';
 import { getProfiles, SajuProfile } from '@/lib/storage';
-import { ChevronDown, Heart, Share2, Copy } from 'lucide-react';
+import {
+  ChevronDown, Heart, Copy, Sparkles, Users, ArrowLeft,
+  ChevronRight, Zap, Loader2, UserPlus, AlertTriangle,
+  Star, MessageCircle, TrendingUp, RefreshCw, User
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import JellyBalance from '@/components/shop/JellyBalance';
+import { useLocale } from '@/lib/i18n';
+
+const RELATIONSHIP_PRESETS: { labelKey: string; value: RelationshipType; icon: string }[] = [
+  { labelKey: 'common.relation.lover', value: '연인', icon: '💕' },
+  { labelKey: 'common.relation.spouse', value: '배우자', icon: '💍' },
+  { labelKey: 'common.relation.friend', value: '친구', icon: '🤝' },
+  { labelKey: 'common.relation.parent', value: '엄마', icon: '👨‍👩‍👧' },
+  { labelKey: 'common.relation.other', value: '상사', icon: '💼' },
+  { labelKey: 'common.relation.other', value: '기타', icon: '✨' },
+];
+
+const GRADE_CONFIG = {
+  best: { icon: '🏆', colorClass: 'text-yellow-400', bgClass: 'bg-yellow-500/10 border-yellow-500/30' },
+  good: { icon: '💎', colorClass: 'text-emerald-400', bgClass: 'bg-emerald-500/10 border-emerald-500/30' },
+  normal: { icon: '⭐', colorClass: 'text-blue-400', bgClass: 'bg-blue-500/10 border-blue-500/30' },
+  caution: { icon: '⚠️', colorClass: 'text-amber-400', bgClass: 'bg-amber-500/10 border-amber-500/30' },
+  low: { icon: '❗', colorClass: 'text-rose-400', bgClass: 'bg-rose-500/10 border-rose-500/30' },
+};
 
 export default function CompatibilityPage() {
+  const router = useRouter();
+  const { t, locale } = useLocale();
   const [profiles, setProfiles] = useState<SajuProfile[]>([]);
   const [personAId, setPersonAId] = useState('');
   const [personBId, setPersonBId] = useState('');
-  const [relationshipQuestion, setRelationshipQuestion] = useState('');
-  const [roleA, setRoleA] = useState('');
-  const [roleB, setRoleB] = useState('');
-  const [showRelationship, setShowRelationship] = useState(false);
+  const [selectedRelationType, setSelectedRelationType] = useState<RelationshipType>('연인');
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ReturnType<typeof analyzeRelationship> | null>(null);
   const [loading, setLoading] = useState(false);
+  const [animatedScore, setAnimatedScore] = useState(0);
 
   useEffect(() => {
     setProfiles(getProfiles());
   }, []);
+
+  useEffect(() => {
+    if (!result) { setAnimatedScore(0); return; }
+    let frame: number;
+    let start: number | null = null;
+    const duration = 1500;
+    const target = result.score;
+    const animate = (ts: number) => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setAnimatedScore(Math.round(eased * target));
+      if (progress < 1) frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [result]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,266 +74,298 @@ export default function CompatibilityPage() {
     const personB = profiles.find(p => p.id === personBId);
 
     if (!personA || !personB) {
-      setError('두 사람을 모두 선택해주세요');
+      setError(t('compat.selectBothError'));
+      return;
+    }
+    if (personA.id === personB.id) {
+      setError(t('compat.samePersonError'));
       return;
     }
 
     const parseBirth = (dateStr: string) => {
-      const [year, month, day] = dateStr.split('-').map(Number);
-      return new Date(year, month - 1, day); // Convert to Date object
+      const parts = dateStr.split('T')[0].split('-');
+      const [year, month, day] = parts.map(Number);
+      return new Date(year, month - 1, day);
     };
-
-    const birthA = parseBirth(personA.birthdate);
-    const birthB = parseBirth(personB.birthdate);
 
     setLoading(true);
     setTimeout(async () => {
-      // Updated to Enterprise Engine
-      const sajuA = await calculateHighPrecisionSaju({
-        birthDate: birthA,
-        birthTime: '12:00', // Default
-        gender: personA.gender === 'male' ? 'M' : 'F'
-      });
-      const sajuB = await calculateHighPrecisionSaju({
-        birthDate: birthB,
-        birthTime: '12:00',
-        gender: personB.gender === 'male' ? 'M' : 'F'
-      });
-
-      setResult(analyzeRelationship(sajuA, sajuB, roleA as any || '기타'));
-      setLoading(false);
-    }, 800);
+      try {
+        const sajuA = await calculateHighPrecisionSaju({
+          birthDate: parseBirth(personA.birthdate),
+          birthTime: personA.birthTime || '12:00',
+          gender: personA.gender === 'male' ? 'M' : 'F',
+          calendarType: personA.calendarType,
+        });
+        const sajuB = await calculateHighPrecisionSaju({
+          birthDate: parseBirth(personB.birthdate),
+          birthTime: personB.birthTime || '12:00',
+          gender: personB.gender === 'male' ? 'M' : 'F',
+          calendarType: personB.calendarType,
+        });
+        setResult(analyzeRelationship(sajuA, sajuB, selectedRelationType));
+      } catch (err) {
+        console.error(err);
+        setError('Analysis Error');
+      } finally {
+        setLoading(false);
+      }
+    }, 1200);
   };
 
   const selectedPersonA = profiles.find(p => p.id === personAId);
   const selectedPersonB = profiles.find(p => p.id === personBId);
+  const gradeInfo = result ? GRADE_CONFIG[result.grade] : null;
+
+  // ── Empty State ──
+  if (profiles.length < 2) {
+    return (
+      <main className="min-h-screen relative overflow-hidden flex items-center justify-center px-6 pb-32">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-md w-full text-center">
+          <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8 bg-surface border border-border-color">
+            <Users className="w-12 h-12 text-primary" />
+          </div>
+          <h2 className="text-3xl font-bold mb-4 text-foreground">{t('compat.noProfiles')}</h2>
+          <p className="text-lg mb-10 text-secondary leading-relaxed">{t('compat.noProfilesDesc')}</p>
+          <div className="flex flex-col gap-4">
+            <Link href="/my-saju/add" className="w-full py-5 rounded-2xl bg-primary text-white font-bold text-lg shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-3">
+              <UserPlus className="w-6 h-6" /> {t('compat.addProfile')}
+            </Link>
+            <button onClick={() => router.back()} className="w-full py-5 rounded-2xl bg-surface text-foreground font-bold text-lg border border-border-color hover:bg-white/5 transition-all">
+              {t('common.back')}
+            </button>
+          </div>
+        </motion.div>
+      </main>
+    );
+  }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 text-white px-4 py-8 text-center">
-          <div className="text-3xl mb-2">💕</div>
-          <h1 className="text-2xl font-bold">새로운 궁합 보기</h1>
-          <p className="text-green-100/80 text-sm mt-1">두 사람의 운명적 케미를 확인하세요</p>
+    <main className="min-h-screen relative overflow-hidden pb-32">
+      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+
+        {/* ── Header ── */}
+        <div className="flex items-center justify-between mb-16">
+          <button onClick={() => router.back()} className="flex items-center gap-3 text-lg font-bold text-secondary hover:text-foreground transition-all">
+            <ArrowLeft className="w-6 h-6" /> {t('common.back')}
+          </button>
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-black text-foreground italic tracking-tighter uppercase">{t('compat.title')}</h1>
+            <p className="text-lg mt-2 text-secondary">{t('compat.desc')}</p>
+          </div>
+          <JellyBalance onClick={() => router.push('/shop')} />
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 space-y-6">
-          {/* Person A Selection */}
-          <div className="glass rounded-2xl p-6">
-            <h3 className="text-foreground font-medium mb-4">첫 번째 사람 선택</h3>
+        <form onSubmit={handleSubmit} className="space-y-12">
+          {/* ── Profile Picker (Card News Style) ── */}
+          <div className="space-y-10">
+            {/* Person A Selector */}
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-zinc-400 mb-2">관계 성별 생년월일</label>
-                <div className="relative">
-                  <select
-                    value={personAId}
-                    onChange={(e) => setPersonAId(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg bg-surface border border-white/10 text-foreground appearance-none"
+              <label className="text-xl font-bold text-secondary flex items-center gap-3">
+                <span className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center text-sm">1</span>
+                {t('compat.person1')}
+              </label>
+              <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
+                {profiles.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setPersonAId(p.id)}
+                    className={`flex-shrink-0 w-48 p-6 rounded-3xl border transition-all text-left relative group ${personAId === p.id
+                      ? 'bg-primary border-primary shadow-xl scale-105'
+                      : 'bg-surface border-border-color hover:border-primary/50'
+                      }`}
                   >
-                    <option value="">선택</option>
-                    {profiles.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.relationship} | {p.gender === 'female' ? '여자' : '남자'} | {p.birthdate}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 pointer-events-none" />
-                </div>
+                    <div className={`p-3 rounded-2xl mb-4 w-fit ${personAId === p.id ? 'bg-white/20' : 'bg-background'}`}>
+                      <User className={`w-6 h-6 ${personAId === p.id ? 'text-white' : 'text-primary'}`} />
+                    </div>
+                    <p className={`text-xl font-black mb-1 ${personAId === p.id ? 'text-white' : 'text-foreground'}`}>{p.name}</p>
+                    <p className={`text-sm ${personAId === p.id ? 'text-white/70' : 'text-secondary'}`}>{t(`common.relation.${p.relationship}`)}</p>
+                    {personAId === p.id && (
+                      <motion.div layoutId="checkA" className="absolute top-4 right-4 text-white">
+                        <Zap className="w-5 h-5 fill-current" />
+                      </motion.div>
+                    )}
+                  </button>
+                ))}
               </div>
-              {selectedPersonA && (
-                <div className="flex gap-4 text-sm text-zinc-400">
-                  <div>
-                    <span className="mr-2">양/음력</span>
-                    <span className="text-foreground">{selectedPersonA.calendarType === 'solar' ? '양력' : '음력'}</span>
-                  </div>
-                  <div>
-                    <span className="mr-2">시간</span>
-                    <span className="text-foreground">{selectedPersonA.isTimeUnknown ? '모름' : selectedPersonA.birthTime}</span>
-                  </div>
-                </div>
-              )}
+            </div>
+
+            {/* Person B Selector */}
+            <div className="space-y-4">
+              <label className="text-xl font-bold text-secondary flex items-center gap-3">
+                <span className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm">2</span>
+                {t('compat.person2')}
+              </label>
+              <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
+                {profiles.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setPersonBId(p.id)}
+                    className={`flex-shrink-0 w-48 p-6 rounded-3xl border transition-all text-left relative group ${personBId === p.id
+                      ? 'bg-purple-600 border-purple-600 shadow-xl scale-105'
+                      : 'bg-surface border-border-color hover:border-purple-500/50'
+                      }`}
+                  >
+                    <div className={`p-3 rounded-2xl mb-4 w-fit ${personBId === p.id ? 'bg-white/20' : 'bg-background'}`}>
+                      <User className={`w-6 h-6 ${personBId === p.id ? 'text-white' : 'text-purple-400'}`} />
+                    </div>
+                    <p className={`text-xl font-black mb-1 ${personBId === p.id ? 'text-white' : 'text-foreground'}`}>{p.name}</p>
+                    <p className={`text-sm ${personBId === p.id ? 'text-white/70' : 'text-secondary'}`}>{t(`common.relation.${p.relationship}`)}</p>
+                    {personBId === p.id && (
+                      <motion.div layoutId="checkB" className="absolute top-4 right-4 text-white">
+                        <Heart className="w-5 h-5 fill-current" />
+                      </motion.div>
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Person B Selection */}
-          <div className="glass rounded-2xl p-6">
-            <h3 className="text-foreground font-medium mb-4">두 번째 사람 선택</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-zinc-400 mb-2">관계 성별 생년월일</label>
-                <div className="relative">
-                  <select
-                    value={personBId}
-                    onChange={(e) => setPersonBId(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg bg-surface border border-white/10 text-foreground appearance-none"
-                  >
-                    <option value="">선택</option>
-                    {profiles.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.relationship} | {p.gender === 'female' ? '여자' : '남자'} | {p.birthdate}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 pointer-events-none" />
-                </div>
-              </div>
-              {selectedPersonB && (
-                <div className="flex gap-4 text-sm text-zinc-400">
-                  <div>
-                    <span className="mr-2">양/음력</span>
-                    <span className="text-foreground">{selectedPersonB.calendarType === 'solar' ? '양력' : '음력'}</span>
-                  </div>
-                  <div>
-                    <span className="mr-2">시간</span>
-                    <span className="text-foreground">{selectedPersonB.isTimeUnknown ? '모름' : selectedPersonB.birthTime}</span>
-                  </div>
-                </div>
-              )}
+          {/* ── Relationship Type Preset ── */}
+          <div className="bg-surface rounded-4xl p-8 border border-border-color">
+            <div className="flex items-center gap-3 mb-8">
+              <Star className="w-6 h-6 text-primary" />
+              <h3 className="text-xl font-bold text-foreground">{t('compat.relationType')}</h3>
+            </div>
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+              {RELATIONSHIP_PRESETS.map((preset) => (
+                <button
+                  key={preset.value}
+                  type="button"
+                  onClick={() => setSelectedRelationType(preset.value)}
+                  className={`py-6 rounded-3xl text-center transition-all border ${selectedRelationType === preset.value
+                    ? 'bg-primary border-primary text-white shadow-xl scale-105'
+                    : 'bg-background border-border-color text-secondary hover:border-primary/30'
+                    }`}
+                >
+                  <span className="text-3xl block mb-2">{preset.icon}</span>
+                  <span className="text-sm font-bold">{t(preset.labelKey)}</span>
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Relationship Question - Expandable */}
-          <button
-            type="button"
-            onClick={() => setShowRelationship(!showRelationship)}
-            className="w-full glass rounded-2xl p-6 flex items-center justify-between hover:bg-white/5"
-          >
-            <span className="text-foreground font-medium">두 사람은 어떤 관계인가요?</span>
-            <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform ${showRelationship ? 'rotate-180' : ''}`} />
-          </button>
-
-          {showRelationship && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              className="glass rounded-2xl p-6"
-            >
-              <input
-                type="text"
-                value={relationshipQuestion}
-                onChange={(e) => setRelationshipQuestion(e.target.value)}
-                placeholder="예: 연인, 가족, 친구 등"
-                className="w-full px-4 py-3 rounded-lg bg-surface border border-white/10 text-foreground"
-              />
+          {/* ── Error ── */}
+          {error && (
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="p-6 rounded-3xl bg-rose-500/10 border border-rose-500/20 text-rose-500 flex items-center gap-4 text-lg font-bold">
+              <AlertTriangle className="w-6 h-6 flex-shrink-0" /> {error}
             </motion.div>
           )}
 
-          {/* Role Questions */}
-          <div className="space-y-4">
-            <div className="glass rounded-2xl p-6">
-              <label className="block text-foreground font-medium mb-3">
-                첫 번째 사람을 어떤 역할인가요? (예: 엄마)
-                <span className="ml-2 text-xs text-zinc-500">선택</span>
-              </label>
-              <input
-                type="text"
-                value={roleA}
-                onChange={(e) => setRoleA(e.target.value)}
-                placeholder="예: 엄마"
-                className="w-full px-4 py-3 rounded-lg bg-surface border border-white/10 text-foreground"
-              />
-            </div>
-
-            <div className="glass rounded-2xl p-6">
-              <label className="block text-foreground font-medium mb-3">
-                두 번째 사람을 어떤 역할인가요? (예: 딸)
-                <span className="ml-2 text-xs text-zinc-500">선택</span>
-              </label>
-              <input
-                type="text"
-                value={roleB}
-                onChange={(e) => setRoleB(e.target.value)}
-                placeholder="예: 딸"
-                className="w-full px-4 py-3 rounded-lg bg-surface border border-white/10 text-foreground"
-              />
-            </div>
-          </div>
-
-          {error && (
-            <p className="text-sm text-red-400 bg-red-400/10 rounded-lg px-3 py-2" role="alert">
-              {error}
-            </p>
-          )}
-
-          {/* Submit Button */}
+          {/* ── Submit ── */}
           <button
             type="submit"
             disabled={loading || !personAId || !personBId}
-            className="w-full py-4 rounded-xl bg-gradient-to-r from-green-400 to-emerald-500 text-black font-bold hover:from-green-500 hover:to-emerald-600 transition-all hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center justify-center gap-2"
+            className="w-full py-8 rounded-4xl text-white font-black text-2xl tracking-[0.2em] shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 disabled:opacity-40"
+            style={{ background: 'linear-gradient(135deg, var(--primary), #8b5cf6)' }}
           >
-            <Heart className={`w-5 h-5 ${loading ? 'animate-pulse' : ''}`} />
-            {loading ? '궁합 분석 중...' : '궁합 보기'}
+            {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : <><Zap className="w-8 h-8" /> {t('compat.analyze')}</>}
           </button>
         </form>
 
-        {/* Result */}
+        {/* ══════ Results ══════ */}
         <AnimatePresence>
-          {result && (
-            <motion.div
-              className="mt-6 mx-4 mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              {/* Score Card */}
-              <div className="bg-gradient-to-br from-green-900/50 to-emerald-900/30 border border-green-400/20 rounded-2xl p-8 text-center mb-4">
-                <p className="text-slate-400 text-sm mb-4">
-                  {result.pillarA} × {result.pillarB}
-                </p>
-                <div className="relative inline-flex items-center justify-center w-36 h-36 mb-4">
+          {result && gradeInfo && (
+            <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', damping: 20 }} className="mt-20 space-y-10">
+              <div className="bg-surface rounded-5xl p-16 text-center border border-border-color relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-purple-500" />
+                <p className="text-lg font-bold text-secondary mb-10 tracking-widest uppercase">{t('compat.score')}</p>
+
+                <div className="relative w-64 h-64 mx-auto mb-12">
                   <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="8" />
+                    <circle cx="50" cy="50" r="44" fill="none" stroke="var(--border-color)" strokeWidth="6" />
                     <motion.circle
-                      cx="50" cy="50" r="42" fill="none"
-                      stroke="url(#compat-grad)" strokeWidth="8" strokeLinecap="round"
-                      strokeDasharray={`${2 * Math.PI * 42}`}
-                      initial={{ strokeDashoffset: 2 * Math.PI * 42 }}
-                      animate={{ strokeDashoffset: 2 * Math.PI * 42 * (1 - result.score / 100) }}
-                      transition={{ duration: 1.5, ease: 'easeOut' }}
+                      cx="50" cy="50" r="44" fill="none"
+                      stroke="var(--primary)" strokeWidth="6" strokeLinecap="round"
+                      strokeDasharray={`${2 * Math.PI * 44}`}
+                      initial={{ strokeDashoffset: 2 * Math.PI * 44 }}
+                      animate={{ strokeDashoffset: 2 * Math.PI * 44 * (1 - result.score / 100) }}
+                      transition={{ duration: 2, ease: "easeOut" }}
                     />
-                    <defs>
-                      <linearGradient id="compat-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#4ade80" />
-                        <stop offset="100%" stopColor="#06b6d4" />
-                      </linearGradient>
-                    </defs>
                   </svg>
-                  <div>
-                    <p className="text-5xl font-bold text-white">{result.score}</p>
-                    <p className="text-slate-400 text-xs">/ 100점</p>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-8xl font-black text-foreground italic tracking-tighter leading-none">{animatedScore}</span>
+                    <span className="text-xl font-bold text-secondary mt-2">%</span>
                   </div>
                 </div>
-                <p className="text-white font-bold text-lg mb-2">{result.message}</p>
+
+                <div className={`inline-flex items-center gap-3 px-8 py-3 rounded-full text-xl font-black border mb-10 ${gradeInfo.bgClass} ${gradeInfo.colorClass}`}>
+                  <span>{gradeInfo.icon}</span> <span>{result.grade.toUpperCase()}</span>
+                </div>
+
+                <h2 className="text-4xl font-black text-foreground mb-6 leading-tight whitespace-pre-line">{result.message}</h2>
+                <p className="text-xl leading-relaxed text-secondary max-w-2xl mx-auto font-medium">{result.chemistry}</p>
               </div>
 
-              {/* Share */}
-              <div className="flex gap-3">
-                <button
-                  onClick={() => {
-                    const w = window as any;
-                    if (w.Kakao?.Share) {
-                      w.Kakao.Share.sendDefault({
-                        objectType: 'feed',
-                        content: {
-                          title: `우리 궁합 ${result.score}점!`,
-                          description: result.message,
-                          imageUrl: `${window.location.origin}/og-image.png`,
-                          link: { mobileWebUrl: window.location.origin, webUrl: window.location.origin },
-                        },
-                      });
-                    }
-                  }}
-                  className="flex-1 py-3 rounded-xl bg-yellow-400 text-black font-bold hover:bg-yellow-500 transition-all flex items-center justify-center gap-2 text-sm"
-                >
-                  💬 카카오로 공유
-                </button>
-                <button
-                  onClick={() => navigator.clipboard.writeText(`우리 궁합 ${result.score}점! ${result.message} — ${window.location.origin}/compatibility`)}
-                  className="flex-1 py-3 rounded-xl bg-white/10 text-white font-medium hover:bg-white/20 transition-all flex items-center justify-center gap-2 text-sm"
-                >
-                  <Copy className="w-4 h-4" /> 결과 복사
-                </button>
+              {/* ── Detail Cards ── */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-surface rounded-4xl p-10 border border-border-color">
+                  <div className="flex items-center gap-4 mb-6">
+                    <TrendingUp className="w-6 h-6 text-primary" />
+                    <span className="text-lg font-bold text-secondary">{t('compat.powerDynamic')}</span>
+                  </div>
+                  <p className="text-2xl font-black text-foreground">{result.powerDynamic}</p>
+                </div>
+
+                <div className="bg-surface rounded-4xl p-10 border border-border-color">
+                  <div className="flex items-center gap-4 mb-6">
+                    <MessageCircle className="w-6 h-6 text-primary" />
+                    <span className="text-lg font-bold text-secondary">{t('compat.advice')}</span>
+                  </div>
+                  <p className="text-xl font-bold text-foreground leading-relaxed">{result.advice}</p>
+                </div>
+
+                {result.tension && (
+                  <div className="bg-rose-500/5 rounded-4xl p-10 border border-rose-500/20 md:col-span-2">
+                    <div className="flex items-center gap-4 mb-6">
+                      <AlertTriangle className="w-6 h-6 text-rose-500" />
+                      <span className="text-lg font-bold text-rose-500">{t('compat.tension')}</span>
+                    </div>
+                    <p className="text-xl font-bold text-foreground leading-relaxed">{result.tension}</p>
+                  </div>
+                )}
               </div>
+
+              {/* ── Action Items ── */}
+              {result.actionItems && result.actionItems.length > 0 && (
+                <div className="bg-surface rounded-4xl p-10 border border-border-color">
+                  <div className="flex items-center gap-4 mb-10">
+                    <Sparkles className="w-6 h-6 text-primary" />
+                    <span className="text-xl font-bold text-foreground">{t('compat.actionItems')}</span>
+                  </div>
+                  <div className="space-y-6">
+                    {result.actionItems.map((item, i) => (
+                      <div key={i} className="flex items-center gap-6 p-6 rounded-3xl bg-background border border-border-color">
+                        <span className="w-12 h-12 rounded-2xl bg-primary text-white text-xl font-black flex items-center justify-center flex-shrink-0 shadow-lg">{i + 1}</span>
+                        <p className="text-lg font-bold text-foreground">{item}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ── Action Buttons ── */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button onClick={() => {
+                  navigator.clipboard.writeText(`[Compatibility] ${selectedPersonA?.name} ♥ ${selectedPersonB?.name} : ${result.score}%`);
+                  alert(locale === 'ko' ? '복사되었습니다!' : 'Copied!');
+                }} className="py-6 rounded-3xl font-black text-lg bg-surface text-foreground border border-border-color hover:bg-white/5 transition-all flex items-center justify-center gap-3">
+                  <Copy className="w-6 h-6" /> {t('compat.copyResult')}
+                </button>
+                <button onClick={() => { setResult(null); setPersonAId(''); setPersonBId(''); }} className="py-6 rounded-3xl font-black text-lg bg-surface text-foreground border border-border-color hover:bg-white/5 transition-all flex items-center justify-center gap-3">
+                  <RefreshCw className="w-6 h-6" /> {t('compat.reAnalyze')}
+                </button>
+                <Link href={`/relationship/${personBId}`} className="py-6 rounded-3xl font-black text-lg bg-primary text-white shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-3">
+                  {t('compat.viewDetail')} <ChevronRight className="w-6 h-6" />
+                </Link>
+              </div>
+
+              <Link href={`/relationship/${personBId}/vs`} className="block bg-surface border border-border-color p-8 rounded-4xl text-center text-xl font-black text-primary hover:bg-primary/5 transition-all active:scale-95">
+                {t('compat.vsMode')}
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>

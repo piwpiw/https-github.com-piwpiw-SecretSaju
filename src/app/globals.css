@@ -3,34 +3,16 @@
 @tailwind utilities;
 
 :root {
-  /* Theme Tokens */
-  --primary: #7c3aed;
-  --secondary: #f59e0b;
-  --background: #09090b;
-  --surface: rgba(255, 255, 255, 0.05);
-  --foreground: #fafafa;
-  --radius: 1rem;
-
-  /* Y2K Neon Colors */
-  --neon-pink: #FF006E;
-  --neon-cyan: #00F5FF;
-  --neon-purple: #BB00FF;
-  --neon-yellow: #FFEA00;
-  --neon-green: #39FF14;
-
-  /* Glassmorphism Tokens */
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-
-  /* Y2K Gradients */
-  --gradient-cyber: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
-  --gradient-sunset: linear-gradient(135deg, var(--neon-pink), var(--neon-yellow));
-  --gradient-rainbow: linear-gradient(135deg, var(--neon-pink), var(--neon-purple), var(--neon-cyan));
-
-  /* Dark Backgrounds */
-  --bg-dark: #0A0A0F;
-  --bg-card: #1A1A2E;
+  /* Default tokens (dark theme - overridden by ThemeProvider) */
+  --primary: #6366f1;
+  --secondary: #a855f7;
+  --background: #0f0f1a;
+  --surface: rgba(255, 255, 255, 0.03);
+  --text-foreground: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --radius: 0.75rem;
+  --font-size-base: 16px;
 }
 
 html {
@@ -38,56 +20,76 @@ html {
 }
 
 body {
-  @apply bg-[var(--background)] text-[var(--foreground)] antialiased transition-colors duration-300;
-  font-family: var(--font-pretendard), system-ui, sans-serif;
+  background-color: var(--background);
+  color: var(--text-foreground);
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-h1,
-h2,
-h3,
-h4,
-.font-display {
-  font-family: var(--font-do-hyeon), sans-serif;
-}
-
-/* Glassmorphism */
+/* Utility classes using CSS variables */
 .glass {
-  @apply bg-[var(--surface)] backdrop-blur-xl border border-white/10;
+  @apply backdrop-blur-xl;
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
 }
 
-/* Theme Specific Backgrounds */
-.theme-mystic {
-  background: radial-gradient(circle at 50% 0%, #1e2c4f 0%, #0a1128 70%);
+.premium-card {
+  @apply relative backdrop-blur-3xl rounded-2xl overflow-hidden transition-all duration-300;
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
 }
 
-.theme-minimal {
-  background-size: 24px 24px;
-  background-image: linear-gradient(to right, rgba(32, 223, 64, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(32, 223, 64, 0.05) 1px, transparent 1px);
+.premium-card:hover {
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
 }
 
-.theme-cyber {
-  background-image: linear-gradient(to bottom,
-      rgba(255, 255, 255, 0),
-      rgba(255, 255, 255, 0) 50%,
-      rgba(0, 0, 0, 0.2) 50%,
-      rgba(0, 0, 0, 0.2));
-  background-size: 100% 4px;
-}
-
-/* Antigravity float animation */
+/* Animations */
 .antigravity {
   animation: float 6s ease-in-out infinite;
 }
 
 @keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
 
-  0%,
-  100% {
-    transform: translateY(0);
-  }
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
 
-  50% {
-    transform: translateY(-12px);
-  }
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.03),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+/* Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Selection (theme-aware) */
+::selection {
+  background-color: rgba(99, 102, 241, 0.25);
 }

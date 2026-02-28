@@ -4,12 +4,19 @@ import { useEffect, useState } from 'react';
 import { useWallet } from '@/components/WalletProvider';
 import { getUserFromCookie, clearUserSession } from '@/lib/kakao-auth';
 import KakaoLoginButton from '@/components/KakaoLoginButton';
+import AuthModal from '@/components/AuthModal';
 import JellyShopModal from '@/components/shop/JellyShopModal';
-import { User, Gift, MessageSquare, LogOut, History, ShoppingBag, FileText, Shield, Star, TrendingUp, ChevronRight, Gem, BookOpen, HelpCircle } from 'lucide-react';
+import {
+    User as UserIcon, LogOut, History, ShoppingBag,
+    Star, TrendingUp, ChevronRight, Gem, BookOpen,
+    HelpCircle, ArrowLeft, Shield, Gift, MessageSquare, Share2, Award, Copy
+} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useLocale } from '@/lib/i18n';
+import { handleShare } from '@/lib/share';
 
 interface UserData {
     id: number;
@@ -20,10 +27,12 @@ interface UserData {
 
 export default function MyPage() {
     const router = useRouter();
-    const { churu, nyang, addChuru } = useWallet();
+    const { t, locale } = useLocale();
+    const { churu, nyang } = useWallet();
     const [user, setUser] = useState<UserData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [showShop, setShowShop] = useState(false);
+    const [showAuth, setShowAuth] = useState(false);
 
     useEffect(() => {
         const userData = getUserFromCookie();
@@ -32,283 +41,240 @@ export default function MyPage() {
     }, []);
 
     const handleLogout = () => {
-        clearUserSession();
-        setUser(null);
-        router.push('/');
+        if (confirm(locale === 'ko' ? '로그아웃 하시겠습니까?' : 'Do you want to logout?')) {
+            clearUserSession();
+            setUser(null);
+            router.push('/');
+        }
     };
 
-    // Loading state
+    const handleCopyReferral = async () => {
+        if (!user) return;
+        const link = `${window.location.origin}/?ref=${user.id}`;
+        const result = await handleShare('시크릿사주 초대', '초대 링크로 가입하고 프리미엄 분석 무료 젤리를 받으세요!', link);
+        if (result === 'copied') {
+            alert(locale === 'ko' ? '초대 링크가 복사되었습니다! 친구가 가입하면 5 젤리가 지급됩니다!' : 'Referral link copied! You get 5 Jellies when they join!');
+        }
+    };
+
+    const getLevelInfo = (exp: number) => {
+        if (exp >= 1000) return { titleKo: '운명의 마스터', titleEn: 'Destiny Master', next: 'MAX', percent: 100, color: 'text-rose-500' };
+        if (exp >= 300) return { titleKo: '인연의 조언자', titleEn: 'Advisor', next: 1000, percent: (exp / 1000) * 100, color: 'text-purple-500' };
+        if (exp >= 100) return { titleKo: '운명의 탐도자', titleEn: 'Seeker', next: 300, percent: (exp / 300) * 100, color: 'text-emerald-500' };
+        return { titleKo: '수습 점술가', titleEn: 'Apprentice', next: 100, percent: (exp / 100) * 100, color: 'text-primary' };
+    };
+
     if (isLoading) {
         return (
-            <main className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="w-10 h-10 border-2 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                    <p className="text-slate-400 text-sm">로딩 중...</p>
-                </div>
+            <main className="min-h-screen flex items-center justify-center">
+                <Loader2 className="w-16 h-16 animate-spin text-primary" />
             </main>
         );
     }
 
-    // Login gate
     if (!user) {
         return (
-            <main className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950 flex shadow-2xl items-center justify-center px-4">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="max-w-md w-full bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-8"
-                >
-                    <div className="text-center mb-10">
-                        <div className="w-20 h-20 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-5 shadow-[0_0_30px_rgba(168,85,247,0.3)]">
-                            <User className="w-10 h-10 text-purple-400" />
-                        </div>
-                        <h1 className="text-2xl font-bold text-white mb-3">3초만에 시작하기</h1>
-                        <p className="text-slate-400 text-sm leading-relaxed">
-                            사주라떼의 모든 기능을 이용하려면<br />
-                            안전하게 소셜 계정으로 로그인해주세요
-                        </p>
+            <main className="min-h-screen relative overflow-hidden flex items-center justify-center px-6">
+                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-surface max-w-lg w-full p-16 rounded-5xl border border-border-color text-center relative overflow-hidden shadow-2xl">
+                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-purple-600" />
+                    <div className="w-32 h-32 bg-primary/10 rounded-4xl flex items-center justify-center mx-auto mb-10 border border-primary/20 shadow-xl">
+                        <UserIcon className="w-16 h-16 text-primary" />
                     </div>
-
-                    <div className="space-y-3">
-                        {/* Kakao Login */}
-                        <KakaoLoginButton className="shadow-lg" />
-
-                        {/* Naver Login (UI Only) */}
-                        <motion.button
-                            onClick={() => alert("네이버 로그인은 심사 진행 중입니다. 카카오 로그인을 이용해주세요.")}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="w-full py-3 px-6 rounded-xl bg-[#03C75A] hover:bg-[#02b351] transition flex items-center justify-center gap-3 font-medium shadow-lg"
-                        >
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M13.439 10.743L6.963 2H2v16h5.086V8.627l6.505 8.811H18.5V2h-5.061v8.743z" fill="#ffffff" />
-                            </svg>
-                            <span className="text-white font-bold">네이버 로그인</span>
-                        </motion.button>
-
-                        {/* Google Login (UI Only) */}
-                        <motion.button
-                            onClick={() => alert("Google 로그인은 승인 대기 중입니다. 카카오 로그인을 이용해주세요.")}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="w-full py-3 px-6 rounded-xl bg-white hover:bg-gray-100 transition flex items-center justify-center gap-3 font-medium shadow-lg"
-                        >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                            </svg>
-                            <span className="text-black font-bold">Google 로그인</span>
-                        </motion.button>
-                    </div>
-
-                    <div className="mt-8 text-center border-t border-white/5 pt-6">
-                        <p className="text-xs text-slate-500 mb-3">로그인 시 이용약관과 개인정보 처리방침에 동의하게 됩니다.</p>
-                        <Link href="/" className="text-sm text-purple-400 hover:text-purple-300 transition-colors font-medium">
-                            ← 홈으로 돌아가기
-                        </Link>
-                    </div>
+                    <h1 className="text-4xl font-black mb-6 text-foreground tracking-tight">
+                        {locale === 'ko' ? '로그인이 필요합니다' : 'Login Required'}
+                    </h1>
+                    <p className="text-xl text-secondary mb-12 leading-relaxed">
+                        {locale === 'ko' ? '사주 분석 결과를 저장하고 관리하려면\n로그인이 필요합니다.' : 'Sign in to save and manage\nyour Saju analysis results.'}
+                    </p>
+                    <button onClick={() => setShowAuth(true)} className="w-full py-4 rounded-2xl bg-primary text-white font-black text-xl shadow-xl hover:scale-105 transition-all mb-10">
+                        {locale === 'ko' ? '운명의 문 열기 (가입 시 10 젤리)' : 'Unlock Destiny (10 Free Jellies)'}
+                    </button>
+                    <Link href="/" className="text-lg font-bold text-secondary hover:text-foreground transition-all flex items-center justify-center gap-2">
+                        <ArrowLeft className="w-5 h-5" /> {locale === 'ko' ? '홈으로 돌아가기' : 'Back to Home'}
+                    </Link>
+                    <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
                 </motion.div>
-            </main>
+            </main >
         );
     }
 
     const mainMenuItems = [
-        { icon: ShoppingBag, label: '젤리 충전소', desc: '젤리를 충전하고 프리미엄 콘텐츠를 즐기세요', href: '#', onClick: () => setShowShop(true), badge: '충전' },
-        { icon: Star, label: '나의 사주 결과', desc: '저장된 사주 풀이 결과 확인', href: '/my-saju/list', badge: null },
-        { icon: TrendingUp, label: '신년운세', desc: '2026년 나의 운세 확인하기', href: '/fortune', badge: 'NEW' },
-        { icon: History, label: '이용내역 / 결제내역', desc: '젤리 사용 및 충전 이력', href: '/mypage', badge: null },
-    ];
-
-    const subMenuItems = [
-        { icon: Gift, label: '친구에게 선물하기', href: '/gift' },
-        { icon: MessageSquare, label: '문의하기', href: '/inquiry' },
-        { icon: BookOpen, label: '사주 백과사전', href: '/wiki' },
-        { icon: HelpCircle, label: '자주 묻는 질문', href: '/inquiry' },
+        { icon: ShoppingBag, label: t('nav.jelly'), desc: locale === 'ko' ? '프리미엄 분석용' : 'For premium reports', onClick: () => setShowShop(true), badge: '999+' },
+        { icon: Star, label: locale === 'ko' ? '내 프로필' : 'My Profiles', desc: locale === 'ko' ? '저장된 사주 정보' : 'Saved saju data', href: '/my-saju/list' },
+        { icon: TrendingUp, label: t('nav.fortune'), desc: locale === 'ko' ? '올해 실시간 운세' : 'Yearly live report', href: '/fortune' },
+        { icon: History, label: locale === 'ko' ? '분석 내역' : 'Analysis History', desc: locale === 'ko' ? '과거 리포트 모음' : 'Past reports folder', href: '/mypage' },
     ];
 
     return (
-        <main className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950">
-            <div className="max-w-2xl mx-auto pb-12">
-                {/* Header Profile Section */}
-                <div className="relative pt-12 pb-8 px-6 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-700/20 via-black to-slate-950 z-0"></div>
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-500/10 blur-[100px] rounded-full pointer-events-none"></div>
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+        <main className="min-h-screen relative overflow-hidden pb-40">
+            <div className="max-w-4xl mx-auto px-6 py-16 relative z-10">
 
-                    <div className="relative z-10 flex items-center gap-6">
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full blur-md opacity-50"></div>
-                            {user.profileImage ? (
-                                <Image
-                                    src={user.profileImage}
-                                    alt={user.nickname}
-                                    width={96}
-                                    height={96}
-                                    className="relative w-24 h-24 rounded-full object-cover border-4 border-black shadow-[0_0_20px_rgba(168,85,247,0.4)]"
-                                    unoptimized
-                                />
-                            ) : (
-                                <div className="relative w-24 h-24 rounded-full bg-slate-900 border-4 border-black flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.4)]">
-                                    <User className="w-10 h-10 text-white/50" />
-                                </div>
-                            )}
-                            <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-gradient-to-tr from-yellow-400 to-amber-600 rounded-full border-2 border-black flex items-center justify-center shadow-lg">
-                                <span className="text-xs">👑</span>
+                {/* Header */}
+                <div className="flex flex-col md:flex-row items-center justify-between gap-10 mb-20 border-b border-border-color pb-16">
+                    <div className="flex items-center gap-10 text-center md:text-left">
+                        <div className="relative group">
+                            <div className="absolute inset-0 bg-primary blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                            <div className="relative w-40 h-40 rounded-5xl bg-background border-4 border-border-color overflow-hidden shadow-2xl group-hover:scale-105 transition-transform duration-700">
+                                {user.profileImage ? (
+                                    <Image src={user.profileImage} alt={user.nickname} fill className="object-cover" unoptimized />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <UserIcon className="w-20 h-20 text-secondary opacity-30" />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-xl border-4 border-surface">
+                                <Gem className="w-6 h-6 text-white" />
                             </div>
                         </div>
-
-                        <div className="flex-1">
-                            <div className="inline-flex px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-mono text-cyan-400 tracking-widest mb-2 shadow-inner">
-                                VIP 프리미엄 회원
+                        <div>
+                            <div className="inline-flex px-4 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-black uppercase mb-4 tracking-widest leading-none items-center gap-2">
+                                <Award className="w-4 h-4" />
+                                {locale === 'ko' ? getLevelInfo(nyang).titleKo : getLevelInfo(nyang).titleEn}
                             </div>
-                            <h1 className="text-3xl font-black text-white tracking-tight mb-1 drop-shadow-md">
+                            <h1 className="text-5xl font-black text-foreground italic tracking-tighter uppercase mb-2">
                                 {user.nickname}
                             </h1>
-                            <p className="text-slate-400 text-sm font-medium">{user.email || 'SNS 연동 계정'}</p>
+                            <p className="text-xl text-secondary font-medium italic opacity-70 mb-4">
+                                {user.email || 'Verified Destiny'}
+                            </p>
+                            <button onClick={handleCopyReferral} className="flex items-center gap-2 text-sm font-bold text-foreground bg-surface border-2 border-border-color px-4 py-2 rounded-xl hover:border-primary hover:text-primary transition-all">
+                                <Share2 className="w-4 h-4" />
+                                {locale === 'ko' ? '초대하고 5 젤리 받기' : 'Invite & Get 5 Jellies'}
+                            </button>
                         </div>
-
-                        <button
-                            onClick={handleLogout}
-                            className="self-start p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all text-slate-400 hover:text-white group"
-                            title="로그아웃"
-                        >
-                            <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                        </button>
                     </div>
+                    <button onClick={handleLogout} className="p-6 rounded-3xl bg-surface border border-border-color text-secondary hover:text-rose-500 hover:bg-rose-500/5 transition-all shadow-lg group">
+                        <LogOut className="w-8 h-8 group-hover:rotate-12 transition-transform" />
+                    </button>
                 </div>
 
-                {/* Premium Wallet Section */}
-                <div className="px-6 -mt-6 relative z-20">
-                    <div className="grid grid-cols-2 gap-4">
-                        <motion.div
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-gradient-to-br from-yellow-500/10 to-amber-500/5 backdrop-blur-2xl border border-yellow-500/20 rounded-[2rem] p-6 shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-yellow-500/40 hover:shadow-[0_10px_40px_rgba(234,179,8,0.15)] transition-all group"
-                        >
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-2xl drop-shadow-md">🐟</span>
-                                    <span className="text-xs text-yellow-500/90 font-bold tracking-widest uppercase">Jelly</span>
-                                </div>
+                {/* Wallet Info Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+                    <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="bg-surface p-12 rounded-4xl border border-primary/20 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-150 transition-transform duration-700">
+                            <Gem className="w-32 h-32 text-primary" />
+                        </div>
+                        <div className="relative z-10 flex flex-col h-full">
+                            <span className="text-xl font-black text-primary uppercase tracking-widest mb-4">{t('nav.jelly')}</span>
+                            <div className="flex items-baseline gap-4 mb-10">
+                                <span className="text-7xl font-black text-foreground italic tracking-tight">{churu.toLocaleString()}</span>
+                                <span className="text-2xl font-bold text-secondary italic">PCS</span>
                             </div>
-                            <div className="flex items-end justify-between">
-                                <p className="text-4xl font-black text-white group-hover:scale-105 transition-transform origin-left">{churu}</p>
-                                <span className="text-yellow-500/50 text-xs">개</span>
-                            </div>
-                            <button
-                                onClick={() => setShowShop(true)}
-                                className="mt-5 w-full py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-amber-500 text-black font-black text-sm tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_5px_20px_rgba(234,179,8,0.3)]"
-                            >
-                                + 충전하기
+                            <button onClick={() => setShowShop(true)} className="w-full py-6 rounded-2xl bg-primary text-white font-black text-xl shadow-xl hover:scale-105 transition-all">
+                                {locale === 'ko' ? '젤리 충전' : 'Top Up Jellies'}
                             </button>
-                        </motion.div>
+                        </div>
+                    </motion.div>
+                    <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="bg-surface p-12 rounded-4xl border border-border-color relative overflow-hidden group hover:border-emerald-500/50 transition-all">
+                        <div className="relative z-10 flex flex-col h-full">
+                            <span className="text-xl font-black text-secondary uppercase tracking-widest mb-4 flex items-center justify-between">
+                                {locale === 'ko' ? '운명 경험치 (EXP)' : 'Destiny EXP'}
+                                <Award className={`w-8 h-8 ${getLevelInfo(nyang).color}`} />
+                            </span>
+                            <div className="flex items-baseline gap-4 mb-4">
+                                <span className={`text-6xl font-black italic tracking-tight ${getLevelInfo(nyang).color}`}>{nyang.toLocaleString()}</span>
+                                <span className="text-2xl font-bold text-secondary italic">XP</span>
+                            </div>
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 }}
-                            className="bg-gradient-to-br from-pink-500/10 to-rose-500/5 backdrop-blur-2xl border border-pink-500/20 rounded-[2rem] p-6 shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-pink-500/40 hover:shadow-[0_10px_40px_rgba(236,72,153,0.15)] transition-all group relative overflow-hidden"
-                        >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 blur-2xl rounded-full"></div>
-                            <div className="relative">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-2xl drop-shadow-md">🐾</span>
-                                        <span className="text-xs text-pink-500/90 font-bold tracking-widest uppercase">Bonus</span>
+                            <div className="w-full bg-background h-3 rounded-full overflow-hidden mb-2 border border-border-color">
+                                <div className={`h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full`} style={{ width: `${getLevelInfo(nyang).percent}%` }} />
+                            </div>
+                            <p className="text-sm font-bold text-secondary text-right mb-8">
+                                {getLevelInfo(nyang).next === 'MAX' ? 'MAX LEVEL' : `Next Tier: ${getLevelInfo(nyang).next} XP`}
+                            </p>
+
+                            <button onClick={handleCopyReferral} className="w-full py-6 flex items-center justify-center gap-3 rounded-2xl bg-background border-2 border-border-color text-foreground font-black text-xl hover:border-emerald-500 hover:text-emerald-500 transition-all group/btn shadow-sm">
+                                <Copy className="w-5 h-5 group-hover/btn:scale-110" />
+                                {locale === 'ko' ? '내 초대 링크 복사' : 'Copy Referral Link'}
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+
+                {/* Main Menu Grid */}
+                <div className="space-y-6 mb-24">
+                    <h2 className="text-2xl font-black text-foreground uppercase tracking-wider mb-8 flex items-center gap-4">
+                        <div className="w-2 h-8 bg-primary rounded-full" /> {locale === 'ko' ? '관리 메뉴' : 'Main Menu'}
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {mainMenuItems.map((item, i) => (
+                            <button
+                                key={item.label}
+                                onClick={item.onClick || (() => router.push(item.href || '#'))}
+                                className="bg-surface p-10 rounded-4xl border border-border-color hover:border-primary/50 transition-all text-left flex items-start justify-between group shadow-xl hover:shadow-primary/5"
+                            >
+                                <div className="flex items-center gap-8">
+                                    <div className="w-20 h-20 rounded-3xl bg-background border border-border-color flex items-center justify-center group-hover:scale-110 transition-all duration-500">
+                                        <item.icon className="w-10 h-10 text-primary" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-2xl font-black text-foreground mb-1 tracking-tight">{item.label}</h3>
+                                        <p className="text-lg text-secondary font-medium italic opacity-70">{item.desc}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-end justify-between">
-                                    <p className="text-4xl font-black text-white group-hover:scale-105 transition-transform origin-left">{nyang}</p>
-                                    <span className="text-pink-500/50 text-xs">개</span>
-                                </div>
-                                <div className="mt-5 text-center py-3 bg-white/5 rounded-xl border border-white/5">
-                                    <p className="text-xs text-slate-400 font-medium">프리미엄 전용</p>
-                                </div>
+                                <ChevronRight className="w-8 h-8 text-border-color group-hover:text-primary group-hover:translate-x-2 transition-all" />
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Sub Menu Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-24">
+                    {[
+                        { icon: Gift, label: t('nav.more'), href: '/gift' },
+                        { icon: MessageSquare, label: locale === 'ko' ? '고객문의' : 'Inquiry', href: '/inquiry' },
+                        { icon: BookOpen, label: t('footer.wiki'), href: '/wiki' },
+                        { icon: HelpCircle, label: t('footer.faq'), href: '/inquiry' },
+                    ].map((item, i) => (
+                        <Link
+                            key={i}
+                            href={item.href}
+                            className="bg-surface p-8 rounded-4xl border border-border-color flex flex-col items-center justify-center gap-6 hover:bg-primary/5 transition-all group aspect-square shadow-sm hover:shadow-xl"
+                        >
+                            <div className="w-16 h-16 rounded-3xl bg-background border border-border-color flex items-center justify-center group-hover:rotate-12 transition-all">
+                                <item.icon className="w-8 h-8 text-secondary group-hover:text-primary transition-colors" />
                             </div>
-                        </motion.div>
-                    </div>
+                            <span className="text-xl font-black text-secondary tracking-tighter group-hover:text-foreground">{item.label}</span>
+                        </Link>
+                    ))}
                 </div>
 
-                {/* Main Menu */}
-                <div className="px-6 mt-10">
-                    <div className="flex items-center gap-2 mb-4 px-2">
-                        <div className="w-1 h-4 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"></div>
-                        <h2 className="text-sm font-black text-white tracking-widest uppercase shadow-black drop-shadow-md">Premium Service</h2>
+                {/* Footer Credits */}
+                <div className="text-center pt-20 border-t border-border-color opacity-50">
+                    <div className="flex justify-center gap-10 text-lg font-bold text-secondary uppercase tracking-widest mb-10">
+                        <Link href="/terms" className="hover:text-primary transition-all">{t('footer.terms')}</Link>
+                        <Link href="/privacy" className="hover:text-primary transition-all">{t('footer.privacy')}</Link>
+                        <Link href="/refund" className="hover:text-primary transition-all">{t('footer.refund')}</Link>
                     </div>
-                    <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-[2rem] overflow-hidden p-2">
-                        {mainMenuItems.map((item, i) => (
-                            <Link
-                                key={i}
-                                href={item.href}
-                                onClick={item.onClick}
-                                className="group flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-white/10 transition-all"
-                            >
-                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/10 flex items-center justify-center flex-shrink-0 border border-white/5 group-hover:scale-110 transition-transform">
-                                    <item.icon className="w-5 h-5 text-purple-300 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-white text-base font-bold mb-0.5 group-hover:text-purple-300 transition-colors">{item.label}</p>
-                                    <p className="text-slate-500 text-xs truncate font-medium">{item.desc}</p>
-                                </div>
-                                {item.badge && (
-                                    <span className="px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-black tracking-widest shadow-lg">
-                                        {item.badge}
-                                    </span>
-                                )}
-                                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white/10 group-hover:border-white/20 transition-all">
-                                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-white" />
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Sub Menu */}
-                <div className="px-6 mt-8">
-                    <div className="flex items-center gap-2 mb-4 px-2">
-                        <div className="w-1 h-4 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(34,211,238,0.5)]"></div>
-                        <h2 className="text-sm font-black text-white tracking-widest uppercase shadow-black drop-shadow-md">Support</h2>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                        {subMenuItems.map((item, i) => (
-                            <Link
-                                key={i}
-                                href={item.href}
-                                className="group flex flex-col items-center justify-center gap-3 p-5 bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl hover:bg-white/10 hover:border-cyan-500/30 transition-all hover:-translate-y-1"
-                            >
-                                <div className="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 group-hover:scale-110 transition-all">
-                                    <item.icon className="w-5 h-5 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]" />
-                                </div>
-                                <span className="text-xs font-bold text-slate-300 group-hover:text-white transition-colors">{item.label}</span>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Footer */}
-                <div className="px-6 mt-12 pb-6">
-                    <div className="flex justify-center gap-6 text-[10px] tracking-widest font-mono text-slate-500 mb-6">
-                        <Link href="/terms" className="hover:text-cyan-400 transition-colors">TOS</Link>
-                        <span className="text-white/20">|</span>
-                        <Link href="/privacy" className="hover:text-cyan-400 transition-colors">PRIVACY</Link>
-                        <span className="text-white/20">|</span>
-                        <Link href="/refund" className="hover:text-cyan-400 transition-colors">REFUND</Link>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-slate-600 text-[10px] font-mono tracking-widest">© 2026 SECRET SAJU. ALL RIGHTS RESERVED.</p>
-                        <div className="w-12 h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent mx-auto mt-4 rounded-full"></div>
-                    </div>
+                    <p className="text-xl font-black italic text-secondary/30 uppercase tracking-[1em]">Secret Saju v4.5</p>
                 </div>
             </div>
 
-            {/* Jelly Shop Modal */}
             <JellyShopModal
                 isOpen={showShop}
                 onClose={() => setShowShop(false)}
                 onPurchaseSuccess={() => setShowShop(false)}
             />
         </main>
+    );
+}
+
+function Loader2(props: any) {
+    return (
+        <svg
+            {...props}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+        </svg>
     );
 }
