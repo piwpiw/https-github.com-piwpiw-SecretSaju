@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { Book, Search, ChevronRight, Hash, Clock, CircleDot } from "lucide-react";
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Book, Search, ChevronRight, Hash, Clock, CircleDot, ArrowLeft, Zap } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 // Types
-type TermCategory = "전체" | "기초 용어" | "천간" | "지지" | "지장간" | "십성" | "운성" | "신강약";
+type TermCategory = 'ALL' | 'BASIC' | 'STEMS' | 'BRANCHES' | 'HIDDEN' | 'STARS' | 'ENERGY';
 
 interface Term {
     id: string;
@@ -16,176 +16,177 @@ interface Term {
     category: TermCategory;
     readTime: string;
     tags: string[];
+    color: string;
 }
 
 const DICTIONARY: Term[] = [
-    {
-        id: "chuk",
-        name: "축토",
-        hanja: "丑",
-        category: "지지",
-        desc: "소띠, 새벽 1시부터 3시, 겨울의 중간.",
-        readTime: "28분",
-        tags: ["#축토", "#사주", "#명리학"]
-    },
-    {
-        id: "hae",
-        name: "해수",
-        hanja: "亥",
-        category: "지지",
-        desc: "돼지띠, 밤 9시부터 11시, 겨울의 마지막.",
-        readTime: "28분",
-        tags: ["#해수", "#사주", "#명리학"]
-    },
-    {
-        id: "in",
-        name: "인목",
-        hanja: "寅",
-        category: "지지",
-        desc: "호랑이띠, 새벽 3시부터 5시, 봄의 시작.",
-        readTime: "28분",
-        tags: ["#인목", "#사주", "#명리학"]
-    },
-    {
-        id: "sipsung",
-        name: "십성",
-        hanja: "十星",
-        category: "기초 용어",
-        desc: "사주에서 나와 다른 오행의 관계를 10가지로 분류한 것 (비견, 겁재, 식신 등).",
-        readTime: "45분",
-        tags: ["#십성", "#육친", "#사주기초"]
-    },
-    {
-        id: "chungang",
-        name: "천간",
-        hanja: "天干",
-        category: "천간",
-        desc: "하늘의 기운을 뜻하는 10개의 글자. 갑을병정무기경신임계.",
-        readTime: "30분",
-        tags: ["#천간", "#갑을병정"]
-    },
+    { id: 'stems', name: '천간 (天干)', hanja: '天干', category: 'STEMS', desc: '우주 만물의 기운을 하늘의 관점에서 10가지로 분류한 것. 갑, 을, 병, 정... 등으로 이어집니다.', readTime: '5m', tags: ['#천기', '#10진법'], color: 'text-cyan-400' },
+    { id: 'branches', name: '지지 (地支)', hanja: '地支', category: 'BRANCHES', desc: '땅에서 일어나는 변화와 계절의 흐름을 12가지로 분류한 것. 자, 축, 인, 묘... 등으로 이어집니다.', readTime: '5m', tags: ['#지기', '#12지신'], color: 'text-emerald-400' },
+    { id: 'sipsong', name: '십성 (十星)', hanja: '十星', category: 'STARS', desc: '나와 다른 글자들의 관계를 사회적, 심리적 관계로 풀이한 10가지 별.', readTime: '8m', tags: ['#사회성', '#심리분석'], color: 'text-rose-400' },
+    { id: 'dohwa', name: '도화살 (桃花殺)', hanja: '桃花', category: 'ENERGY', desc: '타인에게 매력과 인기를 끌어당기는 강력한 에너지. 현대에서는 연예인이나 인플루언서에게서 강하게 나타납니다.', readTime: '3m', tags: ['#매력', '#인기'], color: 'text-pink-400' },
+    { id: 'baekho', name: '백호살 (白虎殺)', hanja: '白虎', category: 'ENERGY', desc: '강한 추진력과 폭발적인 에너지를 의미하며, 현대 사회에서는 프로페셔널한 결단력으로 발현됩니다.', readTime: '3m', tags: ['#결단력', '#카리스마'], color: 'text-slate-400' },
+    { id: 'unseong', name: '12운성 (十二運星)', hanja: '運星', category: 'BASIC', desc: '우주 만물이 생성하고 소멸하는 과정을 12단계로 나누어 기운의 강도를 살피는 법.', readTime: '10m', tags: ['#라이프사이클'], color: 'text-amber-400' },
 ];
 
-const CATEGORIES: TermCategory[] = [
-    "전체", "기초 용어", "천간", "지지", "지장간", "십성", "운성", "신강약"
+const CATEGORIES: { id: TermCategory; label: string }[] = [
+    { id: 'ALL', label: '전체' },
+    { id: 'BASIC', label: '기초' },
+    { id: 'STEMS', label: '천간' },
+    { id: 'BRANCHES', label: '지지' },
+    { id: 'STARS', label: '십성' },
+    { id: 'ENERGY', label: '신살' },
 ];
 
 export default function EncyclopediaPage() {
-    const [activeCategory, setActiveCategory] = useState<TermCategory>("전체");
-    const [searchQuery, setSearchQuery] = useState("");
+    const router = useRouter();
+    const [activeCategory, setActiveCategory] = useState<TermCategory>('ALL');
+    const [searchQuery, setSearchQuery] = useState('');
 
     const filteredTerms = DICTIONARY.filter(term => {
-        const matchCategory = activeCategory === "전체" || term.category === activeCategory;
+        const matchCategory = activeCategory === 'ALL' || term.category === activeCategory;
         const matchSearch = term.name.includes(searchQuery) || term.hanja.includes(searchQuery) || term.desc.includes(searchQuery);
         return matchCategory && matchSearch;
     });
 
     return (
-        <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pt-6 pb-20">
-            <div className="max-w-4xl mx-auto px-4">
+        <main className="min-h-screen bg-[#050505] text-foreground relative overflow-hidden pb-40">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10" />
+            <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-cyan-600/5 rounded-full blur-[120px] pointer-events-none" />
 
-                {/* Header Area */}
-                <div className="text-center mb-10 pt-10">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-400/30 mb-6"
+            <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-16">
+                    <button
+                        onClick={() => router.back()}
+                        className="flex items-center gap-3 text-slate-500 hover:text-white transition-all group"
                     >
-                        <Book className="w-8 h-8 text-cyan-400" />
+                        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                        <span className="text-xs font-black tracking-widest uppercase italic">BACK_TRACK</span>
+                    </button>
+                    <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-full">
+                        <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase">Archive v4.5</span>
+                    </div>
+                </div>
+
+                {/* Hero */}
+                <div className="text-center mb-20 space-y-6">
+                    <motion.div
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="inline-block relative"
+                    >
+                        <div className="absolute inset-0 bg-cyan-500/20 blur-2xl rounded-full" />
+                        <div className="w-20 h-20 mx-auto rounded-3xl bg-surface border border-white/10 flex items-center justify-center relative z-10 shadow-2xl">
+                            <Book className="w-10 h-10 text-cyan-400" />
+                        </div>
                     </motion.div>
-                    <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-4">
-                        사주 용어 사전
+
+                    <h1 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter uppercase leading-[0.9]">
+                        사주 <span className="text-cyan-400">오컬트 사전</span>
                     </h1>
-                    <p className="text-slate-400">
-                        어렵게만 느껴졌던 사주 용어들을 쉽고 명쾌하게 이해해보세요.<br className="hidden md:block" />
-                        체계적인 카테고리별 분류로 사주 공부를 시작하세요.
+                    <p className="text-slate-400 text-lg font-medium italic opacity-70 max-w-xl mx-auto">
+                        신비에 가려진 명리학의 용어들을 해독합니다.<br />
+                        당신의 데이터에 숨겨진 진정한 의미를 탐구하세요.
                     </p>
                 </div>
 
-                {/* Search & Filter */}
-                <div className="mb-10 space-y-6">
-                    <div className="relative max-w-xl mx-auto">
+                {/* Search & Filters */}
+                <div className="space-y-8 mb-20">
+                    <div className="relative group">
                         <input
                             type="text"
-                            placeholder="궁금한 용어를 검색해보세요... (예: 천간, 축토)"
+                            placeholder="해독할 용어를 입력하세요..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50 shadow-lg"
+                            className="w-full bg-white/[0.03] border border-white/10 rounded-3xl py-6 pl-16 pr-6 text-white text-xl font-bold placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 transition-all shadow-2xl"
                         />
-                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-center gap-2">
+                    <div className="flex flex-wrap justify-center gap-3">
                         {CATEGORIES.map(cat => (
                             <button
-                                key={cat}
-                                onClick={() => setActiveCategory(cat)}
-                                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeCategory === cat
-                                        ? 'bg-cyan-500 text-slate-950 shadow-[0_0_15px_rgba(6,182,212,0.5)]'
-                                        : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white border border-white/5'
+                                key={cat.id}
+                                onClick={() => setActiveCategory(cat.id)}
+                                className={`px-6 py-3 rounded-2xl text-sm font-black transition-all border ${activeCategory === cat.id
+                                    ? 'bg-cyan-500 text-black border-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.3)]'
+                                    : 'bg-white/5 text-slate-400 border-white/5 hover:border-white/20'
                                     }`}
                             >
-                                {cat}
+                                {cat.label}
                             </button>
                         ))}
                     </div>
                 </div>
 
-                {/* Term List */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredTerms.length > 0 ? (
-                        filteredTerms.map((term, i) => (
+                {/* Results Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <AnimatePresence mode="popLayout">
+                        {filteredTerms.map((term, i) => (
                             <motion.div
                                 key={term.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
+                                layout
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
                                 transition={{ delay: i * 0.05 }}
-                                className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors group cursor-pointer"
+                                className="bg-surface border border-white/5 rounded-4xl p-8 hover:border-cyan-500/30 transition-all group relative overflow-hidden"
                             >
-                                <div className="flex justify-between items-start mb-4">
-                                    <span className="text-xs font-bold text-cyan-400 bg-cyan-400/10 px-2.5 py-1 rounded-md">
-                                        {term.category}
-                                    </span>
-                                    <div className="flex items-center text-slate-500 text-xs gap-1">
-                                        <Clock className="w-3 h-3" />
-                                    </div>
+                                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
+                                    <Zap className={`w-24 h-24 ${term.color}`} />
                                 </div>
 
-                                <div className="flex items-end gap-3 mb-3">
-                                    <h3 className="text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors">
-                                        {term.name}
-                                    </h3>
-                                    <span className="text-xl text-slate-500 font-serif pb-1">
-                                        {term.hanja}
-                                    </span>
-                                </div>
-
-                                <p className="text-slate-400 text-sm leading-relaxed mb-6 h-10 line-clamp-2">
-                                    {term.desc}
-                                </p>
-
-                                <div className="flex items-center justify-between">
-                                    <div className="flex flex-wrap gap-2">
-                                        {term.tags.map(tag => (
-                                            <span key={tag} className="text-xs text-slate-500 flex items-center gap-0.5">
-                                                <Hash className="w-3 h-3" /> {tag.replace('#', '')}
-                                            </span>
-                                        ))}
+                                <div className="relative z-10 flex flex-col h-full">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <span className={`text-[10px] font-black uppercase tracking-widest ${term.color} bg-white/5 px-3 py-1 rounded-full border border-white/10`}>
+                                            {term.category}
+                                        </span>
+                                        <div className="flex items-center gap-2 text-slate-600 text-[10px] font-black">
+                                            <Clock className="w-3 h-3" /> {term.readTime} VIEW
+                                        </div>
                                     </div>
-                                    <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-cyan-400 transition-colors" />
+
+                                    <div className="flex items-baseline gap-3 mb-4">
+                                        <h3 className="text-3xl font-black text-white italic tracking-tighter uppercase group-hover:text-cyan-400 transition-colors">
+                                            {term.name}
+                                        </h3>
+                                    </div>
+
+                                    <p className="text-slate-400 text-sm font-medium leading-relaxed italic mb-8 line-clamp-2">
+                                        {term.desc}
+                                    </p>
+
+                                    <div className="mt-auto flex items-center justify-between">
+                                        <div className="flex flex-wrap gap-2">
+                                            {term.tags.map(tag => (
+                                                <span key={tag} className="text-[10px] font-black text-slate-600 uppercase">
+                                                    {tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                        <div className="w-10 h-10 rounded-full bg-background border border-border-color flex items-center justify-center group-hover:bg-cyan-500 group-hover:border-cyan-500 transition-all">
+                                            <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-black" />
+                                        </div>
+                                    </div>
                                 </div>
                             </motion.div>
-                        ))
-                    ) : (
-                        <div className="col-span-full py-20 text-center">
-                            <CircleDot className="w-12 h-12 text-slate-700 mx-auto mb-4" />
-                            <h3 className="text-white font-medium text-lg mb-2">결과가 없습니다</h3>
-                            <p className="text-slate-500 text-sm">다른 키워드로 검색하거나 카테고리를 변경해보세요.</p>
-                        </div>
-                    )}
+                        ))}
+                    </AnimatePresence>
                 </div>
 
+                {/* Empty State */}
+                {filteredTerms.length === 0 && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="text-center py-20"
+                    >
+                        <CircleDot className="w-12 h-12 text-slate-800 mx-auto mb-6 opacity-30" />
+                        <p className="text-slate-500 font-black uppercase tracking-widest italic">No Data Nodes Found</p>
+                    </motion.div>
+                )}
             </div>
         </main>
     );
 }
+

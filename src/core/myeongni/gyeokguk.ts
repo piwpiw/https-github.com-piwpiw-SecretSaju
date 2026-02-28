@@ -17,7 +17,7 @@
 
 import { FourPillars, Stem, Branch } from '../calendar/ganji';
 import { Sipsong } from './sipsong';
-import { analyzeSipsong } from './sipsong';
+import { analyzeSipsong, calculateOneSipsong } from './sipsong';
 
 export type Gyeokguk =
     | '비견격' | '겁재격' // AKA Geon-rok gyeok, Yang-in gyeok
@@ -95,24 +95,41 @@ export function determineGyeokguk(saju: FourPillars): GyeokgukInfo {
         selectedStem = main;
     }
 
-    // Determine Sipsong of selectedStem
-    // We need to calculate Sipsong just for this stem
-    // Reuse analyzeSipsong logic or call internal helper if exposed
-    // For now, construct a fake 'year' stem to verify? No.
-    // Re-implement simplified one-off logic or import
+    const gyeokSipsong = calculateOneSipsong(saju.day.stem, selectedStem);
 
-    // Let's rely on analyzeSipsong by injecting it into the pillar stricture?
-    // Or just copy the sipsong logic here quickly since it's cleaner.
+    const GYEOK_MAP: Record<Sipsong, Gyeokguk> = {
+        '비견': '비견격',
+        '겁재': '겁재격',
+        '식신': '식신격',
+        '상관': '상관격',
+        '편재': '편재격',
+        '정재': '정재격',
+        '편관': '편관격',
+        '정관': '정관격',
+        '편인': '편인격',
+        '정인': '정인격'
+    };
 
-    // For MVP: Let's assume we use the full analysis result from elsewhere.
-    // But here we need to return independent Gyeokguk info.
+    const DESCRIPTIONS: Record<Gyeokguk, string> = {
+        '비견격': '주관이 뚜렷하고 독립적인 성향 (건록격)',
+        '겁재격': '경쟁심이 강하고 추진력이 뛰어남 (양인격)',
+        '식신격': '창의적이고 연구심이 깊으며 의식주가 풍족함',
+        '상관격': '재능과 표현력이 뛰어나고 비판적 사고가 발달함',
+        '편재격': '모험적이고 유동적인 재물운과 사교적 성향',
+        '정재격': '성실하고 안정적인 자산 관리와 정직한 태도',
+        '편관격': '강한 의지력과 리더십, 명예를 중시하는 성향',
+        '정관격': '합리적이고 원칙을 준수하는 관리자형 성향',
+        '편인격': '직관력이 뛰어나고 예술적, 학구적인 심미안',
+        '정인격': '자애롭고 학문적 소양이 깊으며 수동적인 안정감',
+        '종격': '특정한 기운에 순응하여 발휘되는 강력한 운세',
+        '기타': '다양한 기운이 조화를 이루는 일반적인 삶의 구조'
+    };
 
-    // ... (Skipping full sipsong reimplementation for brevity, using placeholder logic)
-    // In real implementation, this would import the helper from sipsong.ts
+    const gyeok = GYEOK_MAP[gyeokSipsong] || '기타';
 
     return {
-        gyeok: '기타',
-        name: '일반격',
-        description: '기본적인 사회적 구조'
+        gyeok,
+        name: gyeok,
+        description: DESCRIPTIONS[gyeok]
     };
 }

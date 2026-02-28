@@ -1,19 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { calculateHighPrecisionSaju } from '@/core/api/saju-engine';
-import { analyzeRelationship, RelationshipType } from '@/lib/compatibility';
+import { calculateHighPrecisionSaju, type HighPrecisionSajuResult } from '@/core/api/saju-engine';
+import { analyzeRelationship, RelationshipType, RelationshipAnalysis } from '@/lib/compatibility';
 import { getProfiles, SajuProfile } from '@/lib/storage';
 import {
   ChevronDown, Heart, Copy, Sparkles, Users, ArrowLeft,
   ChevronRight, Zap, Loader2, UserPlus, AlertTriangle,
   Star, MessageCircle, TrendingUp, RefreshCw, User
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import JellyBalance from '@/components/shop/JellyBalance';
 import { useLocale } from '@/lib/i18n';
+import ElementPolygon from '@/components/ui/ElementPolygon';
 
 const RELATIONSHIP_PRESETS: { labelKey: string; value: RelationshipType; icon: string }[] = [
   { labelKey: 'common.relation.lover', value: '연인', icon: '💕' },
@@ -32,21 +33,29 @@ const GRADE_CONFIG = {
   low: { icon: '❗', colorClass: 'text-rose-400', bgClass: 'bg-rose-500/10 border-rose-500/30' },
 };
 
-export default function CompatibilityPage() {
+function CompatibilityContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const profileId = searchParams.get('profileId');
   const { t, locale } = useLocale();
   const [profiles, setProfiles] = useState<SajuProfile[]>([]);
   const [personAId, setPersonAId] = useState('');
   const [personBId, setPersonBId] = useState('');
   const [selectedRelationType, setSelectedRelationType] = useState<RelationshipType>('연인');
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<ReturnType<typeof analyzeRelationship> | null>(null);
+  const [result, setResult] = useState<RelationshipAnalysis | null>(null);
+  const [sajuA, setSajuA] = useState<HighPrecisionSajuResult | null>(null);
+  const [sajuB, setSajuB] = useState<HighPrecisionSajuResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [animatedScore, setAnimatedScore] = useState(0);
 
   useEffect(() => {
-    setProfiles(getProfiles());
-  }, []);
+    const p = getProfiles();
+    setProfiles(p);
+    if (profileId) {
+      setPersonAId(profileId);
+    }
+  }, [profileId]);
 
   useEffect(() => {
     if (!result) { setAnimatedScore(0); return; }
@@ -91,19 +100,21 @@ export default function CompatibilityPage() {
     setLoading(true);
     setTimeout(async () => {
       try {
-        const sajuA = await calculateHighPrecisionSaju({
+        const hpA = await calculateHighPrecisionSaju({
           birthDate: parseBirth(personA.birthdate),
           birthTime: personA.birthTime || '12:00',
           gender: personA.gender === 'male' ? 'M' : 'F',
           calendarType: personA.calendarType,
         });
-        const sajuB = await calculateHighPrecisionSaju({
+        const hpB = await calculateHighPrecisionSaju({
           birthDate: parseBirth(personB.birthdate),
           birthTime: personB.birthTime || '12:00',
           gender: personB.gender === 'male' ? 'M' : 'F',
           calendarType: personB.calendarType,
         });
-        setResult(analyzeRelationship(sajuA, sajuB, selectedRelationType));
+        setSajuA(hpA);
+        setSajuB(hpB);
+        setResult(analyzeRelationship(hpA, hpB, selectedRelationType));
       } catch (err) {
         console.error(err);
         setError('Analysis Error');
@@ -346,6 +357,46 @@ export default function CompatibilityPage() {
                   </div>
                 </div>
               )}
+              {/* ── Energy Synergy (Element Comparison) ── */}
+              {sajuA && sajuB && (
+                <div className="bg-surface rounded-4xl p-10 border border-border-color">
+                  <div className="flex items-center gap-4 mb-10">
+                    <TrendingUp className="w-6 h-6 text-cyan-400" />
+                    <span className="text-xl font-black text-foreground italic uppercase tracking-wider">오행 에너지 시너지 (Energy Synergy)</span>
+                  </div>
+                  <div className="flex flex-col md:flex-row items-center justify-around gap-12">
+                    <div className="flex flex-col items-center gap-6 group">
+                      <div className="relative">
+                        <ElementPolygon
+                          scores={[sajuA.elements.scores.목, sajuA.elements.scores.화, sajuA.elements.scores.토, sajuA.elements.scores.금, sajuA.elements.scores.수]}
+                          size={180}
+                        />
+                      </div>
+                      <span className="text-sm font-black text-secondary tracking-widest">{selectedPersonA?.name}</span>
+                    </div>
+
+                    <div className="hidden md:flex flex-col items-center gap-4 py-8">
+                      <Zap className="w-8 h-8 text-amber-500 animate-pulse" />
+                      <div className="h-24 w-px bg-gradient-to-b from-transparent via-border-color to-transparent" />
+                    </div>
+
+                    <div className="flex flex-col items-center gap-6 group">
+                      <div className="relative">
+                        <ElementPolygon
+                          scores={[sajuB.elements.scores.목, sajuB.elements.scores.화, sajuB.elements.scores.토, sajuB.elements.scores.금, sajuB.elements.scores.수]}
+                          size={180}
+                        />
+                      </div>
+                      <span className="text-sm font-black text-secondary tracking-widest">{selectedPersonB?.name}</span>
+                    </div>
+                  </div>
+                  <div className="mt-12 p-6 bg-cyan-500/5 border border-cyan-500/15 rounded-3xl text-center">
+                    <p className="text-sm text-secondary leading-relaxed font-medium">
+                      서로의 부족한 오행을 채워주고 넘치는 기운을 조절하면 관계의 밸런스가 완벽해집니다.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* ── Action Buttons ── */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -371,5 +422,20 @@ export default function CompatibilityPage() {
         </AnimatePresence>
       </div>
     </main>
+  );
+}
+
+export default function CompatibilityPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+        <div className="text-center space-y-6">
+          <Loader2 className="w-16 h-16 animate-spin mx-auto text-primary" />
+          <p className="text-slate-500 font-black tracking-widest uppercase text-xs">Loading Harmony Compass...</p>
+        </div>
+      </div>
+    }>
+      <CompatibilityContent />
+    </Suspense>
   );
 }

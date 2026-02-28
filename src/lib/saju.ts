@@ -160,6 +160,8 @@ export type SajuResult = {
   /** 나이대: "10s" | "20s" | "30s" (Age-Context용) */
   ageGroup: "10s" | "20s" | "30s";
   fourPillars: any;
+  daewun?: any;
+  gyeokguk?: any;
   version: string;
   integrity: string;
 };
@@ -194,7 +196,7 @@ export async function calculateSaju(
   const elementCounts = [ec.목, ec.화, ec.토, ec.금, ec.수];
 
   const epb = hpResult.elements.basicPercentages;
-  const elementBasicPercentages = [epb.목, epb.화, epb.토, epb.금, epb.수];
+  const elementBasicPercentages = [epb.목, epb.화, epb.토, ec.금, ec.수];
 
   return {
     pillarIndex,
@@ -208,6 +210,8 @@ export async function calculateSaju(
     elementBasicPercentages,
     ageGroup,
     fourPillars: hpResult.fourPillars,
+    daewun: hpResult.daewun,
+    gyeokguk: hpResult.gyeokguk,
     version: hpResult.version,
     integrity: hpResult.integrity,
   };

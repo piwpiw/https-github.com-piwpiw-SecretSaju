@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Calendar, ArrowLeft, Sun, Cloud, CloudRain, Star, Shield, BatteryMedium, TrendingUp, Sparkles, AlertCircle, Clock, ChevronRight, Zap, Target, Heart } from "lucide-react";
 import JellyBalance from "@/components/shop/JellyBalance";
@@ -12,9 +12,12 @@ import { getProfiles, SajuProfile } from "@/lib/storage";
 import { useLocale } from "@/lib/i18n";
 import { generateDailyFortune, DailyFortuneResult } from "@/lib/daily-fortune";
 import Link from "next/link";
+import { Suspense } from "react";
 
-export default function DailyFortunePage() {
+function DailyFortuneContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const profileId = searchParams.get("profileId");
     const { t, locale } = useLocale();
     const { consumeChuru, churu } = useWallet();
     const [profile, setProfile] = useState<SajuProfile | null>(null);
@@ -27,14 +30,16 @@ export default function DailyFortunePage() {
     useEffect(() => {
         const p = getProfiles();
         if (p.length > 0) {
-            setProfile(p[0]);
+            const found = profileId ? p.find(prof => prof.id === profileId) : null;
+            setProfile(found || p[0]);
         }
-    }, []);
+    }, [profileId]);
 
     useEffect(() => {
         if (profile) {
             handleAnalyze();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, profile]);
 
     const handleAnalyze = async () => {
@@ -97,7 +102,7 @@ export default function DailyFortunePage() {
                                 className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-4"
                             >
                                 <Zap className="w-3 h-3 text-indigo-400 fill-indigo-400" />
-                                <span className="text-[10px] font-black text-indigo-300 tracking-wider uppercase">Real-time Saju Sync</span>
+                                <span className="text-[10px] font-black text-indigo-300 tracking-wider uppercase">실시간 사주 동기화</span>
                             </motion.div>
                             <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter text-white mb-2 uppercase leading-none">
                                 {t('daily.title')}
@@ -142,9 +147,9 @@ export default function DailyFortunePage() {
                                 <div className="absolute inset-0 bg-white/20 rounded-[2.5rem] blur opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <Calendar className="w-12 h-12 text-white relative z-10" />
                             </div>
-                            <h2 className="text-2xl font-black text-white mb-4 italic tracking-tight uppercase">Analyze Your Today</h2>
+                            <h2 className="text-2xl font-black text-white mb-4 italic tracking-tight uppercase">오늘의 운세 분석</h2>
                             <p className="text-slate-400 text-sm font-medium leading-relaxed mb-12 whitespace-pre-line">
-                                {t('daily.subtitle')}
+                                당신의 생년월일과 현재 조석의 기운을 대조하여<br />하루의 흐름을 예측합니다.
                             </p>
 
                             <button
@@ -163,14 +168,14 @@ export default function DailyFortunePage() {
                                 <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-400">
                                     <TrendingUp className="w-5 h-5" />
                                 </div>
-                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Growth</span>
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">성장 (Growth)</span>
                                 <p className="text-white text-xs font-bold">성공 확률 92%</p>
                             </div>
                             <div className="p-6 bg-white/[0.03] border border-white/5 rounded-3xl flex flex-col items-center text-center gap-3">
                                 <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-400">
                                     <Heart className="w-5 h-5" />
                                 </div>
-                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Love</span>
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">연애 (Love)</span>
                                 <p className="text-white text-xs font-bold">인기 급상승</p>
                             </div>
                         </div>
@@ -191,7 +196,7 @@ export default function DailyFortunePage() {
                         </div>
                         <div className="space-y-3 text-center">
                             <h3 className="text-3xl font-black text-white italic tracking-tighter uppercase">{t('daily.loading')}</h3>
-                            <p className="text-slate-500 text-xs font-bold tracking-[0.3em] uppercase animate-pulse">Synchronizing Destiny Nodes...</p>
+                            <p className="text-slate-500 text-xs font-bold tracking-[0.3em] uppercase animate-pulse">운명의 노드를 동기화 중...</p>
                         </div>
                     </motion.div>
                 )}
@@ -218,7 +223,7 @@ export default function DailyFortunePage() {
                                         <div className="mb-4 transform group-hover/weather:scale-110 group-hover/weather:rotate-6 transition-transform duration-500">
                                             {renderWeather(result.weather)}
                                         </div>
-                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Sky Condition</span>
+                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">기상도</span>
                                     </div>
                                     <div className="w-[1px] h-20 bg-white/5" />
                                     <div className="flex flex-col items-center group/score">
@@ -226,12 +231,12 @@ export default function DailyFortunePage() {
                                             {result.score}
                                             <span className="text-2xl text-indigo-500 not-italic ml-1">/100</span>
                                         </div>
-                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Daily Energy Level</span>
+                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">오늘의 에너지 지수</span>
                                     </div>
                                 </div>
 
                                 <div className="max-w-md mx-auto relative px-8 py-6 rounded-3xl bg-white/[0.03] border border-white/5">
-                                    <div className="absolute -top-3 left-6 px-3 bg-[#0f0f1a] border border-white/10 rounded-full text-[10px] font-black text-indigo-400 uppercase tracking-widest">Summary</div>
+                                    <div className="absolute -top-3 left-6 px-3 bg-[#0f0f1a] border border-white/10 rounded-full text-[10px] font-black text-indigo-400 uppercase tracking-widest">요약 (Summary)</div>
                                     <p className="text-xl text-slate-200 font-bold leading-relaxed italic tracking-tight">
                                         &ldquo;{result.summary}&rdquo;
                                     </p>
@@ -263,8 +268,8 @@ export default function DailyFortunePage() {
                                     <Target className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h4 className="text-sm font-black text-white uppercase tracking-widest">Lucky Enhancers</h4>
-                                    <p className="text-xs text-slate-500 font-medium tracking-tight">Boost your resonance today</p>
+                                    <h4 className="text-sm font-black text-white uppercase tracking-widest">행운 가이드</h4>
+                                    <p className="text-xs text-slate-500 font-medium tracking-tight">오늘 당신과 공명하는 아이템</p>
                                 </div>
                             </div>
                             <div className="flex flex-wrap justify-center gap-3">
@@ -276,7 +281,52 @@ export default function DailyFortunePage() {
                             </div>
                         </div>
 
-                        {/* Premium Detailed Insight (Locked Reveal Style) */}
+                        {/* Hourly Flow Chart & Golden Hour */}
+                        <div className="bg-surface rounded-4xl p-10 border border-white/5 relative overflow-hidden">
+                            <div className="flex items-center justify-between mb-10">
+                                <div className="flex items-center gap-4">
+                                    <TrendingUp className="w-6 h-6 text-indigo-400" />
+                                    <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">시간대별 운기 흐름</h3>
+                                </div>
+                                <div className="text-[10px] font-black text-indigo-400 border border-indigo-400/30 px-3 py-1 rounded-lg uppercase tracking-widest bg-indigo-400/5">실시간 변동</div>
+                            </div>
+
+                            <div className="flex items-end justify-between h-32 gap-3 mb-10 px-4">
+                                {result.hourlyScores.map((score, i) => {
+                                    const labels = ["06-09", "09-12", "12-15", "15-18", "18-21", "21-00"];
+                                    return (
+                                        <div key={i} className="flex-1 flex flex-col items-center gap-3 group/bar">
+                                            <div className="relative w-full flex items-end justify-center h-full">
+                                                <motion.div
+                                                    initial={{ height: 0 }}
+                                                    animate={{ height: `${score}%` }}
+                                                    transition={{ delay: 1 + i * 0.1, duration: 1 }}
+                                                    className={cn("w-full max-w-[20px] rounded-t-lg bg-gradient-to-t transition-all",
+                                                        score >= 80 ? "from-indigo-600 to-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.4)]" : "from-slate-700 to-slate-500"
+                                                    )}
+                                                />
+                                                <div className="absolute -top-6 text-[10px] font-black text-white opacity-0 group-hover/bar:opacity-100 transition-opacity">{score}</div>
+                                            </div>
+                                            <span className="text-[8px] font-black text-slate-500 uppercase">{labels[i]}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            <div className="p-6 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center gap-6">
+                                <div className="p-3 rounded-2xl bg-indigo-500/20 text-indigo-400 animate-bounce">
+                                    <Star className="w-6 h-6 fill-current" />
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="text-xs font-black text-indigo-300 mb-1 uppercase tracking-widest">오늘 최고의 골든아워</h4>
+                                    <p className="text-sm font-bold text-white italic leading-tight">
+                                        &ldquo;{result.hourlyTips[0]}&rdquo;
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Premium Detailed Insight */}
                         <div className="relative group">
                             <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 rounded-5xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-1000" />
                             <div className="relative bg-black/60 backdrop-blur-2xl border border-indigo-500/30 rounded-5xl p-10 md:p-14 overflow-hidden">
@@ -291,7 +341,7 @@ export default function DailyFortunePage() {
                                     <div className="flex-1">
                                         <div className="flex items-center gap-4 mb-6">
                                             <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase">{t('daily.premium.title')}</h3>
-                                            <span className="px-3 py-1 text-[10px] font-black bg-indigo-500 text-white rounded-lg uppercase tracking-widest shadow-lg">Hyper Precision</span>
+                                            <span className="px-3 py-1 text-[10px] font-black bg-indigo-500 text-white rounded-lg uppercase tracking-widest shadow-lg">초정밀 분석</span>
                                         </div>
                                         <p className="text-slate-300 text-sm md:text-base leading-relaxed font-medium mb-10 opacity-70">
                                             {t('daily.premium.desc')}
@@ -299,7 +349,7 @@ export default function DailyFortunePage() {
 
                                         <div className="p-8 rounded-[2.5rem] bg-indigo-500/5 border border-indigo-500/20 relative">
                                             <div className="absolute -top-4 left-8 px-4 py-1.5 bg-indigo-500 text-white text-[10px] font-black rounded-lg shadow-lg uppercase tracking-widest">
-                                                Cosmic Blueprint
+                                                운명 설계도 (Blueprint)
                                             </div>
                                             <p className="text-white text-base md:text-lg font-bold leading-relaxed italic tracking-tight">
                                                 &ldquo;{result.premiumInsight}&rdquo;
@@ -330,4 +380,23 @@ export default function DailyFortunePage() {
             </div>
         </main>
     );
+}
+
+export default function DailyFortunePage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#0f0f1a] flex items-center justify-center">
+                <div className="text-center space-y-6">
+                    <Loader2 className="w-16 h-16 animate-spin mx-auto text-indigo-500" />
+                    <p className="text-slate-500 font-black tracking-widest uppercase text-xs">Loading Fortune Engine...</p>
+                </div>
+            </div>
+        }>
+            <DailyFortuneContent />
+        </Suspense>
+    );
+}
+
+function Loader2(props: any) {
+    return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-loader-2"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>;
 }

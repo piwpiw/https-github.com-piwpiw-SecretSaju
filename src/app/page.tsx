@@ -10,8 +10,9 @@ import { calculateSaju, getPillarNameKo, type SajuResult } from "@/lib/saju";
 import { getArchetypeByCode } from "@/lib/archetypes";
 import JellyShopModal from "@/components/shop/JellyShopModal";
 import Link from 'next/link';
-import { ChevronRight, Shield, Sparkles, TrendingUp, Users, Star, Gift, Calendar, Heart, BookOpen, Clock, Smile } from 'lucide-react';
+import { ChevronRight, Shield, Sparkles, TrendingUp, Users, Star, Gift, Calendar, Heart, BookOpen, Clock, Smile, Zap } from 'lucide-react';
 import { handleShare } from '@/lib/share';
+import { getProfiles, type SajuProfile } from "@/lib/storage";
 
 type FlowState = "boot" | "input" | "loading" | "result";
 
@@ -20,8 +21,12 @@ export default function HomePage() {
   const [sajuData, setSajuData] = useState<SajuResult | null>(null);
   const [showShop, setShowShop] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [profiles, setProfiles] = useState<SajuProfile[]>([]);
 
   useEffect(() => {
+    const saved = getProfiles();
+    setProfiles(saved);
+
     const params = new URLSearchParams(window.location.search);
     const ref = params.get('ref');
     if (ref) {
@@ -106,37 +111,47 @@ export default function HomePage() {
               </div>
             </motion.div>
 
-            {/* 2. Quick Menu Carousel */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 px-2">핵심 운세 바로가기</h3>
-              <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 px-2 no-scrollbar" style={{ scrollbarWidth: 'none' }}>
-                {[
-                  { icon: "📜", label: "신년운세", href: "/fortune" },
-                  { icon: "📖", label: "토정비결", href: "/fortune" },
-                  { icon: "🔮", label: "정통사주", href: "#saju-input" },
-                  { icon: "📅", label: "오늘의 운세", href: "/daily" },
-                  { icon: "🌙", label: "내일의 운세", href: "/daily" },
-                  { icon: "🤝", label: "짝궁합", href: "/destiny" },
-                  { icon: "🎭", label: "관상", href: "/healing" },
-                  { icon: "💭", label: "심리풀이", href: "/healing" },
-                ].map((item, idx) => (
-                  <Link
-                    key={idx}
-                    href={item.href}
-                    className="flex-shrink-0 snap-start w-24 flex flex-col items-center gap-3 p-4 bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all group"
-                  >
-                    <div className="w-14 h-14 rounded-full bg-slate-50 dark:bg-slate-900 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                      {item.icon}
+            {/* 2. Today's Energy Card (If profiles exist) */}
+            {profiles.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 }}
+                className="relative group"
+              >
+                <Link href={`/daily?profileId=${profiles[0].id}`} className="block">
+                  <div className="bg-white dark:bg-slate-800/80 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-[2.5rem] p-8 shadow-xl hover:shadow-2xl transition-all relative overflow-hidden group-hover:-translate-y-1">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl -mr-10 -mt-10" />
+                    <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                      <div className="flex-shrink-0 relative">
+                        <div className="w-24 h-24 rounded-full border-4 border-slate-100 dark:border-slate-700 flex items-center justify-center relative overflow-hidden">
+                          <div className="absolute inset-0 bg-indigo-500/10 animate-pulse" />
+                          <span className="text-4xl font-black text-indigo-500 italic drop-shadow-sm">88</span>
+                        </div>
+                        <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg border-4 border-white dark:border-slate-800">
+                          <Zap className="w-5 h-5 fill-current" />
+                        </div>
+                      </div>
+                      <div className="flex-1 text-center md:text-left">
+                        <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+                          <span className="text-xs font-black text-indigo-500 uppercase tracking-widest">Today&apos;s Energy for {profiles[0].name}</span>
+                          <div className="h-px w-8 bg-indigo-500/20" />
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-800 dark:text-white italic tracking-tight mb-2">
+                          &quot;상승하는 기운, 새로운 아이디어가 샘솟는 하루!&quot;
+                        </h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium opacity-80">
+                          오늘은 당신의 창의력이 정점에 달하는 시기입니다. 중요한 결정은 오후 2시 이후가 좋습니다.
+                        </p>
+                      </div>
+                      <ChevronRight className="w-8 h-8 text-slate-300 group-hover:text-indigo-500 transition-colors hidden md:block" />
                     </div>
-                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{item.label}</span>
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
+                  </div>
+                </Link>
+              </motion.div>
+            )}
+
+            {/* 3. Quick Menu Carousel */}
 
             {/* 3. Original Saju Input (Anchored for "정통사주") */}
             <div id="saju-input" className="pt-8 border-t border-slate-200 dark:border-slate-800">

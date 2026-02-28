@@ -24,6 +24,8 @@ interface ResultCardProps {
   elementCounts: number[]; // Required: Basic counts (0-8)
   elementBasicPercentages: number[]; // Required: Percentages based on counts
   fourPillars?: any; // High precision pillars
+  daewun?: any;
+  gyeokguk?: any;
   version?: string;
   integrity?: string;
   secretUnlocked?: boolean;
@@ -87,7 +89,7 @@ function ElementBar({ name, score, color, icon, desc, delay, count }: {
             />
           </div>
         </div>
-        <span className="text-xs font-black text-white w-8 text-right drop-shadow-md">{score}%</span>
+        <span className="text-xs font-black text-white w-8 text-right drop-shadow-md">{score.toFixed(1)}%</span>
       </motion.div>
 
       <AnimatePresence>
@@ -167,6 +169,8 @@ export default function ResultCard({
   elementCounts: propElementCounts,
   elementBasicPercentages: propElementBasicPercentages,
   fourPillars,
+  daewun,
+  gyeokguk,
   version,
   integrity
 }: ResultCardProps) {
@@ -380,7 +384,7 @@ export default function ResultCard({
               <motion.div whileHover={{ scale: 1.02 }} className="p-6 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 hover:border-cyan-500/50 transition-colors shadow-inner">
                 <div className="flex items-center gap-2 mb-4">
                   <Shield className="w-5 h-5 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
-                  <span className="text-sm font-bold text-cyan-400 tracking-widest uppercase">사회적 가면</span>
+                  <span className="text-sm font-bold text-cyan-400 tracking-widest uppercase">사회적 가면 (Social Mask)</span>
                 </div>
                 <p className="text-xl font-bold text-white mb-5 leading-relaxed">&quot;{archetype.base_traits.mask}&quot;</p>
                 <div className="flex flex-wrap gap-2">
@@ -483,7 +487,7 @@ export default function ResultCard({
               <ElementPolygon scores={elementScores} size={180} />
             </div>
             <div className="flex-1 text-center md:text-left">
-              <p className="text-sm font-bold text-slate-300 mb-2">당신을 지배하는 기운</p>
+              <p className="text-sm font-bold text-slate-300 mb-2">지배적 오행 (Dominant Energy)</p>
               <div className="text-2xl font-black mb-1">
                 <span className="text-amber-300 drop-shadow-md">{dominantElement.icon} {dominantElement.name}</span>
               </div>
@@ -529,7 +533,7 @@ export default function ResultCard({
                   return (
                     <div key={i} className="bg-black/40 rounded-xl p-4 border border-white/5 shadow-inner">
                       <p className="text-xs font-bold text-indigo-400 mb-2 flex items-center gap-2">
-                        <span>{el.icon}</span> {el.name} 보충 솔루션
+                        <span>{el.icon}</span> {el.name} 보충 솔루션 (Remedy)
                       </p>
                       <ul className="space-y-2">
                         <li className="text-[11px] text-slate-300 flex justify-between">
@@ -581,8 +585,8 @@ export default function ResultCard({
               { label: "재물운", value: elementScores[2] > 50 ? "안정 추구" : "모험 투자", icon: "💰", color: "border-yellow-500/30 bg-yellow-900/10" },
               { label: "연애 스타일", value: elementScores[1] > 50 ? "다정다감" : "츤데레", icon: "💕", color: "border-pink-500/30 bg-pink-900/10" },
               { label: "직업 적성", value: elementScores[3] > 50 ? "전문직/기술" : "창의/자유업", icon: "💼", color: "border-blue-500/30 bg-blue-900/10" },
-              { label: "스트레스 대처", value: elementScores[4] > 50 ? "유연하게 넘김" : "참다가 폭발", icon: "🧘", color: "border-cyan-500/30 bg-cyan-900/10" },
-              { label: "리더십", value: elementScores[1] > 60 ? "카리스마형" : "서포터형", icon: "👑", color: "border-amber-500/30 bg-amber-900/10" },
+              { label: "스트레스 관리", value: elementScores[4] > 50 ? "유연하게 넘김" : "참다가 폭발", icon: "🧘", color: "border-cyan-500/30 bg-cyan-900/10" },
+              { label: "리더십 유형", value: elementScores[1] > 60 ? "카리스마형" : "서포터형", icon: "👑", color: "border-amber-500/30 bg-amber-900/10" },
             ].map((item) => (
               <div key={item.label} className={`p-3 rounded-xl border ${item.color}`}>
                 <span className="text-lg">{item.icon}</span>
@@ -592,6 +596,62 @@ export default function ResultCard({
             ))}
           </div>
         </motion.div>
+
+        {/* Card: 격국 및 대운 (Fate Structure & Major Luck) */}
+        {gyeokguk && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 overflow-hidden"
+          >
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-purple-400" />
+                <h3 className="font-bold text-white uppercase tracking-widest italic text-sm">운명 설계 및 대운 (Destiny Architecture)</h3>
+              </div>
+              <div className="px-3 py-1 bg-purple-500/20 rounded-full text-[10px] font-black text-purple-300 border border-purple-500/30">
+                격국: {gyeokguk.name}
+              </div>
+            </div>
+
+            {/* Gyeokguk short desc */}
+            <div className="mb-10 p-4 bg-purple-500/5 border border-purple-500/20 rounded-xl">
+              <p className="text-xs text-slate-300 leading-relaxed italic">
+                &ldquo;당신의 타고난 그릇인 <span className="text-purple-400 font-bold">{gyeokguk.name}</span>은 인생의 주요 테마가 되며, {gyeokguk.yongshin}의 기운을 보강할 때 삶의 성취도가 극대화됩니다.&rdquo;
+              </p>
+            </div>
+
+            {/* Daewun Cycle */}
+            {daewun && (
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-4 text-[11px] font-black text-slate-500 uppercase tracking-widest">
+                  <div className="w-1 h-3 bg-purple-500 rounded-full" />
+                  10년 대운 주기 (Major 10-Year Luck Cycle)
+                </div>
+                <div className="overflow-x-auto no-scrollbar py-2 -mx-2 px-2">
+                  <div className="flex gap-3 min-w-[700px]">
+                    {daewun.pillars.map((d: any, i: number) => (
+                      <div key={i} className="flex-1 flex flex-col items-center bg-black/40 border border-white/5 rounded-2xl p-4 group/un hover:border-purple-500/50 transition-all">
+                        <span className="text-[10px] font-black text-slate-500 mb-3">{d.startAge}세</span>
+                        <div className="flex flex-col gap-1 mb-3">
+                          <span className="text-xl font-black text-white">{STEM_HANJA[d.pillar.stem] || d.pillar.stem}</span>
+                          <span className="text-xl font-black text-white">{BRANCH_HANJA[d.pillar.branch] || d.pillar.branch}</span>
+                        </div>
+                        <span className="text-[8px] font-bold text-slate-600 uppercase group-hover/un:text-purple-400 transition-colors">
+                          {d.pillar.stem}{d.pillar.branch}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-4 text-[9px] text-center text-slate-500 font-medium lowercase italic opacity-50">
+                  Slide to view your lifetime cosmic shift
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
 
         {/* Card 4 — 비밀 해금 */}
         <motion.div
@@ -611,7 +671,7 @@ export default function ResultCard({
                   🔒
                 </motion.div>
                 <h3 className="text-2xl font-bold mb-1 bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent">
-                  19+ 비밀 해금
+                  시크릿 인사이트 (Secret Insight)
                 </h3>
                 <p className="text-sm text-slate-400 mb-1">도화살 분석 · 연애 패턴 · 숨겨진 본능</p>
                 <p className="text-xs text-slate-500 mb-5">찐 팩폭은 결제 후 공개됩니다</p>
@@ -631,7 +691,7 @@ export default function ResultCard({
           <div className={`p-6 bg-gradient-to-br from-red-900/20 to-orange-900/15 border border-red-500/25 rounded-2xl ${!secretUnlocked ? "blur-lg" : ""}`}>
             <div className="flex items-center gap-2 mb-3">
               <Heart className="w-4 h-4 text-red-400" />
-              <span className="text-xs font-bold text-red-400 tracking-wider uppercase">🔞 연애 & 본능 분석</span>
+              <span className="text-xs font-bold text-red-400 tracking-wider uppercase">💋 연애 & 인스팅트 (Instinct)</span>
             </div>
             <div className="space-y-3 text-sm text-slate-200">
               <div className="flex gap-3 items-start">

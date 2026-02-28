@@ -5,6 +5,9 @@
  * 배포 전 필수 환경 변수가 모두 설정되었는지 확인
  */
 
+const { loadEnvConfig } = require('@next/env');
+loadEnvConfig(process.cwd());
+
 const requiredEnvVars = {
   // 애플리케이션
   NEXT_PUBLIC_BASE_URL: '애플리케이션 기본 URL',

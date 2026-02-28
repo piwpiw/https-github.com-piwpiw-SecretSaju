@@ -11,18 +11,28 @@
 - **[MASTER PRD](./MASTER_PRD.md)**: 전체 서비스의 제품 요구사항 정의서 (Phase 1 ~ Phase 3 로드맵 포함).
 - **[UI/UX DESIGN SPEC](./UI_UX_DESIGN_SPEC.md)**: 글래스모피즘(Glassmorphism) 및 SVG Stitch 기반 동적 차트 등 프론트엔드 디자인 원칙 가이드.
 - **[BLUEPRINT](./BLUEPRINT.md)**: 10단계 초격차 럭셔리 플랫폼 구축을 위한 마일스톤 안내서.
-- **[GitHub Issues (Tasks)](./GITHUB_ISSUES.md)**: 백로그 관리 및 Phase 2 고도화 체크리스트 명세서.
 
-## 🛠 아키텍처 및 코어 상세 (Technical Details)
+## 🛠 아키텍처 및 가이드 (Technical & User Guides)
+- **[Setup Guide](./guides/setup.md)**: 프로젝트 초기화 및 환경 설정 통합 가이드.
+- **[Deployment Guide](./guides/deployment.md)**: Vercel 및 기타 배포 프로세스 통합 체크리스트.
+- **[Integrations Guide](./guides/integrations.md)**: Kakao, Supabase 등 외부 연동 설정 명세.
+- **[Development Guidelines](./development/guidelines.md)**: 보안, 코드 스타일, 퀵픽스 가이드라인.
 - **[Saju Layers](./SAJU_LAYERS.md)**: 사주 코어 명리학 엔진(DACRE)의 레이어 구조 및 알고리즘 해설 문서.
-- **[Error Catalog](./ERROR_CATALOG.md)**: 프로젝트 내에서 식별되어 관리되는 에러 카탈로그 및 대처 매뉴얼 (Zoro QA에 의해 검증됨).
-- **[User Verification](./USER_VERIFICATION.md)**: 사용자 입장에서 E2E (End-to-End) 테스트를 검증하기 위한 시나리오 리스트.
+- **[Error Catalog](./ERROR_CATALOG.md)**: 프로젝트 내에서 식별되어 관리되는 에러 카탈로그 및 대처 매뉴얼.
 
 ## 👥 팀 명세서 (Team Specifics)
 - **기획 팀 (Planning)**: `01-team/TEAM_SPEC_기획자.md`
 - **디자인 팀 (Design)**: `01-team/TEAM_SPEC_디자이너.md`
 - **단일 기능 개발 팀 (Feature Dev)**: `01-team/TEAM_SPEC_개발자.md`
 - **콘텐츠 및 운세 데이터 팀 (Content)**: `01-team/TEAM_SPEC_콘텐츠.md`
+
+## 📦 아카이브 (Archive)
+- [Archived Workflows](archive/workflows.md)
+- [Old UI Specs](archive/ui_specs.md)
+- [Deployment History](archive/DEPLOY_RESULT.md)
+- [Status History](archive/STATUS.md)
+- [QA Reports](archive/qa-report.log)
+- [Moon Phase Script](archive/verify_moon.ts)
 
 ---
 > ⚠️ **에이전트 행동 강령**: 새로운 모듈 개발 전 반드시 이 Index를 읽고 관련 문서를 `grep_search` 또는 `view_file`로 확인한 후, 설계 동기화를 거쳐 작업을 시작하십시오.

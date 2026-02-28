@@ -1,18 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getDayPillarIndex } from "@/lib/saju";
 import { getYearlyFortune } from "@/lib/yearlyFortune";
 import { validateBirthInput } from "@/lib/validation";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import {
   Sparkles, Star, TrendingUp, Heart, Briefcase,
   DollarSign, Activity, Loader2, ChevronRight,
   ArrowLeft, History, Calculator, Target
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/lib/i18n";
+import { getProfiles, SajuProfile } from "@/lib/storage";
 
 const YEARS = [2025, 2026, 2027, 2028];
 
@@ -56,8 +58,10 @@ function FortuneScoreBar({ label, score, color, icon: Icon, delay }: {
   );
 }
 
-export default function FortunePage() {
+function FortuneContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const profileId = searchParams.get("profileId");
   const { t, locale } = useLocale();
   const [year, setYear] = useState(2026);
   const [yearInput, setYearInput] = useState("");
@@ -66,6 +70,19 @@ export default function FortunePage() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ReturnType<typeof getYearlyFortune> | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (profileId) {
+      const p = getProfiles();
+      const found = p.find(prof => prof.id === profileId);
+      if (found) {
+        const birth = new Date(found.birthdate);
+        setYearInput(birth.getFullYear().toString());
+        setMonth((birth.getMonth() + 1).toString());
+        setDay(birth.getDate().toString());
+      }
+    }
+  }, [profileId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -221,7 +238,39 @@ export default function FortunePage() {
                 </div>
               </div>
 
-              <Link href="/dashboard" className="block bg-surface rounded-5xl p-12 border border-border-color group hover:border-primary/50 transition-all shadow-xl hover:shadow-primary/5">
+              {/* Monthly Trend Area */}
+              <div className="bg-surface rounded-5xl p-16 border border-border-color">
+                <div className="flex items-center gap-4 mb-12">
+                  <Sparkles className="w-8 h-8 text-amber-500" />
+                  <h3 className="text-2xl font-black text-foreground">{year}{locale === 'ko' ? '년 월별 에너지 흐름' : ' Monthly Flow'}</h3>
+                </div>
+                <div className="overflow-x-auto no-scrollbar pb-6">
+                  <div className="flex gap-4 min-w-[1000px] h-48 items-end px-4">
+                    {result.monthlyTrend.map((score, i) => (
+                      <div key={i} className="flex-1 flex flex-col items-center gap-4 group/month">
+                        <div className="relative w-full flex items-end justify-center h-full">
+                          <motion.div
+                            initial={{ height: 0 }}
+                            whileInView={{ height: `${score}%` }}
+                            transition={{ delay: i * 0.05, duration: 1 }}
+                            className={cn("w-12 rounded-2xl bg-gradient-to-t transition-all",
+                              score >= 80 ? "from-primary to-amber-500 shadow-lg shadow-primary/20" : "from-slate-800 to-slate-600"
+                            )}
+                          />
+                          <div className="absolute -top-8 text-sm font-black text-primary opacity-0 group-hover/month:opacity-100 transition-opacity">
+                            {score}
+                          </div>
+                        </div>
+                        <span className="text-sm font-black text-secondary tracking-tighter italic">
+                          {i + 1}{locale === 'ko' ? '월' : 'M'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <Link href={`/dashboard?profileId=${profileId}`} className="block bg-surface rounded-5xl p-12 border border-border-color group hover:border-primary/50 transition-all shadow-xl hover:shadow-primary/5">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-10">
                   <div className="w-24 h-24 bg-background rounded-4xl flex items-center justify-center text-primary group-hover:scale-110 transition-all duration-500 shadow-inner">
                     <Sparkles className="w-12 h-12" />
@@ -239,5 +288,20 @@ export default function FortunePage() {
         </AnimatePresence>
       </div>
     </main>
+  );
+}
+
+export default function FortunePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+        <div className="text-center space-y-6">
+          <Loader2 className="w-16 h-16 animate-spin mx-auto text-primary" />
+          <p className="text-slate-500 font-black tracking-widest uppercase text-xs">Loading Fortune Data...</p>
+        </div>
+      </div>
+    }>
+      <FortuneContent />
+    </Suspense>
   );
 }

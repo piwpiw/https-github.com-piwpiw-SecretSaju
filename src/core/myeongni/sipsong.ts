@@ -53,7 +53,7 @@ function isYang(char: Stem | Branch): boolean {
     return YANG_BRANCHS.has(char as Branch);
 }
 
-function calculateOneSipsong(selfStem: Stem, target: Stem | Branch): Sipsong {
+export function calculateOneSipsong(selfStem: Stem, target: Stem | Branch): Sipsong {
     const selfElement = STEM_ELEMENTS[selfStem];
     const targetElement = (Object.keys(STEM_ELEMENTS).includes(target as string))
         ? STEM_ELEMENTS[target as Stem]

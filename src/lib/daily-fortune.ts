@@ -12,6 +12,8 @@ export interface DailyFortuneResult {
     health: string;
     luckyItems: string[];
     premiumInsight: string;
+    hourlyScores: number[];
+    hourlyTips: string[];
 }
 
 const SipsongMap: Record<string, string> = {
@@ -130,6 +132,13 @@ export async function generateDailyFortune(profile: SajuProfile, locale: 'ko' | 
         ? `당신의 ${selfStem} 일간과 해당 일의 ${todayStem} 기운이 만나 '${sipsong}'의 작용이 일어납니다. 특히 대인관계에서 이 점을 활용하면 유리한 흐름을 탈 수 있습니다.`
         : `Your ${selfStem} Day Master meets the target day's ${todayStem} energy, activating '${sipsong}'. Utilizing this in relationships will bring favorable results.`;
 
+    const hourlyTipsKo = ["조용한 명상으로 우주의 기운과 정렬하세요.", "주변과의 원만한 대화가 행운을 부릅니다.", "창의적인 영감이 샘솟는 황금 시간대입니다.", "중요한 의사결정은 잠시 미루는 것이 좋습니다.", "적극적인 활동으로 성취를 가시화하세요.", "뜻밖의 귀인을 만날 수 있는 길한 시간입니다."];
+    const hourlyTipsEn = ["Align with the cosmic flow through quiet meditation.", "Smooth communication brings good luck.", "Golden time for creative inspiration.", "Delay critical decisions if possible.", "Visualize success through active movement.", "Favorable time to meet a supportive person."];
+    const tips = locale === 'ko' ? hourlyTipsKo : hourlyTipsEn;
+
+    const hourlyScores = Array.from({ length: 6 }, () => Math.max(40, Math.min(99, score + (Math.floor(Math.random() * 20) - 10))));
+    const hourlyTips = tips.sort(() => Math.random() - 0.5);
+
     return {
         date: dateStr,
         score,
@@ -139,6 +148,8 @@ export async function generateDailyFortune(profile: SajuProfile, locale: 'ko' | 
         wealth,
         health,
         luckyItems,
-        premiumInsight
+        premiumInsight,
+        hourlyScores,
+        hourlyTips
     };
 }

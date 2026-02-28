@@ -47,7 +47,7 @@ export default function SelectionPage() {
             subtitle: locale === 'ko' ? '가장 깊은 차원의 분석' : 'The Deepest Analysis',
             description: locale === 'ko' ? '12운성과 십신, 오행 밸런스까지 스캐닝하여 당신의 본질을 꿰뚫습니다.' : 'Scans 12 Fortunes, 10 Gods, and five elements to pierce your essence.',
             badge: locale === 'ko' ? '젤리 3개' : '3 Jellies',
-            href: '/',
+            href: '/saju',
             color: 'from-primary to-purple-600',
             bgGlow: 'from-primary/20',
         },
@@ -126,7 +126,7 @@ export default function SelectionPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" }}
                             >
-                                <Link href={svc.href} className="block group h-full">
+                                <Link href={selectedProfile ? `${svc.href}?profileId=${selectedProfile}` : svc.href} className="block group h-full">
                                     <div className="bg-surface rounded-5xl p-10 border border-border-color h-full flex flex-col relative overflow-hidden transition-all duration-500 hover:border-primary/50 shadow-xl hover:shadow-primary/10 group-hover:-translate-y-2">
                                         <div className={`absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br ${svc.bgGlow} rounded-full blur-3xl opacity-30 group-hover:opacity-70 transition-opacity duration-700`} />
 
@@ -165,7 +165,7 @@ export default function SelectionPage() {
                 {/* Additional Utilities Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 pt-16 border-t border-border-color">
                     {[
-                        { icon: Gem, label: locale === 'ko' ? '젤리 충전소' : 'Jelly Shop', href: '/mypage', badge: 'HOT' },
+                        { icon: Gem, label: locale === 'ko' ? '젤리 충전소' : 'Jelly Shop', href: '/shop', badge: 'HOT' },
                         { icon: HelpCircle, label: locale === 'ko' ? '이용 가이드' : 'Guide', href: '/wiki' },
                         { icon: Star, label: locale === 'ko' ? '운명 리뷰' : 'Reviews', href: '/inquiry' },
                         { icon: Flame, label: locale === 'ko' ? '특별 부적' : 'Talismans', href: '/gift' },

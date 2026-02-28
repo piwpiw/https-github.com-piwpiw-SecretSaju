@@ -1,8 +1,8 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
 import { getProfiles, SajuProfile } from '@/lib/storage';
 import { analyzeRelationship, RelationshipAnalysis } from '@/lib/compatibility';
 import { calculateHighPrecisionSaju } from '@/core/api/saju-engine';
@@ -19,8 +19,10 @@ interface RelationshipData {
     isUnlocked: boolean;
 }
 
-export default function DashboardPage() {
+function DashboardContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const profileId = searchParams.get('profileId');
     const { t, locale } = useLocale();
     const [mainProfile, setMainProfile] = useState<SajuProfile | null>(null);
     const [relationships, setRelationships] = useState<RelationshipData[]>([]);
@@ -30,7 +32,7 @@ export default function DashboardPage() {
     useEffect(() => {
         loadDashboard();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [profileId]);
 
     const loadDashboard = async () => {
         const profiles = getProfiles();
@@ -41,10 +43,10 @@ export default function DashboardPage() {
             return;
         }
 
-        const main = profiles[0];
+        const main = profileId ? (profiles.find(p => p.id === profileId) || profiles[0]) : profiles[0];
         setMainProfile(main);
 
-        const others = profiles.slice(1);
+        const others = profiles.filter(p => p.id !== main.id);
 
         try {
             const relationshipData: RelationshipData[] = await Promise.all(others.map(async (profile) => {
@@ -123,7 +125,7 @@ export default function DashboardPage() {
             <main className="min-h-screen flex items-center justify-center">
                 <div className="text-center space-y-10">
                     <Loader2 className="w-16 h-16 animate-spin mx-auto text-primary" />
-                    <p className="text-xl font-bold text-secondary">Loading your destiny data...</p>
+                    <p className="text-xl font-bold text-secondary italic tracking-widest uppercase">운명 데이터를 동기화 중...</p>
                 </div>
             </main>
         );
@@ -159,7 +161,7 @@ export default function DashboardPage() {
                 <div className="flex flex-col md:flex-row items-center justify-between gap-10 mb-20 text-center md:text-left">
                     <div>
                         <h1 className="text-5xl font-black text-foreground italic tracking-tighter uppercase mb-3">
-                            {t('nav.dashboard')}
+                            {locale === 'ko' ? '운명망 (Destiny Web)' : 'Dashboard'}
                         </h1>
                         <p className="text-2xl text-secondary font-medium">
                             {locale === 'ko' ? '나를 중심으로 연결된 모든 인연' : 'Your web of cosmic connections'}
@@ -246,7 +248,7 @@ export default function DashboardPage() {
                                     </p>
                                     <div className="grid grid-cols-2 gap-4 pt-6">
                                         <button className="py-4 rounded-2xl bg-background text-foreground font-bold text-lg border border-border-color hover:bg-white/5 transition-all">
-                                            {t('compat.viewDetail')}
+                                            {locale === 'ko' ? '상세 분석' : 'DETAIL'}
                                         </button>
                                         <button
                                             onClick={(e) => {
@@ -287,7 +289,7 @@ export default function DashboardPage() {
                         <div className="absolute top-0 left-0 w-2 h-full bg-primary" />
                         <div className="flex items-center gap-6 mb-12">
                             <Sparkles className="w-10 h-10 text-primary" />
-                            <h3 className="text-3xl font-black text-foreground italic uppercase tracking-tight">Insight Reveal</h3>
+                            <h3 className="text-3xl font-black text-foreground italic uppercase tracking-tight">인사이트 리포트 (Insight Reveal)</h3>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                             {insights.map((insight, i) => (
@@ -301,5 +303,20 @@ export default function DashboardPage() {
                 )}
             </div>
         </main>
+    );
+}
+
+export default function DashboardPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+                <div className="text-center space-y-6">
+                    <Loader2 className="w-16 h-16 animate-spin mx-auto text-primary" />
+                    <p className="text-slate-500 font-black tracking-widest uppercase text-xs">Synchronizing Destiny Web...</p>
+                </div>
+            </div>
+        }>
+            <DashboardContent />
+        </Suspense>
     );
 }

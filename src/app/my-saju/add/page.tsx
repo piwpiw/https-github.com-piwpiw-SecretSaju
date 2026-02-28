@@ -111,7 +111,7 @@ export default function AddSajuPage() {
                             <span className="text-sm font-bold text-primary tracking-widest leading-none uppercase">{locale === 'ko' ? '사주 노드 추가' : 'NEW SAJU NODE'}</span>
                         </motion.div>
                         <h1 className="text-5xl font-black text-foreground italic tracking-tighter uppercase mb-2">
-                            {locale === 'ko' ? '새 프로필' : 'Add Profile'} <span className="text-primary italic">Registrar</span>
+                            {locale === 'ko' ? '운명 프로필' : 'Fate Profile'} <span className="text-primary italic">등록기</span>
                         </h1>
                         <p className="text-xl text-secondary font-medium italic opacity-70">
                             {locale === 'ko' ? '운명 분석을 위한 데이터를 입력합니다.' : 'Map the cosmic coordinates for analysis.'}
@@ -165,7 +165,7 @@ export default function AddSajuPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
                                 <div className="space-y-8">
                                     <label className="text-xl font-bold flex items-center gap-4 text-secondary uppercase tracking-widest">
-                                        <Calendar className="w-6 h-6 text-primary" /> Date of Origin
+                                        <Calendar className="w-6 h-6 text-primary" /> 출생 일자 (Date of Origin)
                                     </label>
                                     <div className="space-y-6">
                                         <input
@@ -191,7 +191,7 @@ export default function AddSajuPage() {
 
                                 <div className="space-y-8">
                                     <label className="text-xl font-bold flex items-center justify-between text-secondary uppercase tracking-widest">
-                                        <span className="flex items-center gap-4"><Clock className="w-6 h-6 text-primary" /> Temporal Coordinate</span>
+                                        <span className="flex items-center gap-4"><Clock className="w-6 h-6 text-primary" /> 출생 시각 (Temporal Coordinate)</span>
                                         <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setIsTimeUnknown(!isTimeUnknown)}>
                                             <div className={`w-4 h-4 rounded-full border-2 border-border-color transition-all ${isTimeUnknown ? 'bg-rose-500 border-rose-500 shadow-xl shadow-rose-500/20' : 'bg-transparent'}`} />
                                             <span className="text-sm font-bold text-secondary group-hover:text-foreground">{locale === 'ko' ? '모름' : 'Unknown'}</span>
@@ -236,7 +236,7 @@ export default function AddSajuPage() {
                         ) : (
                             <>
                                 <Calculator className="w-10 h-10" />
-                                {locale === 'ko' ? '프로필 저장하기' : 'MAP & SAVE DESTINY'}
+                                {locale === 'ko' ? '운명망에 등록하기' : 'MAP & SAVE DESTINY'}
                             </>
                         )}
                     </button>
@@ -246,7 +246,7 @@ export default function AddSajuPage() {
                 <div className="mt-20 flex flex-col items-center gap-6 opacity-40">
                     <div className="flex items-center gap-4 px-8 py-4 rounded-full bg-surface border border-border-color shadow-sm">
                         <ShieldCheck className="w-6 h-6 text-emerald-500" />
-                        <span className="text-sm font-black text-foreground uppercase tracking-widest">End-to-End Fate Encryption Active</span>
+                        <span className="text-sm font-black text-foreground uppercase tracking-widest">종단 간 데이터 암호화 프로토콜 활성화</span>
                     </div>
                 </div>
 

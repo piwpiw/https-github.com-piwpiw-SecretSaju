@@ -26,6 +26,7 @@ export function getYearlyFortune(pillarIndex: number, year: number): {
   detail: string;
   year: number;
   pillarName: string;
+  monthlyTrend: number[];
 } {
   const idx = pillarIndex % 60;
   const templateIndex = (idx + (year % 10)) % FORTUNE_TEMPLATES.length;
@@ -33,5 +34,11 @@ export function getYearlyFortune(pillarIndex: number, year: number): {
   const detail = `${year}년에는 일주에 따른 흐름이 좋아요. 상반기에는 신중히, 하반기에는 적극적으로 움직이면 좋은 결과가 있을 거예요.`;
   const pillarName = getPillarNameKo(idx);
 
-  return { summary, detail, year, pillarName };
+  // Generate a mock but semi-consistent trend based on pillar index
+  const monthlyTrend = Array.from({ length: 12 }, (_, i) => {
+    const base = ((idx + i) * 7) % 40 + 50; // 50-90 range
+    return base;
+  });
+
+  return { summary, detail, year, pillarName, monthlyTrend };
 }

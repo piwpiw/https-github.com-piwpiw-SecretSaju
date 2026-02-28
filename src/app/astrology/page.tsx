@@ -7,6 +7,7 @@ import { ArrowLeft, Star, Loader2, Sparkles, Compass } from "lucide-react";
 import JellyBalance from "@/components/shop/JellyBalance";
 import { useWallet } from "@/components/WalletProvider";
 import LuxuryToast from "@/components/ui/LuxuryToast";
+import { saveAnalysisToHistory } from "@/lib/analysis-history";
 
 const ZODIACS = [
     { id: "aries", name: "양자리", icon: "♈", dates: "3.21 - 4.19" },
@@ -54,6 +55,27 @@ export default function AstrologyPage() {
                 luckyColor: "네이비",
                 luckyNumber: 7
             });
+            saveAnalysisToHistory(
+                {
+                    type: "ASTROLOGY",
+                    title: `${selected?.name ?? "astrology"} Astrology`,
+                    subtitle: "별자리 기반 일일 운세",
+                    profileId: undefined,
+                    profileName: "전체 프로필",
+                    result: {
+                        daily: "오늘은 수성이 순행하며 의사소통이 원활해지는 시기입니다. 고민하던 일이 술술 풀리며 예상치 못한 재물운이 따릅니다.",
+                        love: "금성의 긍정적인 각도로 새로운 인연과의 만남이 유리한 시기. 솔로라면 모임에 꼭 참석하세요.",
+                        career: "업무에서 리더십을 발휘할 수 있는 기회가 찾아옵니다. 당신의 의견을 적극적으로 어필하는 것이 좋습니다.",
+                        luckyColor: "네이비",
+                        luckyNumber: 7,
+                    },
+                    resultPreview: "오늘은 수성이 순행하며 의사소통이 원활해지는 시기입니다. 고민하던 일이 술술 풀리며 예상치 못한 재물운이 따릅니다.",
+                    resultUrl: `/analysis-history/ASTROLOGY/${Date.now()}`,
+                },
+                {
+                    resultUrlFactory: (id) => `/analysis-history/ASTROLOGY/${id}`,
+                }
+            );
             setLoading(false);
         }, 2500);
     };

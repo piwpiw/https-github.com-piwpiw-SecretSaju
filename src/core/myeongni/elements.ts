@@ -28,6 +28,12 @@ export interface ElementAnalysisResult {
     lacking: Element[];
     excessive: Element[];
     mainElement: Element; // Il-gan (Day Stem) element
+    /** Advanced: Jo-Hoo (Seasonal Balance) */
+    balance: {
+        temperature: 'Cold' | 'Hot' | 'Balanced';
+        humidity: 'Dry' | 'Wet' | 'Balanced';
+        score: number; // 0-100, where 100 is perfectly balanced
+    };
 }
 
 const STEM_ELEMENTS: Record<Stem, Element> = {
@@ -155,6 +161,35 @@ export function analyzeElements(saju: FourPillars): ElementAnalysisResult {
     const lacking = (Object.keys(normalizedScores) as Element[]).filter(k => normalizedScores[k] < 10);
     const excessive = (Object.keys(normalizedScores) as Element[]).filter(k => normalizedScores[k] > 40);
 
+    // 4. Advanced: Jo-Hoo (Seasonal Temperature/Humidity Balance)
+    // Month branch is the primary factor for Jo-Hoo
+    const month = saju.month.branch;
+    const isWinter = ['해', '자', '축'].includes(month);
+    const isSummer = ['사', '오', '미'].includes(month);
+    const isSpring = ['인', '묘', '진'].includes(month);
+    const isAutumn = ['신', '유', '술'].includes(month);
+
+    let temp: 'Cold' | 'Hot' | 'Balanced' = 'Balanced';
+    let humid: 'Dry' | 'Wet' | 'Balanced' = 'Balanced';
+    let balanceScore = 80;
+
+    // Basic Temperature logic
+    if (isWinter) temp = 'Cold';
+    if (isSummer) temp = 'Hot';
+
+    // Refinement based on Fire/Water scores
+    if (normalizedScores.화 > 40) temp = 'Hot';
+    if (normalizedScores.수 > 40) temp = 'Cold';
+    if (normalizedScores.화 > 20 && normalizedScores.수 > 20) temp = 'Balanced';
+
+    // Humidity logic (Metal/Water vs Wood/Fire/Earth)
+    if (normalizedScores.수 > 30 || normalizedScores.목 > 30) humid = 'Wet';
+    if (normalizedScores.화 > 30 || normalizedScores.토 > 30) humid = 'Dry';
+
+    // Penalty for extremes
+    if (temp !== 'Balanced') balanceScore -= 20;
+    if (humid !== 'Balanced') balanceScore -= 10;
+
     return {
         scores: normalizedScores,
         counts,
@@ -162,6 +197,11 @@ export function analyzeElements(saju: FourPillars): ElementAnalysisResult {
         dominant,
         lacking,
         excessive,
-        mainElement
+        mainElement,
+        balance: {
+            temperature: temp,
+            humidity: humid,
+            score: Math.max(0, balanceScore)
+        }
     };
 }

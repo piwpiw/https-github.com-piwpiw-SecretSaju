@@ -1,5 +1,5 @@
 
-import { calculateHighPrecisionSaju } from './src/core/api/saju-engine';
+import { calculateHighPrecisionSaju } from '../../src/core/api/saju-engine';
 
 async function verify() {
     const birthDate = new Date(1983, 3, 30); // month 3 is April

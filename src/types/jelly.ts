@@ -24,6 +24,7 @@ export interface Transaction {
         profileName?: string;
         sectionId?: string;
         tierId?: string;
+        [key: string]: any;
     };
     timestamp: number;
 }
