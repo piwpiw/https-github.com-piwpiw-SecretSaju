@@ -27,6 +27,13 @@ export function getYearlyFortune(pillarIndex: number, year: number): {
   year: number;
   pillarName: string;
   monthlyTrend: number[];
+  scores: {
+    total: number;
+    love: number;
+    money: number;
+    work: number;
+    health: number;
+  };
 } {
   const idx = pillarIndex % 60;
   const templateIndex = (idx + (year % 10)) % FORTUNE_TEMPLATES.length;
@@ -40,5 +47,17 @@ export function getYearlyFortune(pillarIndex: number, year: number): {
     return base;
   });
 
-  return { summary, detail, year, pillarName, monthlyTrend };
+  // Generate mock scores
+  // deterministically based on year, pillarIndex
+  const baseScore = ((idx * 3) + year) % 30 + 60; // 60-90
+
+  const scores = {
+    total: baseScore + 5,
+    love: (baseScore + idx) % 40 + 50,
+    money: (baseScore + idx * 2) % 40 + 50,
+    work: (baseScore + idx * 3) % 40 + 50,
+    health: (baseScore + idx * 4) % 40 + 50,
+  };
+
+  return { summary, detail, year, pillarName, monthlyTrend, scores };
 }

@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, Sparkles, ChevronRight, Calculator, History } from "lucide-react";
 import JellyBalance from "@/components/shop/JellyBalance";
 import { getProfiles, SajuProfile } from "@/lib/storage";
 import { useWallet } from "@/components/WalletProvider";
 import { calculateSajuFromBirthdate } from "@/lib/saju";
 import { saveAnalysisToHistory } from "@/lib/analysis-history";
-
+import ResultCard from "@/components/ResultCard";
+import { getArchetypeByCode } from "@/lib/archetypes";
 import { Suspense } from "react";
 
 function SajuPageContent() {
@@ -21,6 +22,7 @@ function SajuPageContent() {
   const [selectedProfileId, setSelectedProfileId] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [archetype, setArchetype] = useState<any>(null);
 
   useEffect(() => {
     const saved = getProfiles();
@@ -58,6 +60,8 @@ function SajuPageContent() {
         selected.isTimeUnknown
       );
 
+      const arch = getArchetypeByCode(analysisResult.code, analysisResult.ageGroup);
+      setArchetype(arch);
       setResult(analysisResult);
       saveAnalysisToHistory(
         {
@@ -90,51 +94,84 @@ function SajuPageContent() {
           <JellyBalance />
         </div>
 
-        <section className="bg-slate-900/70 border border-slate-800 rounded-3xl p-8">
-          <h1 className="text-3xl font-black uppercase tracking-tight mb-2">SAJU 프리미엄</h1>
-          <p className="text-slate-400 mb-8">프로필을 선택하고 사주 분석을 실행하세요.</p>
+        <section className="bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-[3rem] p-10 md:p-14 shadow-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px] -mr-48 -mt-48 pointer-events-none group-hover:bg-indigo-600/20 transition-all duration-1000" />
 
-          <div className="space-y-6">
-            <label className="block text-sm uppercase tracking-widest text-slate-400">프로필</label>
-            <select
-              value={selectedProfileId}
-              onChange={(e) => setSelectedProfileId(e.target.value)}
-              className="w-full rounded-xl bg-slate-950 border border-slate-700 p-4"
-            >
-              {profiles.map((profile) => (
-                <option key={profile.id} value={profile.id}>{profile.name}</option>
-              ))}
-            </select>
+          <div className="flex items-center gap-4 mb-6 relative z-10">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+              <Calculator className="w-6 h-6 text-indigo-400" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black italic tracking-tighter uppercase text-white">사주 원국 분석</h1>
+              <p className="text-xs text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Saju Astrology Engine</p>
+            </div>
+          </div>
+
+          <div className="space-y-8 relative z-10 mt-10">
+            <div className="space-y-4">
+              <label className="text-sm font-black flex items-center gap-2 text-slate-300 uppercase tracking-widest">
+                <History className="w-4 h-4 text-indigo-400" /> 분석 대상 프로필
+              </label>
+              <div className="relative">
+                <select
+                  value={selectedProfileId}
+                  onChange={(e) => setSelectedProfileId(e.target.value)}
+                  className="w-full rounded-2xl bg-black/40 border border-white/10 px-6 py-5 text-white font-bold text-lg appearance-none focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                >
+                  {profiles.map((profile) => (
+                    <option key={profile.id} value={profile.id}>{profile.name} ({profile.relationship})</option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-6 flex items-center pointer-events-none">
+                  <ChevronRight className="w-5 h-5 text-slate-500 rotate-90" />
+                </div>
+              </div>
+            </div>
 
             <button
               onClick={handleRun}
-              className="px-6 py-4 bg-cyan-500 text-black font-black rounded-full"
+              disabled={loading}
+              className="w-full py-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xl uppercase tracking-widest shadow-xl hover:shadow-indigo-500/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
             >
-              3젤리로 분석하기
+              {loading ? (
+                <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} className="w-6 h-6 border-2 border-white rounded-full border-t-transparent" />
+              ) : (
+                <Sparkles className="w-6 h-6 fill-white" />
+              )}
+              {loading ? "분석 엔진 가동 중..." : "3젤리로 정밀 분석 시작"}
             </button>
           </div>
         </section>
 
-        {loading && (
-          <section className="mt-10 text-center">
-            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} className="w-10 h-10 border-2 border-cyan-400 rounded-full border-t-transparent mx-auto" />
-            <p className="mt-3 text-slate-400">분석 중...</p>
-          </section>
-        )}
+        {result && archetype && !loading && (
+          <motion.section
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-16"
+          >
+            <div className="flex items-center gap-4 mb-10 justify-center">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10" />
+              <div className="px-6 py-2 rounded-full border border-white/10 bg-white/5 text-xs font-black text-indigo-300 uppercase tracking-[0.3em] flex items-center gap-2 backdrop-blur-md">
+                <Sparkles className="w-4 h-4" /> 분석 완료 보고서
+              </div>
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10" />
+            </div>
 
-        {result && !loading && (
-          <section className="mt-10 bg-slate-900/70 border border-slate-800 rounded-3xl p-8">
-            <div className="flex items-center gap-3 mb-4">
-              <Sparkles className="w-5 h-5 text-cyan-400" />
-              <h2 className="text-xl font-black">분석 결과</h2>
-            </div>
-            <div className="text-sm text-slate-300 grid gap-4">
-              <p>코드: {result.code}</p>
-              <p>지지: {result.pillarNameKo}</p>
-              <p>원소: {result.element}</p>
-              <p>연령 구간: {result.ageGroup}</p>
-            </div>
-          </section>
+            <ResultCard
+              archetype={archetype}
+              pillarNameKo={result.pillarNameKo}
+              ageGroup={result.ageGroup}
+              elementScores={result.elementScores}
+              elementCounts={result.elementCounts}
+              elementBasicPercentages={result.elementBasicPercentages}
+              fourPillars={result.fourPillars}
+              daewun={result.daewun}
+              gyeokguk={result.gyeokguk}
+              version={result.version}
+              integrity={result.integrity}
+              isTimeUnknown={result.isTimeUnknown}
+            />
+          </motion.section>
         )}
       </div>
     </main>
