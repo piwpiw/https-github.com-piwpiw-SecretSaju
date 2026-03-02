@@ -61,11 +61,13 @@ async function run() {
   );
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    let controller;
+    let timer;
+
     try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), fetchTimeoutMs);
+      controller = new AbortController();
+      timer = setTimeout(() => controller.abort(), fetchTimeoutMs);
       const response = await fetch(healthUrl, { method: 'GET', signal: controller.signal });
-      clearTimeout(timer);
 
       const status = response.status;
       if (status >= statusMin && status <= statusMax) {
@@ -79,6 +81,9 @@ async function run() {
       );
     } catch (error) {
       console.log(`[wait-for-health] attempt ${attempt}/${maxAttempts} failed: ${error?.message || String(error)}`);
+    } finally {
+      if (timer) clearTimeout(timer);
+      if (controller) controller.abort?.();
     }
 
     if (attempt < maxAttempts) {
