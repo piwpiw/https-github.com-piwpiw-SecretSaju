@@ -254,3 +254,18 @@ jobs:
             echo "- Health check endpoint: \`${HEALTHCHECK_URL:-${NEXT_PUBLIC_BASE_URL}/api/health}\`"
             echo "- Deploy hook URL configured: $( [ -n \"${RENDER_DEPLOY_HOOK_URL}\" ] && echo true || echo false )"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish failure hints
+        if: failure()
+        run: |
+          {
+            echo "## Failure Hints"
+            for f in /tmp/build.log /tmp/render-deploy.log /tmp/healthcheck.log; do
+              if [ ! -f "$f" ]; then
+                continue
+              fi
+              echo "### $(basename \"$f\")"
+              grep -Ei "error|failed|failure|timed out|timeout|unhandled|fatal|refused|5..|4.." "$f" | tail -n 20 || true
+              echo ""
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
