@@ -24,15 +24,9 @@ concurrency:
 
 jobs:
   quality:
-    name: Quality (${{ matrix.check }})
+    name: Quality
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        check:
-          - typecheck
-          - lint
-          - test
+    timeout-minutes: 25
 
     steps:
       - name: Checkout code
@@ -48,15 +42,37 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Run quality check
+      - name: Run quality checks in parallel
         shell: bash
         run: |
-          case "${{ matrix.check }}" in
-            typecheck) npx tsc --noEmit ;;
-            lint) npm run lint ;;
-            test) npm test -- --run ;;
-            *) echo "Unknown check: ${{ matrix.check }}"; exit 1 ;;
-          esac
+          set +e
+          npx tsc --noEmit > /tmp/tsc.log 2>&1 &
+          TSC_PID=$!
+          npm run lint > /tmp/lint.log 2>&1 &
+          LINT_PID=$!
+          npm test -- --run > /tmp/test.log 2>&1 &
+          TEST_PID=$!
+
+          wait $TSC_PID; TSC_EXIT=$?
+          wait $LINT_PID; LINT_EXIT=$?
+          wait $TEST_PID; TEST_EXIT=$?
+
+          if [ $TSC_EXIT -ne 0 ]; then
+            echo "--- TypeScript check failed ---"
+            cat /tmp/tsc.log
+          fi
+          if [ $LINT_EXIT -ne 0 ]; then
+            echo "--- Lint failed ---"
+            cat /tmp/lint.log
+          fi
+          if [ $TEST_EXIT -ne 0 ]; then
+            echo "--- Test failed ---"
+            cat /tmp/test.log
+          fi
+
+          if [ $TSC_EXIT -ne 0 ] || [ $LINT_EXIT -ne 0 ] || [ $TEST_EXIT -ne 0 ]; then
+            exit 1
+          fi
 
   build:
     name: Build
