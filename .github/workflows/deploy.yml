@@ -30,6 +30,7 @@ jobs:
     timeout-minutes: 25
     env:
       CI_CHECK_MODE: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' ? 'non-main' : 'main' }}
+      RUN_TESTS: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run-tests')) }}
 
     steps:
       - name: Checkout code
@@ -54,18 +55,18 @@ jobs:
           npm run lint > /tmp/lint.log 2>&1 &
           LINT_PID=$!
 
-          if [ "$CI_CHECK_MODE" = "main" ]; then
+          if [ "$RUN_TESTS" = "true" ]; then
             npm test -- --run > /tmp/test.log 2>&1 &
             TEST_PID=$!
           else
             : > /tmp/test.log
-            echo "skip tests for non-main/pr quality checks." >> /tmp/test.log
+            echo "skip tests for non-main/pr quality checks. add PR label 'run-tests' to run." >> /tmp/test.log
             TEST_PID=0
           fi
 
           wait $TSC_PID; TSC_EXIT=$?
           wait $LINT_PID; LINT_EXIT=$?
-          if [ "$CI_CHECK_MODE" = "main" ]; then
+          if [ "$RUN_TESTS" = "true" ]; then
             wait $TEST_PID; TEST_EXIT=$?
           else
             TEST_EXIT=0
@@ -184,6 +185,22 @@ jobs:
         with:
           name: healthcheck-log-${{ github.run_id }}-${{ github.run_attempt }}
           path: /tmp/healthcheck.log
+          retention-days: 7
+
+      - name: Bundle deploy diagnostics
+        if: always()
+        run: |
+          tar -czf /tmp/deploy-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}.tgz \
+            /tmp/build.log \
+            /tmp/render-deploy.log \
+            /tmp/healthcheck.log
+
+      - name: Upload deploy diagnostics bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/deploy-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}.tgz
           retention-days: 7
 
       - name: Publish diagnostics summary
