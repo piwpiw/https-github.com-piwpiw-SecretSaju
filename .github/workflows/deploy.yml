@@ -17,6 +17,7 @@ on:
       - "**/*.md"
       - "docs/**"
       - "archives/docs/**"
+      - "archives/**"
 
 concurrency:
   group: deploy-${{ github.ref }}
@@ -89,7 +90,6 @@ jobs:
 
           if [ $TSC_EXIT -ne 0 ] || [ $LINT_EXIT -ne 0 ] || [ $TEST_EXIT -ne 0 ]; then
             echo "failed=true" >> "$GITHUB_OUTPUT"
-            echo "Q_FAIL=true" >> "$GITHUB_ENV"
             exit 1
           else
             echo "failed=false" >> "$GITHUB_OUTPUT"
