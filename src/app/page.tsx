@@ -186,6 +186,12 @@ export default function HomePage() {
               elementScores={sajuData.elementScores}
               elementCounts={sajuData.elementCounts}
               elementBasicPercentages={sajuData.elementBasicPercentages}
+              fourPillars={sajuData.fourPillars}
+              daewun={sajuData.daewun}
+              gyeokguk={sajuData.gyeokguk}
+              version={sajuData.version}
+              integrity={sajuData.integrity}
+              isTimeUnknown={sajuData.isTimeUnknown}
               onUnlockClick={handleUnlockClick}
               onInsufficientJelly={handleUnlockClick}
             />

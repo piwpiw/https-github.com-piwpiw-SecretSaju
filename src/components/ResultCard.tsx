@@ -29,6 +29,7 @@ interface ResultCardProps {
   version?: string;
   integrity?: string;
   secretUnlocked?: boolean;
+  isTimeUnknown?: boolean;
   onUnlockClick?: () => void;
   onInsufficientJelly?: () => void;
 }
@@ -172,7 +173,8 @@ export default function ResultCard({
   daewun,
   gyeokguk,
   version,
-  integrity
+  integrity,
+  isTimeUnknown
 }: ResultCardProps) {
   const [aiText, setAiText] = useState<string | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -346,28 +348,42 @@ export default function ResultCard({
 
               {/* Professional Manse-ryeok Grid (8 Characters) */}
               {fourPillars && (
-                <div className="mt-8 grid grid-cols-4 gap-2 max-w-sm mx-auto">
-                  {['hour', 'day', 'month', 'year'].map((pKey) => {
-                    const p = (fourPillars as any)[pKey];
-                    const stemElIdx = ELEMENT_MAP[p.stemElement || '토']; // Fallback for color
-                    const branchElIdx = ELEMENT_MAP[p.branchElement || '토'];
+                <div className="mt-8 flex flex-col items-center">
+                  <div className="grid grid-cols-4 gap-2 max-w-sm w-full mx-auto relative">
+                    {['hour', 'day', 'month', 'year'].map((pKey) => {
+                      const p = (fourPillars as any)[pKey];
+                      const stemElIdx = ELEMENT_MAP[p.stemElement || '토'];
+                      const branchElIdx = ELEMENT_MAP[p.branchElement || '토'];
 
-                    return (
-                      <div key={pKey} className="flex flex-col gap-2">
-                        <span className="text-[10px] text-slate-500 font-bold uppercase">{pKey === 'year' ? '년' : pKey === 'month' ? '월' : pKey === 'day' ? '일' : '시'}</span>
-                        {/* Stem */}
-                        <div className={`aspect-square flex flex-col items-center justify-center rounded-xl border ${FIVE_ELEMENTS[stemElIdx].borderColor} ${FIVE_ELEMENTS[stemElIdx].bg} shadow-sm`}>
-                          <span className="text-2xl font-black text-white">{STEM_HANJA[p.stem] || p.stem}</span>
-                          <span className="text-[9px] font-bold opacity-80 text-white">{p.stem}</span>
+                      const isUnknownHour = pKey === 'hour' && isTimeUnknown;
+
+                      return (
+                        <div key={pKey} className={`flex flex-col gap-2 relative transition-opacity ${isUnknownHour ? 'opacity-40 grayscale-[50%]' : ''}`}>
+                          {isUnknownHour && (
+                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-red-500/20 text-red-200 text-[9px] px-2 py-0.5 rounded-full border border-red-500/30 whitespace-nowrap backdrop-blur-sm z-10 font-bold tracking-widest shadow-lg">
+                              시간미상
+                            </div>
+                          )}
+                          <span className="text-[10px] text-slate-500 font-bold uppercase">{pKey === 'year' ? '년' : pKey === 'month' ? '월' : pKey === 'day' ? '일' : '시'}</span>
+                          {/* Stem */}
+                          <div className={`aspect-square flex flex-col items-center justify-center rounded-xl border ${FIVE_ELEMENTS[stemElIdx].borderColor} ${FIVE_ELEMENTS[stemElIdx].bg} shadow-sm`}>
+                            <span className="text-2xl font-black text-white">{STEM_HANJA[p.stem] || p.stem}</span>
+                            <span className="text-[9px] font-bold opacity-80 text-white">{p.stem}</span>
+                          </div>
+                          {/* Branch */}
+                          <div className={`aspect-square flex flex-col items-center justify-center rounded-xl border ${FIVE_ELEMENTS[branchElIdx].borderColor} ${FIVE_ELEMENTS[branchElIdx].bg} shadow-sm`}>
+                            <span className="text-2xl font-black text-white">{BRANCH_HANJA[p.branch] || p.branch}</span>
+                            <span className="text-[9px] font-bold opacity-80 text-white">{p.branch}</span>
+                          </div>
                         </div>
-                        {/* Branch */}
-                        <div className={`aspect-square flex flex-col items-center justify-center rounded-xl border ${FIVE_ELEMENTS[branchElIdx].borderColor} ${FIVE_ELEMENTS[branchElIdx].bg} shadow-sm`}>
-                          <span className="text-2xl font-black text-white">{BRANCH_HANJA[p.branch] || p.branch}</span>
-                          <span className="text-[9px] font-bold opacity-80 text-white">{p.branch}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
+                  {isTimeUnknown && (
+                    <p className="text-[10px] text-slate-500 mt-4 max-w-xs leading-relaxed opacity-70">
+                      * 생시 미입력(추정시 정오 기준). 삼주(三柱) 분석만으로도 본질 파악은 충분합니다.
+                    </p>
+                  )}
                 </div>
               )}
               {!isExporting && (
