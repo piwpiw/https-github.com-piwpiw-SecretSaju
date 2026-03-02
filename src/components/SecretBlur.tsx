@@ -1,12 +1,11 @@
-"use client";
+﻿"use client";
 
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
 
 type SecretBlurProps = {
   hook: string;
-  /** 결제 후 해금 시 표시할 미리보기 문구 */
   secretPreview?: string;
   unlocked?: boolean;
   onPaymentClick?: () => void;
@@ -14,7 +13,7 @@ type SecretBlurProps = {
 
 export function SecretBlur({
   hook,
-  secretPreview = "후방주의.",
+  secretPreview = "비공개 콘텐츠는 잠금 해제 후 확인할 수 있습니다.",
   unlocked = false,
   onPaymentClick,
 }: SecretBlurProps) {
@@ -27,9 +26,7 @@ export function SecretBlur({
 
   return (
     <section className="w-full max-w-md mx-auto py-12 px-4">
-      <h3 className="font-display text-xl text-foreground mb-4 text-center">
-        새벽 2시의 본능 (Secret)
-      </h3>
+      <h3 className="font-display text-xl text-foreground mb-4 text-center">비밀 미리보기 (Secret)</h3>
 
       {unlocked ? (
         <motion.div
@@ -37,15 +34,12 @@ export function SecretBlur({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          <p className="text-secondary font-medium mb-2">🔓 해금됨</p>
+          <p className="text-secondary font-medium mb-2">해제된 비밀 콘텐츠</p>
           <p className="text-zinc-300 text-sm">{secretPreview}</p>
         </motion.div>
       ) : (
         <motion.div
-          className={cn(
-            "rounded-2xl glass p-6 text-center relative overflow-hidden",
-            "select-none"
-          )}
+          className={cn("rounded-2xl glass p-6 text-center relative overflow-hidden", "select-none")}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -56,7 +50,7 @@ export function SecretBlur({
               onClick={handlePay}
               className="rounded-xl bg-secondary px-6 py-3 font-medium text-background hover:bg-secondary/90 transition-colors"
             >
-              300원에 보기
+              300포인트 결제하기
             </button>
           </div>
           <div className="blur-xl pointer-events-none">
@@ -78,12 +72,12 @@ export function SecretBlur({
             animate={{ scale: 1 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-foreground font-display text-lg mb-2">결제 연동 점검 중</p>
+            <p className="text-foreground font-display text-lg mb-2">결제 연동 안내</p>
             <p className="text-zinc-400 text-sm mb-2">
-              결제 모듈은 현재 운영 안정성 점검 단계이며, 임시로 지원 채널을 통해 처리됩니다.
+              현재 결제 모듈은 운영 점검 중이라 결제 요청은 지원 문의로 연결됩니다.
             </p>
             <p className="text-zinc-400 text-sm mb-6">
-              원하시면 지원 페이지에서 결제 준비 상태와 안내를 바로 확인하세요.
+              결제 상태가 완료되면 동일 화면에서 즉시 콘텐츠가 해제됩니다.
             </p>
             <button
               type="button"
@@ -96,7 +90,7 @@ export function SecretBlur({
               href="/support"
               className="inline-flex items-center justify-center mt-3 px-5 py-2 rounded-xl border border-white/20 text-white/90 w-full font-medium"
             >
-              지원 페이지 열기
+              문의 페이지 바로가기
             </a>
           </motion.div>
         </motion.div>

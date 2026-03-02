@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Gift, MessageCircle } from "lucide-react";
+import { ArrowLeft, Gift, MessageCircle, Copy } from "lucide-react";
 
 type Props = {
   params: { token: string };
@@ -13,7 +13,8 @@ export default function GiftResultPage({ params }: Props) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(236,72,153,0.18),transparent_45%),radial-gradient(circle_at_80%_80%,rgba(59,130,246,0.14),transparent_50%)]" />
       <div className="max-w-3xl mx-auto px-6 py-16 relative z-10">
         <Link href="/" className="inline-flex items-center gap-3 text-slate-400 hover:text-white mb-10">
-          <ArrowLeft className="w-4 h-4" /> í™ˆìœ¼ë¡œ
+          <ArrowLeft className="w-4 h-4" />
+          È¨À¸·Î
         </Link>
 
         <section className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-10 text-center">
@@ -21,16 +22,25 @@ export default function GiftResultPage({ params }: Props) {
             <Gift className="w-8 h-8 text-pink-300" />
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight">ìš´ëª… ì„ ë¬¼ ë§í¬ ë„ì°©</h1>
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight">»ó´ë¹æ ¼±¹° ¸Ş½ÃÁö</h1>
           <p className="mt-4 text-slate-300 leading-relaxed">
-            ì „ë‹¬ë°›ì€ ì„ ë¬¼ ë§í¬ê°€ ì ‘ìˆ˜ë˜ì—ˆìŠµë‹ˆë‹¤.
-            í˜„ì¬ ìˆ˜ì‹  ì „ìš© ë¶„ì„ ë·°ì–´ëŠ” ìš´ì˜ ì •ì±… ì ê²€ìœ¼ë¡œ ì¤€ë¹„ì¤‘ì´ë©°,
-            ë§í¬ ì ‘ê·¼ê¶Œí•œ ë° í‘œì‹œ íë¦„ì€ ê³§ ì•ˆì •ì ìœ¼ë¡œ ì˜¤í”ˆë©ë‹ˆë‹¤.
+            ¼±¹° ¸Ş½ÃÁö¸¦ ¹Ş¾Ò½À´Ï´Ù. °øÀ¯ ¸µÅ© ¿­¶÷±ÇÀ» È®ÀÎÇÏ°í, ÇÊ¿äÇÑ °æ¿ì Áö¿ø Ã¤³Î·Î ¿¬¶ôÇÏ½Ã¸é
+            º¸¾È ÅäÅ« Á¤º¸¸¦ ¾È³»µå¸®°Ú½À´Ï´Ù.
           </p>
 
           <div className="mt-8 rounded-2xl bg-white/5 border border-white/10 p-4 text-left">
-            <p className="text-sm text-slate-400">ë§í¬ í† í°</p>
+            <p className="text-sm text-slate-400">¼±¹° ÅäÅ«</p>
             <p className="mt-1 text-xs md:text-sm text-pink-200 break-all">{token}</p>
+          </div>
+
+          <div className="mt-8 flex items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => navigator?.clipboard?.writeText(token)}
+              className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-white/15 border border-white/20 text-sm font-black"
+            >
+              <Copy className="w-4 h-4 mr-2" /> ÅäÅ« º¹»ç
+            </button>
           </div>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
@@ -38,14 +48,14 @@ export default function GiftResultPage({ params }: Props) {
               href="/gift"
               className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-pink-500 text-black font-black uppercase tracking-[0.2em] text-xs"
             >
-              ì„ ë¬¼ ë‹¤ì‹œ ë³´ë‚´ê¸°
+              ¼±¹°ÇÏ±â
             </Link>
             <a
               href="mailto:support@secretsaju.com?subject=%EC%84%9C%EB%B2%84%EA%B2%8C%EC%8A%A4%ED%8A%B8%EC%95%88"
               className="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/20 text-white/90 font-black uppercase tracking-[0.2em] text-xs"
             >
               <MessageCircle className="w-4 h-4 mr-2" />
-              ì§€ì› ìš”ì²­
+              ¹®ÀÇÇÏ±â
             </a>
           </div>
         </section>
