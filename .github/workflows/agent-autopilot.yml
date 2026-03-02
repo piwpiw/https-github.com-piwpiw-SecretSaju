@@ -37,6 +37,20 @@ jobs:
           name: autopilot-qa-log-${{ github.run_id }}-${{ github.run_attempt }}
           path: /tmp/autopilot-qa.log
           retention-days: 7
+
+      - name: Publish AutoPilot summary
+        if: always()
+        run: |
+          {
+            echo "## AutoPilot CI Diagnostics"
+            echo ""
+            echo "- workflow: ${{ github.workflow }}"
+            echo "- run: [${{ github.run_id }} #${{ github.run_attempt }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            echo "- branch: `${{ github.head_ref }}`"
+            echo "- pr: #${{ github.event.pull_request.number }}"
+            echo "- status: \`${{ job.status }}\`"
+            echo "- node-version: 20"
+          } >> "$GITHUB_STEP_SUMMARY"
         
       - name: Automerge
         if: success() && startsWith(github.head_ref, 'auto/')

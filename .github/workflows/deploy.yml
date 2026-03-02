@@ -172,3 +172,25 @@ jobs:
           name: healthcheck-log-${{ github.run_id }}-${{ github.run_attempt }}
           path: /tmp/healthcheck.log
           retention-days: 7
+
+      - name: Publish diagnostics summary
+        if: always()
+        run: |
+          {
+            echo "## Render Deploy Diagnostics"
+            echo ""
+            echo "- workflow: ${{ github.workflow }}"
+            echo "- run: [${{ github.run_id }} #${{ github.run_attempt }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            echo "- ref: `${{ github.ref_name }}`"
+            echo "- commit: `${{ github.sha }}`"
+            echo "- status: \`${{ job.status }}\`"
+            echo ""
+            echo "### Artifacts"
+            echo "- build-log-${{ github.run_id }}-${{ github.run_attempt }}"
+            echo "- render-deploy-log-${{ github.run_id }}-${{ github.run_attempt }}"
+            echo "- healthcheck-log-${{ github.run_id }}-${{ github.run_attempt }}"
+            echo ""
+            echo "### Notes"
+            echo "- Health check endpoint: \`${HEALTHCHECK_URL:-${NEXT_PUBLIC_BASE_URL}/api/health}\`"
+            echo "- Deploy hook URL configured: $( [ -n \"${RENDER_DEPLOY_HOOK_URL}\" ] && echo true || echo false )"
+          } >> "$GITHUB_STEP_SUMMARY"
