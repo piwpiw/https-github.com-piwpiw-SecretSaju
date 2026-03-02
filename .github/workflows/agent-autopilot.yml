@@ -10,7 +10,7 @@ on:
 
 jobs:
   validate-and-merge:
-    if: startsWith(github.head_ref, 'auto/')
+    if: github.event.pull_request.draft == false && startsWith(github.head_ref, 'auto/')
     runs-on: ubuntu-latest
     timeout-minutes: 18
     permissions:
@@ -93,9 +93,9 @@ jobs:
                 .slice(-20)
                 .join('\n');
               hint = lines || 'No clear pattern found in logs.';
-            } catch (error) {
-            hint = `Could not read /tmp/autopilot-qa.log: ${error.message}`;
-          }
+              } catch (error) {
+                hint = `Could not read /tmp/autopilot-qa.log: ${error.message}`;
+              }
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,

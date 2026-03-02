@@ -196,6 +196,7 @@ jobs:
 
       - name: Trigger Render deploy hook (optional)
         run: |
+          echo "DEPLOY_STAGE=hook" >> "$GITHUB_ENV"
           set -o pipefail
           node scripts/render-deploy.js 2>&1 | tee /tmp/render-deploy.log
 
@@ -210,6 +211,7 @@ jobs:
       - name: Wait for service health
         shell: bash
         run: |
+          echo "DEPLOY_STAGE=healthcheck" >> "$GITHUB_ENV"
           if [ -z "$HEALTHCHECK_URL" ]; then
             export HEALTHCHECK_URL="${NEXT_PUBLIC_BASE_URL}/api/health"
           fi
@@ -262,6 +264,7 @@ jobs:
             echo "- Health check endpoint: \`${HEALTHCHECK_URL:-${NEXT_PUBLIC_BASE_URL}/api/health}\`"
             echo "- Deploy hook URL configured: $( [ -n \"${RENDER_DEPLOY_HOOK_URL}\" ] && echo true || echo false )"
             echo "- quality step failed: \`${Q_FAIL}\`"
+            echo "- last known stage: \`${DEPLOY_STAGE}\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Publish failure hints
@@ -270,7 +273,15 @@ jobs:
           {
             echo "## Failure Hints"
             echo ""
-            echo "**Top failure stage:** $( [ "${Q_FAIL}" = "true" ] && echo quality || echo deploy )"
+            if [ "${Q_FAIL}" = "true" ]; then
+              echo "**Top failure stage:** quality"
+            elif [ "${DEPLOY_STAGE}" = "hook" ]; then
+              echo "**Top failure stage:** deploy-hook"
+            elif [ "${DEPLOY_STAGE}" = "healthcheck" ]; then
+              echo "**Top failure stage:** healthcheck"
+            else
+              echo "**Top failure stage:** deploy"
+            fi
             for f in /tmp/build.log /tmp/render-deploy.log /tmp/healthcheck.log; do
               if [ ! -f "$f" ]; then
                 continue
