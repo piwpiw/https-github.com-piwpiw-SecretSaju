@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
-import { Gift, Sparkles, Send, Mail, ArrowLeft, ShieldCheck } from "lucide-react";
+import { Gift, Send, Mail, ArrowLeft, ShieldCheck } from "lucide-react";
 import { useLocale } from "@/lib/i18n";
 
 export default function GiftPage() {
@@ -11,9 +10,11 @@ export default function GiftPage() {
   const [formData, setFormData] = useState({ name: "", birthDate: "", email: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError("");
     setIsSubmitting(true);
 
     try {
@@ -27,11 +28,21 @@ export default function GiftPage() {
         }),
       });
 
-      if (!res.ok) throw new Error('API Error');
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(
+          payload?.error || (locale === 'ko'
+            ? '발송에 실패했습니다. 잠시 후 다시 시도해 주세요.'
+            : 'Error sending gift. Please try again later.')
+        );
+      }
+
       setSuccess(true);
     } catch (error) {
-      console.error(error);
-      alert(locale === 'ko' ? '발송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' : 'Error sending gift. Please try again later.');
+      const message = error instanceof Error
+        ? error.message
+        : (locale === 'ko' ? '발송에 실패했습니다. 잠시 후 다시 시도해 주세요.' : 'Error sending gift. Please try again later.');
+      setSubmitError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -39,35 +50,41 @@ export default function GiftPage() {
 
   return (
     <main className="min-h-screen relative overflow-hidden flex flex-col items-center pt-24 pb-40 px-6">
-
-      {/* Header */}
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="text-center md:text-left w-full max-w-4xl mx-auto mb-20 border-b border-border-color pb-16 relative z-10"
       >
-        <button onClick={() => window.history.back()} className="flex items-center gap-3 text-lg font-bold text-secondary hover:text-foreground transition-all mb-8 mx-auto md:mx-0">
-          <ArrowLeft className="w-6 h-6" /> {t('common.back')}
+        <button
+          onClick={() => window.history.back()}
+          className="flex items-center gap-3 text-lg font-bold text-secondary hover:text-foreground transition-all mb-8 mx-auto md:mx-0"
+        >
+          <ArrowLeft className="w-6 h-6" />
+          {t('common.back')}
         </button>
+
         <div className="flex flex-col md:flex-row items-center gap-10">
           <div className="w-32 h-32 rounded-4xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-2xl shadow-pink-500/20 transform rotate-3">
             <Gift className="w-16 h-16 text-white" />
           </div>
           <div>
             <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-flex px-4 py-2 rounded-full mb-4 bg-surface border border-border-color">
-              <span className="text-sm font-bold text-pink-500 tracking-widest leading-none uppercase">{locale === 'ko' ? '프리미엄 선물' : 'PREMIUM GIFT'}</span>
+              <span className="text-sm font-bold text-pink-500 tracking-widest leading-none uppercase">
+                {locale === 'ko' ? '프리미엄 선물' : 'PREMIUM GIFT'}
+              </span>
             </motion.div>
             <h1 className="text-5xl md:text-7xl font-black text-foreground italic tracking-tighter uppercase mb-4">
-              {locale === 'ko' ? '운명' : 'Destiny'} <span className="text-pink-500 italic">{locale === 'ko' ? '선물하기' : 'Gift'}</span>
+              {locale === 'ko' ? '행운' : 'Destiny'} <span className="text-pink-500 italic">{locale === 'ko' ? '선물' : 'Gift'}</span>
             </h1>
             <p className="text-xl md:text-2xl text-secondary font-medium italic opacity-70">
-              {locale === 'ko' ? '소중한 인연에게 사주 분석 결과를 타로 카드와 함께 선물하세요.' : 'Gift a comprehensive destiny report to someone special.'}
+              {locale === 'ko'
+                ? '특별한 사람에게 운세 선물을 보내보세요.'
+                : 'Gift a comprehensive destiny report to someone special.'}
             </p>
           </div>
         </div>
       </motion.div>
 
-      {/* Form Container */}
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -89,7 +106,7 @@ export default function GiftPage() {
               <div className="space-y-6">
                 <label className="text-xl font-bold flex items-center gap-4 text-secondary">
                   <span className="w-2 h-8 rounded-full bg-pink-500" />
-                  {locale === 'ko' ? '받는 분 이름' : 'Recipient Name'}
+                  {locale === 'ko' ? '받는 사람 이름' : 'Recipient Name'}
                 </label>
                 <input
                   required
@@ -146,11 +163,17 @@ export default function GiftPage() {
                   />
                 ) : (
                   <>
-                    <span>{locale === 'ko' ? '선물 전송하기' : 'SEND GIFT'}</span>
+                    <span>{locale === 'ko' ? '선물 보내기' : 'SEND GIFT'}</span>
                     <Send className="w-8 h-8 group-hover:translate-x-3 group-hover:-translate-y-3 transition-transform duration-500" />
                   </>
                 )}
               </button>
+
+              {submitError && (
+                <p className="text-sm text-rose-300 bg-rose-500/10 border border-rose-500/30 px-4 py-3 rounded-xl text-center">
+                  {submitError}
+                </p>
+              )}
             </motion.form>
           ) : (
             <motion.div
@@ -163,30 +186,34 @@ export default function GiftPage() {
                 <motion.div
                   initial={{ scale: 0, rotate: -45 }}
                   animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", damping: 12, delay: 0.2 }}
+                  transition={{ type: 'spring', damping: 12, delay: 0.2 }}
                   className="w-24 h-24 bg-emerald-500 rounded-3xl flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.4)]"
                 >
                   <Send className="w-12 h-12 text-white" />
                 </motion.div>
               </div>
               <h3 className="text-4xl md:text-5xl font-black italic tracking-tight text-foreground mb-6 uppercase">
-                {locale === 'ko' ? '우주적 전송 완료' : 'Transmission Complete'}
+                {locale === 'ko' ? '발송 완료' : 'Transmission Complete'}
               </h3>
               <p className="text-2xl text-secondary mb-12 font-medium">
-                {locale === 'ko' ? '소중한 인연에게 선물이 성공적으로 도착했습니다.' : 'The gift has successfully arrived at the designated coordinates.'}
+                {locale === 'ko'
+                  ? '선물이 성공적으로 등록되었습니다.'
+                  : 'The gift has been successfully registered.'}
               </p>
               <button
-                onClick={() => { setSuccess(false); setFormData({ name: '', birthDate: '', email: '' }); }}
+                onClick={() => {
+                  setSuccess(false);
+                  setFormData({ name: '', birthDate: '', email: '' });
+                }}
                 className="w-full py-8 rounded-3xl font-black text-2xl transition-all border-2 border-border-color bg-background text-foreground hover:border-pink-500 hover:text-pink-500 uppercase tracking-widest"
               >
-                {locale === 'ko' ? '다른 인연에게 보내기' : 'Send Another'}
+                {locale === 'ko' ? '다시 보내기' : 'Send Another'}
               </button>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
 
-      {/* Security Footer */}
       <div className="mt-24 flex items-center gap-4 px-8 py-4 rounded-full bg-surface border border-border-color shadow-sm opacity-50 hover:opacity-100 transition-opacity">
         <ShieldCheck className="w-6 h-6 text-emerald-500" />
         <span className="text-sm font-black text-foreground uppercase tracking-widest">Encrypted Destiny Gift Protocol</span>

@@ -23,6 +23,7 @@ function SajuPageContent() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [archetype, setArchetype] = useState<any>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const selectedProfile = profiles.find((item) => item.id === selectedProfileId);
 
   useEffect(() => {
@@ -39,21 +40,23 @@ function SajuPageContent() {
   const handleRun = async () => {
     const selected = profiles.find((item) => item.id === selectedProfileId);
     if (!selected) {
-      alert("사주를 실행할 프로필을 먼저 선택해 주세요.");
+      setNotice("사주를 실행할 프로필을 먼저 선택해 주세요.");
       return;
     }
 
     if (churu < 3) {
-      alert("젤리가 부족합니다. 3젤리가 필요해요.");
+      setNotice("젤리가 부족합니다. 3젤리가 필요해요.");
       return;
     }
 
-    if (!consumeChuru(3)) {
-      alert("젤리가 부족합니다. 3젤리가 필요해요.");
+    const consumed = consumeChuru(3);
+    if (!consumed) {
+      setNotice("젤리 차감에 실패했습니다. 잠시 후 다시 시도해 주세요.");
       return;
     }
 
     setLoading(true);
+    setNotice(null);
     try {
       const analysisResult = await calculateSajuFromBirthdate(
         selected.birthdate,
@@ -136,11 +139,11 @@ function SajuPageContent() {
               </div>
             </div>
 
-            <button
-              onClick={handleRun}
-              disabled={loading}
-              className="w-full py-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xl uppercase tracking-widest shadow-xl hover:shadow-indigo-500/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
-            >
+          <button
+            onClick={handleRun}
+            disabled={loading}
+            className="w-full py-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xl uppercase tracking-widest shadow-xl hover:shadow-indigo-500/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+          >
               {loading ? (
                 <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} className="w-6 h-6 border-2 border-white rounded-full border-t-transparent" />
               ) : (
@@ -148,6 +151,9 @@ function SajuPageContent() {
               )}
               {loading ? "사주 분석 중..." : "3젤리로 사주 실행"}
             </button>
+            {notice && (
+              <p className="text-sm text-center text-rose-300 font-medium">{notice}</p>
+            )}
           </div>
         </section>
 

@@ -33,6 +33,7 @@ export default function MyPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showShop, setShowShop] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [shareMessage, setShareMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
     const userData = getUserFromCookie();
@@ -61,7 +62,11 @@ export default function MyPage() {
     const referralLink = `${window.location.origin}/?ref=${user.id}`;
     const result = await handleShare("초대 링크", `Secret Saju: ${referralLink}`, referralLink);
     if (result === "copied") {
-      alert("초대 링크가 복사되었습니다.");
+      setShareMessage({ type: "success", text: "초대 링크가 복사되었습니다." });
+      setTimeout(() => setShareMessage(null), 2500);
+    } else {
+      setShareMessage({ type: "error", text: "복사에 실패했습니다. 브라우저 권한을 확인해 주세요." });
+      setTimeout(() => setShareMessage(null), 2500);
     }
   };
 
@@ -152,6 +157,13 @@ export default function MyPage() {
               </p>
               <h1 className="text-3xl font-black">{user.nickname}</h1>
               <p className="text-secondary text-sm mt-1">{user.email || "이메일 미등록"}</p>
+              {shareMessage && (
+                <p
+                  className={`mt-2 text-sm font-bold ${shareMessage.type === "success" ? "text-emerald-300" : "text-rose-300"}`}
+                >
+                  {shareMessage.text}
+                </p>
+              )}
               <button
                 onClick={copyReferral}
                 className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-foreground bg-surface border border-border-color px-3 py-2 rounded-xl"

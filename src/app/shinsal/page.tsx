@@ -34,14 +34,22 @@ export default function ShinsalPage() {
   const { churu, consumeChuru } = useWallet();
   const [run, setRun] = useState(false);
   const [selected, setSelected] = useState<ShinSalType | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleRun = () => {
+    setErrorMessage("");
+
     if (churu < 5) {
-      alert("신살 분석은 5젤리가 필요합니다.");
+      setErrorMessage("신살 분석은 5젤리가 필요합니다.");
       return;
     }
 
-    consumeChuru(5);
+    const consumed = consumeChuru(5);
+    if (!consumed) {
+      setErrorMessage("젤리 차감에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      return;
+    }
+
     setRun(true);
     setTimeout(() => setRun(false), 900);
   };
@@ -91,6 +99,9 @@ export default function ShinsalPage() {
             <Sparkles className="inline mr-2 w-4 h-4" />
             {run ? "분석 중..." : "5젤리로 전체 신살 요약 받기"}
           </button>
+          {errorMessage && (
+            <p className="mt-3 text-sm text-center text-rose-300 font-medium">{errorMessage}</p>
+          )}
         </section>
 
         {selected && (
