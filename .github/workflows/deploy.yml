@@ -29,7 +29,6 @@ jobs:
     continue-on-error: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' }}
     timeout-minutes: 25
     env:
-      CI_CHECK_MODE: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' ? 'non-main' : 'main' }}
       RUN_TESTS: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run-tests')) }}
 
     steps:
@@ -96,6 +95,22 @@ jobs:
           name: quality-logs-${{ github.run_id }}-${{ github.run_attempt }}
           path: /tmp/*.log
           retention-days: 7
+
+      - name: Publish quality summary
+        if: always()
+        run: |
+          {
+            echo "## Quality Gate Summary"
+            echo ""
+            echo "- event: \`${{ github.event_name }}\`"
+            echo "- ref: `${{ github.ref_name }}\`"
+            echo "- run-tests: \`${RUN_TESTS}\`"
+            echo ""
+            echo "### logs"
+            echo "- /tmp/tsc.log"
+            echo "- /tmp/lint.log"
+            echo "- /tmp/test.log"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   build:
     name: Build
@@ -193,7 +208,8 @@ jobs:
           tar -czf /tmp/deploy-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}.tgz \
             /tmp/build.log \
             /tmp/render-deploy.log \
-            /tmp/healthcheck.log
+            /tmp/healthcheck.log \
+            --ignore-failed-read || true
 
       - name: Upload deploy diagnostics bundle
         if: always()
