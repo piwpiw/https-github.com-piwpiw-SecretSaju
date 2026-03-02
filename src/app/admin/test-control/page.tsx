@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { PILLAR_CODES, getPillarNameKo } from "@/lib/saju";
@@ -8,6 +8,8 @@ import animalsData from "@/data/animals.json";
 export default function AdminTestControlPage() {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [ageGroup, setAgeGroup] = useState<AgeGroup>("20s");
+    const [copyMessage, setCopyMessage] = useState("");
+    const [isCopying, setIsCopying] = useState(false);
 
     const selectedCode = PILLAR_CODES[selectedIndex];
     const archetype = getArchetypeByCode(selectedCode, ageGroup);
@@ -26,13 +28,29 @@ export default function AdminTestControlPage() {
         );
     }).length;
 
+    const handleCopy = async () => {
+        setIsCopying(true);
+        setCopyMessage("");
+
+        try {
+            await navigator.clipboard.writeText(JSON.stringify(archetype, null, 2));
+            setCopyMessage("선택한 아키타입 JSON이 클립보드에 복사되었습니다.");
+        } catch (error) {
+            console.error(error);
+            setCopyMessage("복사에 실패했습니다. 브라우저 클립보드 권한을 확인해주세요.");
+        } finally {
+            setIsCopying(false);
+            setTimeout(() => setCopyMessage(""), 2000);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white p-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                        🔬 Admin Test Control
+                        Admin Test Control
                     </h1>
                     <p className="text-slate-400">
                         Instant validation dashboard for all 60 Saju archetypes
@@ -67,7 +85,7 @@ export default function AdminTestControlPage() {
                         {/* Pillar Selector */}
                         <div>
                             <label className="block text-sm font-semibold mb-2 text-cyan-400">
-                                일주 선택 (Select Pillar)
+                                도표 선택 (Select Pillar)
                             </label>
                             <select
                                 value={selectedIndex}
@@ -93,7 +111,7 @@ export default function AdminTestControlPage() {
                         {/* Age Group Toggle */}
                         <div>
                             <label className="block text-sm font-semibold mb-2 text-purple-400">
-                                나이대 (Age Group)
+                                연령대 (Age Group)
                             </label>
                             <div className="flex gap-2">
                                 {(["10s", "20s", "30s"] as AgeGroup[]).map((age) => (
@@ -119,7 +137,7 @@ export default function AdminTestControlPage() {
                             disabled={selectedIndex === 0}
                             className="px-4 py-2 bg-slate-800 rounded-lg hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                         >
-                            ← Prev
+                            이전
                         </button>
                         <button
                             onClick={() =>
@@ -128,27 +146,29 @@ export default function AdminTestControlPage() {
                             disabled={selectedIndex === 59}
                             className="px-4 py-2 bg-slate-800 rounded-lg hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                         >
-                            Next →
+                            다음
                         </button>
                         <div className="flex-1" />
                         <button
-                            onClick={() => {
-                                navigator.clipboard.writeText(
-                                    JSON.stringify(archetype, null, 2)
-                                );
-                                alert("Copied archetype data to clipboard!");
-                            }}
+                            onClick={handleCopy}
+                            disabled={isCopying}
                             className="px-4 py-2 bg-cyan-600/20 border border-cyan-500/30 rounded-lg hover:bg-cyan-600/30 transition-all"
                         >
-                            📋 Copy JSON
+                            {isCopying ? "복사 중..." : "Copy JSON"}
                         </button>
                     </div>
+
+                    {copyMessage && (
+                        <div className="mt-3 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-200">
+                            {copyMessage}
+                        </div>
+                    )}
                 </div>
 
                 {/* Result Card Preview */}
                 <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-8">
                     <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                        <span className="text-2xl">🎴</span>
+                        <span className="text-2xl">👑</span>
                         Result Card Preview
                     </h2>
 
@@ -165,7 +185,7 @@ export default function AdminTestControlPage() {
                                         {archetype.animal_name}
                                     </h3>
                                     <div className="text-lg text-slate-300">
-                                        일주: {getPillarNameKo(selectedIndex)}
+                                        궁: {getPillarNameKo(selectedIndex)}
                                     </div>
                                 </div>
                                 <div className="text-6xl">🐾</div>
@@ -195,7 +215,7 @@ export default function AdminTestControlPage() {
                         {/* Age Context */}
                         <div className="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50">
                             <h4 className="text-sm font-semibold text-purple-400 mb-3">
-                                나이대별 컨텍스트 ({ageGroup})
+                                연령대별 훅 ({ageGroup})
                             </h4>
                             <div className="space-y-3">
                                 <div>
@@ -220,19 +240,19 @@ export default function AdminTestControlPage() {
                             <div className="absolute inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center">
                                 <div className="text-center">
                                     <div className="text-4xl mb-3">🔒</div>
-                                    <div className="text-xl font-bold mb-2">19+ 비밀 해금</div>
+                                    <div className="text-xl font-bold mb-2">19+ 콘텐츠 잠금</div>
                                     <div className="text-sm text-slate-400 mb-4">
-                                        실제 사용자: 300원 결제 후 공개
+                                        잠긴 콘텐츠를 열려면 300포인트가 필요합니다.
                                     </div>
                                     <button className="px-6 py-3 bg-gradient-to-r from-pink-500 to-orange-500 rounded-lg font-bold hover:scale-105 transition-transform shadow-lg shadow-pink-500/50">
-                                        해금하기 (테스트)
+                                        잠금 해제하기 (Test)
                                     </button>
                                 </div>
                             </div>
                             <div className="blur-sm">
                                 <div className="text-sm text-slate-500 mb-2">FULL SECRETS</div>
                                 <div className="text-base">
-                                    실제 콘텐츠는 결제 후 공개되는 영역입니다...
+                                    실제 전체 비밀 콘텐츠는 운영 정책상 관리 모드에서만 확인 가능합니다.
                                 </div>
                             </div>
                         </div>
@@ -242,7 +262,7 @@ export default function AdminTestControlPage() {
                 {/* Validation Grid (All 60 at a glance) */}
                 <div className="mt-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
                     <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                        <span>✓</span>
+                        <span>👑</span>
                         All 60 Archetypes - Quick Validation
                     </h2>
                     <div className="grid grid-cols-10 gap-2">
