@@ -111,7 +111,31 @@ export async function getKakaoUser(accessToken: string): Promise<KakaoUser | nul
 /**
  * Get user data from cookie
  */
-export function getUserFromCookie(): { id: number; nickname: string; email?: string } | null {
+export interface UserFromCookie {
+    id: string | number;
+    nickname: string;
+    email?: string;
+    profileImage?: string;
+    auth_provider?: string | null;
+    provider_user_id?: string | null;
+}
+
+function normalizeProviderUserId(value: unknown): string | null {
+    if (value === null || value === undefined || value === '') return null;
+
+    if (typeof value === 'number' || typeof value === 'bigint') {
+        return String(value);
+    }
+
+    if (typeof value === 'string') {
+        const trimmed = value.trim();
+        return trimmed.length > 0 ? trimmed : null;
+    }
+
+    return null;
+}
+
+export function getUserFromCookie(): UserFromCookie | null {
     if (typeof window === 'undefined') return null;
 
     if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
@@ -129,7 +153,25 @@ export function getUserFromCookie(): { id: number; nickname: string; email?: str
     if (!userCookie) return null;
 
     try {
-        return JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
+        const parsed = JSON.parse(decodeURIComponent(userCookie.split('=')[1])) as {
+            id?: string | number;
+            nickname?: string;
+            email?: string;
+            profileImage?: string;
+            profile_image_url?: string;
+            auth_provider?: string | null;
+            provider_user_id?: string | null;
+            providerUserId?: string | null;
+        };
+
+        return {
+            id: parsed.id ?? '',
+            nickname: parsed.nickname ?? 'Guest',
+            email: parsed.email,
+            profileImage: parsed.profileImage ?? parsed.profile_image_url,
+            auth_provider: parsed.auth_provider ?? null,
+            provider_user_id: normalizeProviderUserId(parsed.provider_user_id ?? parsed.providerUserId),
+        };
     } catch {
         return null;
     }
@@ -141,8 +183,57 @@ export function getUserFromCookie(): { id: number; nickname: string; email?: str
 export function clearUserSession() {
     if (typeof window === 'undefined') return;
 
+    if (typeof sessionStorage !== 'undefined') {
+        try {
+            sessionStorage.removeItem('kakao_access_token');
+            sessionStorage.removeItem('kakao_refresh_token');
+            sessionStorage.removeItem('mcp_access_token');
+            sessionStorage.removeItem('mcp_id_token');
+            sessionStorage.removeItem('mcp_code_verifier');
+            sessionStorage.removeItem('mcp_oauth_state');
+        } catch {}
+
+        sessionStorage.removeItem('mcp_code_verifier');
+        sessionStorage.removeItem('mcp_oauth_state');
+    }
+
+    if (typeof localStorage !== 'undefined') {
+        try {
+            localStorage.removeItem('mcp_access_token');
+            localStorage.removeItem('mcp_refresh_token');
+            localStorage.removeItem('mcp_id_token');
+            localStorage.removeItem('mcp_state');
+            localStorage.removeItem('mcp_code_verifier');
+            localStorage.removeItem('kakao_access_token');
+            localStorage.removeItem('kakao_refresh_token');
+        } catch {}
+    }
+
+    const clearCookie = (name: string) => {
+        const base = `${name}=; Max-Age=0; path=/; SameSite=Lax;`;
+        document.cookie = base;
+        document.cookie = `${base} domain=${window.location.hostname};`;
+        document.cookie = `${base} domain=.${window.location.hostname};`;
+        if (window.location.protocol === 'https:') {
+            document.cookie = `${base} Secure;`;
+            document.cookie = `${base} domain=${window.location.hostname}; Secure;`;
+            document.cookie = `${base} domain=.${window.location.hostname}; Secure;`;
+        }
+    };
+
+    clearCookie(STORAGE_KEYS.KAKAO_TOKEN);
+    clearCookie(STORAGE_KEYS.USER_DATA);
+    clearCookie(STORAGE_KEYS.MCP_TOKEN);
+    clearCookie(STORAGE_KEYS.MCP_REFRESH_TOKEN);
+    clearCookie(STORAGE_KEYS.MCP_STATE);
+    clearCookie(STORAGE_KEYS.MCP_CODE_VERIFIER);
+
     document.cookie = `${STORAGE_KEYS.KAKAO_TOKEN}=; Max-Age=0; path=/`;
     document.cookie = `${STORAGE_KEYS.USER_DATA}=; Max-Age=0; path=/`;
+    document.cookie = `${STORAGE_KEYS.MCP_TOKEN}=; Max-Age=0; path=/`;
+    document.cookie = `${STORAGE_KEYS.MCP_REFRESH_TOKEN}=; Max-Age=0; path=/`;
+    document.cookie = `${STORAGE_KEYS.MCP_STATE}=; Max-Age=0; path=/`;
+    document.cookie = `${STORAGE_KEYS.MCP_CODE_VERIFIER}=; Max-Age=0; path=/`;
     logoutKakao();
 }
 

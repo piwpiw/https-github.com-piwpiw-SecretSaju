@@ -11,6 +11,15 @@ import type {
 
 const WALLET_STORAGE_KEY = 'secret_paws_jelly_wallet';
 const UNLOCK_STORAGE_KEY = 'secret_paws_unlocks';
+const ADMIN_STORAGE_KEY = 'secret_paws_mock_admin';
+
+/**
+ * Check if current user is admin (mocked via localStorage)
+ */
+export function isAdminUser(): boolean {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem(ADMIN_STORAGE_KEY) === 'true';
+}
 
 /**
  * Pricing Tiers - Based on Saju-Kid's proven model
@@ -39,6 +48,14 @@ export const PRICING_TIERS: PricingTier[] = [
         label: '프로',
         badge: '최고 가성비',
         popular: true,
+    },
+    {
+        id: 'donation',
+        jellies: 50,
+        bonus: 10,
+        price: 49000,
+        label: '개발자 후원 (VIP)',
+        badge: 'Bohemian VIP',
     },
 ];
 
@@ -153,6 +170,13 @@ export function consumeJelly(
     purpose: string,
     metadata?: Transaction['metadata']
 ): ConsumptionResult {
+    if (isAdminUser()) {
+        return {
+            success: true,
+            remainingBalance: getBalance(),
+        };
+    }
+
     if (amount <= 0) {
         return {
             success: false,
@@ -204,6 +228,7 @@ export function getHistory(limit?: number): Transaction[] {
  * Check if user has sufficient balance
  */
 export function hasSufficientBalance(required: number): boolean {
+    if (isAdminUser()) return true;
     return getBalance() >= required;
 }
 
@@ -228,6 +253,7 @@ function saveUnlockRecords(records: UnlockRecord[]): void {
  * Check if content is unlocked
  */
 export function isUnlocked(profileId: string, sectionId?: string): boolean {
+    if (isAdminUser()) return true;
     const records = getUnlockRecords();
     const record = records.find((r) => r.profileId === profileId);
 

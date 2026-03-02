@@ -1,92 +1,34 @@
 ---
-description: Vitest 테스트 생성 — 함수 단위 테스트를 빠르게 생성
+name: test-gen
+description: 테스트 자동 생성 — 단위/통합/E2E 테스트 매트릭스 기반 생성
 ---
 
-# Test Generator Skill
+# 🧪 Test Generator Skill (Enhanced)
 
-Vitest 기반 단위 테스트를 최소 비용으로 생성.
+프로젝트 무결성을 위한 **Vitest 및 Playwright/Subagent** 기반 테스트를 자동 생성합니다.
 
-## Template
+---
 
-```typescript
-import { describe, it, expect } from 'vitest';
-import { {{FUNCTION}} } from '@/{{MODULE_PATH}}';
+## 🚀 MCP sequence
 
-describe('{{FUNCTION}}', () => {
-  it('정상 입력 시 올바른 결과', () => {
-    const result = {{FUNCTION}}({{NORMAL_INPUT}});
-    expect(result).{{MATCHER}}({{EXPECTED}});
-  });
+1. **LOGIC_READ**: `view_code_item`으로 테스트 대상 로직 정밀 분석
+2. **MOCK_PREP**: `src/lib/supabase.ts` 등 의존 모듈 모킹(Mocking) 전략 수립
+3. **MATRIX_CONFIG**: 테스트 매트릭스(Normal/Edge/Error Case) 정의
+4. **FILE_WRITE**: `src/__tests__/` 또는 지정된 경로에 테스트 코드 생성
+5. **EXECUTION**: `run_command` → `npx vitest run {file}`
 
-  it('경계값 처리', () => {
-    const result = {{FUNCTION}}({{EDGE_INPUT}});
-    expect(result).{{MATCHER}}({{EDGE_EXPECTED}});
-  });
+---
 
-  it('잘못된 입력 시 에러/기본값', () => {
-    expect(() => {{FUNCTION}}({{BAD_INPUT}})).toThrow();
-    // 또는
-    const result = {{FUNCTION}}({{BAD_INPUT}});
-    expect(result).toBeNull();
-  });
-});
-```
+## 📐 Test Matrix Standards
 
-## Project Config
+| 유형 | 대상 | 도구 | 기준 |
+|------|------|------|------|
+| **Unit** | 엔진 함수, 유틸리티 | Vitest | 엣지 케이스 포함 100% 통과 |
+| **Integrated** | API Routes, DB 연동 | Vitest + Supertest | 성공/실패 응답 규격 확인 |
+| **E2E** | 사용자 흐름 (로그인~결제) | Playwright / Browser Subagent | 핵심 퍼널 성공 여부 |
 
-```
-vitest.config.ts → src/__tests__/ 디렉토리
-tsconfig paths: @/ → src/
-```
+---
 
-## Testing Patterns
-
-### 사주 엔진 테스트
-```typescript
-import { calculateSaju } from '@/lib/saju';
-
-describe('calculateSaju', () => {
-  it('2000-01-01 → 기준일 검증', () => {
-    const result = calculateSaju(2000, 1, 1);
-    expect(result).toBeDefined();
-    expect(result.dayPillarIndex).toBeGreaterThanOrEqual(0);
-    expect(result.dayPillarIndex).toBeLessThanOrEqual(59);
-  });
-});
-```
-
-### API Route 테스트
-```typescript
-// fetch mock 사용
-const response = await fetch('/api/recommendations?code=GAP_JA&ageGroup=20s');
-const data = await response.json();
-expect(data.success).toBe(true);
-```
-
-### Validation 테스트
-```typescript
-import { validateBirthInput } from '@/lib/validation';
-
-describe('validateBirthInput', () => {
-  it('미래 날짜 거절', () => {
-    const result = validateBirthInput({ year: 2030, month: 1, day: 1 });
-    expect(result.isValid).toBe(false);
-  });
-});
-```
-
-## Steps
-
-### 1. 대상 함수 확인
-// turbo
-- `view_code_item`으로 함수 시그니처만 확인
-
-### 2. 테스트 생성
-- `write_to_file`로 `src/__tests__/` 에 생성
-
-### 3. 실행
-// turbo
-- `npx vitest run --reporter=verbose 2>&1 | Select-Object -Last 20`
-
-## Cost Rules
-- **예산**: 최대 6 tool calls
+## 🔄 Automation Hook
+- 테스트 생성 및 실패 시 → 즉시 **T7 QA**에 Handoff 하여 **Error Catalog** 등재 요청
+- 엔진 수정 시(`src/core/`) → 자동으로 `scripts/verify_engine.ts` 실행 포함

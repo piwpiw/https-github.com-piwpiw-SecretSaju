@@ -1,14 +1,14 @@
-"use client";
+﻿"use client";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
 const BOOT_LINES = [
-    "사주팔자 엔진을 초기화하고 있습니다...",
-    "음양오행 데이터베이스 연결 완료",
-    "60갑자 아키타입 동기화 중...",
-    "운세 분석 모듈 준비 완료",
-    "당신의 운명을 읽을 준비가 되었습니다",
+    "로딩된 세션 키를 초기화합니다...",
+    "네트워크 경로를 준비합니다.",
+    "60번째 단계까지 안전하게 초기화 중...",
+    "운세 분석 엔진을 부팅합니다.",
+    "메인 화면 진입을 완료합니다.",
 ];
 
 export default function TerminalBoot({ onComplete }: { onComplete: () => void }) {
@@ -21,13 +21,12 @@ export default function TerminalBoot({ onComplete }: { onComplete: () => void })
                 setLineIndex(prev => prev + 1);
             }, 400 + Math.random() * 300);
             return () => clearTimeout(timer);
-        } else {
-            const timer = setTimeout(() => {
-                setIsVisible(false);
-                setTimeout(onComplete, 600);
-            }, 800);
-            return () => clearTimeout(timer);
         }
+        const timer = setTimeout(() => {
+            setIsVisible(false);
+            setTimeout(onComplete, 600);
+        }, 800);
+        return () => clearTimeout(timer);
     }, [lineIndex, onComplete]);
 
     return (
@@ -39,20 +38,18 @@ export default function TerminalBoot({ onComplete }: { onComplete: () => void })
                     className="fixed inset-0 z-[200] bg-[#0f0f1a] flex flex-col items-center justify-center p-8 overflow-hidden"
                 >
                     <div className="max-w-md w-full text-center">
-                        {/* Logo */}
                         <motion.div
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             className="mb-10"
                         >
                             <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg mb-4">
-                                <span className="text-white text-2xl font-bold">사</span>
+                                <span className="text-white text-2xl font-bold">SC</span>
                             </div>
-                            <h1 className="text-2xl font-bold text-white">시크릿사주</h1>
-                            <p className="text-sm text-slate-500 mt-1">사주팔자 정밀 분석</p>
+                            <h1 className="text-2xl font-bold text-white">Secret Saju Terminal</h1>
+                            <p className="text-sm text-slate-500 mt-1">운세 분석 부트스트랩</p>
                         </motion.div>
 
-                        {/* Progress Lines */}
                         <div className="space-y-2 text-left mb-8">
                             {BOOT_LINES.slice(0, lineIndex).map((line, i) => (
                                 <motion.div
@@ -72,15 +69,14 @@ export default function TerminalBoot({ onComplete }: { onComplete: () => void })
                                     className="flex items-center gap-3 text-sm"
                                 >
                                     <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0" />
-                                    <span className="text-slate-500">분석 중...</span>
+                                    <span className="text-slate-500">진행 중...</span>
                                 </motion.div>
                             )}
                         </div>
 
-                        {/* Progress Bar */}
                         <div className="w-full">
                             <div className="flex justify-between text-xs text-slate-600 mb-2">
-                                <span>로딩 중</span>
+                                <span>진행률</span>
                                 <span>{Math.floor((lineIndex / BOOT_LINES.length) * 100)}%</span>
                             </div>
                             <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">

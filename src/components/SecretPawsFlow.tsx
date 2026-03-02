@@ -80,8 +80,22 @@ export function SecretPawsFlow() {
 
       const saju = await calculateSaju(birthDate, gender);
       const archetype = getArchetypeByCode(saju.code, saju.ageGroup);
-      const foods = getFoodRecommendationsByCode(saju.code, saju.ageGroup);
-      const products = getProductRecommendationsByCode(saju.code);
+
+      // Fetch dynamic recommendations from the new DB-driven API
+      let foods = FALLBACK_RESULT.foods;
+      let products = FALLBACK_RESULT.products;
+      let campaigns = [];
+      try {
+        const res = await fetch(`/api/recommendations?code=${saju.code}&ageGroup=${saju.ageGroup}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.foods) foods = data.foods;
+          if (data.products) products = data.products;
+          if (data.campaigns) campaigns = data.campaigns;
+        }
+      } catch (err) {
+        console.warn('Failed to fetch recommendations API:', err);
+      }
 
       setResult({
         code: saju.code,
@@ -92,15 +106,16 @@ export function SecretPawsFlow() {
         displayHook: archetype.displayHook,
         displaySecretPreview: archetype.displaySecretPreview,
         ageGroup: saju.ageGroup as AgeGroup,
-        foods: foods?.length ? foods : FALLBACK_RESULT.foods,
-        products: products?.length ? products : FALLBACK_RESULT.products,
+        foods,
+        products,
+        campaigns,
         elementScores: saju.elementScores,
         elementCounts: saju.elementCounts,
         elementBasicPercentages: saju.elementBasicPercentages,
         fourPillars: saju.fourPillars,
         version: saju.version,
         integrity: saju.integrity
-      });
+      } as any);
     } catch (err) {
       setError("결과를 불러오지 못했어요. 다시 시도해 주세요.");
       console.error("[SecretPawsFlow]", err);
@@ -187,6 +202,7 @@ export function SecretPawsFlow() {
           <RecommendationsSection
             foods={result.foods}
             products={result.products}
+            campaigns={(result as any).campaigns}
             animalName={result.animalName}
           />
           <ShareSection

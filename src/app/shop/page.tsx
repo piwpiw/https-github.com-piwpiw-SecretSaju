@@ -1,169 +1,127 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import {
-    Zap, ArrowLeft, Gem, Check, Crown,
-    CreditCard, ShieldCheck, Sparkles, Star
-} from 'lucide-react';
-import { useLocale } from '@/lib/i18n';
-import JellyBalance from '@/components/shop/JellyBalance';
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Bell, CircleUserRound, MessageSquareText, ShoppingCart } from "lucide-react";
 
-const JELLY_PACKS = [
-    { id: '10', count: 10, price: '₩3,300', bonus: '0', badge: '', color: 'from-slate-400 to-indigo-500' },
-    { id: '35', count: 35, price: '₩9,900', bonus: '5', badge: 'BEST VALUE', color: 'from-amber-400 to-orange-500' },
-    { id: '120', count: 120, price: '₩29,900', bonus: '20', badge: 'VIP CHOICE', color: 'from-purple-500 to-pink-600' },
-];
-
-const BENEFITS = [
-    '프리미엄 사주 노드 평생 소장',
-    '12운성 & 십신 딥 분석 해제',
-    '신년운세 & 궁합 리서치 무제한 접근',
-    '디지털 부적 고화질 다운로드 권한',
-];
+function ProductCard({ title, price }: { title: string; price: string }) {
+  return (
+    <div className="w-[31%] min-w-[31%]">
+      <div className="aspect-[0.9] rounded-lg bg-gradient-to-br from-[#F4E2D8] to-[#F8F0EA] border border-black/5" />
+      <p className="mt-2 text-[11px] leading-tight h-8 overflow-hidden">{title}</p>
+      <p className="mt-1 text-sm font-bold">{price}</p>
+      <p className="text-[11px] text-black/50">★ 4.8 (19)</p>
+    </div>
+  );
+}
 
 export default function ShopPage() {
-    const router = useRouter();
-    const { locale } = useLocale();
-    const [selectedPack, setSelectedPack] = useState<string>('35');
+  const router = useRouter();
 
-    const handlePurchase = (packId: string) => {
-        // In a real app, this would trigger Toss Payments
-        alert(locale === 'ko' ? '토스페이먼츠 결제 모듈로 연결됩니다.' : 'Connecting to payment gateway...');
-    };
+  return (
+    <main className="min-h-[100dvh] bg-[#ECECEC] text-[#111]">
+      <div className="mx-auto w-full max-w-md bg-[#F4F4F4] min-h-[100dvh] border-x border-black/5">
+        <header className="h-14 px-4 flex items-center border-b border-black/5 bg-white/70">
+          <button onClick={() => router.back()} className="p-1 mr-2">
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <p className="font-bold">점신몰</p>
+        </header>
 
-    return (
-        <main className="min-h-screen bg-[#050505] text-foreground relative overflow-hidden pb-40">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.1)_0%,transparent_50%)]" />
-            <div className="absolute top-1/4 -right-20 w-[500px] h-[500px] bg-purple-600/5 rounded-full blur-[120px] pointer-events-none" />
+        <section className="px-8 pt-10 text-center">
+          <h1 className="text-4xl font-black leading-tight">
+            2026 행운을 더해줄
+            <br />
+            행운 아이템 집합소!
+          </h1>
+          <p className="mt-4 text-base text-[#7A8395] leading-relaxed">
+            점신몰에서 당신의 일상에 특별한 에너지를
+            <br />
+            더해줄 아이템을 구매해 보세요!
+          </p>
+        </section>
 
-            <div className="max-w-5xl mx-auto px-6 py-12 relative z-10">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-16">
-                    <button
-                        onClick={() => router.back()}
-                        className="flex items-center gap-3 text-slate-500 hover:text-white transition-all group"
-                    >
-                        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                        <span className="text-xs font-black tracking-widest uppercase italic">BACK_TRACK</span>
-                    </button>
-                    <JellyBalance />
-                </div>
-
-                {/* Hero Section */}
-                <div className="text-center mb-20">
-                    <motion.div
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        className="inline-block p-4 bg-amber-500/10 border border-amber-500/20 rounded-[2rem] mb-8"
-                    >
-                        <Gem className="w-12 h-12 text-amber-400 shadow-[0_0_30px_rgba(251,191,36,0.3)]" />
-                    </motion.div>
-                    <h1 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter uppercase leading-[0.9] mb-6">
-                        젤리 <span className="text-amber-400">쇼룸</span>
-                    </h1>
-                    <p className="text-slate-400 text-lg font-medium italic opacity-70 max-w-xl mx-auto">
-                        당신의 운명 데이터를 해독하기 위한<br />
-                        가장 강력한 통화(Currency)를 충전하세요.
-                    </p>
-                </div>
-
-                {/* Pricing Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-                    {JELLY_PACKS.map((pack) => (
-                        <motion.div
-                            key={pack.id}
-                            whileHover={{ y: -10 }}
-                            onClick={() => setSelectedPack(pack.id)}
-                            className={`relative bg-surface p-10 rounded-[3.5rem] border-2 transition-all cursor-pointer overflow-hidden group ${selectedPack === pack.id ? 'border-amber-400 shadow-2xl shadow-amber-400/10' : 'border-white/5 hover:border-white/20'
-                                }`}
-                        >
-                            <div className={`absolute top-0 right-0 p-8 opacity-5 group-hover:scale-125 transition-transform ${pack.color}`}>
-                                <Crown className="w-40 h-40" />
-                            </div>
-
-                            {pack.badge && (
-                                <div className="absolute top-6 right-6 px-4 py-1.5 bg-amber-400 text-black text-[10px] font-black rounded-full uppercase tracking-widest animate-pulse">
-                                    {pack.badge}
-                                </div>
-                            )}
-
-                            <div className="relative z-10 flex flex-col items-center text-center">
-                                <div className={`w-16 h-16 rounded-3xl bg-gradient-to-br ${pack.color} flex items-center justify-center mb-10 shadow-xl shadow-indigo-500/20`}>
-                                    <Gem className="w-8 h-8 text-white" />
-                                </div>
-
-                                <h3 className="text-4xl font-black text-white italic tracking-tighter uppercase mb-2">
-                                    {pack.count} <span className="text-lg not-italic opacity-50 text-slate-400">JELLY</span>
-                                </h3>
-                                {pack.bonus !== '0' && (
-                                    <p className="text-amber-400 text-sm font-black tracking-widest uppercase mb-6">+ {pack.bonus} BONUS JELLY</p>
-                                )}
-
-                                <div className="w-full h-[1px] bg-white/5 my-8" />
-
-                                <p className="text-3xl font-black text-white italic mb-10">{pack.price}</p>
-
-                                <button
-                                    onClick={() => handlePurchase(pack.id)}
-                                    className={`w-full py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all ${selectedPack === pack.id
-                                            ? 'bg-amber-400 text-black shadow-xl shadow-amber-400/20 active:scale-95'
-                                            : 'bg-white/5 text-slate-400 hover:bg-white/10'
-                                        }`}
-                                >
-                                    GET JELLY_
-                                </button>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-
-                {/* Benefits Section */}
-                <div className="bg-surface rounded-5xl border border-white/5 p-12 md:p-16 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_100%,rgba(251,191,36,0.05)_0%,transparent_50%)]" />
-
-                    <div className="relative z-10 flex flex-col md:flex-row gap-16 items-center">
-                        <div className="flex-1 space-y-8">
-                            <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter">프리미엄 회원 혜택</h2>
-                            <div className="space-y-4">
-                                {BENEFITS.map((benefit, i) => (
-                                    <div key={i} className="flex items-center gap-4 text-slate-400 font-bold italic">
-                                        <div className="w-6 h-6 rounded-full bg-amber-400/20 flex items-center justify-center border border-amber-400/30">
-                                            <Check className="w-3 h-3 text-amber-400" />
-                                        </div>
-                                        {benefit}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="flex-1 w-full p-10 bg-black/40 border border-white/10 rounded-4xl flex flex-col items-center text-center gap-6">
-                            <Star className="w-12 h-12 text-amber-400 animate-spin-slow" />
-                            <h4 className="text-xl font-black text-white italic uppercase">올데이 패스 (7일)</h4>
-                            <p className="text-slate-500 font-medium">일주간 모든 사주 콘텐츠를 젤리 소모 없이 열람할 수 있는 자유이용권</p>
-                            <p className="text-3xl font-black text-amber-400 italic">₩14,900</p>
-                            <button className="px-10 py-5 bg-white text-black font-black text-sm rounded-2xl uppercase tracking-widest hover:scale-105 transition-all">
-                                ALL_ACCESS_PASS
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Footer Security */}
-                <div className="mt-24 flex flex-col items-center gap-8 opacity-40">
-                    <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-2">
-                            <CreditCard className="w-5 h-5" /> <span className="text-[10px] font-black uppercase tracking-widest">Secure Payments</span>
-                        </div>
-                        <div className="w-[1px] h-4 bg-white/20" />
-                        <div className="flex items-center gap-2">
-                            <ShieldCheck className="w-5 h-5" /> <span className="text-[10px] font-black uppercase tracking-widest">Data Protection</span>
-                        </div>
-                    </div>
-                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">Transaction Protocol v2.1 Verified</p>
-                </div>
+        <section className="px-5 mt-8">
+          <div className="rounded-[34px] bg-white p-4 border border-black/5 shadow-[0_20px_35px_rgba(0,0,0,0.04)]">
+            <div className="h-8 flex items-center justify-between text-[11px] text-black/50 px-1">
+              <p>서울 · 흐림 · 3°C</p>
+              <div className="flex items-center gap-3">
+                <Bell className="w-4 h-4" />
+                <CircleUserRound className="w-4 h-4" />
+              </div>
             </div>
-        </main>
-    );
+
+            <div className="flex items-center justify-between mt-2">
+              <p className="text-3xl font-bold">점신몰</p>
+              <div className="flex items-center gap-3">
+                <MessageSquareText className="w-4 h-4" />
+                <ShoppingCart className="w-4 h-4" />
+              </div>
+            </div>
+
+            <div className="mt-4 flex justify-between gap-2">
+              <ProductCard title="[청사유연구봉부] 푸른뱀의 기운을 담은 참전운 부적" price="14,900원" />
+              <ProductCard title="[재회부] 헤어진 사람과 다시 관계를 회복하는 부적" price="14,900원" />
+              <ProductCard title="[재물부] 재물이 모이고 돈이 붙는 재운 부적" price="14,900원" />
+            </div>
+
+            <div className="mt-6 h-2 bg-[#F2EFFA] rounded-full" />
+
+            <div className="mt-5">
+              <p className="text-3xl font-bold">실시간 BEST</p>
+              <div className="mt-4 space-y-3">
+                {[1, 2, 3].map((rank) => (
+                  <div key={rank} className="flex gap-3 rounded-xl border border-black/5 p-2">
+                    <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-[#A7D8FF] to-[#E8F4FF] relative">
+                      <span className="absolute -top-2 -left-2 w-5 h-5 rounded-md bg-[#36C5E5] text-white text-[10px] flex items-center justify-center font-bold">
+                        {rank}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[12px] leading-snug">[만사형통부] 모든 일이 뜻하는 대로 이루어지길 기원</p>
+                      <p className="text-xl font-bold mt-1">14,900원</p>
+                      <p className="text-[11px] text-black/50">★ 4.8 (191)</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="px-7 pt-14 text-center">
+          <h2 className="text-5xl font-black leading-tight">
+            행운이 부족할 땐?
+            <br />
+            점신에서 채워요!
+          </h2>
+          <p className="mt-5 text-[25px] text-[#8B95A7]">지금 설치하고 더 많은 행운을 만나보세요!</p>
+
+          <div className="mt-10 mx-auto w-[260px] h-[260px] rounded-[56px] bg-white border border-black/5 shadow-[0_30px_60px_rgba(0,0,0,0.05)] relative flex items-center justify-center">
+            <div className="text-7xl font-black">점신</div>
+            <div className="absolute -top-3 left-8 w-14 h-14 rounded-2xl bg-[#F1EA43]" />
+            <div className="absolute right-8 bottom-10 w-12 h-12 rounded-full bg-white/80 border border-black/10" />
+          </div>
+        </section>
+
+        <section className="px-5 pt-12 pb-28">
+          <div className="flex gap-3">
+            <button className="flex-1 h-14 rounded-2xl bg-[#F1EA43] text-xl font-bold">지금 설치하기</button>
+            <button className="w-28 h-14 rounded-2xl bg-[#5B8EF6] text-white font-bold">제휴 문의</button>
+          </div>
+
+          <div className="flex justify-end mt-4">
+            <button className="h-10 px-5 rounded-full bg-black text-white text-base font-semibold">App 설치</button>
+          </div>
+        </section>
+
+        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md h-16 bg-white border-t border-black/10 grid grid-cols-5 text-[11px]">
+          {["점신", "2026년 운세", "타로", "상담", "점신몰"].map((label) => (
+            <div key={label} className="flex items-center justify-center font-semibold">
+              {label}
+            </div>
+          ))}
+        </nav>
+      </div>
+    </main>
+  );
 }

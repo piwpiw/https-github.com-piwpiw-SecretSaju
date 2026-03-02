@@ -1,100 +1,73 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, Smartphone, X } from "lucide-react";
-import { useEffect } from "react";
+import { X, Smartphone, Download, QrCode, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface AppOnlyModalProps {
     isOpen: boolean;
     onClose: () => void;
-    title?: string;
+    title: string;
 }
 
-export function AppOnlyModal({ isOpen, onClose, title = "앱 전용 기능" }: AppOnlyModalProps) {
-    // Prevent scrolling when modal is open
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "unset";
-        }
-        return () => {
-            document.body.style.overflow = "unset";
-        }
-    }, [isOpen]);
-
+export default function AppOnlyModal({ isOpen, onClose, title }: AppOnlyModalProps) {
     return (
         <AnimatePresence>
             {isOpen && (
                 <>
-                    {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
+                        className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[200]"
                     />
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 z-[201] shadow-2xl overflow-hidden"
+                    >
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl -mr-20 -mt-20" />
 
-                    {/* Modal Content */}
-                    <div className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                            transition={{ type: "spring", bounce: 0.3, duration: 0.5 }}
-                            className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden pointer-events-auto border border-slate-100 dark:border-slate-800"
-                        >
-                            {/* Close Button */}
-                            <div className="absolute top-4 right-4 z-10">
-                                <button
-                                    onClick={onClose}
-                                    className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-slate-500"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
+                        <button onClick={onClose} className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors">
+                            <X className="w-6 h-6" />
+                        </button>
+
+                        <div className="text-center space-y-6 relative z-10">
+                            <div className="w-20 h-20 bg-indigo-500/10 rounded-3xl flex items-center justify-center mx-auto border border-indigo-500/20 shadow-inner">
+                                <Smartphone className="w-10 h-10 text-indigo-400" />
                             </div>
 
-                            {/* Graphic/Icon Area */}
-                            <div className="pt-10 pb-6 px-6 bg-gradient-to-b from-red-50 to-white dark:from-red-950/20 dark:to-slate-900 flex flex-col items-center">
-                                <div className="relative mb-6">
-                                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-lg shadow-red-500/20 rotate-3">
-                                        <Smartphone className="w-10 h-10 text-white" />
-                                    </div>
-                                    <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center border-2 border-white dark:border-slate-900 shadow-md">
-                                        <Lock className="w-4 h-4 text-white" />
-                                    </div>
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-[10px] font-black uppercase tracking-widest mb-3">
+                                    <Sparkles className="w-3 h-3" /> App Exclusive
                                 </div>
-
-                                <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2 text-center">
-                                    이 메뉴는 앱에서만<br />보실 수 있어요!
+                                <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase mb-2">
+                                    [{title}]<br />스토어에서 만나요!
                                 </h3>
-                                <p className="text-sm text-slate-500 dark:text-slate-400 text-center leading-relaxed px-4">
-                                    선택하신 <span className="font-bold text-red-500">&apos;{title}&apos;</span> 기능은<br />더 빠른 모바일 앱 환경에서 제공됩니다.
+                                <p className="text-sm text-slate-500 font-medium leading-relaxed">
+                                    이 기능은 점신 앱 전용 프리미엄 서비스입니다.<br />앱스토어에서 다운로드 후 즉시 이용 가능합니다.
                                 </p>
                             </div>
 
-                            {/* CTA Buttons */}
-                            <div className="p-6 bg-slate-50 dark:bg-slate-900/50 flex flex-col gap-3">
-                                <button
-                                    className="w-full py-4 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-md shadow-red-600/20 transition-all active:scale-[0.98]"
-                                    onClick={() => {
-                                        // TODO: Replace with actual App Store intent link
-                                        alert("시크릿 사주 앱 다운로드 페이지로 이동합니다.");
-                                        onClose();
-                                    }}
-                                >
-                                    시크릿 사주 앱 무료로 설치하기
+                            <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 flex flex-col items-center gap-4">
+                                <div className="bg-white p-2 rounded-xl shadow-lg">
+                                    <QrCode className="w-24 h-24 text-slate-900" />
+                                </div>
+                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Scan to Install</p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <button className="flex items-center justify-center gap-2 py-4 bg-white text-slate-900 rounded-2xl text-xs font-black transition-all hover:bg-slate-200">
+                                    <Download className="w-4 h-4" /> App Store
                                 </button>
-                                <button
-                                    className="w-full py-4 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold transition-all"
-                                    onClick={onClose}
-                                >
-                                    나중에 할게요
+                                <button className="flex items-center justify-center gap-2 py-4 bg-slate-800 text-white rounded-2xl text-xs font-black transition-all hover:bg-slate-700">
+                                    <Download className="w-4 h-4" /> Play Store
                                 </button>
                             </div>
-                        </motion.div>
-                    </div>
+                        </div>
+                    </motion.div>
                 </>
             )}
         </AnimatePresence>

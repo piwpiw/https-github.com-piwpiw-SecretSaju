@@ -1,28 +1,81 @@
 ---
-description: [문서 기반 AI 협업 사이클 (AI Collaboration Methodology)]
+description: 문서 기반 AI 협업 사이클 — Context Engineering 기반 고도화 방법론
 ---
 
-# 🌀 AI Collaboration Cycle (문서 기반 AI 협업 방법론)
+# 🌀 AI Collaboration Cycle
 
-본 프로젝트는 AI 에이전트 다중 협업을 극대화하기 위해 다음과 같은 5단계 개발 방법론을 엄격하게 준수합니다.
+본 프로젝트는 **Context Engineering**을 핵심으로 한 문서 기반 AI 협업 방법론을 엄격히 준수합니다.
+문서가 곧 에이전트의 컨텍스트이자 진실의 원천(Source of Truth)입니다.
 
-## 1. 개발방법론 : 문서 기반 AI 협업 사이클
-모든 개발의 시작과 끝은 코드가 아닌 문서(Documentation)에 기록되어야 합니다. 문서가 곧 에이전트의 컨텍스트이자 진실의 원천(Source of Truth)입니다.
+---
 
-## 2. 문서화 > 설계 먼저 > AI 코드 생성 > 자동 동기화
-- **문서화(Documentation)**: 요구사항 발생 시 `MASTER_PRD.md` 또는 `task.md` 에 기록.
-- **설계 먼저(Design First)**: `implementation_plan.md` 및 `UI_UX_DESIGN_SPEC.md`로 화면과 컴포넌트를 설계하고 사용자(USER) 승인을 받음.
-- **AI 코드 생성**: 설계 기반으로 코딩 (`write_to_file`, `replace_file_content`).
-- **자동 동기화**: `npm run build` 및 코드 완료 후 문서(task.md) 체크리스트 즉각 동기화.
+## 1. Context Engineering First (컨텍스트 우선)
 
-## 3. 품질검증 > Zero Script QA (로그기반 자동분석) > 중복이슈 원천차단
-- 코딩이 끝난 후, 발생 가능한 에러를 런타임 이전에 모니터링할 수 있는 **Zero Script QA** 시스템을 가동합니다.
-- `npm run lint`, `tsc`, `next build` 과정의 로그를 자동 분석하고, 오류 발견 시 원인을 `ERROR_CATALOG.md`에 등재하여 동일한 이슈가 다시 발생하지 않도록 원천 차단합니다.
+모든 작업의 출발점은 `CONTEXT_ENGINE.md`입니다:
+- 에이전트는 `CONTEXT_ENGINE.md`를 **신선한 상태로 유지**할 책임이 있습니다.
+- 모든 중요한 결정, 에러 해결, Phase 변경은 즉시 반영합니다.
+- 낡은 컨텍스트는 에이전트 환각(Hallucination)의 주된 원인입니다.
 
-## 4. 지식공유 > 구조화된 트리 구조로 빠른 인덱싱 및 업데이트
-- 프로젝트의 모든 지식은 `docs/`, `.agent/workflows/` 등의 디렉터리에 트리 구조로 명확히 분리합니다.
-- 에이전트는 파일 브라우징(`list_dir`, `grep_search`)을 통해 필요한 문맥을 1초 이내에 빠르게 가져와 컨텍스트로 삼습니다.
+---
 
-## 5. 온보딩 > 마이크로 타임박싱 (10분 단위) 작업 및 프로세스 개선 업데이트
-- 매우 긴급하고 고도화된 작업을 수행하므로, 작업을 **10분 단위 마이크로 타임박스(Timebox)** 로 분할하여 수행합니다.
-- 각 단위 작업이 끝날 때마다, 수행 과정에서 겪은 비효율 또는 개선점을 `architecture.md` 또는 이 워크플로우 문서에 다시 업데이트(자가 발전)합니다.
+## 2. Document → Design → Code → Sync (개발 사이클)
+
+```
+1. 문서화(Documentation)
+   → 요구사항 발생 시 MASTER_PRD.md 또는 task.md 기록
+
+2. 설계 먼저(Design First)
+   → implementation_plan.md 작성 → 유저 승인 수령
+
+3. AI 코드 생성
+   → 설계 기반 코딩 (write_to_file, replace_file_content)
+   → 항상 팀 Scope 내에서만 작업
+
+4. 즉시 동기화(Immediate Sync)
+   → 구현 완료 후 CONTEXT_ENGINE.md 업데이트 (Phase, File Map, Error Catalog)
+```
+
+---
+
+## 3. Zero Script QA (로그 기반 자동 분석)
+
+```
+- 코딩 완료 후 npm run qa 실행
+- 에러 로그 → Error Catalog 등재 (재발 원천 차단)
+- 동일 에러 2회 반복 → Failure Escalation Protocol 발동
+```
+
+---
+
+## 4. Knowledge Tree (구조화된 지식 관리)
+
+```
+.agent/
+├── CONTEXT_ENGINE.md     ← 살아있는 프로젝트 상태 (Always Fresh)
+├── AGENT_PROTOCOLS.md    ← 에이전트 행동 규약 (Stable)
+├── AGENT_SYSTEM.md       ← 아키텍처 허브 (Version-controlled)
+├── teams/                ← 팀별 전문 지식 (Independent)
+├── workflows/            ← 반복 작업 자동화 (Reusable)
+└── skills/               ← 단일 실행 모듈 (Atomic)
+
+docs/
+├── MASTER_PRD.md         ← 비즈니스 요구사항 (T1 관리)
+└── ERROR_CATALOG.md      ← 상세 에러 해결법 (T7 관리)
+```
+
+---
+
+## 5. 마이크로 타임박싱 (10분 단위 작업)
+
+- 작업을 **10분 단위 마이크로 태스크**로 분할
+- 각 단위 완료 시 Context Engine 즉시 업데이트
+- 비효율 발견 시 해당 워크플로우 파일(이 문서) 자가 업데이트
+- `notify_user`로 진행 상황 주기적 보고
+
+---
+
+## 6. Handoff Protocol (팀 간 지식 전달)
+
+팀 간 이관 시 `AGENT_PROTOCOLS.md` Handoff Schema 필수 준수:
+- 구두(텍스트) 설명 → JSON 포맷으로 형식화
+- Handoff 없는 팀 전환 금지

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,6 +18,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const [email, setEmail] = useState('');
     const [emailMessage, setEmailMessage] = useState('');
     const [emailError, setEmailError] = useState('');
+    const isOtherLoading = (provider: string): boolean => !!isLoading && isLoading !== provider;
 
     const handleGoogleLogin = async () => {
         setIsLoading('google');
@@ -34,8 +35,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
     const handleKakaoLogin = async () => {
         setIsLoading('kakao');
-        // If Supabase Kakao is configured, you'd use supabase.auth.signInWithOAuth.
-        // But to maintain exact current behavior (mock mode), we use existing logic:
         loginWithKakao();
         setTimeout(() => setIsLoading(null), 2000);
     };
@@ -43,8 +42,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const handleNaverLogin = async () => {
         setIsLoading('naver');
         try {
-            // NOTE: Naver OAuth is not always configured in Supabase providers.
-            // Keep behavior consistent with existing setup by preserving current fallback.
             await supabase.auth.signInWithOAuth({
                 provider: 'notion',
                 options: { redirectTo: `${window.location.origin}/auth/callback` }
@@ -67,8 +64,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         if (typeof supabase?.auth?.signInWithOtp !== 'function') {
             setEmailError(
                 locale === 'ko'
-                    ? '현재 이메일 로그인 기능을 사용할 수 없습니다. 잠시 후 다시 시도해 주세요.'
-                    : 'Email login is not available right now. Please try again later.'
+                    ? '현재 이메일 로그인 기능을 사용할 수 없습니다.'
+                    : 'Email login is not available right now.'
             );
             return;
         }
@@ -84,8 +81,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 console.error(error);
                 setEmailError(
                     locale === 'ko'
-                        ? '이메일 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.'
-                        : 'Failed to send email. Please try again later.'
+                        ? '이메일 전송에 실패했습니다.'
+                        : 'Failed to send email.'
                 );
             } else {
                 setEmailMessage(
@@ -137,7 +134,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                     className="inline-flex px-4 py-2 rounded-full mb-6 bg-background border border-border-color"
                                 >
                                     <span className="text-sm font-bold text-primary tracking-widest uppercase">
-                                        {locale === 'ko' ? '운명 접근' : 'Destiny Access'}
+                                        {locale === 'ko' ? '운명 접속' : 'Destiny Access'}
                                     </span>
                                 </motion.div>
                                 <h2 className="text-3xl font-black italic tracking-tighter uppercase mb-4 text-foreground">
@@ -154,14 +151,16 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                 <button
                                     onClick={handleKakaoLogin}
                                     disabled={!!isLoading}
-                                    className="w-full flex items-center justify-center gap-4 bg-[#FEE500] hover:bg-[#FDD800] text-black font-black text-lg py-5 rounded-2xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 disabled:opacity-50"
+                                    className={`w-full flex items-center justify-center gap-4 text-black font-black text-lg py-5 rounded-2xl transition-all ${isOtherLoading('kakao') ? 'bg-[#F5B800]' : 'bg-[#FEE500] hover:bg-[#FDD800]'} ${isLoading ? 'shadow-md' : 'shadow-lg hover:shadow-xl hover:-translate-y-1'} disabled:opacity-60`}
                                 >
                                     {isLoading === 'kakao' ? <Loader2 className="w-6 h-6 animate-spin" /> : (
                                         <>
                                             <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M10 0C4.477 0 0 3.64 0 8.125c0 2.886 1.948 5.413 4.861 6.85l-1.042 3.853c-.083.306.224.556.505.411l4.508-2.327c.387.03.779.046 1.168.046 5.523 0 10-3.64 10-8.125S15.523 0 10 0z" fill="#000000" />
                                             </svg>
-                                            {locale === 'ko' ? '카카오로 계속하기' : 'Continue with Kakao'}
+                                            {isOtherLoading('kakao')
+                                                ? locale === 'ko' ? '다른 로그인 진행 중' : 'Another login is in progress'
+                                                : locale === 'ko' ? '카카오로 계속하기' : 'Continue with Kakao'}
                                         </>
                                     )}
                                 </button>
@@ -169,7 +168,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                 <button
                                     onClick={handleGoogleLogin}
                                     disabled={!!isLoading}
-                                    className="w-full flex items-center justify-center gap-4 bg-white hover:bg-neutral-100 text-black font-black text-lg py-5 rounded-2xl border border-neutral-200 transition-all shadow-sm hover:shadow-md hover:-translate-y-1 disabled:opacity-50"
+                                    className={`w-full flex items-center justify-center gap-4 bg-white text-black font-black text-lg py-5 rounded-2xl border border-neutral-200 transition-all ${isOtherLoading('google') ? 'bg-neutral-200 border-neutral-300' : 'hover:bg-neutral-100'} ${isLoading ? 'shadow-sm' : 'shadow-sm hover:shadow-md hover:-translate-y-1'} disabled:opacity-60`}
                                 >
                                     {isLoading === 'google' ? <Loader2 className="w-6 h-6 animate-spin" /> : (
                                         <>
@@ -179,7 +178,9 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                                                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                                             </svg>
-                                            {locale === 'ko' ? '구글로 계속하기' : 'Continue with Google'}
+                                            {isOtherLoading('google')
+                                                ? locale === 'ko' ? '다른 로그인 진행 중' : 'Another login is in progress'
+                                                : locale === 'ko' ? '구글로 계속하기' : 'Continue with Google'}
                                         </>
                                     )}
                                 </button>
@@ -187,14 +188,16 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                 <button
                                     onClick={handleNaverLogin}
                                     disabled={!!isLoading}
-                                    className="w-full flex items-center justify-center gap-4 bg-[#03C75A] hover:bg-[#02b350] text-white font-black text-lg py-5 rounded-2xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 disabled:opacity-50"
+                                    className={`w-full flex items-center justify-center gap-4 text-white font-black text-lg py-5 rounded-2xl transition-all ${isOtherLoading('naver') ? 'bg-[#028E45]' : 'bg-[#03C75A] hover:bg-[#02b350]'} ${isLoading ? 'shadow-sm' : 'shadow-sm hover:shadow-md hover:-translate-y-1'} disabled:opacity-60`}
                                 >
                                     {isLoading === 'naver' ? <Loader2 className="w-6 h-6 animate-spin" /> : (
                                         <>
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z" fill="white" />
                                             </svg>
-                                            {locale === 'ko' ? '네이버로 계속하기' : 'Continue with Naver'}
+                                            {isOtherLoading('naver')
+                                                ? locale === 'ko' ? '다른 로그인 진행 중' : 'Another login is in progress'
+                                                : locale === 'ko' ? '네이버로 계속하기' : 'Continue with Naver'}
                                         </>
                                     )}
                                 </button>
@@ -222,15 +225,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                     <button
                                         onClick={handleEmailLogin}
                                         disabled={!!isLoading}
-                                        className="w-full flex items-center justify-center gap-3 bg-background border border-border-color text-foreground font-bold text-sm py-4 rounded-xl hover:bg-surface transition-all disabled:opacity-50"
+                                        className="w-full flex items-center justify-center gap-3 bg-background border border-border-color text-foreground font-bold text-sm py-4 rounded-xl transition-all hover:bg-surface disabled:opacity-60"
                                     >
                                         <Mail className="w-5 h-5 opacity-70" />
-                                        {isLoading === 'email'
-                                            ? <Loader2 className="w-5 h-5 animate-spin" />
-                                            : locale === 'ko'
-                                                ? '이메일로 로그인'
-                                                : 'Continue with Email'
-                                        }
+                                        {isLoading === 'email' ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                                            isOtherLoading('email')
+                                                ? locale === 'ko' ? '다른 로그인 진행 중' : 'Another login is in progress'
+                                                : locale === 'ko' ? '이메일로 계속하기' : 'Continue with Email'
+                                        )}
                                     </button>
                                 </div>
                             </div>

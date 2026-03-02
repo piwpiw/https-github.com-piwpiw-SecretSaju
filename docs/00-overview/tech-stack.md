@@ -1,4 +1,4 @@
-# Tech Stack - Secret Saju
+﻿# Tech Stack - Secret Saju
 
 **Complete Technology Stack Overview**
 
@@ -218,6 +218,12 @@ GitHub Push → Vercel Build → Type Check → Lint → Test → Deploy
 - `dev`: Staging (auto-deploy to dev.secretsaju.com)
 - `feat/*`: Preview URLs (auto-generated)
 
+### Operational SOT for this stack
+
+- Deployment process SOT: `../01-team/engineering/deployment-guide.md`
+- Testing process SOT: `../01-team/engineering/testing-guide.md`
+- If details differ in other guides, follow SOT and check `Last Updated`/`Next Review` before applying.
+
 ### Performance Monitoring
 - **Vercel Analytics**: Speed insights, Web Vitals
 - **Google Analytics**: User behavior
@@ -252,7 +258,7 @@ GitHub Push → Vercel Build → Type Check → Lint → Test → Deploy
 }
 ```
 
-**Full List**: [`package.json`](../../../package.json)
+**Full List**: [`package.json`](../../package.json)
 
 ---
 
@@ -371,3 +377,5 @@ GitHub Push → Vercel Build → Type Check → Lint → Test → Deploy
 **Document Owner**: CTO  
 **Last Updated**: 2026-01-31  
 **Next Review**: Quarterly (or when major dependency updates)
+
+

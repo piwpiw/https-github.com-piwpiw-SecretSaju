@@ -146,6 +146,7 @@ export interface SajuProfileResponse {
     birthTime: string | null;  // HH:mm
     isTimeUnknown: boolean;
     calendarType: CalendarType;
+    isLeapMonth: boolean;
     gender: Gender;
     createdAt: string;  // ISO
     updatedAt: string;  // ISO
@@ -216,6 +217,7 @@ export class SajuProfileMapper {
             birthTime: birthTimeStr,
             isTimeUnknown: profile.isTimeUnknown,
             calendarType: profile.calendarType,
+            isLeapMonth: profile.isLeapMonth,
             gender: profile.gender,
             createdAt: profile.createdAt.toISOString(),
             updatedAt: profile.updatedAt.toISOString(),

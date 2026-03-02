@@ -1,10 +1,10 @@
 import { getSupabaseClient } from '@/lib/supabase';
 import { SajuProfile, SajuProfileDTO, SajuProfileMapper, CreateSajuProfileRequest } from '@/types/schema';
-import { STORAGE_KEYS } from '@/config';
+import { readProfileStoragePayload, writeProfileStoragePayload } from '@/lib/profile-storage';
 
 /**
  * Repository: Abstracts data access for Saju Profiles
- * Handles: localStorage fallback → Supabase migration
+ * Handles: localStorage fallback ??Supabase migration
  */
 export class SajuProfileRepository {
     /**
@@ -103,13 +103,8 @@ export class SajuProfileRepository {
     private static findByUserIdLocal(): SajuProfile[] {
         if (typeof window === 'undefined') return [];
 
-        // We need to adapt the OLD localStorage format to the NEW Domain format
-        // Old format: { id: string, name: string, relationship: string, ... }
-        const stored = localStorage.getItem(STORAGE_KEYS.SAJU_PROFILES);
-        if (!stored) return [];
-
         try {
-            const rawParams = JSON.parse(stored);
+            const rawParams = readProfileStoragePayload();
             // Map raw params (any) to SajuProfile domain
             return rawParams.map((p: any) => ({
                 id: p.id,
@@ -117,9 +112,14 @@ export class SajuProfileRepository {
                 name: p.name,
                 relationship: p.relationship, // Might need normalization
                 birthdate: new Date(p.birthdate),
-                birthTime: p.birthTime ? new Date(`1970-01-01T${p.birthTime}`) : null,
+                birthTime: p.birthTime ? (
+                    typeof p.birthTime === 'string' && p.birthTime.includes(':') && !p.birthTime.includes('T')
+                        ? new Date(`1970-01-01T${p.birthTime}`)
+                        : new Date(p.birthTime)
+                ) : null,
                 isTimeUnknown: p.isTimeUnknown,
                 calendarType: p.calendarType,
+                isLeapMonth: p.isLeapMonth || false,
                 gender: p.gender,
                 createdAt: new Date(p.createdAt || Date.now()),
                 updatedAt: new Date(p.createdAt || Date.now()),
@@ -135,7 +135,7 @@ export class SajuProfileRepository {
         // Create new domain object
         const newProfile: SajuProfile = {
             ...SajuProfileMapper.fromRequest(req, 'local-user'),
-            id: crypto.randomUUID(),
+            id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `id-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
             createdAt: new Date(),
             updatedAt: new Date(),
         };
@@ -143,7 +143,7 @@ export class SajuProfileRepository {
         // Save back to storage (adapting to storage format if needed, or simply saving domain object)
         // We will save Domain object structure now for consistency
         const updated = [...profiles, newProfile];
-        localStorage.setItem(STORAGE_KEYS.SAJU_PROFILES, JSON.stringify(updated));
+        writeProfileStoragePayload(updated);
 
         return newProfile;
     }
@@ -151,6 +151,7 @@ export class SajuProfileRepository {
     private static deleteLocal(id: string): void {
         const profiles = this.findByUserIdLocal();
         const updated = profiles.filter(p => p.id !== id);
-        localStorage.setItem(STORAGE_KEYS.SAJU_PROFILES, JSON.stringify(updated));
+        writeProfileStoragePayload(updated);
     }
 }
+

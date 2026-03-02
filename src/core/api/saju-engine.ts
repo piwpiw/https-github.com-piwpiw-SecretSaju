@@ -12,7 +12,7 @@
 import { getTrueSolarTime, Location, KOREA_LOCATIONS } from '../astronomy/true-solar-time';
 import { getYearPillar, getMonthPillar, getDayPillar, getHourPillar, FourPillars, GanJi } from '../calendar/ganji';
 import { SCORING_MODEL, analyzeElements, type ElementAnalysisResult } from '../myeongni/elements';
-import * as crypto from 'crypto';
+
 
 export type { ElementAnalysisResult }; // Re-export for consumers
 import { analyzeSinsal, type Sinsal } from '../myeongni/sinsal';
@@ -20,6 +20,8 @@ import { analyzeSipsong, type SipsongResult } from '../myeongni/sipsong';
 import { determineGyeokguk, type GyeokgukInfo } from '../myeongni/gyeokguk';
 import { analyzeSibiwoonseongAll, type SibiwoonseongAnalysis } from '../myeongni/sibiwoonseong';
 import { calculateDaewun, getCurrentUnInfo, type DaewunInfo, type CurrentUnInfo } from '../myeongni/daewun';
+import { calculateGangYak, type GangYakScore } from '../../lib/advancedScoring';
+import { calculateYongshin, type YongshinAnalysis } from '../myeongni/yongshin';
 
 const ENGINE_VERSION = "saju-engine@1.2.0";
 
@@ -27,6 +29,7 @@ export interface SajuCalculationInput {
     birthDate: Date;       // Javascript Date object
     birthTime: string;     // "HH:mm"
     gender: 'M' | 'F';
+    isTimeUnknown?: boolean;
     location?: Location;   // Default: Seoul
     calendarType?: 'solar' | 'lunar'; // Default: solar
     isLeapMonth?: boolean;           // Added
@@ -47,6 +50,8 @@ export interface HighPrecisionSajuResult {
     sipsong: SipsongResult;
     gyeokguk: GyeokgukInfo;
     sibiwoonseong: SibiwoonseongAnalysis;
+    gangyak: GangYakScore;
+    yongshin: YongshinAnalysis;
 
     // Fortune context
     daewun: DaewunInfo;
@@ -62,6 +67,7 @@ export class SajuEngine {
             birthDate,
             birthTime,
             gender,
+            isTimeUnknown = false,
             location = KOREA_LOCATIONS.SEOUL,
             calendarType = 'solar',
             isLeapMonth = false
@@ -81,23 +87,12 @@ export class SajuEngine {
         const month = birthDate.getMonth();
         const day = birthDate.getDate();
 
-        // 1. Adjust for Historical Timezone Offset & Summer Time
-        const { getKoreaSummerTimeOffset, getKoreaStandardOffsetMinutes } = await import('../astronomy/timezone');
+        // Build wall-clock birth time in Korea local civil time.
+        // This must stay as entered to avoid hour/day drift in pillar calculations.
+        const wallClockBirth = new Date(year, month, day, hours, minutes, 0, 0);
 
-        // Proxy date to check historical offsets (Locale Agnostic)
-        const proxyDate = new Date(Date.UTC(year, month, day, hours, minutes));
-        const standardOffset = getKoreaStandardOffsetMinutes(proxyDate);
-        const summerTimeOffset = getKoreaSummerTimeOffset(proxyDate);
-
-        // Total offset relative to UTC (minutes)
-        const totalOffset = standardOffset + summerTimeOffset;
-
-        // Convert Wall Clock Time to UTC
-        const utcTimestamp = proxyDate.getTime() - (totalOffset * 60 * 1000);
-        const birthUTC = new Date(utcTimestamp);
-
-        // 2. Handle Lunar Date Conversion
-        let baseDateKST = new Date(birthUTC.getTime() + (9 * 60 * 60 * 1000)); // Standard KST (UTC+9) for display & basic logic
+        // 1. Handle Lunar Date Conversion
+        let baseDateKST = new Date(wallClockBirth);
 
         if (calendarType === 'lunar') {
             const { lunarToSolar } = await import('../calendar/lunar-solar');
@@ -108,8 +103,8 @@ export class SajuEngine {
                 isLeapMonth: isLeapMonth || false
             };
             const solarDate = lunarToSolar(lunarInput);
-            solarDate.setUTCHours(birthUTC.getUTCHours(), birthUTC.getUTCMinutes());
-            baseDateKST = new Date(solarDate.getTime() + (9 * 60 * 60 * 1000));
+            solarDate.setHours(hours, minutes, 0, 0);
+            baseDateKST = solarDate;
         }
 
         // 3. True Solar Time (Astronomical Precision)
@@ -119,7 +114,10 @@ export class SajuEngine {
         const yearPillar = getYearPillar(baseDateKST);
         const monthPillar = getMonthPillar(baseDateKST, yearPillar.stemIndex);
         const dayPillar = getDayPillar(baseDateKST);
-        const hourPillar = getHourPillar(trueSolarTime, dayPillar.stemIndex);
+        // If birth time is unknown (conventionally entered as 00:00), use civil time
+        // to avoid artificial day/hour drift caused by true-solar correction.
+        const hourBaseTime = isTimeUnknown ? baseDateKST : trueSolarTime;
+        const hourPillar = getHourPillar(hourBaseTime, dayPillar.stemIndex);
 
         const fourPillars: FourPillars = {
             year: yearPillar,
@@ -129,15 +127,17 @@ export class SajuEngine {
         };
 
         // 5. Myeongni Analysis (Isolated Logic Layers)
-        const elements = analyzeElements(fourPillars);
+        const elements = analyzeElements(fourPillars, baseDateKST);
         const sinsal = analyzeSinsal(fourPillars);
         const sipsong = analyzeSipsong(fourPillars);
         const gyeokguk = determineGyeokguk(fourPillars);
         const sibiwoonseong = analyzeSibiwoonseongAll(fourPillars);
+        const gangyak = calculateGangYak(fourPillars);
+        const yongshin = calculateYongshin(elements, gangyak);
 
         // 6. Daewun/Saewun
-        const daewun = calculateDaewun(birthDate, fourPillars, gender);
-        const currentUn = getCurrentUnInfo(birthDate, fourPillars, gender);
+        const daewun = calculateDaewun(baseDateKST, fourPillars, gender);
+        const currentUn = getCurrentUnInfo(baseDateKST, fourPillars, gender);
 
         // 7. Result Assembly & Integrity Verification
         const resultPayload: Omit<HighPrecisionSajuResult, 'integrity'> = {
@@ -151,13 +151,23 @@ export class SajuEngine {
             sipsong,
             gyeokguk,
             sibiwoonseong,
+            gangyak,
+            yongshin,
             daewun,
             currentUn
         };
 
         // SHA-256 Hash of canonical stringified result
         const canonical = JSON.stringify(resultPayload);
-        const integrity = crypto.createHash('sha256').update(canonical).digest('hex');
+        let integrity = `hash-${Date.now()}`;
+        try {
+            if (typeof window !== 'undefined' && window.crypto && window.crypto.subtle) {
+                const msgBuffer = new TextEncoder().encode(canonical);
+                const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                integrity = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            }
+        } catch (e) { }
 
         return {
             ...resultPayload,

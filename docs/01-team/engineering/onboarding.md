@@ -1,4 +1,4 @@
-# Developer Onboarding - Secret Saju
+﻿# Developer Onboarding - Secret Saju
 
 **Welcome! Let's get you productive in 3 days** 🚀
 
@@ -12,6 +12,17 @@ Before Day 1, make sure you have:
 - [ ] Slack workspace invitation
 - [ ] Company email account
 - [ ] Development machine setup (Mac/Windows/Linux)
+
+## 🧪 Wave 20 신입 검증 체크리스트 (2026-03-02)
+
+- [ ] `/onboarding`
+  - 로그인/로그아웃 플로우를 한 번씩 실행해 사용자 상태 전파를 확인한다.
+- [ ] `/mypage`
+  - 미로그인/로그인 UI 분기를 확인하고, 프로필 배지 표시를 점검한다.
+- [ ] `/payment/success`, `/payment/fail`
+  - 실패/성공 진입 시 상태 메시지와 보조 CTA(충전/홈/복귀)가 표시되는지 확인한다.
+- [ ] `/admin` 경로 제외 규칙
+  - 푸터/네비게이션 노출 조건이 일관되게 동작하는지 확인한다.
 
 ---
 
@@ -32,7 +43,7 @@ npm install
 ```
 
 #### 3. Environment Variables
-Follow the **[QUICK_START.md](../../../QUICK_START.md)** guide:
+Follow the **[QUICK_START.md](../../archive/QUICK_START.md)** guide:
 
 **Required for Development**:
 - `NEXT_PUBLIC_KAKAO_JS_KEY` - Kakao JavaScript Key
@@ -72,6 +83,12 @@ Should complete without errors.
 2. [Architecture Overview](../../02-technical/architecture/overview.md) - System design
 3. [API Documentation](../../02-technical/api/README.md) - API structure
 4. [Coding Standards](./coding-standards.md) - Code conventions
+
+Documentation priority:
+- Source-of-Truth for deployment: `./deployment-guide.md`
+- Source-of-Truth for testing: `./testing-guide.md`
+- For detailed checklists or command tips, use `docs/guides/deployment.md`
+- If details and SOT differ, follow SOT first; for drift, check `Last Updated` and `Next Review`.
 
 #### Key Files to Understand:
 ```
@@ -187,7 +204,7 @@ Schedule a 2-hour session with a senior engineer:
 - [ ] [Design System](../product/design-system.md)
 - [ ] [Testing Guide](./testing-guide.md)
 - [ ] [Deployment Guide](./deployment-guide.md)
-- [ ] [Troubleshooting](../../02-technical/troubleshooting/common-errors.md)
+- [ ] [Troubleshooting Scenarios](../qa/test-scenarios.md)
 
 ### Nice-to-Read (Month 1)
 - [ ] [Saju Layers](../../SAJU_LAYERS.md)
@@ -222,6 +239,10 @@ Schedule a 2-hour session with a senior engineer:
 - **Wiki**: This documentation site
 - **Notion**: Product specs and meeting notes
 - **GitHub**: Issues, PRs, project boards
+
+When multiple docs describe the same process, use the SOT rule in each domain guide:
+- Deployment: `./deployment-guide.md`
+- Testing: `./testing-guide.md`
 
 ---
 
@@ -266,13 +287,13 @@ Schedule a 2-hour session with a senior engineer:
 ### Common Questions
 
 **Q: Where do I find API credentials?**  
-A: Ask your team lead for the `.env.local` file or see [SECURITY.md](../../../SECURITY.md)
+A: Ask your team lead for the `.env.local` file or see [SECURITY.md](../../archive/SECURITY.md)
 
 **Q: How do I run tests?**  
 A: `npm run test` (see [Testing Guide](./testing-guide.md))
 
 **Q: My build is failing, what now?**  
-A: Check [Troubleshooting](../../02-technical/troubleshooting/common-errors.md)
+A: Check [Troubleshooting Scenarios](../qa/test-scenarios.md)
 
 **Q: Who reviews my PRs?**  
 A: Auto-assigned, or tag `@frontend-team` or `@backend-team`
@@ -294,3 +315,12 @@ You're now part of building the future of premium saju services. Remember:
 **Document Owner**: Engineering Team Lead  
 **Last Updated**: 2026-01-31  
 **Feedback**: Open a PR or message #dev-support
+
+
+
+
+## Pipeline Start Checklist (Wave 21)
+- Confirm `deploy:local` passes before first PR
+- Confirm env validation (`npm run verify:env`) when touching auth/payment
+- Run smoke on `/payment/success`, `/payment/fail`, `/auth/callback`
+- Update `docs/active-dispatch.md` after each task batch

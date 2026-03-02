@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
             throw new ValidationError(ErrorMessages.INVALID_BIRTH_DATE);
         }
 
-        const { birthDate, birthTime, gender, calendarType, location } = body as SajuCalculateRequest;
+        const { birthDate, birthTime, gender, isTimeUnknown, calendarType, location } = body as SajuCalculateRequest;
 
         // 3. Validate date
         const birthDateTime = new Date(birthDate);
@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
             birthDate: birthDateTime,
             birthTime: birthTime || '00:00',
             gender: gender,
+            isTimeUnknown: !!isTimeUnknown,
             calendarType: calendarType || 'solar',
             ...(location && { location }),
         };

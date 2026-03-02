@@ -10,7 +10,8 @@ describe('Saju Engine Golden Dataset Validation', () => {
                 birthTime: testCase.input.birthTime,
                 location: testCase.input.location,
                 gender: testCase.input.gender,
-                calendarType: testCase.input.calendarType || 'solar'
+                calendarType: testCase.input.calendarType || 'solar',
+                isTimeUnknown: testCase.input.isTimeUnknown || false
             };
 
             const result = await SajuEngine.calculate(input);

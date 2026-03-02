@@ -3,7 +3,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { getProfiles, SajuProfile } from '@/lib/storage';
 import { analyzeRelationship, RelationshipAnalysis } from '@/lib/compatibility';
 import { calculateHighPrecisionSaju } from '@/core/api/saju-engine';
 import { ArrowLeft, Lock, Sparkles, AlertTriangle, CheckCircle2, TrendingUp, ChevronRight, Loader2, Zap } from 'lucide-react';
@@ -12,13 +11,18 @@ import JellyBalance from '@/components/shop/JellyBalance';
 import JellyShopModal from '@/components/shop/JellyShopModal';
 import { isUnlocked, unlockContent, hasSufficientBalance } from '@/lib/jelly-wallet';
 
+import { useProfiles } from '@/components/ProfileProvider';
+import { useWallet } from '@/components/WalletProvider';
+
 export default function RelationshipDetailPage() {
     const router = useRouter();
     const params = useParams();
     const profileId = params?.id as string;
+    const { profiles } = useProfiles();
+    const { isAdmin } = useWallet();
 
-    const [mainProfile, setMainProfile] = useState<SajuProfile | null>(null);
-    const [targetProfile, setTargetProfile] = useState<SajuProfile | null>(null);
+    const [mainProfile, setMainProfile] = useState<any | null>(null);
+    const [targetProfile, setTargetProfile] = useState<any | null>(null);
     const [analysis, setAnalysis] = useState<RelationshipAnalysis | null>(null);
     const [unlocked, setUnlocked] = useState(false);
     const [showShop, setShowShop] = useState(false);
@@ -26,12 +30,13 @@ export default function RelationshipDetailPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        loadRelationship();
+        if (profiles.length > 0) {
+            loadRelationship();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [profileId]);
+    }, [profileId, profiles]);
 
     const loadRelationship = async () => {
-        const profiles = getProfiles();
         if (profiles.length < 2) {
             router.push('/dashboard');
             return;
@@ -70,7 +75,7 @@ export default function RelationshipDetailPage() {
             );
 
             setAnalysis(rel);
-            setUnlocked(isUnlocked(profileId));
+            setUnlocked(isAdmin || isUnlocked(profileId));
         } catch (error) {
             console.error("Relationship analysis error:", error);
         } finally {

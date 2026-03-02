@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
         const { data: user, error: userError } = await supabase
             .from('users')
-            .select('id')
+            .select('id, is_admin')
             .eq('kakao_id', kakaoUser.id)
             .single();
 
@@ -60,7 +60,10 @@ export async function GET(request: NextRequest) {
 
         if (walletError) throw walletError;
 
-        return NextResponse.json({ balance: wallet.balance });
+        return NextResponse.json({
+            balance: wallet.balance,
+            isAdmin: (user as any).is_admin
+        });
 
     } catch (error) {
         console.error('Wallet Balance API Error:', error);

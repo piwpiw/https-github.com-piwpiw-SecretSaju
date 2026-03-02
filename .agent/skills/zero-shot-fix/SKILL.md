@@ -3,34 +3,48 @@ name: zero-shot-fix
 description: 버그 수정 및 핫픽스를 단 1회의 턴(Turn)만에 무결점으로 처리하는 초극단적 과금 방어 스킬
 ---
 
-# 🎯 Zero-Shot Fix Skill
+# 🎯 Zero-Shot Fix Skill (Chain Reactive)
 
-이 스킬은 "에러가 발생했을 때 어떻게 대처해야 하는가"에 대한 **가장 엄격하고 극단적인 단일 턴(Single-Turn) 해결 가이드**입니다.
-이 스킬이 호출되면 모든 에이전트는 무조건 아래의 규칙을 *예외 없이* 따라야 합니다.
+에러 발생 시 **단 1턴(Single-Turn)** 만에 해결하는 원샷 수정 스킬이며, 수정 후 관련 팀을 깨웁니다.
 
-## 1. 사전 원칙 (Absolute Rules)
-- **MAX_TURNS = 1**: 문제를 발견하고 수정하는 루프를 단 1회로 제한합니다. (테스트-실패-수정 반복 절대 금지)
-- **NO CHATTER**: 수정 후 "무엇을 왜 고쳤는지" 구구절절 설명하지 마세요. 한 줄(1 Sentence) 요약만 보고합니다.
-- **SURGICAL STRIKE**: 불필요한 전체 파일 읽기(`view_file` StartLine/EndLine 누락)를 절대 금지합니다.
+---
 
-## 2. 실행 프로세스 (Execution Flow)
+## 🛑 Absolute Rules (절대 원칙)
+- **NO CHATTER**: 보고는 1문장만, 과정 나열시 차단. (Token 최적화)
+- **POST-MEMORY**: 완료 후 `CONTEXT_ENGINE.md` 내 `#errors` 위치를 `grep_search`로 단숨에 찾아 업데이트 필수.
+- **SURVIVAL CHECK**: 동일 에러 발생 2회 초과 시 수정을 멈추고 **T7 QA** 및 **Architect**의 Rescue 요청을 쏠 것.
 
-1. **에러 지점 확정 (Targeting)**
-   - 터미널 에러 로그나 `qa.mjs` 실패 로그에서 문제가 발생한 **정확한 파일 경로와 라인 번호**를 파악합니다.
-   - 확신이 서지 않는다면 `grep_search`를 통해 원인 변수/함수명만 검색하세요.
+---
 
-2. **최소 범위 읽기 (Minimal Context)**
-   - `view_file` 호출 시, 에러가 발생한 라인 기준 **위아래 10줄 (StartLine: N-10, EndLine: N+10)**만 읽으세요.
-   - 전체 코드의 컨텍스트 파악이 정말 필요하다면 `view_file_outline`만 허용됩니다.
+## 🚀 Execution Flow (ReAct + Automation)
 
-3. **원샷 수정 (Single-Shot Replace)**
-   - `replace_file_content` 도구를 사용하여 정확히 한 번에 문제를 고칩니다.
-   - 연쇄적으로 터질 수 있는 문제(Blast Radius)가 예상된다면, 해당 파일 내에서 `multi_replace_file_content`로 한 번에 묶어서 수정하세요.
+### 1. THINK — 스마트 조준
+- 터미널 에러 로그에서 **정확한 파일 경로 + 라인 번호** 추출
+- 추적 대상 심볼 발견 즉시 `grep_search` 가동. (전체 파일 로드 100% 금지)
 
-4. **단일 검증 (One-Time Verification)**
-   - 스크립트 기반 통합 테스트 1회만 실행합니다.
-   - `npm run qa`를 실행하여 린트/타입 에러가 없는지 최종 확인합니다. 
+### 2. ACT — 외과수술 타격 (Surgical Strike)
+- 에러 라인 기준 **위아래 딱 10줄만** 읽어들입니다. `view_file(StartLine: N-10, EndLine: N+10)`
+- `multi_replace_file_content`을 사용하여 한 번에 문제 해결 코드를 치환합니다.
+- (옵션) Import가 꼬였다면 해당 파일만 타겟하여 경로 최적화.
 
-## 3. 탈출 조건 (Fallback)
-- 1회의 수정 후 `npm run qa`가 다시 실패한다면, 코드 복잡도가 에이전트 자동 해결 범위를 넘어선 것입니다.
-- 이때는 **하드 코딩을 즉시 중지**하고, 유저에게 "구조적 결함이 있어 원샷 픽스 실패 (Mock 데이터 우회 권장)" 상태만을 보고하세요.
+### 3. OBSERVE — Chain Validator
+- 즉각 `npm run qa`. 
+- **통과 실패**: 에러 양상이 바뀌었다면 로직 재타격. 그대로라면 즉시 롤백 명령어가 담긴 JSON 생성.
+
+### 4. MEMORY & 🤖 AUTOMATION EVENT
+- "에러 원인, 적용한 해결책, 파일명"을 `CONTEXT_ENGINE.md`의 최하단 Error Catalog(`#errors`) 블록을 부분 수정하여 주입.
+- 이후 본 에러가 다른 계층에 여파를 미칠지 계산합니다. 
+  - (예: UI 에러였다면 `T6 Design`에 "수정 후 이상 없는지 체크하라"는 Handoff Trigger 발생)
+
+```json
+{
+  "chain_id": "HOTFIX-T2-to-T6-9922",
+  "from_team": "ZeroShotFix_Executor",
+  "to_team": "T6",
+  "trigger_event": "TEST_QA_FAILED",
+  "payload": {
+    "action": "layout shift 에러 복구됨",
+    "request": "변경된 Card 컴포넌트의 테마 일관성 검증 1회 실행 요망"
+  }
+}
+```

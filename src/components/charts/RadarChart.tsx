@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from 'react';
 import { motion } from 'framer-motion';
@@ -9,20 +9,51 @@ interface RadarChartProps {
     labels?: string[];
     maxVal?: number;
     size?: number;
+    title?: string;
+    accentA?: string;
+    accentB?: string;
 }
 
-const ELEMENTS = ['목', '화', '토', '금', '수'];
+const ELEMENTS = ['Wood', 'Fire', 'Earth', 'Metal', 'Water'];
+const CHART_TOKENS = {
+    backgroundGrid: 'rgba(148, 163, 184, 0.24)',
+    backgroundAxis: 'rgba(148, 163, 184, 0.42)',
+    textPrimary: '#e2e8f0',
+    textSecondary: '#cbd5e1',
+};
 
 export default function RadarChart({
     dataA,
     dataB,
     labels = ELEMENTS,
     maxVal = 20, // Typical max score for an element in Saju
-    size = 300
+    size = 300,
+    title,
+    accentA = '#fac115',
+    accentB = '#2dd4bf'
 }: RadarChartProps) {
     const center = size / 2;
     const radius = (size / 2) * 0.8;
     const angleStep = (Math.PI * 2) / labels.length;
+    const [pointerActive, setPointerActive] = React.useState(false);
+    const pointerRaf = React.useRef<number | null>(null);
+    const lastPointerAt = React.useRef(0);
+
+    const handlePointerMove = () => {
+        const now = Date.now();
+        if (now - lastPointerAt.current < 60) return;
+        lastPointerAt.current = now;
+        if (pointerRaf.current !== null) return;
+        pointerRaf.current = requestAnimationFrame(() => {
+            pointerRaf.current = null;
+            setPointerActive(true);
+            window.setTimeout(() => setPointerActive(false), 120);
+        });
+    };
+
+    const handlePointerLeave = () => {
+        setPointerActive(false);
+    };
 
     const getCoordinates = (index: number, value: number) => {
         const angle = index * angleStep - Math.PI / 2;
@@ -44,7 +75,18 @@ export default function RadarChart({
 
     return (
         <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
-            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible drop-shadow-[0_0_30px_rgba(255,255,255,0.05)]">
+            <motion.svg
+                width={size}
+                height={size}
+                viewBox={`0 0 ${size} ${size}`}
+                className="overflow-visible drop-shadow-[0_0_30px_rgba(255,255,255,0.05)] cursor-pointer"
+                style={{ touchAction: "manipulation", pointerEvents: "all" }}
+                whileHover={pointerActive ? { scale: 1.02 } : undefined}
+                whileTap={pointerActive ? { scale: 0.99 } : undefined}
+                transition={{ duration: 0.2 }}
+                onPointerMove={handlePointerMove}
+                onPointerLeave={handlePointerLeave}
+            >
                 <defs>
                     <linearGradient id="gradA" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stopColor="#facc15" stopOpacity="0.8" />
@@ -74,8 +116,7 @@ export default function RadarChart({
                             return `${x},${y}`;
                         }).join(' ')}
                         fill="none"
-                        stroke="white"
-                        strokeOpacity={0.05 + (i * 0.03)}
+                        stroke={CHART_TOKENS.backgroundGrid}
                         strokeWidth="1"
                         initial={{ pathLength: 0, opacity: 0 }}
                         animate={{ pathLength: 1, opacity: 1 }}
@@ -95,8 +136,7 @@ export default function RadarChart({
                             y1={center}
                             x2={x}
                             y2={y}
-                            stroke="white"
-                            strokeOpacity="0.1"
+                            stroke={CHART_TOKENS.backgroundAxis}
                             strokeWidth="1"
                             initial={{ pathLength: 0 }}
                             animate={{ pathLength: 1 }}
@@ -155,11 +195,11 @@ export default function RadarChart({
                             key={i}
                             x={x}
                             y={y}
-                            fill="white"
+                            fill={i % 2 === 0 ? CHART_TOKENS.textPrimary : CHART_TOKENS.textSecondary}
                             initial={{ opacity: 0, scale: 0.5 }}
                             animate={{ opacity: 0.6, scale: 1 }}
                             transition={{ delay: 1.5 + i * 0.1 }}
-                            className="text-[10px] font-black tracking-widest uppercase"
+                            className="text-[11px] sm:text-[12px] font-semibold tracking-[0.2em] uppercase"
                             textAnchor="middle"
                             alignmentBaseline="middle"
                         >
@@ -167,7 +207,7 @@ export default function RadarChart({
                         </motion.text>
                     );
                 })}
-            </svg>
+            </motion.svg>
         </div>
     );
 }

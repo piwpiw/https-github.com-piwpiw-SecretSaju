@@ -26,20 +26,21 @@ export const THEMES: Record<ThemeType, ThemeTokens> = {
         name: 'Dark',
         label: '다크 모드',
         colors: {
-            primary: '#6366f1',    // Indigo
-            secondary: '#a855f7',  // Purple
-            background: '#0f0f1a',
-            surface: 'rgba(255, 255, 255, 0.03)',
-            text: '#f1f5f9',
-            textSecondary: '#94a3b8',
-            border: 'rgba(255, 255, 255, 0.1)',
+            primary: '#818cfe',    // Brighter Indigo for dark
+            secondary: '#c084fc',  // Brighter Purple for dark
+            background: '#0a0a0f', // Deeper black
+            surface: 'rgba(255, 255, 255, 0.05)',
+            text: '#ffffff',
+            textSecondary: '#a1a1aa',
+            border: 'rgba(255, 255, 255, 0.12)',
+            accent: '#fbbf24',     // Gold accent for mystic feel
         },
         fonts: {
             display: '"Pretendard Variable", Pretendard, sans-serif',
             sans: '"Pretendard Variable", Pretendard, sans-serif',
             sizeBase: '16px',
         },
-        borderRadius: '0.75rem',
+        borderRadius: '1rem',
     },
     light: {
         name: 'Light',
@@ -64,18 +65,18 @@ export const THEMES: Record<ThemeType, ThemeTokens> = {
         name: 'Readable',
         label: '가독성 모드',
         colors: {
-            primary: '#2563eb',
-            secondary: '#3b82f6',
-            background: '#fffdf7',
-            surface: '#ffffff',
-            text: '#1a1a1a',
-            textSecondary: '#4a4a4a',
-            border: 'rgba(0, 0, 0, 0.12)',
+            primary: '#1d4ed8',
+            secondary: '#2563eb',
+            background: '#ffffff',
+            surface: '#f3f4f6',
+            text: '#000000',       // Absolute black for contrast
+            textSecondary: '#374151',
+            border: '#d1d5db',
         },
         fonts: {
             display: '"Pretendard Variable", Pretendard, sans-serif',
             sans: '"Pretendard Variable", Pretendard, sans-serif',
-            sizeBase: '18px',
+            sizeBase: '18px',      // Larger font for readability
         },
         borderRadius: '0.5rem',
     },

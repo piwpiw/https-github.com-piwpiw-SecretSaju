@@ -12,13 +12,13 @@
 // ============================================
 
 export const BUSINESS_INFO = {
-    NAME: '990 사주마미',
-    LEGAL_NAME: '주식회사 시크릿포즈',
-    REGISTRATION_NUMBER: '123-45-67890',
-    REPRESENTATIVE: '홍길동',
+    NAME: '시크릿사주',
+    LEGAL_NAME: '보헤미안 스튜디오',
+    REGISTRATION_NUMBER: '123-45-67890', // User didn't provide this, keeping placeholder for now but updated studio name
+    REPRESENTATIVE: '박인웅',
     ADDRESS: '서울특별시 강남구 테헤란로 123',
-    EMAIL: 'contact@secretpaws.com',
-    PHONE: '02-1234-5678',
+    EMAIL: 'contact@bohemianstudio.com',
+    PHONE: '070-1234-5678',
 } as const;
 
 // ============================================
@@ -73,21 +73,26 @@ export const STORAGE_KEYS = {
     // Authentication
     KAKAO_TOKEN: 'kakao_token',
     USER_DATA: 'user_data',
+    MCP_TOKEN: 'mcp_access_token',
+    MCP_REFRESH_TOKEN: 'mcp_refresh_token',
+    MCP_STATE: 'mcp_oauth_state',
+    MCP_CODE_VERIFIER: 'mcp_code_verifier',
 
     // User Data
-    SAJU_PROFILES: 'secret_paws_saju_profiles',
+    SAJU_PROFILES: 'secret_saju_profiles',
 
     // Wallet
-    JELLY_WALLET: 'secret_paws_jelly_wallet',
-    UNLOCKS: 'secret_paws_unlocks',
-    CHURU_NYANG_WALLET: 'secret_paws_wallet',
+    JELLY_WALLET: 'secret_saju_jelly_wallet',
+    UNLOCKS: 'secret_saju_unlocks',
+    CHURU_NYANG_WALLET: 'secret_saju_wallet',
 
     // UI State
-    THEME: 'secret_paws_theme',
+    THEME: 'secret_saju_theme',
+    ACTIVE_PROFILE_ID: 'secret_saju_active_profile_id',
 
     // Feature Flags
-    ONBOARDING_COMPLETED: 'secret_paws_onboarding',
-    FIRST_VISIT: 'secret_paws_first_visit',
+    ONBOARDING_COMPLETED: 'secret_saju_onboarding',
+    FIRST_VISIT: 'secret_saju_first_visit',
 } as const;
 
 // ============================================
@@ -100,6 +105,7 @@ export const STORAGE_KEYS = {
 export const API_ROUTES = {
     AUTH: {
         KAKAO_CALLBACK: '/api/auth/kakao/callback',
+        MCP_CALLBACK: '/api/auth/mcp/callback',
         LOGOUT: '/api/auth/logout',
     },
     PAYMENT: {

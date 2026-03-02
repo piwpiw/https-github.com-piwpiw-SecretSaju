@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
+import { getAuthenticatedUser } from '@/lib/api-auth';
 
 /**
  * POST /api/wallet/consume
@@ -19,13 +20,24 @@ export async function POST(req: NextRequest) {
         const supabase = getSupabaseAdmin();
 
         // Get authenticated user
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        const { user, error: authError } = await getAuthenticatedUser(req as any);
 
         if (authError || !user) {
-            return NextResponse.json(
+            return authError || NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 401 }
             );
+        }
+
+        // [Admin Pass] Admins don't consume jellies
+        if (user.isAdmin) {
+            return NextResponse.json({
+                success: true,
+                transaction_id: 'admin-bypass-' + Date.now(),
+                jellies_consumed: 0,
+                new_balance: 999999,
+                isAdmin: true
+            });
         }
 
         // Check wallet balance

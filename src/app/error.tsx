@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect } from "react";
 import { motion } from "framer-motion";
@@ -34,11 +34,11 @@ export default function Error({
         </motion.div>
 
         <h1 className="text-3xl font-bold text-white mb-3">
-          앗, 문제가 생겼어요
+          ?? 臾몄젣媛 ?앷꼈?댁슂
         </h1>
         <p className="text-slate-400 text-sm mb-8 leading-relaxed">
-          잠시 후 다시 시도해주세요.<br />
-          계속 문제가 발생하면 문의하기를 이용해주세요.
+          ?좎떆 ???ㅼ떆 ?쒕룄?댁＜?몄슂.<br />
+          怨꾩냽 臾몄젣媛 諛쒖깮?섎㈃ 臾몄쓽?섍린瑜??댁슜?댁＜?몄슂.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -48,15 +48,21 @@ export default function Error({
             className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold hover:from-red-600 hover:to-pink-600 transition-all hover:scale-[1.03] shadow-lg"
           >
             <RefreshCw className="w-4 h-4" />
-            다시 시도
+            ?ㅼ떆 ?쒕룄
           </button>
           <Link
             href="/"
             className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 text-white font-medium hover:bg-white/20 transition-all"
           >
             <Home className="w-4 h-4" />
-            홈으로
+            ?덉쑝濡?
           </Link>
+          <a
+            href="mailto:support@secretsaju.com?subject=%EC%9B%B9%20%EC%97%90%EB%9F%AC"
+            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/20 text-white/85 font-medium hover:bg-white/10 transition-all"
+          >
+            문의하기
+          </a>
         </div>
 
         {process.env.NODE_ENV === "development" && error.message && (
@@ -68,3 +74,4 @@ export default function Error({
     </main>
   );
 }
+

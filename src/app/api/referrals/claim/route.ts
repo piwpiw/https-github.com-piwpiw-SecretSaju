@@ -77,13 +77,14 @@ export async function POST(req: NextRequest) {
         }
 
         // Give jellies to referrer
+        const userIdentifier = 'email' in user && user.email ? user.email : user.id;
         const { error: referrerTxError } = await supabase
             .from('jelly_transactions')
             .insert({
                 user_id: referral.referrer_user_id,
                 type: 'reward',
                 jellies: referral.referrer_reward_jellies,
-                purpose: `Referral reward: ${user.email || user.id}`,
+                purpose: `Referral reward: ${userIdentifier}`,
                 metadata: { referral_id: referral.id },
             });
 

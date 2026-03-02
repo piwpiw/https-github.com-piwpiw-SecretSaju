@@ -31,6 +31,7 @@ export default function VSModePage() {
     const [analysis, setAnalysis] = useState<RelationshipAnalysis | null>(null);
     const [winners, setWinners] = useState<TraitWinner[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [shareMessage, setShareMessage] = useState('');
 
     useEffect(() => {
         const loadSajuData = async () => {
@@ -81,6 +82,16 @@ export default function VSModePage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profileId]);
 
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setShareMessage('');
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
     const calculateWinners = (a: HighPrecisionSajuResult, b: HighPrecisionSajuResult): TraitWinner[] => {
         const getScore = (res: HighPrecisionSajuResult, types: string[]) => {
             const values = Object.values(res.sipsong);
@@ -125,6 +136,27 @@ export default function VSModePage() {
         });
     };
 
+    const handleShare = async () => {
+        if (!profileId || typeof window === 'undefined') {
+            return;
+        }
+        try {
+            const shareUrl = `${window.location.origin}/relationship/${profileId}`;
+            if (navigator.share) {
+                await navigator.share({
+                    title: 'Destiny Matchup',
+                    text: `${mainProfile?.name ?? 'A'} vs ${targetProfile?.name ?? 'B'}`,
+                    url: shareUrl,
+                });
+            } else {
+                await navigator.clipboard.writeText(shareUrl);
+                setShareMessage('공유 링크가 복사되었습니다.');
+            }
+        } catch (error) {
+            setShareMessage('공유를 사용할 수 없습니다.');
+        }
+    };
+
     if (isLoading) {
         return (
             <main className="min-h-screen bg-background flex flex-col items-center justify-center space-y-6">
@@ -160,14 +192,26 @@ export default function VSModePage() {
                             VS 비교 분석
                         </span>
                     </motion.div>
-                    <h1 className="text-2xl font-bold flex items-center gap-3" style={{ color: 'var(--text-foreground)' }}>
-                        <span style={{ color: 'var(--primary)' }}>{mainProfile?.name}</span>
-                        <span style={{ color: 'var(--text-secondary)' }}>vs</span>
-                        <span>{targetProfile?.name}</span>
-                    </h1>
-                </div>
+                        <h1 className="text-2xl font-bold flex items-center gap-3" style={{ color: 'var(--text-foreground)' }}>
+                            <span style={{ color: 'var(--primary)' }}>{mainProfile?.name}</span>
+                            <span style={{ color: 'var(--text-secondary)' }}>vs</span>
+                            <span>{targetProfile?.name}</span>
+                        </h1>
+                        {shareMessage && <div className="text-[10px] mt-3 font-black tracking-[0.2em] text-secondary">{shareMessage}</div>}
+                    </div>
 
-                <button className="p-3 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition">
+                <button
+                    type="button"
+                    onClick={handleShare}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleShare();
+                        }
+                    }}
+                    aria-label="관계 결과 공유"
+                    className="p-3 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition"
+                >
                     <Share2 className="w-5 h-5 text-slate-400" />
                 </button>
             </div>

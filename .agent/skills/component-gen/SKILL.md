@@ -1,95 +1,50 @@
 ---
-description: React 컴포넌트 생성 — 프로젝트 표준에 맞는 컴포넌트 빠른 생성
+name: component-gen
+description: 럭셔리 프리미엄 UI 컴포넌트 생성 — 설계 기반 원샷 생성
 ---
 
-# Component Generator Skill
+# 🎨 Component Generator Skill
 
-프로젝트 표준(Tailwind + Framer Motion + 디자인 토큰)에 맞는 React 컴포넌트를 빠르게 생성.
+프로젝트의 **Premium Mystic** 디자인 가이드를 준수하는 React 컴포넌트를 생성합니다.
 
-## Template
+---
+
+## 🚀 MCP Sequence (실행 시퀀스)
+
+1. **DESIGN_CHECK**: `view_file` → `.agent/CONTEXT_ENGINE.md` §5 Design System 로드
+2. **TOKEN_SCAN**: `view_file` → `src/app/globals.css`에서 관련 변수 확보
+3. **STRUCTURE_PLAN**: `view_file_outline` → `src/components/` (기존 컴포넌트와 중복 확인)
+4. **GENERATION**: `write_to_file` → 컴포넌트 생성 (Framer Motion 필수)
+5. **QA_LINT**: `run_command` → `npx tsc --noEmit`
+
+---
+
+## 💎 Premium Design Standard
 
 ```tsx
-'use client';
-
+/**
+ * 1. Framer Motion 필수
+ * 2. Glassmorphism 필수 (bg-white/5 backdrop-blur-md)
+ * 3. Primary Gradient (cyan-400 to purple-500)
+ */
 import { motion } from 'framer-motion';
 
-interface {{NAME}}Props {
-  // props
-}
-
-export default function {{NAME}}({ }: {{NAME}}Props) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="glass rounded-2xl p-6 border border-white/10"
-    >
-      {/* Content */}
-    </motion.div>
-  );
-}
+export const PremiumComponent = () => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6"
+  >
+    <h3 className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 font-bold">
+      Title
+    </h3>
+  </motion.div>
+);
 ```
 
-## Design Standards
+---
 
-### Colors (CSS Variables)
-- Primary: `text-primary`, `bg-primary` → `#7C3AED`
-- Secondary: `text-secondary`, `bg-secondary` → `#F59E0B`
-- Background: `bg-background` → `#09090B`
-- Foreground: `text-foreground` → `#FAFAFA`
-- Zinc tones: `text-zinc-400`, `text-zinc-500` (보조 텍스트)
+## 🔄 Auto-Collaboration Trigger (자동 협업)
 
-### Glass Effect
-```tsx
-className="glass rounded-2xl p-6 border border-white/10"
-// = bg-[var(--surface)] backdrop-blur-xl border border-white/10
-```
-
-### Gradient Patterns
-```tsx
-// Header gradient (primary/violet)
-className="bg-gradient-to-r from-violet-700 via-purple-700 to-indigo-700"
-// CTA button (amber/yellow)
-className="bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-bold"
-// Neon cyber
-className="bg-gradient-to-r from-[var(--neon-cyan)] to-[var(--neon-purple)]"
-```
-
-### Animation Patterns
-```tsx
-// Entry: fade + slide up
-initial={{ opacity: 0, y: 20 }}
-animate={{ opacity: 1, y: 0 }}
-
-// Staggered list
-transition={{ delay: index * 0.1 }}
-
-// Hover: scale
-whileHover={{ scale: 1.02 }}
-whileTap={{ scale: 0.98 }}
-
-// Float (CSS class)
-className="antigravity"
-```
-
-### Font Family
-- 본문: `font-sans` → Noto Sans KR
-- 제목/숫자: `font-display` → Do Hyeon
-
-## Steps
-
-### 1. 표준 확인
-// turbo
-- 이 SKILL.md의 Template & Design Standards 참조
-
-### 2. 컴포넌트 생성
-- `write_to_file`로 `src/components/` 에 생성
-- Template의 `{{NAME}}`을 실제 이름으로 교체
-
-### 3. 빌드 확인
-// turbo
-- `npx tsc --noEmit`
-
-## Cost Rules
-- **예산**: 최대 5 tool calls
-- **원칙**: 기존 컴포넌트 참조 불필요, 이 템플릿 사용
+- 컴포넌트 생성 완료 시 → **T10 Growth**에 Handoff (Analytics 이벤트 삽입 요청)
+- 신규 토큰 필요 시 → **T6 Design**에 즉시 Handoff

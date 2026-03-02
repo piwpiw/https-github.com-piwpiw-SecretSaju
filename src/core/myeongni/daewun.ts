@@ -39,28 +39,52 @@ export function isDaewunForward(yearStem: string, gender: 'M' | 'F'): boolean {
 
 export function calculateDaewunStartAge(birthDate: Date, isForward: boolean): number {
     const year = birthDate.getFullYear();
-    const solarTerms = getAnnualSolarTerms(year);
-    if (!solarTerms.length) return 5; // Fallback
+    // Get solar terms for current and adjacent years to covers boundaries
+    const solarTerms = [
+        ...getAnnualSolarTerms(year - 1),
+        ...getAnnualSolarTerms(year),
+        ...getAnnualSolarTerms(year + 1)
+    ];
 
-    const allTerms = solarTerms; // Use all 24 terms
+    // Filter for 12 Jeol-gi (Major Solar Terms) that start a month
+    const JEOL_GI_INDICES = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22];
+    const jeolGiTerms = solarTerms.filter(t => JEOL_GI_INDICES.includes(t.index));
+    
+    // Sort by date
+    jeolGiTerms.sort((a, b) => a.date.getTime() - b.date.getTime());
 
-    // Sort terms by date just in case
-    // assuming solarTerms are sorted.
-
-    let targetTerm: Date | undefined;
+    let targetTermDate: Date | undefined;
 
     if (isForward) {
-        targetTerm = allTerms.find(term => term.date > birthDate)?.date || allTerms[0].date;
+        // Forward: Find the first Jeol-gi AFTER birth
+        targetTermDate = jeolGiTerms.find(term => term.date > birthDate)?.date;
     } else {
-        const prevTerms = allTerms.filter(term => term.date <= birthDate);
-        targetTerm = prevTerms.length > 0 ? prevTerms[prevTerms.length - 1].date : allTerms[allTerms.length - 1].date;
+        // Backward: Find the first Jeol-gi BEFORE or EQUAL to birth
+        const prevTerms = jeolGiTerms.filter(term => term.date <= birthDate);
+        targetTermDate = prevTerms.length > 0 ? prevTerms[prevTerms.length - 1].date : undefined;
     }
 
-    const diffMs = Math.abs(targetTerm.getTime() - birthDate.getTime());
-    const diffDays = diffMs / (24 * 60 * 60 * 1000); // Floating point days
-    const daewunStartAge = Math.round(diffDays / 3);
+    if (!targetTermDate) return 5; // Fallback
 
-    return Math.min(10, Math.max(0, daewunStartAge));
+    const diffMs = Math.abs(targetTermDate.getTime() - birthDate.getTime());
+    const totalDays = diffMs / (1000 * 60 * 60 * 24);
+    
+    // Professional conversion: 3 days = 1 year
+    // (Total Days / 3)
+    // We want the primary "Dae-wun Age" which is an integer (1 to 10)
+    let daewunAge = Math.floor(totalDays / 3);
+    const remainingDays = totalDays % 3;
+    
+    // Rounding logic: if remainder >= 1.5 days (which is 6 months), round up
+    if (remainingDays >= 1.5) {
+        daewunAge += 1;
+    }
+    
+    // Dae-wun age is typically 1 to 10. If 0, it becomes 1 (or remains 0 in some systems, but 1 is standard for "starts at age 1")
+    // Most professional systems use 1-10.
+    if (daewunAge === 0) daewunAge = 1;
+
+    return Math.min(10, daewunAge);
 }
 
 export function calculateDaewunPillars(monthPillar: GanJi, isForward: boolean, count: number = 9): GanJi[] {

@@ -14,7 +14,7 @@ interface JellyShopModalProps {
     isOpen: boolean;
     onClose: () => void;
     onPurchaseSuccess?: (jellies: number) => void;
-    highlightTier?: 'taste' | 'smart' | 'pro';
+    highlightTier?: 'taste' | 'smart' | 'pro' | 'donation';
 }
 
 export default function JellyShopModal({

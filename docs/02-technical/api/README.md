@@ -1,4 +1,4 @@
-# API Reference - Secret Saju
+﻿# API Reference - Secret Saju
 
 **Complete API Documentation**
 
@@ -357,8 +357,8 @@ curl http://localhost:3000/api/saju/calculate \
 
 ## 📚 Related Documentation
 
-- [API Type Definitions](../../src/types/api.ts)
-- [Error Handling](../../src/lib/errors.ts)
+- [API Type Definitions](../../../src/types/api.ts)
+- [Error Handling](../../../src/lib/errors.ts)
 - [Authentication Flow](../integrations/kakao-login.md)
 - [Payment Integration](../integrations/toss-payments.md)
 
@@ -367,3 +367,4 @@ curl http://localhost:3000/api/saju/calculate \
 **Document Owner**: Backend Team  
 **Last Updated**: 2026-01-31  
 **API Version**: 1.0
+

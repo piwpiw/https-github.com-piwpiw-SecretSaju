@@ -47,7 +47,7 @@ export const ENV = {
 // ============================================
 
 export const APP_CONFIG = {
-    NAME: 'Secret Paws - 990 사주마미',
+    NAME: '시크릿사주 - 보헤미안 스튜디오',
     VERSION: '1.0.0',
     BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : ''),
     API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || '/api',
@@ -80,6 +80,38 @@ export const KAKAO_CONFIG = {
     get error(): string | null {
         if (!this.JS_KEY) return 'NEXT_PUBLIC_KAKAO_JS_KEY is not configured';
         if (!this.REST_API_KEY) return 'KAKAO_REST_API_KEY is not configured';
+        return null;
+    },
+} as const;
+
+// ============================================
+// MCP AUTHENTICATION (OAuth 2.1 + PKCE)
+// ============================================
+
+/**
+ * MCP OAuth configuration.
+ * Values are intentionally kept mostly env-driven for provider swaps.
+ */
+export const MCP_CONFIG = {
+    // Public values
+    CLIENT_ID: process.env.NEXT_PUBLIC_MCP_CLIENT_ID || '',
+    CLIENT_SECRET: process.env.MCP_CLIENT_SECRET || '',
+    AUTH_URL: process.env.NEXT_PUBLIC_MCP_AUTH_URL || 'https://mcp.example.com/oauth/authorize',
+    TOKEN_URL: process.env.NEXT_PUBLIC_MCP_TOKEN_URL || 'https://mcp.example.com/oauth/token',
+    USERINFO_URL: process.env.NEXT_PUBLIC_MCP_USERINFO_URL || 'https://mcp.example.com/oauth/userinfo',
+    REDIRECT_URI: process.env.NEXT_PUBLIC_MCP_REDIRECT_URI || `${APP_CONFIG.BASE_URL}/api/auth/mcp/callback`,
+
+    SCOPE: process.env.NEXT_PUBLIC_MCP_SCOPE || 'openid profile email',
+
+    get isConfigured(): boolean {
+        return !!(this.CLIENT_ID && this.AUTH_URL && this.TOKEN_URL && this.REDIRECT_URI);
+    },
+
+    get error(): string | null {
+        if (!this.CLIENT_ID) return 'NEXT_PUBLIC_MCP_CLIENT_ID is not configured';
+        if (!this.AUTH_URL) return 'NEXT_PUBLIC_MCP_AUTH_URL is not configured';
+        if (!this.TOKEN_URL) return 'NEXT_PUBLIC_MCP_TOKEN_URL is not configured';
+        if (!this.USERINFO_URL) return 'NEXT_PUBLIC_MCP_USERINFO_URL is not configured';
         return null;
     },
 } as const;
@@ -165,6 +197,7 @@ export const ANALYTICS_CONFIG = {
  */
 export const FEATURES = {
     KAKAO_LOGIN: KAKAO_CONFIG.isConfigured,
+    MCP: MCP_CONFIG.isConfigured,
     PAYMENT: PAYMENT_CONFIG.isConfigured,
     DATABASE: DATABASE_CONFIG.isConfigured,
     ANALYTICS: ENV.IS_PROD,
@@ -200,6 +233,10 @@ export function validateEnvironment(): {
         }
     }
 
+    if (MCP_CONFIG.error) {
+        warnings.push(`MCP is not fully configured. ${MCP_CONFIG.error}`);
+    }
+
     if (!PAYMENT_CONFIG.isConfigured && ENV.IS_PROD) {
         warnings.push('Payment gateway is not configured in production');
     }
@@ -209,6 +246,9 @@ export function validateEnvironment(): {
     }
 
     if (ENV.IS_PROD) {
+        if (!MCP_CONFIG.USERINFO_URL) {
+            warnings.push('MCP userinfo endpoint URL is missing. MCP profile sync will fail.');
+        }
         if (!DATABASE_CONFIG.SERVICE_ROLE_KEY) {
             errors.push('CRITICAL: SUPABASE_SERVICE_ROLE_KEY is missing in production. Server operations will fail.');
         }
@@ -238,6 +278,7 @@ export function logEnvironmentStatus(): void {
         console.log('');
         console.log('Features:');
         console.log(`  ✓ Kakao Login: ${FEATURES.KAKAO_LOGIN ? '✅' : '❌'}`);
+        console.log(`  ✓ MCP: ${FEATURES.MCP ? '✅' : '❌'}`);
         console.log(`  ✓ Payment: ${FEATURES.PAYMENT ? '✅' : '❌'}`);
         console.log(`  ✓ Database: ${FEATURES.DATABASE ? '✅' : '❌'}`);
         console.log(`  ✓ Analytics: ${FEATURES.ANALYTICS ? '✅' : '❌'}`);
@@ -268,6 +309,7 @@ export function logEnvironmentStatus(): void {
 // ============================================
 
 export type KakaoConfig = typeof KAKAO_CONFIG;
+export type MCPConfig = typeof MCP_CONFIG;
 export type PaymentConfig = typeof PAYMENT_CONFIG;
 export type DatabaseConfig = typeof DATABASE_CONFIG;
 export type AnalyticsConfig = typeof ANALYTICS_CONFIG;

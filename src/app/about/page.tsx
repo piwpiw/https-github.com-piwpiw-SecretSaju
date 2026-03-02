@@ -10,7 +10,7 @@ export default function AboutPage() {
             <div className="max-w-4xl mx-auto px-6 pt-16 relative z-10">
                 <Link href="/" className="flex items-center gap-3 text-slate-500 hover:text-white transition-all group mb-16">
                     <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                    <span className="text-[10px] font-black tracking-[0.3em] uppercase">Abort & Return</span>
+                    <span className="text-[10px] font-black tracking-[0.3em] uppercase">돌아가기</span>
                 </Link>
 
                 <div className="text-center mb-24">
@@ -20,7 +20,7 @@ export default function AboutPage() {
                         className="inline-flex px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full mb-6"
                     >
                         <span className="text-[8px] font-black tracking-[0.4em] text-cyan-400 uppercase">
-                            Protocol Encryption Active
+                            프로토콜 암호화 활성
                         </span>
                     </motion.div>
 
@@ -35,10 +35,10 @@ export default function AboutPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-24">
                     {[
-                        { icon: Cpu, title: "Precision Algorithm", desc: "수천 년의 명리학 빅데이터와 최첨단 AI 엔진 DACRE를 통해 당신의 운명 노드를 정밀 분석합니다.", color: "text-cyan-400", bg: "from-cyan-500/20" },
-                        { icon: Globe, title: "Identity Sync", desc: "가족, 연인, 친구와의 관계 매트릭스를 입체적으로 가시화하여 유기적인 운명 지도를 완성합니다.", color: "text-purple-400", bg: "from-purple-500/20" },
-                        { icon: Shield, title: "Security Protocols", desc: "모든 운명 데이터는 종단간 암호화를 통해 보호되며, 오직 당신의 승인 하에만 동기화됩니다.", color: "text-emerald-400", bg: "from-emerald-500/20" },
-                        { icon: Bolt, title: "Energy Units", desc: "복잡한 결제 체계 없이 젤리(Jelly) 에너지 단위를 통해 모든 고급 인사이트를 즉각적으로 해금합니다.", color: "text-yellow-400", bg: "from-yellow-500/20" }
+                        { icon: Cpu, title: "정밀 알고리즘", desc: "수천 년의 명리학 빅데이터와 최첨단 AI 엔진 DACRE로 당신의 운명 노드를 정밀 분석합니다.", color: "text-cyan-400", bg: "from-cyan-500/20" },
+                        { icon: Globe, title: "운명 시그널 동기화", desc: "가족, 연인, 친구와의 관계 매트릭스를 입체적으로 가시화해 유기적인 운명 지도를 완성합니다.", color: "text-purple-400", bg: "from-purple-500/20" },
+                        { icon: Shield, title: "보안 규약", desc: "운명 데이터는 종단간 암호화로 보호되며, 오직 당신의 승인 하에만 동기화됩니다.", color: "text-emerald-400", bg: "from-emerald-500/20" },
+                        { icon: Bolt, title: "에너지 유닛", desc: "복잡한 결제 체계 없이 젤리(Jelly) 에너지 유닛으로 모든 고급 인사이트를 즉시 해금합니다.", color: "text-yellow-400", bg: "from-yellow-500/20" }
                     ].map((feature, i) => (
                         <motion.div
                             key={i}
@@ -66,13 +66,13 @@ export default function AboutPage() {
                 >
                     <div className="p-12 text-center relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[80px] -mr-32 -mt-32" />
-                        <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase mb-4">Start Your Sync</h2>
+                        <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase mb-4">동기화 시작하기</h2>
                         <p className="text-slate-500 mb-8 max-w-md mx-auto">지금 바로 당신의 고유 주파수를 측정하고 운명의 타래를 분석하세요.</p>
                         <Link
                             href="/"
                             className="inline-flex px-12 py-5 rounded-2xl bg-white text-black font-black text-sm uppercase tracking-widest hover:scale-105 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)]"
                         >
-                            Initialize System
+                            시스템 입장하기
                         </Link>
                     </div>
                 </motion.div>

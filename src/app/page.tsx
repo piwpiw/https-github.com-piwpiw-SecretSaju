@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import BirthInputRetro from "@/components/BirthInputRetro";
 import LoadingGlitch from "@/components/LoadingGlitch";
 import ResultCard from "@/components/ResultCard";
@@ -9,10 +9,15 @@ import TerminalBoot from "@/components/TerminalBoot";
 import { calculateSaju, getPillarNameKo, type SajuResult } from "@/lib/saju";
 import { getArchetypeByCode } from "@/lib/archetypes";
 import JellyShopModal from "@/components/shop/JellyShopModal";
-import Link from 'next/link';
-import { ChevronRight, Shield, Sparkles, TrendingUp, Users, Star, Gift, Calendar, Heart, BookOpen, Clock, Smile, Zap } from 'lucide-react';
+import { Shield, Zap, Activity, Compass } from "lucide-react";
 import { handleShare } from '@/lib/share';
-import { getProfiles, type SajuProfile } from "@/lib/storage";
+import CouponBanner from "@/components/home/CouponBanner";
+import FortuneCarousel from "@/components/home/FortuneCarousel";
+import DailyPsychologySection from "@/components/home/DailyPsychologySection";
+import OracleBall from "@/components/home/OracleBall";
+import LuckyScoreCard from "@/components/home/LuckyScoreCard";
+import { useProfiles } from "@/components/ProfileProvider";
+import LuxuryToast from "@/components/ui/LuxuryToast";
 
 type FlowState = "boot" | "input" | "loading" | "result";
 
@@ -20,13 +25,12 @@ export default function HomePage() {
   const [flowState, setFlowState] = useState<FlowState>("boot");
   const [sajuData, setSajuData] = useState<SajuResult | null>(null);
   const [showShop, setShowShop] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [profiles, setProfiles] = useState<SajuProfile[]>([]);
+  const [toastMsg, setToastMsg] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
+  const { activeProfile } = useProfiles();
 
   useEffect(() => {
-    const saved = getProfiles();
-    setProfiles(saved);
-
     const params = new URLSearchParams(window.location.search);
     const ref = params.get('ref');
     if (ref) {
@@ -45,7 +49,9 @@ export default function HomePage() {
     } catch (error) {
       console.error("Saju calculation error:", error);
       setFlowState("input");
-      setToastMessage("분석 중 오류가 발생했습니다. 다시 시도해 주세요.");
+      setToastMsg("계산 처리 중 오류가 발생했습니다.");
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
     }
   };
 
@@ -53,9 +59,20 @@ export default function HomePage() {
     setShowShop(true);
   };
 
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
+  const handleShareResult = async () => {
+    if (isSharing || !sajuData || !archetype) return;
+    setIsSharing(true);
+    try {
+      const shareText = `[시크릿사주] ${archetype.animal_name} 결과를 공유합니다.`;
+      const result = await handleShare('시크릿사주 결과', shareText, window.location.origin);
+      if (result === 'copied') {
+        setToastMsg('클립보드에 복사되었습니다.');
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 2000);
+      }
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   const handleRestart = () => {
@@ -67,7 +84,13 @@ export default function HomePage() {
   const pillarNameKo = sajuData ? getPillarNameKo(sajuData.pillarIndex) : "";
 
   return (
-    <main className="min-h-screen relative overflow-hidden">
+    <main className="min-h-screen bg-slate-950 text-white relative overflow-hidden font-sans">
+      <LuxuryToast message={toastMsg} isVisible={showToast} />
+
+      {/* Atmosphere Background */}
+      <div className="absolute inset-x-0 top-0 h-screen bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15)_0%,transparent_50%)] pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-screen bg-[radial-gradient(circle_at_80%_80%,rgba(168,85,247,0.1)_0%,transparent_50%)] pointer-events-none" />
+
       {/* Boot Sequence */}
       {flowState === "boot" && (
         <TerminalBoot onComplete={() => setFlowState("input")} />
@@ -79,143 +102,79 @@ export default function HomePage() {
       )}
 
       {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-4 py-16 pb-32">
-        {/* Hero Section */}
+      <div className="relative z-10 container mx-auto px-6 py-16 pb-32">
         {/* Dashboard Portal */}
-        {flowState === "boot" || flowState === "input" ? (
-          <div className="max-w-5xl mx-auto space-y-12">
-
-            {/* 1. Hero Banner (점신 스타일) */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="relative w-full rounded-3xl overflow-hidden bg-gradient-to-r from-red-500 to-rose-600 shadow-xl"
-            >
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
-              <div className="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
-                <div className="text-white space-y-4 text-center md:text-left">
-                  <span className="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-bold backdrop-blur-md">EVENT</span>
-                  <h2 className="text-3xl md:text-5xl font-black leading-tight tracking-tight">
-                    매일이 특별해지는<br />점신에서 만나요!
-                  </h2>
-                  <p className="text-red-100 font-medium opacity-90">신규 가입 시 무료 상담 쿠폰 증정 (24시 대기)</p>
-                </div>
-                <div className="flex flex-col gap-3 w-full md:w-auto">
-                  <button className="w-full md:w-auto px-8 py-4 bg-white text-red-600 rounded-xl font-black shadow-lg hover:scale-105 transition-transform active:scale-95 flex items-center justify-center gap-2">
-                    <Gift className="w-5 h-5" /> 무료 쿠폰 받기
-                  </button>
-                  <button className="w-full md:w-auto px-8 py-3 bg-red-700/50 hover:bg-red-700 text-white border border-red-400/30 rounded-xl font-bold transition-colors">
-                    전문가 상담하기
-                  </button>
-                </div>
-              </div>
+        {(flowState === "boot" || flowState === "input") && (
+          <div className="max-w-5xl mx-auto flex flex-col gap-16 sm:gap-20">
+            {/* Hero Section (Banner) */}
+            <motion.div className="order-1" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: "easeOut" }}>
+              <CouponBanner />
             </motion.div>
 
-            {/* 2. Today's Energy Card (If profiles exist) */}
-            {profiles.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 }}
-                className="relative group"
-              >
-                <Link href={`/daily?profileId=${profiles[0].id}`} className="block">
-                  <div className="bg-white dark:bg-slate-800/80 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-[2.5rem] p-8 shadow-xl hover:shadow-2xl transition-all relative overflow-hidden group-hover:-translate-y-1">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl -mr-10 -mt-10" />
-                    <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
-                      <div className="flex-shrink-0 relative">
-                        <div className="w-24 h-24 rounded-full border-4 border-slate-100 dark:border-slate-700 flex items-center justify-center relative overflow-hidden">
-                          <div className="absolute inset-0 bg-indigo-500/10 animate-pulse" />
-                          <span className="text-4xl font-black text-indigo-500 italic drop-shadow-sm">88</span>
-                        </div>
-                        <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg border-4 border-white dark:border-slate-800">
-                          <Zap className="w-5 h-5 fill-current" />
-                        </div>
-                      </div>
-                      <div className="flex-1 text-center md:text-left">
-                        <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                          <span className="text-xs font-black text-indigo-500 uppercase tracking-widest">Today&apos;s Energy for {profiles[0].name}</span>
-                          <div className="h-px w-8 bg-indigo-500/20" />
-                        </div>
-                        <h3 className="text-2xl font-black text-slate-800 dark:text-white italic tracking-tight mb-2">
-                          &quot;상승하는 기운, 새로운 아이디어가 샘솟는 하루!&quot;
-                        </h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium opacity-80">
-                          오늘은 당신의 창의력이 정점에 달하는 시기입니다. 중요한 결정은 오후 2시 이후가 좋습니다.
-                        </p>
-                      </div>
-                      <ChevronRight className="w-8 h-8 text-slate-300 group-hover:text-indigo-500 transition-colors hidden md:block" />
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            )}
-
-            {/* 3. Quick Menu Carousel */}
-
-            {/* 3. Original Saju Input (Anchored for "정통사주") */}
-            <div id="saju-input" className="pt-8 border-t border-slate-200 dark:border-slate-800">
-              <div className="text-center mb-10">
-                <span className="text-xs font-bold text-indigo-500 tracking-wider uppercase mb-2 block">Premium Analysis</span>
-                <h3 className="text-2xl font-black text-slate-900 dark:text-white">정통 사주 성격 분석</h3>
-                <p className="text-sm text-slate-500 mt-2">생년월일로 알아보는 나의 타고난 명식과 성향</p>
-              </div>
-              <div className="max-w-md mx-auto relative">
-                <div className="absolute -inset-4 bg-gradient-to-b from-indigo-500/5 to-transparent rounded-3xl blur-xl -z-10"></div>
-                <BirthInputRetro onSubmit={handleBirthSubmit} />
-                <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-slate-400">
-                  <Shield className="w-3.5 h-3.5" /> 개인정보 처리는 기기 내에서만 안전하게 이루어집니다.
+            {/* Personalized Vibe Section */}
+            <section className="order-3 space-y-8 sm:space-y-10">
+              <div className="flex flex-col sm:flex-row items-center justify-between px-4 gap-6">
+                <div>
+                  <h2 className="ui-title-gradient text-3xl tracking-[0.08em] leading-none">글로벌 <span className="text-indigo-500">운세 동기화</span></h2>
+                  <p className="text-micro-copy mt-3 opacity-80">오늘 컨디션과 질문 성향 기반 맞춤 분석 결과를 준비합니다</p>
+                </div>
+                <div className="flex items-center gap-3 px-4 py-2 ui-chip">
+                  <Activity className="w-3.5 h-3.5 text-indigo-300 animate-pulse" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-100 italic">시스템 동기 상태: 최적</span>
                 </div>
               </div>
+              <LuckyScoreCard />
+            </section>
+
+            {/* Premium Menu Nexus */}
+            <div className="order-4">
+              <FortuneCarousel />
             </div>
 
-            {/* 4. Daily Content Feed */}
+            {/* Original Saju Input (Classic Core) */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="pt-8"
+              id="saju-input"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="order-2 panel-shell py-20 sm:py-24 px-6 sm:px-10"
             >
-              <div className="flex items-end justify-between mb-6 px-2">
-                <div>
-                  <h3 className="text-xl font-bold text-slate-800 dark:text-white">매일 달라지는 심리풀이</h3>
-                  <p className="text-sm text-slate-500 mt-1">{new Date().getMonth() + 1}월 {new Date().getDate()}일 업데이트</p>
+              <div className="absolute top-0 right-10 w-48 h-1 bg-gradient-to-l from-indigo-500/50 to-transparent" />
+              <div className="text-center mb-12 space-y-4">
+                <div className="ui-chip inline-flex">
+                  <Compass className="w-3 h-3" /> 핵심 분석 엔진
                 </div>
-                <button className="text-sm font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center">
-                  전체보기 <ChevronRight className="w-4 h-4" />
-                </button>
+                <h3 className="ui-title text-white"><span className="text-indigo-500">핵심</span> 사주 입력</h3>
+                <p className="text-xs text-slate-400 uppercase tracking-widest leading-relaxed">정확한 태어난 시간에 가까운 입력일수록 결과가 정밀해집니다</p>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { title: "부자가 되기 위한 오늘의 작은 습관", icon: <Calendar className="w-5 h-5 text-amber-500" />, tag: "재물운" },
-                  { title: "오늘 나의 아우라는 어떤 색일까?", icon: <Sparkles className="w-5 h-5 text-indigo-500" />, tag: "매력도" },
-                  { title: "성형 상담실 입장! 관상으로 보는 매력", icon: <Smile className="w-5 h-5 text-rose-500" />, tag: "관상풀이" },
-                  { title: "행운을 부르는 이번 주말 여행지", icon: <Star className="w-5 h-5 text-sky-500" />, tag: "행운스팟" },
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-4 p-5 bg-white dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer group">
-                    <div className="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                      {item.icon}
-                    </div>
-                    <div className="flex-1">
-                      <span className="inline-block px-2 flex py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-bold text-slate-500 mb-1 w-max">{item.tag}</span>
-                      <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm leading-tight group-hover:text-red-500 transition-colors line-clamp-2">{item.title}</h4>
-                    </div>
-                  </div>
-                ))}
+              <div className="max-w-xl mx-auto">
+                <BirthInputRetro onSubmit={handleBirthSubmit} />
+                <div className="mt-8 flex items-center justify-center gap-2.5 text-[9px] text-slate-500 font-black uppercase tracking-widest italic transition-opacity group-hover:opacity-100 opacity-60">
+                  <Shield className="w-3.5 h-3.5 text-indigo-500/50" /> 보안 처리: 기기 로컬 연산 전용
+                </div>
               </div>
             </motion.div>
 
+            {/* Daily Content Feed */}
+            <div className="order-5">
+              <DailyPsychologySection />
+            </div>
+
+            {/* Interaction Layer */}
+            <div className="order-6">
+              <OracleBall />
+            </div>
+
           </div>
-        ) : null}
+        )}
 
         {/* Result Flow */}
         {flowState === "result" && sajuData && archetype && (
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-8"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-12"
           >
             <ResultCard
               archetype={archetype}
@@ -228,56 +187,38 @@ export default function HomePage() {
               onInsufficientJelly={handleUnlockClick}
             />
 
-            {/* 하단 버튼 */}
-            <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center gap-3">
+            <div className="max-w-xl mx-auto flex flex-col sm:flex-row items-center gap-4">
               <button
                 onClick={handleRestart}
-                className="w-full sm:flex-1 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-medium text-sm hover:bg-white/10 transition-all"
+                className="w-full sm:flex-1 py-5 rounded-2xl ui-chip bg-white/5 border-white/10 text-slate-300 hover:text-white transition-all flex items-center justify-center"
               >
-                다시 분석하기
+                결과 다시 계산
               </button>
               <button
-                onClick={async () => {
-                  const shareText = `[시크릿사주] 나는 '${archetype.animal_name}'이래! 내 사주 성격 정밀 분석 확인해보귀 🐾`;
-                  const result = await handleShare('시크릿사주 운명 분석', shareText, window.location.origin);
-                  if (result === 'copied') {
-                    showToast('링크가 클립보드에 복사되었습니다');
-                  } else if (result === 'shared') {
-                    showToast('친구가 당신의 사주를 엿볼 준비가 되었습니다 🔮');
-                  }
+                onClick={() => {
+                  void handleShareResult();
                 }}
-                className="w-full sm:flex-1 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium text-sm shadow-lg hover:shadow-indigo-500/20 hover:scale-[1.01] transition-all"
+                disabled={isSharing}
+                aria-label="분석 결과 공유"
+                className="w-full sm:flex-1 py-5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-black uppercase italic tracking-widest text-[10px] shadow-xl shadow-indigo-950/20 transition-all flex items-center justify-center gap-3 active:scale-95"
               >
-                결과 공유하기
+                <Zap className="w-4 h-4 fill-current" /> 분석 공유하기
               </button>
             </div>
           </motion.div>
         )}
       </div>
 
-      {/* Jelly Shop Modal */}
       <JellyShopModal
         isOpen={showShop}
         onClose={() => setShowShop(false)}
         onPurchaseSuccess={(jellies) => {
           setShowShop(false);
-          showToast(`🎉 젤리 ${jellies}개가 충전되었습니다!`);
+          setToastMsg(`${jellies}젤리 충전이 완료되었습니다.`);
+          setShowToast(true);
+          setTimeout(() => setShowToast(false), 3000);
         }}
       />
-
-      {/* Toast */}
-      <AnimatePresence>
-        {toastMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] px-5 py-3 bg-slate-800/95 backdrop-blur-lg border border-white/10 rounded-xl shadow-2xl text-white text-sm font-medium"
-          >
-            {toastMessage}
-          </motion.div>
-        )}
-      </AnimatePresence>
     </main>
   );
 }

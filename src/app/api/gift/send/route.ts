@@ -8,6 +8,7 @@ import crypto from 'crypto';
  */
 export async function POST(req: Request) {
     try {
+        const GIFT_TOKEN_TTL_SECONDS = 60 * 60 * 24 * 3;
         const { user, error } = await getAuthenticatedUser(req as any);
         if (!user && process.env.NEXT_PUBLIC_USE_MOCK_DATA !== 'true') {
             return error;
@@ -23,13 +24,18 @@ export async function POST(req: Request) {
 
         // 1. Generate a mock UUID for the result link (In production, saju_profiles in DB)
         const resultToken = crypto.randomUUID();
+        const encodedToken = encodeURIComponent(resultToken);
+        const expiresAt = new Date(Date.now() + GIFT_TOKEN_TTL_SECONDS * 1000).toISOString();
 
         // In actual production:
         // await db.insert('saju_profiles').values({ id: resultToken, ... })
 
         // 2. Send the email using Resend
-        const domain = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : '');
-        const resultLink = `${domain}/result/${resultToken}`;
+        const domain = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || '';
+        if (!domain) {
+            return NextResponse.json({ error: 'Base URL is not configured' }, { status: 500 });
+        }
+        const resultLink = `${new URL(`/result/${encodedToken}`, domain).toString()}`;
         const emailResult = await sendSajuResultEmail(targetEmail, senderName, resultLink);
 
         if (!emailResult.success) {
@@ -39,7 +45,7 @@ export async function POST(req: Request) {
         // 3. Deduct Jelly (Future Integration)
         // await deductJelly(user.id, 300);
 
-        return NextResponse.json({ success: true, linkId: resultToken });
+        return NextResponse.json({ success: true, linkId: resultToken, expires_at: expiresAt, expires_in_seconds: GIFT_TOKEN_TTL_SECONDS });
 
     } catch (error: any) {
         console.error('[API/Gift] Error sending gift:', error);

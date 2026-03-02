@@ -12,12 +12,7 @@ import { WuxingElement, CHEONGAN_TO_WUXING, JIJI_TO_WUXING } from "./wuxing";
 /**
  * 4기둥 (연월일시)
  */
-export interface FourPillars {
-    year: { cheongan: string; jiji: string };
-    month: { cheongan: string; jiji: string };
-    day: { cheongan: string; jiji: string };
-    hour: { cheongan: string; jiji: string };
-}
+import { FourPillars, Stem, Branch } from "../core/calendar/ganji";
 
 /**
  * 일간 강약 점수
@@ -246,8 +241,8 @@ const WANGSEONG_SCORE: Record<string, Record<WuxingElement, number>> = {
  * 득령 계산 (30점 만점)
  */
 function calculateDeukryeong(
-    ilgan: string,
-    monthJiji: string
+    ilgan: Stem,
+    monthJiji: Branch
 ): number {
     const ilganElement = CHEONGAN_TO_WUXING[ilgan]?.element;
     if (!ilganElement) return 0;
@@ -264,8 +259,8 @@ function calculateDeukryeong(
  * 4개 지지에서 12운성 점수 합산 후 정규화
  */
 function calculateDeukji(
-    ilgan: string,
-    jijis: string[]
+    ilgan: Stem,
+    jijis: Branch[]
 ): number {
     const runseongTable = SIBIIUNSEONG_TABLE[ilgan];
     if (!runseongTable) return 0;
@@ -289,8 +284,8 @@ function calculateDeukji(
  * 4개 천간에서 도와주는 글자 개수
  */
 function calculateDeukse(
-    ilgan: string,
-    cheongans: string[]
+    ilgan: Stem,
+    cheongans: Stem[]
 ): number {
     const ilganElement = CHEONGAN_TO_WUXING[ilgan]?.element;
     if (!ilganElement) return 0;
@@ -337,21 +332,21 @@ function calculateDeukse(
 export function calculateGangYak(
     fourPillars: FourPillars
 ): GangYakScore {
-    const ilgan = fourPillars.day.cheongan;
-    const monthJiji = fourPillars.month.jiji;
+    const ilgan = fourPillars.day.stem;
+    const monthJiji = fourPillars.month.branch;
 
     const jijis = [
-        fourPillars.year.jiji,
-        fourPillars.month.jiji,
-        fourPillars.day.jiji,
-        fourPillars.hour.jiji,
+        fourPillars.year.branch,
+        fourPillars.month.branch,
+        fourPillars.day.branch,
+        fourPillars.hour.branch,
     ];
 
     const cheongans = [
-        fourPillars.year.cheongan,
-        fourPillars.month.cheongan,
+        fourPillars.year.stem,
+        fourPillars.month.stem,
         // 일간 자신은 제외
-        fourPillars.hour.cheongan,
+        fourPillars.hour.stem,
     ];
 
     const deukryeong = calculateDeukryeong(ilgan, monthJiji);
@@ -384,21 +379,4 @@ export function calculateGangYak(
     };
 }
 
-/**
- * 4기둥 생성 (임시 - 일주만으로)
- * 
- * NOTE: 실제 생년월일시 전체 명식 계산은 src/core/api/saju-engine.ts 의 HighPrecisionEngine이 전담합니다.
- * 이 함수는 MVP 하위 호환성을 위해 남겨둡니다.
- */
-export function generateFourPillarsFromDayPillar(
-    dayCheongan: string,
-    dayJiji: string
-): FourPillars {
-    // 임시: 일주만 정확하고 나머지는 더미
-    return {
-        year: { cheongan: "甲", jiji: "子" },
-        month: { cheongan: "丙", jiji: "寅" },
-        day: { cheongan: dayCheongan, jiji: dayJiji },
-        hour: { cheongan: "戊", jiji: "午" },
-    };
-}
+

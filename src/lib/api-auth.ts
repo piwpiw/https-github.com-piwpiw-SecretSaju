@@ -4,7 +4,7 @@ import { getSupabaseAdmin } from '@/lib/supabase';
 import { getKakaoUser } from '@/lib/kakao-auth';
 
 export type AuthResult =
-    | { user: { id: string; kakaoId: number; email?: string | null }; error: null }
+    | { user: { id: string; kakaoId: number; email?: string | null; isAdmin?: boolean }; error: null }
     | { user: null; error: NextResponse };
 
 /**
@@ -19,6 +19,14 @@ export async function getAuthenticatedUser(request: NextRequest): Promise<AuthRe
         return {
             user: null,
             error: NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 })
+        };
+    }
+
+    // [Admin Pass] Mock Admin in development/mock mode
+    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        return {
+            user: { id: 'mock-user-123', kakaoId: 999999, email: 'admin@example.com', isAdmin: true },
+            error: null
         };
     }
 
@@ -40,7 +48,7 @@ export async function getAuthenticatedUser(request: NextRequest): Promise<AuthRe
         };
     }
 
-    // [Token Diet] Zero-Waste UPSERT: Create user if not exists, and return ID in one DB call.
+    // [Token Diet] Zero-Waste UPSERT: Create user if not exists, and return ID and isAdmin in one DB call.
     const { data: user, error: userError } = await supabase
         .from('users')
         .upsert({
@@ -50,7 +58,7 @@ export async function getAuthenticatedUser(request: NextRequest): Promise<AuthRe
             profile_image_url: kakaoUser.kakao_account?.profile?.profile_image_url || null,
             last_login_at: new Date().toISOString(),
         }, { onConflict: 'kakao_id' })
-        .select('id')
+        .select('id, is_admin')
         .single();
 
     if (userError || !user) {
@@ -74,7 +82,7 @@ export async function getAuthenticatedUser(request: NextRequest): Promise<AuthRe
     }
 
     return {
-        user: { id: user.id, kakaoId: kakaoUser.id, email: kakaoUser.kakao_account?.email },
+        user: { id: user.id, kakaoId: kakaoUser.id, email: kakaoUser.kakao_account?.email, isAdmin: (user as any).is_admin },
         error: null
     };
 }

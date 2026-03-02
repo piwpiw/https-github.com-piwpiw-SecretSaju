@@ -8,6 +8,7 @@ import { getFoodRecommendationsByCode } from "@/data/foodRecommendations";
 import { getProductRecommendationsByCode } from "@/data/productRecommendations";
 import { PILLAR_CODES } from "@/lib/saju";
 import { normalizeAgeGroup } from "@/lib/validation";
+import { getSupabaseAdmin } from "@/lib/supabase";
 
 export type AgeGroup = "10s" | "20s" | "30s";
 
@@ -24,10 +25,25 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const foods = getFoodRecommendationsByCode(code, ageGroup);
-    const products = getProductRecommendationsByCode(code);
+    const supabase = getSupabaseAdmin();
 
-    return NextResponse.json({ foods, products });
+    // 1. Fetch from DB in parallel
+    const [dbFoods, dbProducts, dbCampaigns] = await Promise.all([
+      supabase?.from('food_recommendations').select('*').eq('code', code).limit(5),
+      supabase?.from('product_recommendations').select('*').eq('code', code).limit(5),
+      supabase?.from('campaigns').select('*').eq('is_active', true).limit(10)
+    ]);
+
+    // 2. Fallback to static if DB is empty
+    let foods = dbFoods?.data && dbFoods.data.length > 0 ? dbFoods.data : getFoodRecommendationsByCode(code, ageGroup);
+    let products = dbProducts?.data && dbProducts.data.length > 0 ? dbProducts.data : getProductRecommendationsByCode(code);
+    let campaigns = dbCampaigns?.data || [];
+
+    return NextResponse.json({
+      foods,
+      products,
+      campaigns
+    });
   } catch (err) {
     if (process.env.NODE_ENV === "development") {
       console.error("[api/recommendations]", err);
@@ -38,3 +54,4 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+

@@ -231,7 +231,7 @@ export const CELEBRITY_MATCHES: CelebrityData = {
     ],
 
     // 11-60: Remaining pillars (to be generated)
-    // TODO: Generate remaining 50 pillars with celebrity matches
+    // NOTE: Remaining 50 pillars with celebrity matches are planned for a content batch release.
 
     "GAP_SUL": [],
     "EUL_HAE": [],

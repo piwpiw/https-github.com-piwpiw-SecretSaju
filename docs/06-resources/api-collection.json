@@ -1,0 +1,13 @@
+﻿{
+  "name": "Secret Saju API Collection",
+  "version": "1.0",
+  "basePath": "/api",
+  "endpoints": [
+    "/saju/calculate",
+    "/saju/create",
+    "/saju/list",
+    "/payment/verify",
+    "/wallet/balance",
+    "/wallet/history"
+  ]
+}

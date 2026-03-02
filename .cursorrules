@@ -21,3 +21,13 @@
 - Do NOT generate full document summaries of what you did.
 - Output ONLY a single sentence detailing the exact lines/logic changed.
 - If writing a report or markdown, keep it strictly structured (bullet points / tables / alert blocks).
+
+## 5. 🪙 TOKEN OPTIMIZATION & MCP SEARCH
+- **MCP tool search** is globally enabled (`true`).
+- Never read all files without structural necessity. Use `CONTEXT_ENGINE.md` tags (e.g., `#filemap`) via `grep_search` to find line boundaries, then load partial context.
+- Use explicit filenames and exact function/component names for targeted searches and modifications.
+
+## 6. ⚡ ACTIVE SKILL & WORKFLOW UTILIZATION
+- Maximize the use of `.agent/skills/` and `.agent/workflows/`.
+- Routine operations like PR reviews, linting, and background build validation MUST trigger the respective automated workflows (e.g., `code-review` checks, `perf-check` running `npm run qa`).
+- Do not stop at single code fixes; auto-trigger the next designated team handling (Handoff JSON in `.agent/AGENT_PROTOCOLS.md`) after a successful phase.

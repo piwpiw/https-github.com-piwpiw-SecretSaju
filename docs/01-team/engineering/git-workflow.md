@@ -1,4 +1,4 @@
-# Git Workflow - Secret Saju
+﻿# Git Workflow - Secret Saju
 
 **Version Control & Collaboration Guide**
 
@@ -411,7 +411,7 @@ git cherry-pick abc123
 - [ ] Updated documentation if needed
 
 ### As a Reviewer
-- [ ] Code follows [Coding Standards](../01-team/engineering/coding-standards.md)
+- [ ] Code follows [Coding Standards](./coding-standards.md)
 - [ ] No security vulnerabilities
 - [ ] Performance considerations addressed
 - [ ] Error handling present
@@ -518,3 +518,4 @@ git stash pop
 **Document Owner**: Engineering Team Lead  
 **Last Updated**: 2026-01-31  
 **Next Review**: Quarterly
+

@@ -39,11 +39,39 @@ export type AnalyticsEvent =
 
 export type AnalyticsParams = Record<string, string | number | boolean>;
 
+type AnalyticsDedupeState = { event: AnalyticsEvent; paramsKey: string; ts: number };
+const ANALYTICS_DUPLICATE_WINDOW_MS = Number(process.env.NEXT_PUBLIC_ANALYTICS_DEDUPE_MS ?? 1000);
+const ANALYTICS_DUPLICATE_WINDOW_SAFE = Number.isFinite(ANALYTICS_DUPLICATE_WINDOW_MS)
+  ? ANALYTICS_DUPLICATE_WINDOW_MS
+  : 1000;
+const analyticsEventCache = new Map<string, AnalyticsDedupeState>();
+
+function normalizeAnalyticsParams(params?: AnalyticsParams) {
+  const normalized = params ?? {};
+  const keys = Object.keys(normalized).sort();
+  return keys.map((key) => `${key}=${String((normalized as Record<string, string | number | boolean>)[key])}`).join('|');
+}
+
+function shouldDeduplicateEvent(event: AnalyticsEvent, paramsKey: string, now: number) {
+  const key = `${event}:${paramsKey}`;
+  const previous = analyticsEventCache.get(key);
+  if (previous && now - previous.ts < ANALYTICS_DUPLICATE_WINDOW_SAFE) {
+    return true;
+  }
+  analyticsEventCache.set(key, { event, paramsKey, ts: now });
+  return false;
+}
+
 /**
  * Core: Track a custom event
  */
 export function trackEvent(event: AnalyticsEvent, params?: AnalyticsParams) {
   if (typeof window === "undefined") return;
+  const now = Date.now();
+  const paramsKey = normalizeAnalyticsParams(params);
+  if (shouldDeduplicateEvent(event, paramsKey, now)) {
+    return;
+  }
 
   const w = window as any;
 

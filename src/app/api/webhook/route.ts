@@ -5,7 +5,8 @@ import { getSupabaseAdmin } from '@/lib/supabase';
 function getStripe() {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error('STRIPE_SECRET_KEY is not configured');
-  return new Stripe(key, { apiVersion: '2026-01-28.clover' });
+  // @ts-ignore
+  return new Stripe(key, { apiVersion: '2026-02-25.clover' as any });
 }
 
 function getWebhookSecret() {

@@ -57,6 +57,36 @@ NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ### 移댁뭅??SDK 濡쒕뱶 ?덈맖
 - 釉뚮씪?곗? 肄섏넄?먯꽌 `window.Kakao` ?뺤씤
 - ?ㅽ듃?뚰겕 ??뿉??Kakao SDK ?ㅽ겕由쏀듃 濡쒕뱶 ?뺤씤
+
+## MCP OAuth Configuration (Server + Client)
+
+### Purpose
+
+Set environment variables for MCP OAuth 2.1 PKCE flow:
+
+```bash
+# MCP OAuth client (public)
+NEXT_PUBLIC_MCP_CLIENT_ID=your_mcp_client_id
+NEXT_PUBLIC_MCP_AUTH_URL=https://provider.example.com/oauth/authorize
+NEXT_PUBLIC_MCP_TOKEN_URL=https://provider.example.com/oauth/token
+NEXT_PUBLIC_MCP_USERINFO_URL=https://provider.example.com/oauth/userinfo
+NEXT_PUBLIC_MCP_SCOPE=openid profile email
+NEXT_PUBLIC_MCP_REDIRECT_URI=https://your-domain.com/api/auth/mcp/callback
+
+# MCP OAuth server secret (private)
+MCP_CLIENT_SECRET=your_mcp_client_secret
+```
+
+### Required checks
+
+- CLIENT_ID, AUTH_URL, TOKEN_URL, REDIRECT_URI should be set.
+- USERINFO_URL is required for profile sync. If missing, login will still exchange token but user metadata sync may fail.
+- MCP OAuth artifact cookies (`MCP_STATE`, `MCP_CODE_VERIFIER`) are intentionally short-lived (10 minutes).
+- Keep `MCP_CLIENT_SECRET` server-only.
+
+### Runtime note
+
+- `process.env.NEXT_PUBLIC_USE_MOCK_DATA=true` bypasses MCP network calls in local mock mode.
 # Supabase Setup Guide
 
 ## ?? Quick Start
@@ -246,4 +276,8 @@ After Supabase is set up:
 3. ??Integrate Jelly purchases with database
 4. ??Build API endpoints
 
-See [phase10_implementation_plan.md](../../../.gemini/antigravity/brain/ebdc03af-68d7-408a-88f9-293cc05fe8a6/phase10_implementation_plan.md) for details.
+See [phase10_implementation_plan.md](../active-dispatch.md) for details.
+
+## 가이드 업데이트
+
+- 카카오/MCP 동작별 에러 대응: provider_error 케이스와 사용자 가이드 문구 매칭

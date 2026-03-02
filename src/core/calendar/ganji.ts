@@ -162,7 +162,7 @@ export function getDayPillar(date: Date): GanJi {
  */
 export function getHourPillar(trueSolarDate: Date, dayStemIndex: number): GanJi {
     const hours = trueSolarDate.getHours();
-    // const minutes = trueSolarDate.getMinutes();
+    const minutes = trueSolarDate.getMinutes();
 
     // Determine Hour Branch (Zodiac Hour)
     // Ja: 23:30 - 01:29 (centered at 00:00)
@@ -174,9 +174,11 @@ export function getHourPillar(trueSolarDate: Date, dayStemIndex: number): GanJi 
     // 1+1 = 2 / 2 = 1 (Chuk)
     // 12+1 = 13 / 2 = 6 (O)
 
-    // Note: Enterprise accuracy should technically check minutes (23:30 boundary)
-    // Standard approximation: floor((h+1)/2)
-    const hourBranchIndex = Math.floor((hours + 1) / 2) % 12;
+    // Precise boundary:
+    // Ja hour = 23:30-01:29, then every 2 hours.
+    const minutesOfDay = hours * 60 + minutes;
+    const shifted = (minutesOfDay - 90 + 1440) % 1440; // 01:30 -> 0
+    const hourBranchIndex = (Math.floor(shifted / 120) + 1) % 12;
 
     // Calculate Hour Stem
     const startStemIndex = (dayStemIndex % 5 * 2) % 10;

@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: 'Secret Paws - 멍냥의 이중생활',
-        short_name: '사주라떼',
-        description: '사회적 가면 뒤에 숨겨진 당신의 진짜 본능을 폭로하는 하이퍼 력셔리 명리학 플랫폼',
+        name: 'Secret Saju - 시크릿 사주',
+        short_name: '시크릿사주',
+        description: '당신의 운명과 본능을 분석하는 하이퍼 력셔리 명리학 플랫폼',
         start_url: '/',
         display: 'standalone',
         background_color: '#09090b',

@@ -1,4 +1,4 @@
-# Architecture Overview - Secret Saju
+﻿# Architecture Overview - Secret Saju
 
 **System Design & Technical Architecture**
 
@@ -581,8 +581,8 @@ Merge to main → Production deploy
 
 ## 📚 Related Documentation
 
-- [CTO Technical Strategy](../01-team/c-level/cto-technical-strategy.md)
-- [API Reference](./api/README.md)
+- [CTO Technical Strategy](../../01-team/c-level/cto-technical-strategy.md)
+- [API Reference](../api/README.md)
 - [Database Schema](./database-schema.md) (To be created)
 - [Security Architecture](./security-architecture.md) (To be created)
 
@@ -591,3 +591,4 @@ Merge to main → Production deploy
 **Document Owner**: CTO / Solution Architect  
 **Last Updated**: 2026-01-31  
 **Next Review**: Quarterly or when major architecture changes
+

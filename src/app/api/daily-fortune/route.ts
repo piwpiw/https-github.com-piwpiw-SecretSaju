@@ -3,8 +3,9 @@
  * GET /api/daily-fortune → 오늘 날짜 기준 일주 인덱스로 한 줄 예언
  */
 
-import { NextResponse } from "next/server";
-import { getDayPillarIndex, getPillarNameKo } from "@/lib/saju";
+import { NextRequest, NextResponse } from "next/server";
+import { getDayPillarIndex, getPillarNameKo, getPillarCode } from "@/lib/saju";
+import { getSupabaseAdmin } from "@/lib/supabase";
 
 const DAILY_LINES: string[] = [
   "오늘은 팀장님 눈 피해라. 물린다.",
@@ -20,21 +21,47 @@ const DAILY_LINES: string[] = [
 ];
 
 export const dynamic = 'force-dynamic';
-// For future edge optimization if needed: export const runtime = 'edge';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const today = new Date();
+    const todayStr = today.toISOString().slice(0, 10);
     const pillarIndex = getDayPillarIndex(today);
     const pillarName = getPillarNameKo(pillarIndex);
-    const lineIndex = Math.max(0, Math.min(pillarIndex, DAILY_LINES.length - 1)) % DAILY_LINES.length;
-    const message = DAILY_LINES[lineIndex] ?? DAILY_LINES[0];
+    const pillarCode = getPillarCode(pillarIndex);
+
+    // 1. Try to fetch from DB
+    const supabase = getSupabaseAdmin();
+    let message = "";
+    let score = null;
+
+    if (supabase) {
+      const { data: dbFortune } = await supabase
+        .from('daily_fortunes')
+        .select('*')
+        .eq('pillar_code', pillarCode)
+        .eq('fortune_date', todayStr)
+        .single();
+
+      if (dbFortune) {
+        message = dbFortune.message;
+        score = dbFortune.score;
+      }
+    }
+
+    // 2. Fallback to hardcoded logic if no DB entry
+    if (!message) {
+      const lineIndex = Math.max(0, Math.min(pillarIndex, DAILY_LINES.length - 1)) % DAILY_LINES.length;
+      message = DAILY_LINES[lineIndex] ?? DAILY_LINES[0];
+    }
 
     return NextResponse.json({
-      date: today.toISOString().slice(0, 10),
+      date: todayStr,
       pillarName,
-      pillarIndex,
+      pillarCode,
       message,
+      score,
+      pillarIndex
     });
   } catch (err) {
     if (process.env.NODE_ENV === "development") {

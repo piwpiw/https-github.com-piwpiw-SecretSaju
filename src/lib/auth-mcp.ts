@@ -1,132 +1,526 @@
-/**
- * MCP OAuth 2.1 Authentication Module
- * 
- * Implements Authorization Code Flow with PKCE (Proof Key for Code Exchange)
- * for Model Context Protocol (MCP) or general OAuth 2.1 compliance.
- */
-
-import { STORAGE_KEYS } from '@/config';
+﻿import { MCP_CONFIG, STORAGE_KEYS, ENV } from '@/config';
 
 export interface McpTokenResponse {
     access_token: string;
     refresh_token?: string;
     token_type: string;
-    expires_in: number;
+    expires_in?: number;
+    id_token?: string;
+    scope?: string;
 }
 
-// Configuration for MCP Provider
-const MCP_CONFIG = {
-    CLIENT_ID: process.env.NEXT_PUBLIC_MCP_CLIENT_ID || 'mock_mcp_client',
-    AUTH_URL: process.env.NEXT_PUBLIC_MCP_AUTH_URL || 'https://mcp.saju.example.com/oauth/authorize',
-    TOKEN_URL: process.env.NEXT_PUBLIC_MCP_TOKEN_URL || 'https://mcp.saju.example.com/oauth/token',
-    REDIRECT_URI: typeof window !== 'undefined' ? `${window.location.origin}/auth/mcp/callback` : '',
+export interface McpUserProfile {
+    providerUserId: string | null;
+    externalUserId: string | null;
+    nickname: string;
+    email: string | null;
+    profileImage: string | null;
+}
+
+export type McpCallbackErrorCode =
+    | 'missing_required_params'
+    | 'missing_oauth_artifacts'
+    | 'invalid_oauth_state'
+    | 'expired_oauth_state'
+    | 'token_exchange_failed'
+    | 'missing_provider_user_id'
+    | 'user_sync_failed'
+    | 'missing_oauth_profile'
+    | 'oauth_callback_error'
+
+export const MCP_CALLBACK_ERROR_MESSAGES: Record<McpCallbackErrorCode, string> = {
+    missing_required_params: 'missing_required_params',
+    missing_oauth_artifacts: 'missing_oauth_artifacts',
+    invalid_oauth_state: 'invalid_oauth_state',
+    expired_oauth_state: 'expired_oauth_state',
+    token_exchange_failed: 'token_exchange_failed',
+    missing_provider_user_id: 'missing_provider_user_id',
+    user_sync_failed: 'user_sync_failed',
+    missing_oauth_profile: 'missing_oauth_profile',
+    oauth_callback_error: 'oauth_callback_error',
 };
 
-/**
- * Generates a random string for code verifier
- */
+const MCP_OAUTH_COOKIE_TTL_SECONDS = 10 * 60;
+const MCP_OAUTH_COOKIE_WARNING_THRESHOLD_SECONDS = 30;
+
+export interface McpStoredArtifacts {
+    state: string;
+    codeVerifier: string;
+    stateIssuedAt?: number;
+}
+
+interface McpStoredStatePayload {
+    value: string;
+    issuedAt: number;
+}
+
+function parseMcpArtifact(rawState: string | null): { state: string; stateIssuedAt?: number } | null {
+    if (!rawState) return null;
+
+    try {
+        const parsed = JSON.parse(rawState) as Partial<McpStoredStatePayload>;
+        if (typeof parsed?.value === 'string' && parsed.value.trim()) {
+            const issuedAt = Number(parsed.issuedAt);
+            return {
+                state: parsed.value,
+                ...(Number.isFinite(issuedAt) ? { stateIssuedAt: issuedAt } : {}),
+            };
+        }
+    } catch {
+        // backward compatible plain state value
+    }
+
+    return { state: rawState };
+}
+
+function randomIntegerFromCrypto(max: number): number {
+    if (typeof crypto === 'undefined') {
+        return Math.floor(Math.random() * max);
+    }
+
+    const values = new Uint32Array(1);
+    crypto.getRandomValues(values);
+    return values[0] % max;
+}
+
 function generateRandomString(length: number): string {
     const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-    let result = '';
-    const randomValues = new Uint32Array(length);
-    if (typeof window !== 'undefined' && window.crypto) {
-        window.crypto.getRandomValues(randomValues);
-        for (let i = 0; i < length; i++) {
-            result += charset[randomValues[i] % charset.length];
-        }
-    } else {
-        // Fallback for SSR
-        for (let i = 0; i < length; i++) {
-            result += charset[Math.floor(Math.random() * charset.length)];
-        }
+    let value = '';
+
+    for (let i = 0; i < length; i += 1) {
+        value += charset[randomIntegerFromCrypto(charset.length)];
     }
-    return result;
+
+    return value;
 }
 
-/**
- * Create SHA-256 hash
- */
-async function generateCodeChallenge(codeVerifier: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(codeVerifier);
-    const buffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(buffer));
-    const base64Digest = btoa(String.fromCharCode(...hashArray))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '');
-    return base64Digest;
+function toBase64Url(buffer: ArrayBuffer): string {
+    const bytes = new Uint8Array(buffer);
+    let string = '';
+
+    for (let i = 0; i < bytes.length; i++) {
+        string += String.fromCharCode(bytes[i]);
+    }
+
+    if (typeof btoa === 'function') {
+        return btoa(string).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    return Buffer.from(string, 'binary').toString('base64url');
 }
 
-/**
- * Initiates the MCP OAuth 2.1 PKCE login flow.
- */
-export async function initiateMcpLogin() {
+async function generateCodeChallenge(verifier: string): Promise<string> {
+    const textEncoder = new TextEncoder();
+    const data = textEncoder.encode(verifier);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return toBase64Url(hash);
+}
+
+function setBrowserCookie(name: string, value: string, maxAgeSeconds: number): void {
+    if (typeof document === 'undefined') return;
+
+    const flags = [
+        `path=/`,
+        `max-age=${maxAgeSeconds}`,
+        `SameSite=Lax`,
+    ];
+
+    if (ENV.IS_PROD) {
+        flags.push('Secure');
+    }
+
+    document.cookie = `${name}=${encodeURIComponent(value)}; ${flags.join('; ')}`;
+}
+
+function logCookieTTL(name: string, maxAgeSeconds: number, requestId?: string): void {
+    if (maxAgeSeconds <= MCP_OAUTH_COOKIE_WARNING_THRESHOLD_SECONDS) {
+        const prefix = requestId ? `[MCP:${requestId}]` : '[MCP]';
+        console.warn(
+            `${prefix} Low OAuth cookie TTL for ${name}: ${maxAgeSeconds}s. Please complete login quickly.`
+        );
+    }
+}
+
+export function parseCookieHeader(cookieHeader: string, name: string): string | null {
+    const prefix = `${name}=`;
+    const match = cookieHeader
+        .split(';')
+        .map((part) => part.trim())
+        .find((item) => item.startsWith(prefix));
+
+    if (!match) return null;
+
+    const rawValue = match.substring(prefix.length);
+
+    try {
+        return decodeURIComponent(rawValue);
+    } catch {
+        return rawValue;
+    }
+}
+
+function getBrowserCookie(name: string): string | null {
+    if (typeof document === 'undefined') return null;
+    return parseCookieHeader(document.cookie, name);
+}
+
+function clearBrowserCookies(names: string[]): void {
+    if (typeof document === 'undefined') return;
+
+    names.forEach((name) => {
+        document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax`;
+    });
+}
+
+export function consumeMcpArtifacts(): McpStoredArtifacts | null {
+    const state = getBrowserCookie(STORAGE_KEYS.MCP_STATE);
+    const codeVerifier = getBrowserCookie(STORAGE_KEYS.MCP_CODE_VERIFIER);
+
+    if (!state || !codeVerifier) return null;
+    const parsedState = parseMcpArtifact(state);
+    if (!parsedState) return null;
+
+    clearBrowserCookies([
+        STORAGE_KEYS.MCP_STATE,
+        STORAGE_KEYS.MCP_CODE_VERIFIER,
+    ]);
+
+    return {
+        state: parsedState.state,
+        codeVerifier,
+        ...(parsedState.stateIssuedAt ? { stateIssuedAt: parsedState.stateIssuedAt } : {}),
+    };
+}
+
+export function getMcpArtifactsFromCookieHeader(cookieHeader: string): McpStoredArtifacts | null {
+    const state = parseCookieHeader(cookieHeader, STORAGE_KEYS.MCP_STATE);
+    const codeVerifier = parseCookieHeader(cookieHeader, STORAGE_KEYS.MCP_CODE_VERIFIER);
+
+    if (!state || !codeVerifier) return null;
+
+    const parsedState = parseMcpArtifact(state);
+    if (!parsedState) return null;
+
+    return {
+        state: parsedState.state,
+        codeVerifier,
+        ...(parsedState.stateIssuedAt ? { stateIssuedAt: parsedState.stateIssuedAt } : {}),
+    };
+}
+
+export function initiateMcpLogin(): void {
+    const requestId = typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : String(Date.now());
+
     if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        console.log('[MOCK] Bypassing MCP OAuth 2.1 Login');
-        document.cookie = `${STORAGE_KEYS.USER_DATA}=${encodeURIComponent(JSON.stringify({ id: 999999, nickname: 'MCP 테스트 유저', provider: 'mcp' }))}; path=/; max-age=86400`;
+        console.log('[MOCK] MCP OAuth flow bypassed');
+        document.cookie = `${STORAGE_KEYS.USER_DATA}=${encodeURIComponent(
+            JSON.stringify({ id: 999999, nickname: 'MCP Mock', provider: 'mcp' })
+        )}; path=/; max-age=86400`;
         window.location.href = '/dashboard';
         return;
     }
 
+    if (!MCP_CONFIG.isConfigured) {
+        console.error('[MCP] Missing configuration:', MCP_CONFIG.error);
+        alert('MCP OAuth is not configured.');
+        return;
+    }
+
     const codeVerifier = generateRandomString(128);
-    const state = generateRandomString(32);
+    const codeChallenge = generateCodeChallenge(codeVerifier);
 
-    // Save verifier to session storage for the callback phase
-    sessionStorage.setItem('mcp_code_verifier', codeVerifier);
-    sessionStorage.setItem('mcp_oauth_state', state);
+    codeChallenge
+        .then((challenge) => {
+            const state = generateRandomString(32);
 
-    const codeChallenge = await generateCodeChallenge(codeVerifier);
+            if (typeof sessionStorage !== 'undefined') {
+                sessionStorage.setItem('mcp_code_verifier', codeVerifier);
+                sessionStorage.setItem('mcp_oauth_state', state);
+            }
 
-    const params = new URLSearchParams({
-        client_id: MCP_CONFIG.CLIENT_ID,
-        redirect_uri: MCP_CONFIG.REDIRECT_URI,
-        response_type: 'code',
-        scope: 'openid profile email',
-        code_challenge: codeChallenge,
-        code_challenge_method: 'S256',
-        state: state
-    });
+            const maxAge = MCP_OAUTH_COOKIE_TTL_SECONDS;
+            setBrowserCookie(
+                STORAGE_KEYS.MCP_STATE,
+                JSON.stringify({ value: state, issuedAt: Date.now() }),
+                maxAge
+            );
+            setBrowserCookie(STORAGE_KEYS.MCP_CODE_VERIFIER, codeVerifier, maxAge);
+            logCookieTTL(STORAGE_KEYS.MCP_STATE, maxAge, requestId);
+            logCookieTTL(STORAGE_KEYS.MCP_CODE_VERIFIER, maxAge, requestId);
 
-    // Redirect to authorization server
-    window.location.href = `${MCP_CONFIG.AUTH_URL}?${params.toString()}`;
+            const params = new URLSearchParams({
+                client_id: MCP_CONFIG.CLIENT_ID,
+                redirect_uri: MCP_CONFIG.REDIRECT_URI,
+                response_type: 'code',
+                scope: MCP_CONFIG.SCOPE,
+                code_challenge: challenge,
+                code_challenge_method: 'S256',
+                state,
+            });
+
+            window.location.href = `${MCP_CONFIG.AUTH_URL}?${params.toString()}`;
+        })
+        .catch((error) => {
+            console.error('[MCP] Failed to start login:', error);
+            alert('Failed to start MCP login.');
+        });
 }
 
-/**
- * Validates the authorization code and exchanges it for tokens (Server Side or Next.js Route Handler).
- */
-export async function exchangeMcpCodeForToken(code: string, codeVerifier: string): Promise<McpTokenResponse | null> {
+export async function exchangeMcpCodeForToken(
+    code: string,
+    codeVerifier: string
+): Promise<McpTokenResponse | null> {
     if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
         return {
             access_token: 'mock_mcp_access_token',
             refresh_token: 'mock_mcp_refresh_token',
             token_type: 'Bearer',
-            expires_in: 3600
+            expires_in: 3600,
         };
     }
 
     try {
+        const body = new URLSearchParams({
+            grant_type: 'authorization_code',
+            client_id: MCP_CONFIG.CLIENT_ID,
+            redirect_uri: MCP_CONFIG.REDIRECT_URI,
+            code,
+            code_verifier: codeVerifier,
+        });
+
+        if (MCP_CONFIG.CLIENT_SECRET) {
+            body.set('client_secret', MCP_CONFIG.CLIENT_SECRET);
+        }
+
         const response = await fetch(MCP_CONFIG.TOKEN_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                grant_type: 'authorization_code',
-                client_id: MCP_CONFIG.CLIENT_ID,
-                redirect_uri: MCP_CONFIG.REDIRECT_URI,
-                code: code,
-                code_verifier: codeVerifier
-            }),
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body,
         });
 
         if (!response.ok) {
-            throw new Error(`Token exchange failed: ${response.statusText}`);
+            const responseText = await response.text();
+            throw new Error(`Token exchange failed (${response.status}): ${responseText}`);
         }
 
-        return await response.json();
+        return (await response.json()) as McpTokenResponse;
     } catch (error) {
-        console.error('[MCP] Token Exchange Error:', error);
+        console.error('[MCP] Token exchange error:', error);
+        return null;
+    }
+}
+
+export async function refreshMcpToken(refreshToken: string): Promise<McpTokenResponse | null> {
+    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        return {
+            access_token: 'mock_mcp_access_token_refreshed',
+            refresh_token: refreshToken || 'mock_mcp_refresh_token',
+            token_type: 'Bearer',
+            expires_in: 3600,
+        };
+    }
+
+    try {
+        const body = new URLSearchParams({
+            grant_type: 'refresh_token',
+            client_id: MCP_CONFIG.CLIENT_ID,
+            refresh_token: refreshToken,
+        });
+
+        if (MCP_CONFIG.CLIENT_SECRET) {
+            body.set('client_secret', MCP_CONFIG.CLIENT_SECRET);
+        }
+
+        const response = await fetch(MCP_CONFIG.TOKEN_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body,
+        });
+
+        if (!response.ok) {
+            const responseText = await response.text();
+            throw new Error(`Token refresh failed (${response.status}): ${responseText}`);
+        }
+
+        return (await response.json()) as McpTokenResponse;
+    } catch (error) {
+        console.error('[MCP] Token refresh error:', error);
+        return null;
+    }
+}
+
+const MCP_PROVIDER_ID_FIELDS = [
+    'sub',
+    'id',
+    'user_id',
+    'external_user_id',
+    'external_id',
+    'externalId',
+    'provider_id',
+    'providerUserId',
+    'provider_user_id',
+    'providerSubject',
+    'provider_subject',
+    'uid',
+    'kakao_id',
+] as const;
+
+function parseUserId(raw: unknown): { externalUserId: string | null; providerUserId: string | null } {
+    // MCP 사용자 ID 파싱 정책:
+    // 1) 문자열/숫자: 그대로 문자열로 사용
+    // 2) 객체: data/profile/sub/id/user_id/external/provider 계열 키를 우선순위대로 탐색
+    // 3) 최종 실패 시 null 반환(필수 ID 유실 시 missing_provider_user_id 처리)
+    if (raw === null || raw === undefined) {
+        return { externalUserId: null, providerUserId: null };
+    }
+
+    if (typeof raw === 'string' && raw.trim()) {
+        const normalized = raw.trim();
+        return { externalUserId: normalized, providerUserId: normalized };
+    }
+
+    if (typeof raw === 'number' && Number.isFinite(raw)) {
+        const normalized = String(raw);
+        return { externalUserId: normalized, providerUserId: normalized };
+    }
+
+    if (typeof raw === 'bigint') {
+        const normalized = String(raw);
+        return { externalUserId: normalized, providerUserId: normalized };
+    }
+
+    if (typeof raw === 'object' && raw !== null) {
+        const source = raw as Record<string, unknown>;
+        const dataNested = source.data && typeof source.data === 'object' && source.data !== null
+            ? (source.data as Record<string, unknown>)
+            : undefined;
+        const nestedFromData = dataNested
+            ? parseUserId({
+                sub: dataNested.sub,
+                id: dataNested.id,
+                user_id: dataNested.user_id,
+                external_id: dataNested.external_id,
+                externalId: dataNested.externalId,
+                provider_id: dataNested.provider_id,
+                providerUserId: dataNested.providerUserId,
+                provider_user_id: dataNested.provider_user_id,
+            })
+            : null;
+        if (nestedFromData?.externalUserId) {
+            return nestedFromData;
+        }
+
+        const explicitExternal = source.externalUserId ?? source.external_user_id;
+        if (explicitExternal) {
+            const explicitParsed = parseUserId(explicitExternal);
+            if (explicitParsed.externalUserId) {
+                return explicitParsed;
+            }
+        }
+
+        const profileNested = typeof source.profile === 'object' && source.profile !== null
+            ? (source.profile as Record<string, unknown>).sub
+            : undefined;
+
+        const nested =
+            source.sub ??
+            source.id ??
+            source.user_id ??
+            explicitExternal ??
+            source.external_user_id ??
+            source.external_id ??
+            source.externalId ??
+            source.provider_id ??
+            source.providerUserId ??
+            source.provider_user_id ??
+            source.providerSubject ??
+            source.provider_subject ??
+            profileNested ??
+            source.uid ??
+            source.kakao_id;
+
+        const nestedParsed = parseUserId(nested);
+        if (nestedParsed.externalUserId) return nestedParsed;
+    }
+
+    return { externalUserId: null, providerUserId: null };
+}
+
+function normalizeMcpProfile(payload: Record<string, unknown>): McpUserProfile {
+    const rawId =
+        payload.sub ??
+        payload.id ??
+        payload.user_id ??
+        payload.data ??
+        payload.externalUserId ??
+        payload.external_user_id ??
+        payload.external_id ??
+        payload.externalId ??
+        payload.provider_id ??
+        payload.providerUserId ??
+        payload.provider_user_id ??
+        payload.providerSubject ??
+        payload.provider_subject ??
+        payload.uid ??
+        payload.kakao_id;
+
+    const parsed = parseUserId(rawId);
+
+    const email = (payload.email as string | undefined) || (payload.preferred_username as string | undefined) || null;
+    const nickname =
+        (payload.name as string | undefined) ||
+        (payload.nickname as string | undefined) ||
+        (payload.login as string | undefined) ||
+        'MCP User';
+
+    const profileImage =
+        (payload.picture as string | undefined) ||
+        (payload.profile_image as string | undefined) ||
+        (payload.avatar_url as string | undefined) ||
+        null;
+
+    return {
+        providerUserId: parsed.providerUserId,
+        externalUserId: parsed.externalUserId,
+        nickname,
+        email,
+        profileImage,
+    };
+}
+
+export async function getMcpUserProfile(accessToken: string): Promise<McpUserProfile | null> {
+    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        return {
+            providerUserId: '999999',
+            externalUserId: '999999',
+            nickname: 'MCP Mock',
+            email: 'mock@mcp.example',
+            profileImage: null,
+        };
+    }
+
+    if (!MCP_CONFIG.USERINFO_URL) {
+        console.warn('[MCP] USERINFO_URL is not configured');
+        return null;
+    }
+
+    try {
+        const response = await fetch(MCP_CONFIG.USERINFO_URL, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const payload = (await response.json()) as Record<string, unknown>;
+        return normalizeMcpProfile(payload);
+    } catch (error) {
+        console.error('[MCP] User info fetch error:', error);
         return null;
     }
 }

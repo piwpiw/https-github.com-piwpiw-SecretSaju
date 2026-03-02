@@ -46,6 +46,8 @@ export default function CompatibilityAdminPage() {
             sipsong: {} as any,
             gyeokguk: {} as any,
             sibiwoonseong: {} as any,
+            gangyak: {} as any,
+            yongshin: {} as any,
             daewun: {} as any,
             currentUn: {} as any,
             version: "1.0.0",

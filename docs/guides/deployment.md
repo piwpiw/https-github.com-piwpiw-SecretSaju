@@ -1,620 +1,112 @@
-﻿# ?? 諛고룷 媛?대뱶
+﻿# 상세 배포 가이드
 
-## 鍮좊Ⅸ ?쒖옉
+## Notice
 
-### 1. Vercel 諛고룷 (沅뚯옣)
+- 이 문서는 배포 실행 시 필요한 상세 참고 정보(명령 예시, 실행 팁, 체크 항목)를 정리한 보조 문서입니다.
+- 배포 명령/정책의 단일 근거(SOT)는 `docs/01-team/engineering/deployment-guide.md`입니다.
+- 본 문서 내용과 SOT가 다르면 **SOT 문서(`docs/01-team/engineering/deployment-guide.md`)를 우선 적용**합니다.
+- 문서 충돌 시 각 문서의 `Last Updated`와 `Next Review`로 최신 동기화 상태를 확인한 뒤 적용하세요.
 
-```bash
-# Vercel CLI ?ㅼ튂
-npm i -g vercel
+---
 
-# 諛고룷
-vercel --prod
-```
+## 문서 목적
 
-### 2. ?섍꼍 蹂???ㅼ젙
+개발 단계에서 배포 전 검증 시간을 줄이고, 반복 가능한 배포 절차를 만들기 위한 실행 가이드를 제공합니다.
+본 문서는 SOT의 확장 설명으로 사용합니다.
 
-Vercel Dashboard ??Settings ??Environment Variables?먯꽌 ?ㅼ쓬 蹂?섎뱾???ㅼ젙?섏꽭??
+## 로컬 기준 빠른 배포 검증
 
-#### ?꾩닔 ?섍꼍 蹂??
+### 1. 기본 점검(권장)
 
-```bash
-# ?좏뵆由ъ??댁뀡
-NEXT_PUBLIC_BASE_URL=https://your-domain.vercel.app
-NEXT_PUBLIC_APP_URL=https://your-domain.vercel.app
+- `npm run deploy:local`
+  - 기본 동작: `preflight:local` + `pre-deploy --skip-build --skip-tests`
+  - 목적: 배포 전 최소한의 안전성 확인
 
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+### 2. preflight 실행 모드
 
-# Kakao OAuth
-NEXT_PUBLIC_KAKAO_JS_KEY=your-kakao-js-key
-KAKAO_REST_API_KEY=your-rest-api-key
-KAKAO_CLIENT_SECRET=your-client-secret
-KAKAO_REDIRECT_URI=https://your-domain.vercel.app/api/auth/kakao/callback
+- `npm run preflight:local` (기본)
+  - `lint` + `tsc --noEmit` 병렬 실행
+- `npm run preflight:local:serial`
+  - 동일 항목을 직렬 실행 (재현/디버깅 목적)
+- `npm run preflight:local:parallel` (명시 실행 시)
+  - 병렬 모드 강제 사용
 
-# Toss Payments (寃곗젣)
-NEXT_PUBLIC_TOSS_CLIENT_KEY=your-toss-client-key
-TOSS_SECRET_KEY=your-toss-secret-key
-```
+### 3. 속도 기준(최근 측정, 로컬 기준)
 
-#### ?좏깮???섍꼍 蹂??
+- 병렬 preflight: 약 **9.4초**
+- 직렬 preflight: 약 **23.4초**
+- 병렬이 빠르므로 기본값으로 유지
 
-```bash
-# Google Analytics
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+## 배포 명령 사용 가이드
 
-# ?섍꼍 ?ㅼ젙
-NODE_ENV=production
-```
+- `npm run deploy:fast`
+  - `--parallel-checks` 기반으로 빠른 검사 경로 사용
+- `npm run deploy`
+  - 기본 전체 배포 흐름(표준 경로)
+- `npm run deploy:preview`
+  - Preview 배포
+- `npm run pre-deploy`
+  - 배포 전 기본 사전 처리 수행
+- `npm run pre-deploy:parallel`
+  - pre-deploy 내부에서 build/test 단계를 병렬로 처리
 
-### 3. GitHub Actions ?먮룞 諛고룷 ?ㅼ젙
+## 표준 배포 흐름
 
-1. **Vercel ?좏겙 ?앹꽦**
-   - Vercel Dashboard ??Settings ??Tokens
-   - ???좏겙 ?앹꽦 ??蹂듭궗
+1. 로컬 확인
+   - `npm run deploy:local`
+   - 실패 시 에러 로그 우선 확인 후 관련 스크립트 개별 실행
+2. Git Push / PR 상태 확인
+   - `main`은 운영(Production), `dev` 또는 PR은 Preview 기준
+3. 배포 실행
+   - 운영: `npm run deploy` 또는 `npm run deploy:fast`
+   - 미리보기: `npm run deploy:preview`
+4. 배포 후 검증
+   - `/api/saju/calculate`, `/api/payment/verify` 스모크 확인
+   - 결제/웹훅 경로 및 주요 정책 페이지(terms/privacy/refund) 링크 확인
+5. 장애 대응
+   - 이상 징후 발생 시 즉시 모니터링 및 롤백 프로세스 수행
 
-2. **GitHub Secrets ?ㅼ젙**
-   - Repository ??Settings ??Secrets and variables ??Actions
-   - ?ㅼ쓬 Secrets 異붽?:
-     - `VERCEL_TOKEN`: Vercel ?좏겙
-     - `VERCEL_ORG_ID`: Vercel 議곗쭅 ID
-     - `VERCEL_PROJECT_ID`: Vercel ?꾨줈?앺듃 ID
+## 체크리스트
 
-3. **?먮룞 諛고룷 ?쒖꽦??*
-   - `main` 釉뚮옖移섏뿉 push?섎㈃ ?먮룞?쇰줈 ?꾨줈?뺤뀡 諛고룷
-   - `dev` 釉뚮옖移섏뿉 push?섎㈃ ?ㅽ뀒?댁쭠 諛고룷
+- [ ] `deploy:local` 성공
+- [ ] `npm run verify:env` 통과(필요 시)
+- [ ] 핵심 API 스모크 통과
+- [ ] 결제/환불/웹훙 기본 동작 확인
+- [ ] 정책 페이지 링크 정상 동작
+- [ ] 장애 기록: `docs/active-dispatch.md`
 
-### 4. Supabase 留덉씠洹몃젅?댁뀡 ?ㅽ뻾
+### 장애 기록 Wave 자동 표기 규칙
 
-```bash
-# Supabase CLI ?ㅼ튂
-npm i -g supabase
+- Wave 단위로 장애/이슈를 기록할 때 항목 헤더는 `Wave-XX` 형식으로 표기합니다.
 
-# 濡쒓렇??
-supabase login
+### 릴리스 승인 단계(1차/2차)
 
-# 留덉씠洹몃젅?댁뀡 ?ㅽ뻾
-supabase db push
-```
+- 1차 승인: 빌드/테스트 성공 + 핵심 화면 Smoke 통과 + 보안/시크릿 검토
+- 2차 승인: QA 리드 최종 확인 + 운영자 알림 채널 등록
+- 승인자 미확정 항목은 배포 실행 전에 `승인자 미정` 태그로 남기고, 배포 블록 처리
+- 승인 누락 시 배포를 중단하고 DO-430에서 규칙 배포 템플릿으로 이관
+- 예시: `Wave-20 · FE-412 (DestinyNetwork tooltip animation jitter)` 형식.
+- 기록 템플릿은 `docs/active-dispatch.md`의 Wave 헤더(`Dispatch Wave YY`)와 동일 형식을 유지합니다.
+- 발생일/해결일은 `YYYY-MM-DD` UTC+9 기준으로 기재합니다.
+- 동일 항목 반복 이슈가 생길 경우 중복 ID는 `#01`, `#02`로 suffix 처리합니다.
 
-?먮뒗 Supabase Dashboard?먯꽌 吏곸젒 ?ㅽ뻾:
-- SQL Editor ??`supabase/migrations/001_initial_schema.sql` ?ㅽ뻾
-- SQL Editor ??`supabase/migrations/002_add_orders_table.sql` ?ㅽ뻾
+## 롤백 기준(요약)
 
-### 5. Toss Payments ?ㅼ젙
+- 운영에서 심각한 오류가 발생하면 즉시 이전 정상 배포 버전으로 롤백
+- 롤백 후 상태 점검: 주요 API 응답, 정적 페이지, 결제 플로우, DB 연결 상태
+- 원인 분석은 팀 규칙에 따라 기록 후 SOT 문서와 동기화
 
-1. **Toss Payments 媛??*
-   - https://www.tosspayments.com ?묒냽
-   - ?ъ뾽???깅줉 ???뚯뒪???ㅼ젣 ??諛쒓툒
+## 관련 문서
 
-2. **?섍꼍 蹂???ㅼ젙**
-   - ?뚯뒪?? `test_ck_...` (?뚯뒪?몄슜)
-   - ?ㅼ젣: `live_ck_...` (?댁쁺??
-
-3. **寃곗젣 ?뱀씤 URL ?ㅼ젙**
-   - ?깃났: `https://your-domain.vercel.app/payment/success`
-   - ?ㅽ뙣: `https://your-domain.vercel.app/payment/fail`
-
-### 6. 移댁뭅??濡쒓렇???ㅼ젙
-
-1. **移댁뭅??媛쒕컻??肄섏넄**
-   - https://developers.kakao.com ?묒냽
-   - ???앹꽦 諛??뚮옯???ㅼ젙
-
-2. **由щ떎?대젆??URI ?깅줉**
-   - `https://your-domain.vercel.app/api/auth/kakao/callback`
-
-3. **?섍꼍 蹂???ㅼ젙**
-   - JavaScript ?? REST API ?? Client Secret ?ㅼ젙
-
-## 諛고룷 泥댄겕由ъ뒪??
-
-### 諛고룷 ???뺤씤?ы빆
-
-- [ ] 紐⑤뱺 ?섍꼍 蹂???ㅼ젙 ?꾨즺
-- [ ] Supabase 留덉씠洹몃젅?댁뀡 ?ㅽ뻾 ?꾨즺
-- [ ] Toss Payments ?뚯뒪??寃곗젣 ?깃났
-- [ ] 移댁뭅??濡쒓렇???뚯뒪???깃났
-- [ ] 鍮뚮뱶 ?먮윭 ?놁쓬 (`npm run build`)
-- [ ] ?뚯뒪???듦낵 (`npm test`)
-
-### 諛고룷 ???뺤씤?ы빆
-
-- [ ] 硫붿씤 ?섏씠吏 濡쒕뱶 ?뺤씤
-- [ ] 移댁뭅??濡쒓렇???묐룞 ?뺤씤
-- [ ] 寃곗젣 ?뚮줈???뚯뒪??
-- [ ] ?ㅻ━ 異⑹쟾/?ъ슜 ?뚯뒪??
-- [ ] ?ъ＜ 怨꾩궛 湲곕뒫 ?뺤씤
-- [ ] ?먮윭 濡쒓렇 紐⑤땲?곕쭅
-
-## ?몃윭釉붿뒋??
-
-### 鍮뚮뱶 ?ㅽ뙣
-
-```bash
-# 濡쒖뺄?먯꽌 鍮뚮뱶 ?뚯뒪??
-npm run build
-
-# ???泥댄겕
-npx tsc --noEmit
-
-# 由고듃 泥댄겕
-npm run lint
-```
-
-### ?섍꼍 蹂???꾨씫
-
-Vercel Dashboard?먯꽌 紐⑤뱺 ?섍꼍 蹂?섍? ?ㅼ젙?섏뿀?붿? ?뺤씤?섏꽭??
-
-### 寃곗젣 ?ㅻ쪟
-
-1. Toss Payments ?ㅺ? ?щ컮瑜몄? ?뺤씤
-2. 寃곗젣 ?뱀씤 URL???뺥솗?쒖? ?뺤씤
-3. 二쇰Ц ?뚯씠釉붿씠 ?앹꽦?섏뿀?붿? ?뺤씤
-
-### ?곗씠?곕쿋?댁뒪 ?ㅻ쪟
-
-1. Supabase ?곌껐 ?뺣낫 ?뺤씤
-2. 留덉씠洹몃젅?댁뀡 ?ㅽ뻾 ?щ? ?뺤씤
-3. RLS ?뺤콉 ?뺤씤
-
-## 紐⑤땲?곕쭅
-
-- **Vercel Analytics**: ?깅뒫 紐⑤땲?곕쭅
-- **Supabase Dashboard**: ?곗씠?곕쿋?댁뒪 紐⑤땲?곕쭅
-- **Toss Payments Dashboard**: 寃곗젣 ?댁뿭 ?뺤씤
-
-## 濡ㅻ갚
-
-Vercel Dashboard ??Deployments ???댁쟾 諛고룷 ?좏깮 ??Promote to Production
-# ??諛고룷 泥댄겕由ъ뒪??- 吏湲?諛붾줈 ?ㅽ뻾
-
-## ?렞 ?꾩옱 ?곹깭
-
-- ??Git 珥덇린???꾨즺
-- ??而ㅻ컠 ?꾨즺 (203媛??뚯씪)
-- ??怨쇨툑 理쒖냼??理쒖쟻???곸슜
-- ??GitHub ?먭꺽 ??μ냼 ?곌껐 ?꾩슂
-- ??Supabase 留덉씠洹몃젅?댁뀡 ?꾩슂
-- ??Vercel ?꾨줈?앺듃 ?앹꽦 ?꾩슂
-
-## ?뱥 吏湲?諛붾줈 ?댁빞 ????
-
-### 1截뤴깵 GitHub ??μ냼 ?앹꽦 諛??곌껐
-
-```bash
-# GitHub?먯꽌 ????μ냼 ?앹꽦
-# https://github.com/new ?묒냽
-# ??μ냼 ?대쫫: SecretSaju
-# Public ?먮뒗 Private ?좏깮
-
-# ?먭꺽 ??μ냼 ?곌껐
-git remote add origin https://github.com/piwpiw/SecretSaju.git
-
-# ?몄떆
-git branch -M main
-git push -u origin main
-```
-
-**?먮뒗 ?먮룞???ㅽ겕由쏀듃:**
-```bash
-npm run setup:github
-```
-
-### 2截뤴깵 Supabase 留덉씠洹몃젅?댁뀡 ?ㅽ뻾
-
-**?꾨줈?앺듃**: https://supabase.com/dashboard/project/jyrdihklwkbeypfxbiwp
-
-1. Supabase Dashboard ?묒냽
-2. **SQL Editor** ?대┃
-3. ?ㅼ쓬 ?뚯씪 ?댁슜 蹂듭궗 ??遺숈뿬?ｊ린 ??**Run**:
-   - `supabase/migrations/001_initial_schema.sql`
-   - `supabase/migrations/002_add_orders_table.sql`
-
-**?섍꼍 蹂??媛?몄삤湲?**
-- Settings ??API ??Project URL, anon key, service_role key 蹂듭궗
-
-### 3截뤴깵 ?섍꼍 蹂???ㅼ젙
-
-```bash
-# ??뷀삎 ?ㅼ젙
-npm run setup:env
-
-# ?먮뒗 .env.local ?뚯씪 ?앹꽦
-```
-
-?꾩닔 蹂??
-- Supabase (?꾩뿉??媛?몄삩 媛?
-- Kakao OAuth (移댁뭅??媛쒕컻??肄섏넄)
-- Toss Payments V2 (寃곗젣?꾩젽 API ?? Client/Secret Key)
-- Toss Webhook URL 諛?Secret (寃곗젣 ?곹깭 ?숆린?붿슜)
-
-### 4截뤴깵 Vercel ?꾨줈?앺듃 ?앹꽦
-
-**諛⑸쾿 1: CLI (沅뚯옣)**
-```bash
-npm install -g vercel
-vercel login
-vercel
-```
-
-**諛⑸쾿 2: Dashboard**
-1. https://vercel.com ?묒냽
-2. New Project ??GitHub ??μ냼 ?곌껐
-3. ?섍꼍 蹂???ㅼ젙 (Settings ??Environment Variables)
-
-### 5截뤴깵 諛고룷 ?뺤씤
-
-```bash
-# ?섍꼍 蹂??寃利?
-npm run verify:env
-
-# 諛고룷
-npm run deploy
-```
-
-## ?럞 怨쇨툑 理쒖냼???곸슜 ?꾨즺
-
-### ???곸슜??理쒖쟻??
-
-1. **Next.js 鍮뚮뱶 理쒖쟻??*
-   - ?대?吏 理쒖쟻??(WebP, AVIF)
-   - 踰덈뱾 ?ш린 媛먯냼
-   - 遺덊븘?뷀븳 console.log ?쒓굅
-
-2. **Vercel 理쒖쟻??*
-   - ?⑥닔 ?ㅽ뻾 ?쒓컙: 10珥?(臾대즺 ?뚮옖 理쒖쟻??
-   - 硫붾え由? 1024MB
-   - 罹먯떛 媛뺥솕 (30??
-
-3. **Supabase 理쒖쟻??*
-   - RLS ?뺤콉 ?쒖꽦??
-   - ?몃뜳??理쒖쟻??
-   - Connection Pooling 沅뚯옣
-
-## ?뱤 ?덉긽 鍮꾩슜
-
-**臾대즺 ?뚮옖?쇰줈 異⑸텇:**
-- Vercel Hobby: $0/??
-- Supabase Free: $0/??
-- GitHub: $0/??
-
-**?붽컙 ?ъ슜???덉긽:**
-- ?몃옒?? ~10GB (臾대즺 ?쒕룄 ??
-- API ?몄텧: ~100K (臾대즺 ?쒕룄 ??
-- 鍮뚮뱶: 臾댁젣??(臾대즺)
-
-## ?슚 二쇱쓽?ы빆
-
-### ?덈? ?섏? 留먯븘????寃?
-
-1. ??`.env.local` ?뚯씪??Git??而ㅻ컠
-2. ??Vercel Pro ?뚮옖?쇰줈 ?낃렇?덉씠??(?꾩슂 ?놁쓬)
-3. ??Supabase Pro ?뚮옖?쇰줈 ?낃렇?덉씠??(?꾩슂 ?놁쓬)
-4. ??遺덊븘?뷀븳 API ?몄텧
-
-### 怨쇨툑 諛⑹? 泥댄겕由ъ뒪??
-
-- [ ] `.env.local`??`.gitignore`???ы븿?섏뼱 ?덈뒗吏 ?뺤씤
-- [ ] Vercel 臾대즺 ?뚮옖 ?ъ슜 ?뺤씤
-- [ ] Supabase 臾대즺 ?뚮옖 ?ъ슜 ?뺤씤
-- [ ] ?대?吏 理쒖쟻???쒖꽦???뺤씤
-- [ ] 罹먯떛 ?ㅼ젙 ?뺤씤
-
-## ?뱴 李멸퀬 臾몄꽌
-
-- `SETUP_NOW.md` - ?곸꽭 ?ㅼ젙 媛?대뱶
-- `QUICK_DEPLOY.md` - 鍮좊Ⅸ 諛고룷 媛?대뱶
-- `DEPLOYMENT.md` - ?꾩껜 諛고룷 媛?대뱶
-- `scripts/setup-supabase.md` - Supabase ?ㅼ젙
-
-## ?럦 ?꾨즺 ??
-
-諛고룷媛 ?꾨즺?섎㈃:
-1. 硫붿씤 ?섏씠吏 ?묒냽 ?뺤씤
-2. 移댁뭅??濡쒓렇???뚯뒪??
-3. 寃곗젣 ?뚮줈???뚯뒪??
-4. ?ㅻ━ 異⑹쟾/?ъ슜 ?뚯뒪??
-
-**紐⑤뱺 寃껋씠 臾대즺 ?뚮옖?쇰줈 ?묐룞?⑸땲??** ?럧
-# ?? ?꾩쟾 ?먮룞??諛고룷 - 吏湲?諛붾줈 ?ㅽ뻾
-
-## ???먰겢由?諛고룷
-
-```bash
-npm run setup:auto
-```
-
-??紐낅졊???섎굹濡?紐⑤뱺 寃껋씠 ?먮룞?쇰줈 泥섎━?⑸땲??
-
-## ?뱥 ?꾩슂??媛믩쭔 ?낅젰
-
-?ㅽ겕由쏀듃媛 ?ㅽ뻾?섎㈃ ?ㅼ쓬 媛믩뱾留??낅젰?섎㈃ ?⑸땲??
-
-### 1. GitHub ??μ냼 URL (?좏깮??
-```
-https://github.com/piwpiw/SecretSaju.git
-```
-- GitHub?먯꽌 ??μ냼瑜?留뚮뱾吏 ?딆븯?ㅻ㈃ "Enter"濡?嫄대꼫?곌린 媛??
-
-### 2. Supabase ?섍꼍 蹂??(?꾩닔)
-釉뚮씪?곗??먯꽌 ?대┛ Supabase ?섏씠吏?먯꽌:
-- Settings ??API ??Project URL 蹂듭궗
-- Settings ??API ??anon public 蹂듭궗
-- Settings ??API ??service_role secret 蹂듭궗
-
-### 3. 留덉씠洹몃젅?댁뀡 ?ㅽ뻾 (?꾩닔)
-釉뚮씪?곗??먯꽌 ?대┛ Supabase SQL Editor?먯꽌:
-1. `supabase/migrations/001_initial_schema.sql` ?뚯씪 ?댁슜 蹂듭궗 ??遺숈뿬?ｊ린 ??Run
-2. `supabase/migrations/002_add_orders_table.sql` ?뚯씪 ?댁슜 蹂듭궗 ??遺숈뿬?ｊ린 ??Run
-
-## ?렞 ?먮룞?쇰줈 泥섎━?섎뒗 寃껊뱾
-
-??Git 珥덇린??諛?而ㅻ컠
-??GitHub ?먭꺽 ??μ냼 ?곌껐
-???섍꼍 蹂???뚯씪 ?앹꽦
-??Vercel 濡쒓렇??諛?諛고룷
-??GitHub ?몄떆
-
-## ?슚 臾몄젣 ?닿껐
-
-### ?ㅽ겕由쏀듃媛 硫덉땄
-- Ctrl+C濡?以묐떒 ???ㅼ떆 ?ㅽ뻾
-- ?먮뒗 ?④퀎蹂꾨줈 ?섎룞 ?ㅽ뻾
-
-### Vercel 濡쒓렇???ㅽ뙣
-```bash
-vercel login
-# 釉뚮씪?곗??먯꽌 濡쒓렇??
-```
-
-### GitHub ?몄떆 ?ㅽ뙣
-```bash
-git remote add origin https://github.com/piwpiw/SecretSaju.git
-git push -u origin main
-```
-
-## ?뱸 鍮좊Ⅸ ?꾩?留?
-
-紐⑤뱺 ?ㅼ젙 ?섏씠吏媛 ?대? 釉뚮씪?곗????대젮?덉뒿?덈떎:
-- ??Supabase Dashboard
-- ??Vercel Login
-- ??GitHub New Repository
-- ??Kakao Developers
-- ??Toss Payments
-
-**吏湲?諛붾줈 `npm run setup:auto` ?ㅽ뻾?섏꽭??** ??
-# ?? 鍮좊Ⅸ 諛고룷 媛?대뱶
-
-## ?먰겢由?諛고룷 (?먮룞??
-
-### 1?④퀎: ?섍꼍 蹂???ㅼ젙
-
-```bash
-# ??뷀삎 ?섍꼍 蹂???ㅼ젙
-npm run setup:env
-```
-
-?먮뒗 `.env.local` ?뚯씪??吏곸젒 ?앹꽦:
-
-```bash
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-NEXT_PUBLIC_KAKAO_JS_KEY=your-kakao-js-key
-KAKAO_REST_API_KEY=your-rest-api-key
-KAKAO_CLIENT_SECRET=your-client-secret
-KAKAO_REDIRECT_URI=http://localhost:3000/api/auth/kakao/callback
-NEXT_PUBLIC_TOSS_CLIENT_KEY=your-toss-client-key
-TOSS_SECRET_KEY=your-toss-secret-key
-```
-
-### 2?④퀎: ?섍꼍 蹂??寃利?
-
-```bash
-npm run verify:env
-```
-
-### 3?④퀎: ?곗씠?곕쿋?댁뒪 留덉씠洹몃젅?댁뀡
-
-```bash
-# 留덉씠洹몃젅?댁뀡 媛?대뱶 ?뺤씤
-npm run migrate:db
-
-# Supabase CLI ?ъ슜 (沅뚯옣)
-supabase db push
-
-# ?먮뒗 Supabase Dashboard ??SQL Editor?먯꽌 吏곸젒 ?ㅽ뻾
-# - supabase/migrations/001_initial_schema.sql
-# - supabase/migrations/002_add_orders_table.sql
-```
-
-### 4?④퀎: 諛고룷 ??寃利?
-
-```bash
-# ?꾩껜 寃利?(鍮뚮뱶 + ?뚯뒪???ы븿)
-npm run pre-deploy
-
-# 鍮좊Ⅸ 寃利?(鍮뚮뱶/?뚯뒪??嫄대꼫?곌린)
-npm run pre-deploy -- --skip-build --skip-tests
-```
-
-### 5?④퀎: 諛고룷
-
-```bash
-# ?꾨줈?뺤뀡 諛고룷
-npm run deploy
-
-# ?꾨━酉?諛고룷
-npm run deploy:preview
-```
-
-## Vercel ?먮룞 諛고룷 ?ㅼ젙
-
-### GitHub ?곕룞
-
-1. **Vercel ?꾨줈?앺듃 ?앹꽦**
-   ```bash
-   vercel
-   ```
-
-2. **GitHub Repository ?곌껐**
-   - Vercel Dashboard ??Settings ??Git
-   - GitHub Repository ?곌껐
-
-3. **?섍꼍 蹂???ㅼ젙**
-   - Vercel Dashboard ??Settings ??Environment Variables
-   - `.env.local`??紐⑤뱺 蹂??異붽?
-
-4. **?먮룞 諛고룷 ?쒖꽦??*
-   - `main` 釉뚮옖移?push ???먮룞 諛고룷
-   - GitHub Actions???먮룞 ?ㅽ뻾
-
-### GitHub Secrets ?ㅼ젙 (?좏깮??
-
-GitHub Actions ?먮룞 諛고룷瑜??꾪빐:
-
-1. **Vercel ?좏겙 ?앹꽦**
-   - Vercel Dashboard ??Settings ??Tokens
-   - ???좏겙 ?앹꽦
-
-2. **GitHub Secrets 異붽?**
-   - Repository ??Settings ??Secrets and variables ??Actions
-   - `VERCEL_TOKEN`: Vercel ?좏겙
-   - `VERCEL_ORG_ID`: Vercel 議곗쭅 ID
-   - `VERCEL_PROJECT_ID`: Vercel ?꾨줈?앺듃 ID
-
-## 諛고룷 泥댄겕由ъ뒪??
-
-### 諛고룷 ??
-
-- [ ] ?섍꼍 蹂???ㅼ젙 ?꾨즺 (`npm run verify:env`)
-- [ ] ?곗씠?곕쿋?댁뒪 留덉씠洹몃젅?댁뀡 ?ㅽ뻾 ?꾨즺
-- [ ] 濡쒖뺄 鍮뚮뱶 ?깃났 (`npm run build`)
-- [ ] ?뚯뒪???듦낵 (`npm test`)
-- [ ] 諛고룷 ??寃利??듦낵 (`npm run pre-deploy`)
-
-### 諛고룷 ??
-
-- [ ] 硫붿씤 ?섏씠吏 濡쒕뱶 ?뺤씤
-- [ ] 移댁뭅??濡쒓렇???묐룞 ?뺤씤
-- [ ] 寃곗젣 ?뚮줈???뚯뒪??
-- [ ] ?ㅻ━ 異⑹쟾/?ъ슜 ?뚯뒪??
-- [ ] ?ъ＜ 怨꾩궛 湲곕뒫 ?뺤씤
-
-## ?몃윭釉붿뒋??
-
-### 鍮뚮뱶 ?ㅽ뙣
-
-```bash
-# ???泥댄겕
-npx tsc --noEmit
-
-# 由고듃 泥댄겕
-npm run lint
-
-# 鍮뚮뱶 ?뚯뒪??
-npm run build
-```
-
-### ?섍꼍 蹂???ㅻ쪟
-
-```bash
-# ?섍꼍 蹂??寃利?
-npm run verify:env
-
-# ?섍꼍 蹂???ъ꽕??
-npm run setup:env
-```
-
-### ?곗씠?곕쿋?댁뒪 ?ㅻ쪟
-
-```bash
-# 留덉씠洹몃젅?댁뀡 ?곹깭 ?뺤씤
-npm run migrate:db
-
-# Supabase ?곌껐 ?뺤씤
-# Supabase Dashboard ??Settings ??API
-```
-
-## 鍮좊Ⅸ 李몄“
-
-```bash
-# ?꾩껜 諛고룷 ?꾨줈?몄뒪 (??踰덉뿉)
-npm run setup:env      # 1. ?섍꼍 蹂???ㅼ젙
-npm run verify:env     # 2. 寃利?
-npm run migrate:db     # 3. 留덉씠洹몃젅?댁뀡 媛?대뱶
-npm run pre-deploy     # 4. 諛고룷 ??寃利?
-npm run deploy         # 5. 諛고룷
-```
-
-## 吏??
-
-臾몄젣媛 諛쒖깮?섎㈃:
-1. `DEPLOYMENT.md` ?곸꽭 媛?대뱶 李멸퀬
-2. Vercel 濡쒓렇 ?뺤씤
-3. Supabase 濡쒓렇 ?뺤씤
-# ?? ?꾩쟾 ?먮룞??諛고룷 - 吏湲?諛붾줈!
-
-## ???먰겢由?諛고룷
-
-```bash
-npm run setup:auto
-```
-
-**?닿쾶 ?꾨??낅땲??** ?꾩슂??媛믩쭔 ?낅젰?섎㈃ ?섎㉧吏???먮룞?쇰줈 泥섎━?⑸땲??
-
-## ?뱥 ?꾩슂??媛?(3媛吏)
-
-### 1. GitHub ??μ냼 URL (?좏깮)
-```
-https://github.com/piwpiw/SecretSaju.git
-```
-- ??μ냼媛 ?놁쑝硫?Enter濡?嫄대꼫?곌린 媛??
-
-### 2. Supabase ?섍꼍 蹂??3媛?(?꾩닔)
-釉뚮씪?곗????대┛ Supabase ?섏씠吏?먯꽌:
-1. **Settings ??API ??Project URL** 蹂듭궗
-2. **Settings ??API ??anon public** 蹂듭궗
-3. **Settings ??API ??service_role secret** 蹂듭궗
-
-### 3. Supabase 留덉씠洹몃젅?댁뀡 ?ㅽ뻾 (?꾩닔)
-釉뚮씪?곗????대┛ Supabase SQL Editor?먯꽌:
-1. `supabase/migrations/001_initial_schema.sql` ?뚯씪 ?닿린
-2. ?댁슜 ?꾩껜 蹂듭궗 ??SQL Editor??遺숈뿬?ｊ린 ??**Run** ?대┃
-3. `supabase/migrations/002_add_orders_table.sql` ?뚯씪 ?닿린
-4. ?댁슜 ?꾩껜 蹂듭궗 ??SQL Editor??遺숈뿬?ｊ린 ??**Run** ?대┃
-
-## ???먮룞?쇰줈 泥섎━?섎뒗 寃껊뱾
-
-- ??Git 而ㅻ컠
-- ??GitHub ?먭꺽 ??μ냼 ?곌껐
-- ???섍꼍 蹂???뚯씪 ?앹꽦
-- ??Vercel 濡쒓렇??諛?諛고룷
-- ??GitHub ?몄떆
-
-## ?렞 吏湲?諛붾줈 ?ㅽ뻾
-
-```bash
-npm run setup:auto
-```
-
-?ㅽ겕由쏀듃媛 ?ㅽ뻾?섎㈃:
-1. ?꾩슂??媛믩쭔 臾쇱뼱遊?
-2. ?섎㉧吏???먮룞 泥섎━
-3. 諛고룷 ?꾨즺!
-
-## ?뱴 釉뚮씪?곗? ?섏씠吏
-
-?ㅼ쓬 ?섏씠吏?ㅼ씠 ?대? ?대젮?덉뒿?덈떎:
-- ??Supabase Dashboard
-- ??Vercel Login
-- ??GitHub New Repository
-- ??Kakao Developers
-- ??Toss Payments
-
-**以鍮??꾨즺! 吏湲?諛붾줈 ?ㅽ뻾?섏꽭??** ??
+- `docs/01-team/engineering/deployment-guide.md` (SOT)
+- `docs/01-team/engineering/testing-guide.md`
+- `docs/active-dispatch.md`
+
+**Last Updated**: 2026-03-02  
+**Owner**: DevOps + Engineering Lead  
+**Next Review**: 2026-03-08
+
+## Release Approval Checklist Update
+- Approval step 1: build/test + core smoke + secret review logged
+- Approval step 2: QA lead sign-off + ops notification channel confirmed
+- Block release if approver is missing; record as "승인자 미정" and stop

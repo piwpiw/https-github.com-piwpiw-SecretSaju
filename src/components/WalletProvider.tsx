@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface WalletContextType {
+    isAdmin: boolean;
     churu: number; // Coins
     nyang: number; // Points
     addChuru: (amount: number) => void;
@@ -16,6 +17,7 @@ const WalletContext = createContext<WalletContextType | undefined>(undefined);
 export function WalletProvider({ children }: { children: React.ReactNode }) {
     const [churu, setChuru] = useState(0);
     const [nyang, setNyang] = useState(0);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     // Persistence & Server Sync
     useEffect(() => {
@@ -29,6 +31,12 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
             } catch (e) { }
         }
 
+        // Mock Admin Check
+        const mockAdmin = localStorage.getItem('secret_paws_mock_admin');
+        if (mockAdmin === 'true') {
+            setIsAdmin(true);
+        }
+
         // Verify with DB
         const fetchBalance = async () => {
             try {
@@ -37,6 +45,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
                     const data = await res.json();
                     if (data.balance !== undefined) {
                         setChuru(data.balance);
+                    }
+                    if (data.isAdmin !== undefined) {
+                        setIsAdmin(data.isAdmin);
                     }
                 }
             } catch (err) {
@@ -53,6 +64,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
     const addChuru = (amount: number) => setChuru((prev) => prev + amount);
     const consumeChuru = (amount: number) => {
+        if (isAdmin) return true; // Admin bypass
         if (churu >= amount) {
             setChuru((prev) => prev - amount);
             return true;
@@ -70,7 +82,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <WalletContext.Provider value={{ churu, nyang, addChuru, consumeChuru, addNyang, consumeNyang }}>
+        <WalletContext.Provider value={{ churu, nyang, addChuru, consumeChuru, addNyang, consumeNyang, isAdmin }}>
             {children}
         </WalletContext.Provider>
     );

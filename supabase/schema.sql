@@ -1,70 +1,57 @@
--- Secret Saju - MVP Production Schema
--- Updated: 2026-01-31 for tomorrow's launch
+-- Secret Saju - Ultimate Enterprise Production Schema
+-- Optimized for: PostgreSQL / Supabase
+-- Target Version: v4.2 (Full Phase 1-11 Support)
+-- Updated: 2026-03-02
 
--- Enable UUID extension
+-- ============================================
+-- 0. EXTENSIONS & SETUP
+-- ============================================
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================
--- 사용자 관리
+-- 1. CORE USER SYSTEM
 -- ============================================
 
--- 사용자 기본 정보 (다중 OAuth 지원)
-CREATE TABLE users (
+-- 유저 (다중 인증 지원 및 관리자 권한 포함)
+CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   kakao_id BIGINT UNIQUE,
   auth_provider TEXT DEFAULT 'kakao' CHECK (auth_provider IN ('kakao', 'naver', 'google', 'mcp')),
+  mcp_user_id TEXT UNIQUE,
   mcp_access_token TEXT,
   mcp_refresh_token TEXT,
   email TEXT,
+  nickname TEXT,
   name TEXT,
-  profile_image TEXT,
+  profile_image_url TEXT,
+  is_admin BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
   last_login_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- ============================================
--- 사주 프로필 관리
--- ============================================
-
--- 저장된 사주 프로필
-CREATE TABLE saju_profiles (
+-- 사주 프로필 (SajuProfileRepository 기반)
+CREATE TABLE IF NOT EXISTS saju_profiles (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
-  relationship TEXT,  -- 'self', 'spouse', 'child', 'friend', etc.
-  birth_date DATE NOT NULL,
+  relationship TEXT DEFAULT 'self', -- self, spouse, friend 등
+  birthdate DATE NOT NULL,
   birth_time TIME,
   is_time_unknown BOOLEAN DEFAULT FALSE,
   calendar_type TEXT NOT NULL CHECK (calendar_type IN ('solar', 'lunar')),
+  is_leap_month BOOLEAN DEFAULT FALSE,
   gender TEXT NOT NULL CHECK (gender IN ('male', 'female')),
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- ============================================
--- 주문 관리 (결제)
--- ============================================
-
--- 결제 주문 내역
-CREATE TABLE orders (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  order_id TEXT UNIQUE NOT NULL,
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  package_type TEXT NOT NULL CHECK (package_type IN ('TRIAL', 'SMART', 'PRO')),
-  amount INTEGER NOT NULL CHECK (amount > 0),
-  jellies INTEGER NOT NULL CHECK (jellies > 0),
-  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'failed', 'refunded')),
-  payment_key TEXT,
-  metadata JSONB DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ============================================
--- 젤리 시스템 (결제 & 보상)
+-- 2. ECONOMY SYSTEM (Jelly)
 -- ============================================
 
--- 젤리 지갑
-CREATE TABLE jelly_wallets (
+-- 젤리 지갑 (Atomic balance management)
+CREATE TABLE IF NOT EXISTS jelly_wallets (
   user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
   balance INTEGER DEFAULT 0 CHECK (balance >= 0),
   total_purchased INTEGER DEFAULT 0,
@@ -74,41 +61,149 @@ CREATE TABLE jelly_wallets (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 젤리 거래 내역
-CREATE TABLE jelly_transactions (
+-- 젤리 트랜잭션 (History & Audit)
+CREATE TABLE IF NOT EXISTS jelly_transactions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  type TEXT NOT NULL CHECK (type IN ('purchase', 'consume', 'reward', 'refund', 'bonus')),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  type TEXT NOT NULL CHECK (type IN ('purchase', 'consume', 'reward', 'refund', 'bonus', 'gift')),
   jellies INTEGER NOT NULL,
-  amount INTEGER,  -- KRW (for purchases)
-  purpose TEXT,
+  amount INTEGER, -- KRW
+  purpose TEXT, -- 상세 사유
   metadata JSONB DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- ============================================
--- 기능 잠금 해제
--- ============================================
-
--- 프리미엄 기능 잠금 해제 로그
-CREATE TABLE unlocks (
+-- 결제 주문 (Toss Payments 연동용)
+CREATE TABLE IF NOT EXISTS orders (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  profile_id UUID REFERENCES saju_profiles(id) ON DELETE CASCADE,
-  feature TEXT NOT NULL CHECK (feature IN ('detailed_analysis', 'compatibility', 'celebrity_match')),
-  jellies_spent INTEGER NOT NULL,
+  order_id TEXT UNIQUE NOT NULL,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  package_type TEXT NOT NULL CHECK (package_type IN ('TRIAL', 'SMART', 'PRO')),
+  amount INTEGER NOT NULL CHECK (amount >= 0),
+  jellies INTEGER NOT NULL CHECK (jellies > 0),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'failed', 'refunded')),
+  payment_key TEXT,
+  metadata JSONB DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(user_id, profile_id, feature)  -- 중복 결제 방지
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ============================================
--- 친구 초대 시스템
+-- 3. CONTENT & LOGIC (Phase 9-10)
 -- ============================================
 
--- 초대 코드 & 추적
-CREATE TABLE referrals (
+-- 동물 아키타입 (60갑자 마스터 데이터)
+CREATE TABLE IF NOT EXISTS animal_archetypes (
+  code TEXT PRIMARY KEY,
+  animal_name TEXT NOT NULL,
+  persona JSONB NOT NULL DEFAULT '{}', -- title, summary, tags 등
+  wealth_analysis JSONB DEFAULT '{}',
+  love_analysis JSONB DEFAULT '{}',
+  hidden_truth JSONB DEFAULT '{}',
+  visual_guide JSONB DEFAULT '{}', -- prompt, color_code
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 음식 추천 (Static/Content DB)
+CREATE TABLE IF NOT EXISTS food_recommendations (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  referrer_user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  code TEXT NOT NULL, -- GAP_JA 등
+  name TEXT NOT NULL,
+  reason TEXT,
+  emoji TEXT,
+  image_url TEXT,
+  target_age_group TEXT CHECK (target_age_group IN ('10s', '20s', '30s', 'all')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 제품 추천 (Static/Content DB)
+CREATE TABLE IF NOT EXISTS product_recommendations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  code TEXT NOT NULL,
+  name TEXT NOT NULL,
+  reason TEXT,
+  emoji TEXT,
+  price_range TEXT,
+  affiliate_url TEXT,
+  image_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 오늘의 예언 (Daily Fortune Banner)
+CREATE TABLE IF NOT EXISTS daily_fortunes (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  pillar_code TEXT NOT NULL, -- GAP_JA 등
+  fortune_date DATE NOT NULL DEFAULT CURRENT_DATE,
+  message TEXT NOT NULL,
+  lucky_color TEXT,
+  lucky_number INTEGER,
+  score INTEGER CHECK (score >= 0 AND score <= 100),
+  UNIQUE(pillar_code, fortune_date)
+);
+
+-- 크롤링된 캠페인 (Crawled Data Accumulation)
+CREATE TABLE IF NOT EXISTS campaigns (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  source TEXT NOT NULL, -- 'DinnerQueen', 'Revu'
+  external_id TEXT, -- 원본 사이트 ID
+  title TEXT NOT NULL,
+  image_url TEXT,
+  landing_url TEXT NOT NULL,
+  description TEXT,
+  reward_info TEXT,
+  category TEXT,
+  end_date TIMESTAMPTZ,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================
+-- 4. SERVICE & OPERATIONS
+-- ============================================
+
+-- 분석 로그 (History / AI Training Data)
+CREATE TABLE IF NOT EXISTS analysis_logs (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  profile_id UUID REFERENCES saju_profiles(id) ON DELETE SET NULL,
+  topic TEXT NOT NULL, -- 'saju', 'tarot', 'compatibility'
+  input_params JSONB,
+  result_data JSONB,
+  is_premium BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 잠금 해제 (Feature Gating)
+CREATE TABLE IF NOT EXISTS unlocks (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  profile_id UUID REFERENCES saju_profiles(id) ON DELETE CASCADE,
+  feature TEXT NOT NULL, -- detailed_analysis, compatibility, etc.
+  jellies_spent INTEGER NOT NULL CHECK (jellies_spent >= 0),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, profile_id, feature)
+);
+
+-- 고객 문의 (Support System)
+CREATE TABLE IF NOT EXISTS inquiries (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  email TEXT,
+  category TEXT CHECK (category IN ('payment', 'bug', 'feature', 'account', 'other', 'refund')),
+  subject TEXT NOT NULL,
+  message TEXT NOT NULL,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'answered', 'closed')),
+  admin_response TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 보상 및 초대 (Growth Loops)
+CREATE TABLE IF NOT EXISTS referrals (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  referrer_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   referred_user_id UUID REFERENCES users(id) ON DELETE SET NULL,
   referral_code TEXT UNIQUE NOT NULL,
   reward_claimed BOOLEAN DEFAULT FALSE,
@@ -118,167 +213,133 @@ CREATE TABLE referrals (
   claimed_at TIMESTAMPTZ
 );
 
--- ============================================
--- 보상 히스토리
--- ============================================
-
--- 보상 지급 로그
-CREATE TABLE rewards (
+CREATE TABLE IF NOT EXISTS rewards (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  reward_type TEXT NOT NULL CHECK (reward_type IN ('signup', 'first_saju', 'profile_save', 'referral_success', 'first_purchase', 'review')),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  reward_type TEXT NOT NULL, -- signup, referral, first_purchase
   jellies INTEGER NOT NULL,
   metadata JSONB DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ============================================
--- 고객 지원
+-- 5. PERFORMANCE & AUDIT (Indexes)
 -- ============================================
-
--- 문의 사항
-CREATE TABLE inquiries (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
-  email TEXT,
-  category TEXT CHECK (category IN ('payment', 'bug', 'feature', 'account', 'other')),
-  subject TEXT NOT NULL,
-  message TEXT NOT NULL,
-  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'answered', 'closed')),
-  admin_response TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+CREATE INDEX IF NOT EXISTS idx_users_kakao ON users(kakao_id);
+CREATE INDEX IF NOT EXISTS idx_users_mcp ON users(mcp_user_id);
+CREATE INDEX IF NOT EXISTS idx_saju_profiles_user ON saju_profiles(user_id);
+CREATE INDEX IF NOT EXISTS idx_jelly_transactions_user ON jelly_transactions(user_id);
+CREATE INDEX IF NOT EXISTS idx_orders_order_id ON orders(order_id);
+CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_unlocks_user_profile ON unlocks(user_id, profile_id);
+CREATE INDEX IF NOT EXISTS idx_analysis_logs_user ON analysis_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_campaigns_active ON campaigns(is_active) WHERE is_active = TRUE;
+CREATE INDEX IF NOT EXISTS idx_daily_fortunes_date ON daily_fortunes(fortune_date);
 
 -- ============================================
--- 인덱스 (성능 최적화)
+-- 6. AUTOMATION (Triggers & Functions)
 -- ============================================
 
-CREATE INDEX idx_saju_profiles_user ON saju_profiles(user_id);
-CREATE INDEX idx_jelly_transactions_user ON jelly_transactions(user_id);
-CREATE INDEX idx_jelly_transactions_type ON jelly_transactions(type);
-CREATE INDEX idx_unlocks_user ON unlocks(user_id);
-CREATE INDEX idx_unlocks_profile ON unlocks(profile_id);
-CREATE INDEX idx_referrals_referrer ON referrals(referrer_user_id);
-CREATE INDEX idx_referrals_code ON referrals(referral_code);
-CREATE INDEX idx_rewards_user ON rewards(user_id);
-CREATE INDEX idx_rewards_type ON rewards(reward_type);
-CREATE INDEX idx_inquiries_user ON inquiries(user_id);
-CREATE INDEX idx_inquiries_status ON inquiries(status);
-CREATE INDEX idx_orders_user ON orders(user_id);
-CREATE INDEX idx_orders_order_id ON orders(order_id);
-CREATE INDEX idx_orders_status ON orders(status);
-
--- ============================================
--- 트리거 (자동화)
--- ============================================
-
--- 젤리 지갑 자동 생성
-CREATE OR REPLACE FUNCTION create_jelly_wallet()
+-- Updated At 필드 자동 갱신 트리거 엔진
+CREATE OR REPLACE FUNCTION update_timestamp_engine()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO jelly_wallets (user_id) VALUES (NEW.id);
+  NEW.updated_at = NOW();
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_create_jelly_wallet
+DO $$
+DECLARE
+  t TEXT;
+BEGIN
+  FOR t IN SELECT table_name FROM information_schema.columns WHERE column_name = 'updated_at' AND table_schema = 'public'
+  LOOP
+    EXECUTE format('DROP TRIGGER IF EXISTS trg_update_%I ON %I', t, t);
+    EXECUTE format('CREATE TRIGGER trg_update_%I BEFORE UPDATE ON %I FOR EACH ROW EXECUTE FUNCTION update_timestamp_engine()', t, t);
+  END LOOP;
+END;
+$$;
+
+-- 신규 유저 지갑 자동 생성
+CREATE OR REPLACE FUNCTION handle_new_user_wallet()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.jelly_wallets (user_id, balance) VALUES (NEW.id, 0);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON users;
+CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON users
-  FOR EACH ROW
-  EXECUTE FUNCTION create_jelly_wallet();
+  FOR EACH ROW EXECUTE FUNCTION handle_new_user_wallet();
 
--- 젤리 거래 시 지갑 업데이트
-CREATE OR REPLACE FUNCTION update_jelly_wallet()
-RETURNS TRIGGER AS $$
+-- ============================================
+-- 7. STORED PROCEDURES (RPC)
+-- ============================================
+
+-- 젤리 차감 (Atomic Transaction)
+CREATE OR REPLACE FUNCTION deduct_jellies(
+  p_user_id UUID,
+  p_amount INTEGER,
+  p_purpose TEXT,
+  p_metadata JSONB DEFAULT '{}'
+)
+RETURNS INTEGER AS $$
+DECLARE
+  v_new_balance INTEGER;
 BEGIN
-  IF NEW.type = 'purchase' OR NEW.type = 'reward' OR NEW.type = 'bonus' THEN
-    UPDATE jelly_wallets
-    SET balance = balance + NEW.jellies,
-        total_purchased = CASE WHEN NEW.type = 'purchase' THEN total_purchased + NEW.jellies ELSE total_purchased END,
-        total_rewarded = CASE WHEN NEW.type IN ('reward', 'bonus') THEN total_rewarded + NEW.jellies ELSE total_rewarded END,
-        updated_at = NOW()
-    WHERE user_id = NEW.user_id;
-  ELSIF NEW.type = 'consume' THEN
-    UPDATE jelly_wallets
-    SET balance = balance - NEW.jellies,
-        total_consumed = total_consumed + NEW.jellies,
-        updated_at = NOW()
-    WHERE user_id = NEW.user_id;
+  -- 1. 잔액 확인 및 차감
+  UPDATE public.jelly_wallets
+  SET balance = balance - p_amount,
+      total_consumed = total_consumed + p_amount,
+      updated_at = NOW()
+  WHERE user_id = p_user_id AND balance >= p_amount
+  RETURNING balance INTO v_new_balance;
+
+  -- 찾지 못했거나 잔액 부족 시
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Insufficient balance or user not found';
   END IF;
-  RETURN NEW;
+
+  -- 2. 거래 내역 삽입
+  INSERT INTO public.jelly_transactions (user_id, type, jellies, purpose, metadata)
+  VALUES (p_user_id, 'consume', p_amount, p_purpose, p_metadata);
+
+  RETURN v_new_balance;
 END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trigger_update_jelly_wallet
-  AFTER INSERT ON jelly_transactions
-  FOR EACH ROW
-  EXECUTE FUNCTION update_jelly_wallet();
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ============================================
--- Row Level Security (RLS) - 활성화
+-- 8. SECURITY (Row Level Security)
 -- ============================================
 
-ALTER TABLE users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE saju_profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE jelly_wallets ENABLE ROW LEVEL SECURITY;
-ALTER TABLE jelly_transactions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE unlocks ENABLE ROW LEVEL SECURITY;
-ALTER TABLE referrals ENABLE ROW LEVEL SECURITY;
-ALTER TABLE rewards ENABLE ROW LEVEL SECURITY;
-ALTER TABLE inquiries ENABLE ROW LEVEL SECURITY;
+-- 모든 테이블 RLS 활성화 루프
+DO $$
+DECLARE
+  t TEXT;
+BEGIN
+  FOR t IN SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'
+  LOOP
+    EXECUTE format('ALTER TABLE %I ENABLE ROW LEVEL SECURITY', t);
+  END LOOP;
+END;
+$$;
 
--- Users: 자기 정보만 조회
-CREATE POLICY "Users can view own data" ON users
-  FOR SELECT USING (auth.uid() = id);
+-- 정책 정의 (Generous initial access for rapid dev)
+CREATE POLICY "Users view own data" ON users FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users full access own profiles" ON saju_profiles FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users view own wallet" ON jelly_wallets FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users view own transactions" ON jelly_transactions FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users view own orders" ON orders FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users full access own inquiries" ON inquiries FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users view own history" ON analysis_logs FOR SELECT USING (auth.uid() = user_id);
 
--- Profiles: 자기 프로필만 CRUD
-CREATE POLICY "Users can view own profiles" ON saju_profiles
-  FOR SELECT USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can insert own profiles" ON saju_profiles
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Users can update own profiles" ON saju_profiles
-  FOR UPDATE USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can delete own profiles" ON saju_profiles
-  FOR DELETE USING (auth.uid() = user_id);
-
--- Jelly Wallets: 자기 지갑만 조회
-CREATE POLICY "Users can view own wallet" ON jelly_wallets
-  FOR SELECT USING (auth.uid() = user_id);
-
--- Jelly Transactions: 자기 거래만 조회
-CREATE POLICY "Users can view own transactions" ON jelly_transactions
-  FOR SELECT USING (auth.uid() = user_id);
-
--- Unlocks: 자기 잠금 해제만 조회
-CREATE POLICY "Users can view own unlocks" ON unlocks
-  FOR SELECT USING (auth.uid() = user_id);
-
--- Referrals: 자기 초대만 조회
-CREATE POLICY "Users can view own referrals" ON referrals
-  FOR SELECT USING (auth.uid() = referrer_user_id OR auth.uid() = referred_user_id);
-
--- Rewards: 자기 보상만 조회
-CREATE POLICY "Users can view own rewards" ON rewards
-  FOR SELECT USING (auth.uid() = user_id);
-
--- Inquiries: 자기 문의만 CRUD
-CREATE POLICY "Users can manage own inquiries" ON inquiries
-  FOR ALL USING (auth.uid() = user_id);
-
--- Orders: RLS 활성화 및 정책
-ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users can view own orders" ON orders
-  FOR SELECT USING (auth.uid() = user_id);
-
--- ============================================
--- 초기 데이터 (선택 사항)
--- ============================================
-
--- 테스트 사용자 (개발 환경용)
--- INSERT INTO users (kakao_id, email, name) VALUES 
---   (12345678, 'test@example.com', '테스트 사용자');
+-- 공용 콘텐츠는 전체 조회 허용
+CREATE POLICY "Public view animal_archetypes" ON animal_archetypes FOR SELECT USING (true);
+CREATE POLICY "Public view food" ON food_recommendations FOR SELECT USING (true);
+CREATE POLICY "Public view products" ON product_recommendations FOR SELECT USING (true);
+CREATE POLICY "Public view campaigns" ON campaigns FOR SELECT USING (is_active = true);
+CREATE POLICY "Public view daily_fortunes" ON daily_fortunes FOR SELECT USING (true);
 

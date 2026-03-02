@@ -4,16 +4,20 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { giftJellies } from '@/lib/jelly-wallet';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+const SIGNUP_JELLY_KEY_PREFIX = 'secret_saju_signup_jelly_claimed_';
+const REF_KEY = 'secret_saju_ref';
+const SIGNUP_BONUS = 10;
+const SIGNUP_BONUS_REF = 15;
 
 export default function AuthCallback() {
     const router = useRouter();
-    const [message, setMessage] = useState('운명의 파동을 동기화하는 중...');
+    const [message, setMessage] = useState('운명의 문을 열기 위해 연결 중...');
 
     useEffect(() => {
         const handleAuth = async () => {
-            // Supabase client automatically handles the OAuth callback hash/search parameters
             const { data: { session }, error } = await supabase.auth.getSession();
 
             if (error) {
@@ -24,22 +28,20 @@ export default function AuthCallback() {
             }
 
             if (session?.user) {
-                // Check if this is the user's first login by checking local storage flag
-                // In a full production app, this would be checked against the database.
-                const HAS_CLAIMED_SIGNUP_JELLY_KEY = 'secret_saju_signup_jelly_claimed_' + session.user.id;
-                const hasClaimed = localStorage.getItem(HAS_CLAIMED_SIGNUP_JELLY_KEY);
+                const claimKey = `${SIGNUP_JELLY_KEY_PREFIX}${session.user.id}`;
+                const hasClaimed = localStorage.getItem(claimKey);
 
                 if (!hasClaimed) {
-                    const referredBy = localStorage.getItem('secret_saju_ref');
+                    const referredBy = localStorage.getItem(REF_KEY);
                     if (referredBy) {
-                        setMessage('운명의 문이 열렸습니다. 친구 초대 보너스 포함 15 젤리가 지급됩니다!');
-                        giftJellies(15, 'signup_bonus_with_referral');
+                        setMessage('운명의 문이 열렸습니다! 친구 초대 보너스 포함 15 젤리가 지급됩니다!');
+                        giftJellies(SIGNUP_BONUS_REF, 'signup_bonus_with_referral');
                     } else {
-                        setMessage('운명의 문이 열렸습니다. 가입 축하 10 젤리가 지급됩니다!');
-                        giftJellies(10, 'signup_bonus');
+                        setMessage('운명의 문이 열렸습니다! 가입 축하 10 젤리가 지급됩니다!');
+                        giftJellies(SIGNUP_BONUS, 'signup_bonus');
                     }
-                    localStorage.setItem(HAS_CLAIMED_SIGNUP_JELLY_KEY, 'true');
-                    localStorage.removeItem('secret_saju_ref'); // clear the ref so it doesn't trigger again
+                    localStorage.setItem(claimKey, 'true');
+                    localStorage.removeItem(REF_KEY);
                 } else {
                     setMessage('인증이 완료되었습니다. 대시보드로 이동합니다.');
                 }

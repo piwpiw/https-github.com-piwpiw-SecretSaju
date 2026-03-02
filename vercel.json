@@ -1,7 +1,7 @@
 {
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
-  "installCommand": "npm ci --no-audit",
+  "installCommand": "npm install --no-audit --prefer-offline",
   "framework": "nextjs",
   "regions": [
     "icn1"

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { getProfiles, SajuProfile } from '@/lib/storage';
 import { useLocale } from '@/lib/i18n';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 import { getAnalysisHistory, deleteAnalysisFromHistory, getAnalysisTypeInfo } from '@/lib/analysis-history';
@@ -19,6 +20,8 @@ export default function HistoryPage() {
     const { locale } = useLocale();
     const [loading, setLoading] = useState(true);
     const [logs, setLogs] = useState<AnalysisHistoryLog[]>([]);
+    const [filterOpen, setFilterOpen] = useState(false);
+    const [dDayRange, setDDayRange] = useState(30);
 
     useEffect(() => {
         // Load real logs
@@ -79,14 +82,81 @@ export default function HistoryPage() {
                     </p>
                 </div>
 
-                {/* Search Bar */}
-                <div className="relative mb-16 group">
-                    <input
-                        type="text"
-                        placeholder="해독 기록 검색..."
-                        className="w-full bg-white/[0.03] border border-white/10 rounded-3xl py-6 pl-16 pr-6 text-white text-xl font-bold placeholder:text-slate-700 focus:outline-none focus:border-indigo-500/50 transition-all shadow-2xl"
-                    />
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
+                {/* Search & Filter Bar */}
+                <div className="mb-16 space-y-6">
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <div className="relative flex-1 group">
+                            <input
+                                type="text"
+                                placeholder="해독 기록 검색..."
+                                className="w-full bg-white/[0.03] border border-white/10 rounded-3xl py-5 pl-14 pr-6 text-white text-lg font-bold placeholder:text-slate-700 focus:outline-none focus:border-indigo-500/50 transition-all shadow-2xl"
+                            />
+                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
+                        </div>
+
+                        <button
+                            onClick={() => setFilterOpen(!filterOpen)}
+                            className={cn(
+                                "px-8 py-5 rounded-3xl border font-black text-xs uppercase tracking-widest transition-all flex items-center gap-3",
+                                filterOpen ? "bg-indigo-500 border-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.4)]" : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10"
+                            )}
+                        >
+                            <Zap className={cn("w-4 h-4", filterOpen ? "fill-white" : "")} />
+                            ADVANCED_FILTER
+                        </button>
+                    </div>
+
+                    <AnimatePresence>
+                        {filterOpen && (
+                            <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="overflow-hidden"
+                            >
+                                <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] space-y-8">
+                                    {/* D-Day Slider */}
+                                    <div className="space-y-6">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <Clock className="w-4 h-4 text-indigo-400" />
+                                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Time Scope (D-Day)</span>
+                                            </div>
+                                            <span className="text-sm font-black text-indigo-400 italic">LAST {dDayRange} DAYS</span>
+                                        </div>
+                                        <div className="px-4">
+                                            <input
+                                                type="range"
+                                                min="1"
+                                                max="365"
+                                                value={dDayRange}
+                                                onChange={(e) => setDDayRange(parseInt(e.target.value))}
+                                                className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                                            />
+                                            <div className="flex justify-between mt-2 text-[8px] font-black text-slate-700 uppercase tracking-tighter">
+                                                <span>TODAY</span>
+                                                <span>6 MONTHS</span>
+                                                <span>1 YEAR</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Category Chips */}
+                                    <div className="flex flex-wrap gap-2">
+                                        {['ALL', 'SAJU', 'TAROT', 'DREAM', 'DESTINY'].map(cat => (
+                                            <button key={cat} className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black text-slate-500 hover:text-white hover:border-indigo-500/50 transition-all uppercase tracking-widest">
+                                                {cat}
+                                            </button>
+                                        ))}
+                                        <Link href="/calendar" className="ml-auto flex items-center gap-2 text-[10px] font-black text-indigo-400/70 hover:text-indigo-400 transition-colors uppercase tracking-widest italic">
+                                            <Calendar className="w-3 h-3" />
+                                            OPEN_DESTINY_CALENDAR
+                                        </Link>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
 
                 {/* Timeline Log List */}

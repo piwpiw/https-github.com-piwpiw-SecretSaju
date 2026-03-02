@@ -4,7 +4,7 @@
  */
 
 export interface PricingTier {
-    id: 'taste' | 'smart' | 'pro';
+    id: 'taste' | 'smart' | 'pro' | 'donation';
     jellies: number;
     bonus: number;
     price: number;

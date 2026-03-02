@@ -2,46 +2,116 @@ import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
-/**
- * Zoro Script QA (Log-based Auto Analysis)
- * 1. 실행: npm run lint & tsc
- * 2. 분석: 에러 로그 파싱 후 ERROR_CATALOG.md 와 비교
- * 3. 조치: 중복 여부 확인 및 리포트 생성
- */
-
+const APP_DIR = path.join(process.cwd(), 'src', 'app');
+const BACKLOG_FILE = path.join(process.cwd(), 'docs', '00-overview', 'execution-backlog-ko.md');
 const LOG_FILE = path.join(process.cwd(), 'qa-report.log');
 
-console.log('🔍 [Zoro Script QA] 시스템 가동 중...');
-console.log('1. 정적 분석 및 컴파일 체크 (Lint & Typescript) 실행...');
+function collectPageRoutes() {
+  const routes = [];
+
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name.startsWith('.')) continue;
+
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(fullPath);
+        continue;
+      }
+      if (!entry.isFile()) continue;
+      if (entry.name !== 'page.tsx' && entry.name !== 'page.ts') continue;
+
+      const relativePath = path.relative(APP_DIR, fullPath).replace(/\\/g, '/');
+      const dirPath = relativePath.replace(/\/page\.[^/]+$/, '');
+      const route = !dirPath || dirPath === 'page.tsx' || dirPath === 'page.ts' ? '/' : `/${dirPath}`;
+      if (!route.startsWith('/api/')) routes.push(route);
+    }
+  };
+
+  walk(APP_DIR);
+  return [...new Set(routes)].sort();
+}
+
+function normalizeBacklogRoute(cell) {
+  if (!cell) return null;
+  const match = cell.trim().match(/`([^`]+)`/);
+  const raw = match ? match[1].trim() : cell.trim().split(' ')[0];
+  if (!raw || raw === 'Route') return null;
+  if (!raw.startsWith('/')) return null;
+  return raw;
+}
+
+function collectBacklogRoutes() {
+  const lines = fs.readFileSync(BACKLOG_FILE, 'utf-8').split(/\r?\n/);
+  const routes = new Set();
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith('|')) continue;
+    if (trimmed.includes('---')) continue;
+    const cells = trimmed.split('|').slice(1).map((cell) => cell.trim());
+    const route = normalizeBacklogRoute(cells[0]);
+    if (!route) continue;
+    routes.add(route);
+  }
+  return [...routes].sort();
+}
+
+function validateRouteContracts() {
+  const appRoutes = collectPageRoutes();
+  const backlogRoutes = collectBacklogRoutes();
+  const appSet = new Set(appRoutes);
+  return {
+    appRoutes: appRoutes.length,
+    backlogRoutes: backlogRoutes.length,
+    missingInBacklog: appRoutes.filter((route) => !backlogRoutes.includes(route)),
+    extraInBacklog: backlogRoutes.filter((route) => !appSet.has(route)),
+  };
+}
+
+console.log('[ZORO QA] run lint & TypeScript...');
 
 let lintPassed = true;
 let tscPassed = true;
 let outputLog = '';
 
 try {
-    const lintOut = execSync('npm run lint', { encoding: 'utf-8', stdio: 'pipe' });
-    outputLog += '✅ Lint 통과:\n' + lintOut + '\n';
+  const lintOut = execSync('npm run lint', { encoding: 'utf-8', stdio: 'pipe' });
+  outputLog += 'Lint passed:\n' + lintOut + '\n';
 } catch (e) {
-    lintPassed = false;
-    outputLog += '❌ Lint 에러:\n' + e.stdout + '\n' + e.stderr + '\n';
+  lintPassed = false;
+  outputLog += 'Lint failed:\n' + (e.stdout || '') + '\n' + (e.stderr || '') + '\n';
 }
 
 try {
-    const tscOut = execSync('npx tsc --noEmit', { encoding: 'utf-8', stdio: 'pipe' });
-    outputLog += '✅ TSC 통과:\n' + tscOut + '\n';
+  const tscOut = execSync('npx tsc --noEmit', { encoding: 'utf-8', stdio: 'pipe' });
+  outputLog += 'TSC passed:\n' + tscOut + '\n';
 } catch (e) {
-    tscPassed = false;
-    outputLog += '❌ TSC 에러:\n' + e.stdout + '\n' + e.stderr + '\n';
+  tscPassed = false;
+  outputLog += 'TSC failed:\n' + (e.stdout || '') + '\n' + (e.stderr || '') + '\n';
 }
+
+const routeCheck = validateRouteContracts();
+outputLog += '\n[Route Contract Sync]\n';
+outputLog += `App routes: ${routeCheck.appRoutes}\n`;
+outputLog += `Backlog routes: ${routeCheck.backlogRoutes}\n`;
+outputLog += `Missing in backlog: ${routeCheck.missingInBacklog.length}\n`;
+routeCheck.missingInBacklog.forEach((route) => {
+  outputLog += `  - ${route}\n`;
+});
+outputLog += `Extra in backlog: ${routeCheck.extraInBacklog.length}\n`;
+routeCheck.extraInBacklog.forEach((route) => {
+  outputLog += `  - ${route}\n`;
+});
 
 fs.writeFileSync(LOG_FILE, outputLog, 'utf-8');
 
-if (lintPassed && tscPassed) {
-    console.log('✅ QA 분석 완료: 무결점 프로젝트입니다.');
-    console.log('➡️ 다음 10분 마이크로 개선 작업으로 넘어갑니다.');
-    process.exit(0);
-} else {
-    console.log('❌ QA 분석 실패: 중복 이슈 원천 차단 알고리즘 작동 중...');
-    console.log('ERROR_CATALOG.md 에 원인을 등재해야 합니다. (상세 내역은 qa-report.log 참조)');
-    process.exit(1);
+if (lintPassed && tscPassed && !routeCheck.missingInBacklog.length && !routeCheck.extraInBacklog.length) {
+  console.log('[ZORO QA] all checks passed');
+  process.exit(0);
 }
+
+if (routeCheck.missingInBacklog.length || routeCheck.extraInBacklog.length) {
+  console.log('Route contract mismatch: update docs/00-overview/execution-backlog-ko.md');
+}
+console.log('[ZORO QA] failed. check qa-report.log for details');
+process.exit(1);

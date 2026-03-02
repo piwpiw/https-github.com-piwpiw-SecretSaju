@@ -9,34 +9,18 @@ import Link from 'next/link';
 import { Plus, Trash2, Loader2, ArrowLeft, ChevronRight, User, Heart, Star, Calendar } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import { useProfiles } from '@/components/ProfileProvider';
+
 export default function SajuListPage() {
     const router = useRouter();
-    const [profiles, setProfiles] = useState<SajuProfile[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    const loadProfiles = async () => {
-        setIsLoading(true);
-        try {
-            const user = getUserFromCookie();
-            const userId = user ? String(user.id) : 'local-user';
-            const data = await SajuProfileRepository.findByUserId(userId);
-            setProfiles(data);
-        } catch (error) {
-            console.error('Failed to load profiles:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        loadProfiles();
-    }, []);
+    const { profiles, refreshProfiles } = useProfiles();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleDelete = async (id: string, name: string) => {
         if (confirm(`'${name}' 님의 인연 데이터를 영구 삭제하시겠습니까?`)) {
             try {
                 await SajuProfileRepository.delete(id);
-                loadProfiles();
+                await refreshProfiles();
             } catch (error) {
                 console.error('Failed to delete profile:', error);
                 alert('삭제에 실패했습니다.');

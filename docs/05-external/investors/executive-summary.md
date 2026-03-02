@@ -1,4 +1,4 @@
-# Executive Summary - Secret Saju
+﻿# Executive Summary - Secret Saju
 
 **Premium Saju Platform | Investment Opportunity**
 
@@ -212,7 +212,7 @@ Secret Saju is redefining the $2B+ Korean fortune-telling market with **enterpri
 **CEO**: [Name]  
 **Email**: invest@secretsaju.com  
 **Phone**: +82-10-XXXX-XXXX  
-**Deck**: [Pitch Deck PDF](./pitch-deck.pdf)
+**Deck**: [Pitch Deck PDF](./pitch-deck.md)
 
 ---
 
@@ -228,3 +228,4 @@ Secret Saju is redefining the $2B+ Korean fortune-telling market with **enterpri
 **Confidential | For Investor Review Only**  
 **Last Updated**: 2026-01-31  
 **Version**: 1.2
+

@@ -380,8 +380,8 @@ main (production)
 
 ## 9. 참고 문서
 
-- [전체 구현 기록](file:///C:/Users/piwpi/.gemini/antigravity/brain/5b7851a9-2613-4a8a-8a1c-6ece358187ed/walkthrough.md)
-- [관계 대시보드 상세](file:///C:/Users/piwpi/.gemini/antigravity/brain/5b7851a9-2613-4a8a-8a1c-6ece358187ed/relationship_dashboard_plan.md)
+- [전체 구현 기록](./active-dispatch.md)
+- [관계 대시보드 상세](./TEAM_SPEC_콘텐츠.md)
 
 ---
 

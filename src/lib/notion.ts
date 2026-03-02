@@ -1,9 +1,48 @@
 import { Client } from '@notionhq/client';
 
-/**
- * Notion API Client Integration
- * Implements "Zero Script QA" log collection and User Operation Logging.
- */
+const MAX_DESCRIPTION_LENGTH = 2000;
+const MAX_METADATA_LENGTH = 1500;
+const MOCK_MODE = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+
+function normalizeText(input: unknown, fallback = ''): string {
+    if (typeof input !== 'string') return fallback;
+    return input.trim();
+}
+
+function safeJson(value: unknown): string {
+    if (value == null) return '';
+    try {
+        return JSON.stringify(value, null, 2);
+    } catch {
+        return String(value);
+    }
+}
+
+type NotionErrorInfo = { code: string; message: string };
+
+function normalizeNotionError(error: unknown): NotionErrorInfo {
+    const fallback = { code: 'NOTION_UNKNOWN', message: 'Failed to insert Notion row' };
+    if (error == null) return fallback;
+    const record = error as { status?: number; code?: string; message?: string };
+    const status = record.status;
+    const message = typeof record.message === 'string' ? record.message : String(error);
+    if (status === 401 || status === 403) {
+        return { code: 'NOTION_UNAUTHORIZED', message };
+    }
+    if (status === 404) {
+        return { code: 'NOTION_NOT_FOUND', message };
+    }
+    if (status === 429) {
+        return { code: 'NOTION_RATE_LIMIT', message };
+    }
+    if (status && status >= 500) {
+        return { code: 'NOTION_SERVER_ERROR', message };
+    }
+    if (record.code && typeof record.code === 'string') {
+        return { code: record.code, message };
+    }
+    return { code: 'NOTION_UNKNOWN', message };
+}
 
 // Initialize the Notion client with the integration token
 const notion = new Client({
@@ -19,60 +58,124 @@ export interface NotionLogData {
     metadata?: any;
 }
 
+export interface NotionLogResult {
+    success: boolean;
+    id?: string;
+    mocked?: boolean;
+    error?: string;
+}
+
 /**
  * Inserts a new row into the Notion Database for structured indexing.
  * @param data The log data to insert
  */
-export async function insertNotionRow(data: NotionLogData) {
+export async function insertNotionRow(data: NotionLogData): Promise<NotionLogResult> {
+    const title = normalizeText(data?.title, 'Untitled event');
+    const description = normalizeText(data?.description, 'No description');
+    const category = normalizeText(data?.category, 'ERROR');
+
     if (!DATABASE_ID || !process.env.NOTION_API_KEY) {
-        if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-            console.log('[MOCK NOTION] Row inserted:', data);
+        if (MOCK_MODE) {
+            console.log('[MOCK NOTION] Row inserted:', { ...data, title, description });
             return { success: true, mocked: true };
         }
-        console.warn('Notion API Key or Database ID is missing. Skipping Notion logging.');
-        return { success: false, error: 'Credentials Missing' };
+        const message = 'Notion API Key or Database ID is missing';
+        console.warn(`${message}. Skipping Notion logging.`);
+        return { success: false, error: message };
     }
 
-    try {
-        const response = await notion.pages.create({
-            parent: {
-                database_id: DATABASE_ID,
-            },
-            properties: {
-                Title: {
-                    title: [
-                        {
-                            text: {
-                                content: data.title,
-                            },
-                        },
-                    ],
-                },
-                Category: {
-                    select: {
-                        name: data.category,
-                    },
-                },
-                Description: {
-                    rich_text: [
-                        {
-                            text: {
-                                content: data.description.substring(0, 2000), // Notion limit is 2000 per block
-                            },
-                        },
-                    ],
-                },
-                Timestamp: {
-                    date: {
-                        start: new Date().toISOString(),
-                    },
-                },
-            },
-        });
+    const safeMetadata = data.metadata ? safeJson(data.metadata).substring(0, MAX_METADATA_LENGTH) : '';
+    const metadataText = safeMetadata ? `\n\nMetadata:\n${safeMetadata}` : '';
+    const normalizedDescription = `${description}${metadataText}`.substring(0, MAX_DESCRIPTION_LENGTH);
 
-        return { success: true, id: response.id };
+    const toKoreanCategory = (rawCategory: string) => {
+        const upper = rawCategory.toUpperCase();
+        const allowed = ['QA_LOG', 'USER_FEEDBACK', 'PAYMENT_EVENT', 'ERROR'];
+        return allowed.includes(upper) ? upper : 'ERROR';
+    };
+
+    const buildProperties = (desc: string, titleText: string, categoryValue: string) => ({
+        Title: {
+            title: [{
+                text: {
+                    content: titleText.substring(0, 200),
+                },
+            }],
+        },
+        Category: {
+            select: {
+                name: categoryValue,
+            },
+        },
+        Description: {
+            rich_text: [{
+                text: {
+                    content: desc.substring(0, MAX_DESCRIPTION_LENGTH),
+                },
+            }],
+        },
+        Timestamp: {
+            date: {
+                start: new Date().toISOString(),
+            },
+        },
+    });
+
+    const createWithFallback = async (baseTitle: string, baseDesc: string, baseCategory: string, fieldCandidates: string[][]) => {
+        let lastError: any = null;
+        for (let i = 0; i < fieldCandidates.length; i += 1) {
+            const fieldSet = fieldCandidates[i];
+            const props = buildProperties(baseDesc, baseTitle, baseCategory);
+            const selectedProps: Record<string, unknown> = {};
+            fieldSet.forEach((field) => {
+                if (field in props) {
+                    selectedProps[field] = (props as Record<string, unknown>)[field];
+                }
+            });
+            try {
+                const response = await notion.pages.create({
+                    parent: { database_id: DATABASE_ID },
+                // eslint-disable-next-line
+                    properties: selectedProps as any,
+
+                });
+                return { success: true, id: response.id };
+            } catch (error) {
+                lastError = error;
+                if (error instanceof Error && error.message?.includes('Could not find property')) {
+                    continue;
+                }
+                break;
+            }
+        }
+        const normalized = normalizeNotionError(lastError);
+        return { success: false, error: `[${normalized.code}] ${normalized.message}` };
+    };
+
+    const normalizedCategory = toKoreanCategory(category);
+    const fallbackCandidateSets = [
+        ['Title', 'Category', 'Description', 'Timestamp'],
+        ['Name', 'Category', 'Description', 'Timestamp'],
+        ['Title', 'Description', 'Timestamp'],
+        ['Name', 'Description', 'Timestamp'],
+        ['Description', 'Timestamp'],
+        ['Title'],
+    ];
+
+    try {
+        return await createWithFallback(
+            title,
+            normalizedDescription,
+            normalizedCategory,
+            fallbackCandidateSets,
+        );
     } catch (error) {
         console.error('Failed to insert Notion row:', error);
-        return { success: false, error };
+        const result = await createWithFallback(title, normalizedDescription, normalizedCategory, [['Description', 'Timestamp'], ['Description']]);
+        if (result.success) {
+            return result;
+        }
+        const normalized = normalizeNotionError(error);
+        return { success: false, error: `[${normalized.code}] ${normalized.message}` };
     }
 }

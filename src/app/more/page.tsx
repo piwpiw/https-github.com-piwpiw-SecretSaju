@@ -1,45 +1,44 @@
 "use client";
 
 import Link from 'next/link';
-import { Settings, User, Compass, Sparkles, BookOpen, FileText, Lock, RefreshCw, ChevronRight, Gift, Crown, Shield } from 'lucide-react';
+import { Settings, User, Compass, Sparkles, BookOpen, FileText, Lock, RefreshCw, ChevronRight, Gift, Crown, Shield, Activity, Moon, Globe, Sun, Zap, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function MorePage() {
-    const menus: {
-        group: string;
-        items: {
-            icon: any;
-            title: string;
-            desc?: string;
-            link: string;
-            color: string;
-            badge?: string;
-        }[];
-    }[] = [
-            {
-                group: "My Identity",
-                items: [
-                    { icon: User, title: "마이페이지", desc: "내 레벨, 젤리 및 네트워크", link: "/mypage", color: "text-cyan-400" },
-                    { icon: Gift, title: "친구 초대 상자", desc: "공유하고 10 젤리 받기", link: "/mypage", color: "text-yellow-400" },
-                ]
-            },
-            {
-                group: "Destiny Expanding",
-                items: [
-                    { icon: Sparkles, title: "신살/도화/역마", desc: "내면에 잠재된 기운 분석", link: "/shinsal", color: "text-purple-400" },
-                    { icon: Compass, title: "타로/점성술", desc: "별자리와 타로 크로스분석", link: "/tarot", color: "text-indigo-400" },
-                    { icon: BookOpen, title: "정통 작명/개명", desc: "사주에 완벽하게 맞는 이름", link: "/naming", color: "text-rose-400" },
-                ]
-            },
-            {
-                group: "Information & Legal",
-                items: [
-                    { icon: FileText, title: "이용약관", link: "/terms", color: "text-slate-400" },
-                    { icon: Lock, title: "개인정보 보호", link: "/privacy", color: "text-slate-400" },
-                    { icon: RefreshCw, title: "환불 정책", link: "/refund", color: "text-slate-400" },
-                ]
-            }
-        ];
+    const menus = [
+        {
+            group: "Core Analysis",
+            items: [
+                { icon: Sparkles, title: "사주 정밀 분석", desc: "60갑자와 오행의 조화", link: "/saju", color: "text-indigo-400" },
+                { icon: Compass, title: "토정비결 2026", desc: "신년 위대한 예언", link: "/tojeong", color: "text-amber-400" },
+                { icon: Activity, title: "신살/도화/역마", desc: "숨겨진 기운 분석", link: "/shinsal", color: "text-purple-400" },
+            ]
+        },
+        {
+            group: "Fortune & Oracle",
+            items: [
+                { icon: Moon, title: "타로 채널링", desc: "무의식의 메시지", link: "/tarot", color: "text-indigo-400" },
+                { icon: Globe, title: "점성술 리포트", desc: "천체의 움직임과 운명", link: "/astrology", color: "text-cyan-400" },
+                { icon: Sun, title: "꿈해몽 사전", desc: "꿈속에 숨겨진 힌트", link: "/dreams", color: "text-yellow-400" },
+                { icon: Zap, title: "오늘의 운세", desc: "매일의 일진 리포트", link: "/daily", color: "text-orange-400" },
+            ]
+        },
+        {
+            group: "Advanced Insights",
+            items: [
+                { icon: BookOpen, title: "정통 성명학", desc: "운명을 바꾸는 이름", link: "/naming", color: "text-rose-400" },
+                { icon: Crown, title: "손금/수상학", desc: "손바닥에 그려진 생애", link: "/palmistry", color: "text-emerald-400" },
+                { icon: Heart, title: "심리 테스트", desc: "나도 모르는 나의 성향", link: "/psychology", color: "text-pink-400" },
+            ]
+        },
+        {
+            group: "My & Support",
+            items: [
+                { icon: User, title: "마이페이지", desc: "내 정보 및 젤리 관리", link: "/mypage", color: "text-slate-200" },
+                { icon: Gift, title: "개발자 후원", desc: "Secret Saju를 응원해요", link: "/support", color: "text-rose-500", badge: "Support" },
+            ]
+        }
+    ];
 
     return (
         <main className="min-h-[100dvh] relative overflow-hidden pb-40 bg-background text-foreground">
@@ -52,7 +51,7 @@ export default function MorePage() {
                     </div>
                     <div>
                         <h1 className="text-4xl font-black italic tracking-tighter uppercase mb-2">More</h1>
-                        <p className="text-sm font-bold text-secondary tracking-widest uppercase">Secret Paws Ecosystem</p>
+                        <p className="text-sm font-bold text-secondary tracking-widest uppercase">Secret Saju Ecosystem</p>
                     </div>
                 </div>
 
@@ -100,7 +99,7 @@ export default function MorePage() {
 
                 <div className="mt-20 pt-12 border-t border-border-color flex flex-col items-center text-center">
                     <Crown className="w-8 h-8 text-yellow-500 mb-4" />
-                    <p className="text-lg font-black italic tracking-tighter mb-2 text-foreground">시크릿 파우즈 V4.0</p>
+                    <p className="text-lg font-black italic tracking-tighter mb-2 text-foreground">시크릿 사주 V1.0</p>
                     <p className="text-xs text-secondary font-bold tracking-widest uppercase">가장 정밀한 운명 분석 알고리즘 시스템</p>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -54,6 +54,8 @@ function SajuPageContent() {
         selected.birthdate,
         selected.birthTime,
         selected.calendarType,
+        selected.gender === 'male' ? 'M' : 'F',
+        selected.isTimeUnknown
       );
 
       setResult(analysisResult);

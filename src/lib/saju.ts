@@ -50,19 +50,24 @@ const CHEONGAN = ["갑", "을", "병", "정", "무", "기", "경", "신", "임",
 const JIJI = ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"] as const;
 
 /** 천간 오행 매핑 */
+const STEM_ELEMENTS: Record<string, Element> = {
+    '갑': '목', '을': '목', '병': '화', '정': '화', '무': '토',
+    '기': '토', '경': '금', '신': '금', '임': '수', '계': '수'
+};
+
 const CHEONGAN_ELEMENTS: Element[] = [
-  '목', '목', // 갑을
-  '화', '화', // 병정
-  '토', '토', // 무기
-  '금', '금', // 경신
-  '수', '수', // 임계
+    '목', '목', // 갑을
+    '화', '화', // 병정
+    '토', '토', // 무기
+    '금', '금', // 경신
+    '수', '수', // 임계
 ];
 
 /** 지지 오행 매핑 */
 const JIJI_ELEMENTS: Element[] = [
-  '수', '토', '목', '목', // 자축인묘
-  '토', '화', '화', '토', // 진사오미
-  '금', '금', '토', '수', // 신유술해
+    '수', '토', '목', '목', // 자축인묘
+    '토', '화', '화', '토', // 진사오미
+    '금', '금', '토', '수', // 신유술해
 ];
 
 /** 60갑자 순서 (0=甲子 ~ 59=癸亥) */
@@ -162,6 +167,9 @@ export type SajuResult = {
   fourPillars: any;
   daewun?: any;
   gyeokguk?: any;
+  sinsal?: any;
+  sipsong?: any;
+  sibiwoonseong?: any;
   version: string;
   integrity: string;
 };
@@ -171,17 +179,21 @@ export type SajuResult = {
  */
 export async function calculateSaju(
   birthDate: Date,
-  gender: "M" | "F" = "M"
+  gender: "M" | "F" = "M",
+  birthTime: string = "12:00",
+  calendarType: 'solar' | 'lunar' = 'solar',
+  isTimeUnknown: boolean = false
 ): Promise<SajuResult> {
   // Use high-precision engine
   const hpResult = await calculateHighPrecisionSaju({
     birthDate,
-    birthTime: `${birthDate.getHours()}:${birthDate.getMinutes()}`,
+    birthTime,
     gender,
-    calendarType: 'solar'
+    calendarType,
+    isTimeUnknown
   });
 
-  const pillarIndex = getDayPillarIndex(birthDate);
+  const pillarIndex = hpResult.fourPillars.day.ganjiIndex;
   const now = new Date();
   const age = now.getFullYear() - birthDate.getFullYear();
   let ageGroup: "10s" | "20s" | "30s" = "20s";
@@ -196,15 +208,15 @@ export async function calculateSaju(
   const elementCounts = [ec.목, ec.화, ec.토, ec.금, ec.수];
 
   const epb = hpResult.elements.basicPercentages;
-  const elementBasicPercentages = [epb.목, epb.화, epb.토, ec.금, ec.수];
+  const elementBasicPercentages = [epb.목, epb.화, epb.토, epb.금, epb.수];
 
   return {
     pillarIndex,
-    pillarNameKo: getPillarNameKo(pillarIndex),
+    pillarNameKo: hpResult.fourPillars.day.stem + hpResult.fourPillars.day.branch,
     code: getPillarCode(pillarIndex),
-    element: getPrimaryElement(pillarIndex),
-    stemElement: getDayStemElement(pillarIndex),
-    branchElement: getDayBranchElement(pillarIndex),
+    element: STEM_ELEMENTS[hpResult.fourPillars.day.stem],
+    stemElement: STEM_ELEMENTS[hpResult.fourPillars.day.stem],
+    branchElement: JIJI_ELEMENTS[hpResult.fourPillars.day.branchIndex],
     elementScores,
     elementCounts,
     elementBasicPercentages,
@@ -212,28 +224,27 @@ export async function calculateSaju(
     fourPillars: hpResult.fourPillars,
     daewun: hpResult.daewun,
     gyeokguk: hpResult.gyeokguk,
+    sinsal: hpResult.sinsal,
+    sipsong: hpResult.sipsong,
+    sibiwoonseong: hpResult.sibiwoonseong,
     version: hpResult.version,
     integrity: hpResult.integrity,
   };
 }
 
-
 /**
- * NEW: 생년월일 문자열과 시간으로 사주 계산 (dashboard에서 필요)
+ * NEW: 생년월일 문자열과 시간으로 사주 계산
  */
 export async function calculateSajuFromBirthdate(
   birthdateStr: string,
   birthTime: string = "12:00",
-  calendarType: 'solar' | 'lunar' = 'solar'
+  calendarType: 'solar' | 'lunar' = 'solar',
+  gender: "M" | "F" = "M",
+  isTimeUnknown: boolean = false
 ): Promise<SajuResult> {
   const [year, month, day] = birthdateStr.split('-').map(Number);
   const [hour, minute] = birthTime.split(':').map(Number);
-
   const birthDate = new Date(year, month - 1, day, hour, minute);
 
-  if (calendarType === 'lunar') {
-    birthDate.setDate(birthDate.getDate() + 30);
-  }
-
-  return await calculateSaju(birthDate);
+  return await calculateSaju(birthDate, gender, birthTime, calendarType, isTimeUnknown);
 }

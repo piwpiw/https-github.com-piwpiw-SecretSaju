@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 import { PILLAR_CODES, getPillarNameKo } from "@/lib/saju";
 import {
     calculateGangYak,
-    generateFourPillarsFromDayPillar,
 } from "@/lib/advancedScoring";
+import { FourPillars, Stem, Branch } from "@/core/calendar/ganji";
 import animalsData from "@/data/animals.json";
 
 // 일주 → 한자 매핑
@@ -99,8 +99,12 @@ export default function AdvancedScoringPage() {
     const [cheongan, jiji] = PILLAR_HANJA_MAP[pillarCode] || ["甲", "子"];
 
     // Create 4 pillars with selected month
-    const fourPillars = generateFourPillarsFromDayPillar(cheongan, jiji);
-    fourPillars.month.jiji = selectedMonth;
+    const fourPillars: FourPillars = {
+        year: { stem: "갑" as Stem, branch: "자" as Branch, gan: "갑" as Stem, ji: "자" as Branch, fullName: "갑자", stemIndex: 0, branchIndex: 0, ganjiIndex: 0, code: "GAP_JA" },
+        month: { stem: "병" as Stem, branch: selectedMonth as Branch, gan: "병" as Stem, ji: selectedMonth as Branch, fullName: "병" + selectedMonth, stemIndex: 2, branchIndex: 0, ganjiIndex: 0, code: "" },
+        day: { stem: cheongan as Stem, branch: jiji as Branch, gan: cheongan as Stem, ji: jiji as Branch, fullName: cheongan + jiji, stemIndex: 0, branchIndex: 0, ganjiIndex: 0, code: "" },
+        hour: { stem: "무" as Stem, branch: "오" as Branch, gan: "무" as Stem, ji: "오" as Branch, fullName: "무오", stemIndex: 4, branchIndex: 6, ganjiIndex: 0, code: "" },
+    };
 
     const gangYak = calculateGangYak(fourPillars);
 

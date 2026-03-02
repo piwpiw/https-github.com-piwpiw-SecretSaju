@@ -7,46 +7,29 @@ import { getProfiles, SajuProfile } from "@/lib/storage";
 import { ArrowLeft, Sparkles, Flame, Wind, Droplets, Loader2, Target, Eye, Shield } from "lucide-react";
 import Link from "next/link";
 import JellyBalance from "@/components/shop/JellyBalance";
+import { useWallet } from "@/components/WalletProvider";
+import LuxuryToast from "@/components/ui/LuxuryToast";
 
 const SHINSAL_TYPES = [
-    {
-        id: "dohwa",
-        name: "도화살 (桃花殺)",
-        desc: "매력과 인기를 끌어당기는 기운. 연예인, 인플루언서에게서 강하게 발현됩니다.",
-        icon: Flame,
-        color: "text-rose-500",
-        bg: "bg-rose-500/10",
-        border: "border-rose-500/20",
-        probability: 85
-    },
-    {
-        id: "yeokma",
-        name: "역마살 (驛馬殺)",
-        desc: "한곳에 머물지 않고 끊임없이 이동하며 변화를 추구하는 자유로운 영혼의 에너지입니다.",
-        icon: Wind,
-        color: "text-emerald-500",
-        bg: "bg-emerald-500/10",
-        border: "border-emerald-500/20",
-        probability: 60
-    },
-    {
-        id: "baekho",
-        name: "백호대살 (白虎大殺)",
-        desc: "강력한 추진력과 결단력을 의미하지만, 때로는 급격한 감정 변화를 동반할 수 있습니다.",
-        icon: Shield,
-        color: "text-purple-500",
-        bg: "bg-purple-500/10",
-        border: "border-purple-500/20",
-        probability: 40
-    },
+    { id: "dohwa", name: "도화살 (桃花殺)", shortName: "도화", desc: "매력과 인기를 끌어당기는 기운. 연예인, 인플루언서에게서 강하게 발현됩니다. 이성에게 매력적으로 보이며 대중의 인기를 얻습니다.", advice: "인기와 매력을 활용하되 경계선을 명확히 하세요. 예술·미용·서비스업에서 빛납니다.", icon: Flame, color: "text-rose-500", bg: "bg-rose-500/10", border: "border-rose-500/20", probability: 85 },
+    { id: "yeokma", name: "역마살 (驛馬殺)", shortName: "역마", desc: "한곳에 머물지 않고 끊임없이 이동하며 변화를 추구하는 자유로운 영혼의 에너지입니다. 해외 인연이 발달합니다.", advice: "여행·무역·IT 업무에서 최고의 성과를 냅니다. 정착보다 흐름을 타세요.", icon: Wind, color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20", probability: 60 },
+    { id: "baekho", name: "백호대살 (白虎大殺)", shortName: "백호", desc: "강력한 추진력과 결단력을 의미하지만, 때로는 급격한 감정 변화를 동반할 수 있습니다. 외과·군인 직종에 적합.", advice: "결단이 필요한 순간에 강합니다. 위험한 상황에서 침착함을 유지하세요.", icon: Shield, color: "text-purple-500", bg: "bg-purple-500/10", border: "border-purple-500/20", probability: 40 },
+    { id: "gwiin", name: "귀인 (貴人)", shortName: "귀인", desc: "하늘이 보내준 귀인의 조력이 있는 기운. 어려운 순간마다 도와주는 사람이 나타납니다. 금전운·명예운에 길합니다.", advice: "인맥을 소중히 하세요. 기회는 사람을 통해 옵니다.", icon: Sparkles, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20", probability: 70 },
+    { id: "gongmang", name: "공망 (空亡)", shortName: "공망", desc: "비워진 자리의 기운. 집착을 내려놓으면 오히려 더 큰 것을 얻게 됩니다. 영적 성장과 내면의 지혜가 발달합니다.", advice: "물질보다 정신적 가치에 집중하세요. 명상·철학·종교분야에서 빛납니다.", icon: Eye, color: "text-slate-400", bg: "bg-slate-500/10", border: "border-slate-500/20", probability: 55 },
+    { id: "hwagae", name: "화개살 (華蓋殺)", shortName: "화개", desc: "예술적 감수성과 영적 직관이 뛰어난 기운. 독창성이 넘치며 예술·음악·철학 분야에서 탁월합니다.", advice: "창의적 작업에 몰두하세요. 외로움을 에너지로 전환하면 영감이 됩니다.", icon: Droplets, color: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20", probability: 65 },
+    { id: "yangin", name: "양인살 (羊刃殺)", shortName: "양인", desc: "강한 의지와 집중력의 기운. 극단적인 승부욕을 가지며 한번 목표를 정하면 끝까지 밀어붙입니다.", advice: "과도한 승부욕은 조절하세요. 의료·법조·검찰 분야에서 두각을 나타냅니다.", icon: Target, color: "text-red-400", bg: "bg-red-500/10", border: "border-red-500/20", probability: 35 },
+    { id: "cheonuisa", name: "천의성 (天醫星)", shortName: "천의", desc: "치유와 돌봄의 기운. 타인의 고통을 잘 이해하며 의료·상담·교육 분야에서 탁월한 능력을 발휘합니다.", advice: "감정 이입 능력이 장점입니다. 과도한 감정 소비에 주의하세요.", icon: Shield, color: "text-emerald-300", bg: "bg-emerald-500/10", border: "border-emerald-500/20", probability: 50 },
 ];
 
 export default function ShinsalPage() {
     const router = useRouter();
+    const { consumeChuru, churu } = useWallet();
     const [profile, setProfile] = useState<SajuProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [analyzing, setAnalyzing] = useState(false);
     const [results, setResults] = useState<typeof SHINSAL_TYPES | null>(null);
+    const [toastMsg, setToastMsg] = useState("");
+    const [showToast, setShowToast] = useState(false);
 
     useEffect(() => {
         const load = () => {
@@ -60,19 +43,24 @@ export default function ShinsalPage() {
     }, []);
 
     const handleAnalyze = () => {
-        setAnalyzing(true);
-        // Simulate deep analysis
-        setTimeout(() => {
-            // Randomize probabilities based on "profile id" length (mock logic)
-            const seed = profile ? profile.name.length : 3;
-            const updated = SHINSAL_TYPES.map((t, i) => ({
-                ...t,
-                // pseudo-random logic that feels personal
-                probability: Math.min(99, Math.max(10, t.probability + (seed * (i % 2 === 0 ? 5 : -5))))
-            })).sort((a, b) => b.probability - a.probability);
-            setResults(updated);
-            setAnalyzing(false);
-        }, 2000);
+        if (churu < 20) {
+            setToastMsg("신살 분석에는 20 젤리가 필요합니다.");
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 3000);
+            return;
+        }
+
+        consumeChuru(20);
+
+        // Randomize probabilities based on "profile id" length (mock logic)
+        const seed = profile ? profile.name.length : 3;
+        const updated = SHINSAL_TYPES.map((t, i) => ({
+            ...t,
+            // pseudo-random logic that feels personal
+            probability: Math.min(99, Math.max(10, t.probability + (seed * (i % 2 === 0 ? 5 : -5))))
+        })).sort((a, b) => b.probability - a.probability);
+
+        setResults(updated);
     };
 
     if (loading) {
@@ -135,16 +123,27 @@ export default function ShinsalPage() {
                     </motion.div>
                 </div>
 
-                {!results && !analyzing && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-center mt-20">
+                <LuxuryToast message={toastMsg} isVisible={showToast} />
+                {!results && !loading && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-center mt-20 max-w-xl mx-auto">
+
+                        <div className="bg-white/5 rounded-3xl p-6 lg:p-8 space-y-4 border border-rose-500/20 shadow-inner mb-8 mt-6 relative z-10 w-full text-left">
+                            <div className="flex justify-between items-center">
+                                <span className="text-[10px] font-black text-rose-500/80 uppercase tracking-[0.2em] flex items-center gap-2">
+                                    <Sparkles className="w-3.5 h-3.5 text-rose-500" /> Operational Cost
+                                </span>
+                                <span className="text-sm font-black flex items-center gap-2 text-rose-400 italic tracking-widest bg-rose-500/10 px-3 py-1.5 rounded-lg border border-rose-500/20">
+                                    20 Jelly
+                                </span>
+                            </div>
+                            <p className="text-[10px] text-slate-500 font-bold hidden sm:block">명리학 기반 심층 신살 데이터 분석</p>
+                        </div>
+
                         <button
                             onClick={handleAnalyze}
-                            className="px-12 py-6 bg-foreground text-background font-black text-2xl uppercase tracking-widest rounded-4xl hover:bg-primary transition-colors shadow-2xl hover:shadow-primary/20 duration-500 group relative overflow-hidden"
+                            className="w-full py-6 bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-black text-lg uppercase tracking-widest rounded-2xl transition-all shadow-xl hover:shadow-[0_0_40px_rgba(244,63,94,0.4)] border border-rose-400/50 group flex items-center justify-center gap-3 active:scale-95"
                         >
-                            <span className="relative z-10 flex items-center gap-4">
-                                심층 신살 분석 시작 <Eye className="w-8 h-8 group-hover:animate-pulse" />
-                            </span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                            <Eye className="w-6 h-6 group-hover:animate-pulse" /> 심층 신살 분석 즉시 시작 (20 Jelly)
                         </button>
                     </motion.div>
                 )}
@@ -185,23 +184,30 @@ export default function ShinsalPage() {
 
                                         <div className="flex-1 text-center sm:text-left">
                                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                                                <h4 className="text-3xl font-black italic text-foreground uppercase">{item.name}</h4>
-                                                <div className="flex items-center justify-center sm:justify-end gap-2 bg-background px-4 py-2 rounded-2xl border border-border-color">
-                                                    <span className="text-xs font-bold text-secondary uppercase tracking-widest">발현 확률</span>
+                                                <h4 className="text-2xl font-black italic text-white uppercase">{item.name}</h4>
+                                                <div className="flex items-center justify-center sm:justify-end gap-2 bg-black/30 px-4 py-2 rounded-2xl border border-white/10">
+                                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">발현 확률</span>
                                                     <span className={`text-2xl font-black ${item.color}`}>{item.probability}%</span>
                                                 </div>
                                             </div>
-                                            <p className="text-lg text-secondary font-medium leading-relaxed">{item.desc}</p>
+                                            <p className="text-sm text-slate-300 font-medium leading-relaxed mb-4">{item.desc}</p>
 
                                             {/* Progress Bar */}
-                                            <div className="mt-8 h-3 w-full bg-background rounded-full overflow-hidden border border-border-color">
+                                            <div className="mb-4 h-2 w-full bg-black/40 rounded-full overflow-hidden border border-white/5">
                                                 <motion.div
                                                     initial={{ width: 0 }}
                                                     animate={{ width: `${item.probability}%` }}
                                                     transition={{ duration: 1.5, delay: 0.5 + (idx * 0.2), ease: "easeOut" }}
-                                                    className={`h-full ${item.bg.replace('/10', '')} border-r border-[#ffffff20]`}
+                                                    className={`h-full rounded-full ${item.bg.replace('/10', '/60')}`}
                                                 />
                                             </div>
+
+                                            {'advice' in item && (
+                                                <div className={`text-left px-4 py-3 rounded-2xl ${item.bg} border ${item.border} mt-2`}>
+                                                    <div className={`text-[9px] font-black uppercase tracking-widest mb-1 ${item.color}`}>💡 활용 조언</div>
+                                                    <p className="text-xs text-slate-300 font-medium">{(item as any).advice}</p>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </motion.div>

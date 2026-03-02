@@ -9,6 +9,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Test & Lint
@@ -22,18 +26,30 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run TypeScript check
-        run: npx tsc --noEmit
+      - name: Run quality checks in parallel
+        shell: bash
+        run: |
+          set +e
+          npx tsc --noEmit &
+          TSC_PID=$!
+          npm run lint &
+          LINT_PID=$!
+          npm test -- --run &
+          TEST_PID=$!
 
-      - name: Run ESLint
-        run: npm run lint
+          wait $TSC_PID; TSC_EXIT=$?
+          wait $LINT_PID; LINT_EXIT=$?
+          wait $TEST_PID; TEST_EXIT=$?
 
-      - name: Run tests
-        run: npm test -- --run
+          if [ $TSC_EXIT -ne 0 ] || [ $LINT_EXIT -ne 0 ] || [ $TEST_EXIT -ne 0 ]; then
+            echo "One or more quality checks failed."
+            exit 1
+          fi
 
   deploy:
     name: Deploy

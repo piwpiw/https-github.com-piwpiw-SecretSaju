@@ -1,4 +1,4 @@
-# BLUEPRINT: Secret Paws 10단계 고도화
+﻿# BLUEPRINT: Secret Paws 10단계 고도화
 
 **Version:** 1.0 · 20명 동시 개발/검증 대응  
 **목표:** 구조 정리, 10단계 고도화, 예외처리·테스트·관리자/사용자 검증, Content DB·AI 연동 준비
@@ -92,4 +92,5 @@
 - **PRD:** [MASTER_PRD.md](./MASTER_PRD.md) — 요구사항, 스키마, API, Phase, 검증·Content DB·AI
 - **에러:** [ERROR_CATALOG.md](./ERROR_CATALOG.md) — 예상 오류 및 한 줄 체크
 - **사용자 검증:** [USER_VERIFICATION.md](./USER_VERIFICATION.md) — E2E 시나리오
-- **Cursor:** [CURSOR_GUIDELINE.md](../CURSOR_GUIDELINE.md) — 구조 유지·수정 시 참고
+- **Cursor:** [CURSOR_GUIDELINE.md](./archive/CURSOR_GUIDELINE.md) — 구조 유지·수정 시 참고
+

@@ -1,63 +1,63 @@
-# Configuration System README
+﻿# Configuration System README
 
-## 📖 개요
+## ?뱰 媛쒖슂
 
-`src/config/` 디렉토리는 **모든 환경 변수와 설정값을 중앙에서 관리**하는 시스템입니다.
+`src/config/` ?붾젆?좊━??**紐⑤뱺 ?섍꼍 蹂?섏? ?ㅼ젙媛믪쓣 以묒븰?먯꽌 愿由?*?섎뒗 ?쒖뒪?쒖엯?덈떎.
 
-### 왜 중요한가?
+### ??以묒슂?쒓??
 
-❌ **Before (문제점)**:
-- 환경 변수가 여러 파일에 분산
-- 타입 안정성 없음
-- 검증 로직 누락
-- 팀원마다 다른 방식으로 접근
+??**Before (臾몄젣??**:
+- ?섍꼍 蹂?섍? ?щ윭 ?뚯씪??遺꾩궛
+- ????덉젙???놁쓬
+- 寃利?濡쒖쭅 ?꾨씫
+- ??먮쭏???ㅻⅨ 諛⑹떇?쇰줈 ?묎렐
 
-✅ **After (해결책)**:
-- 한 곳에서 통합 관리
-- TypeScript 타입 보장
-- 자동 검증
-- 일관된 사용 방식
+??**After (?닿껐梨?**:
+- ??怨녹뿉???듯빀 愿由?
+- TypeScript ???蹂댁옣
+- ?먮룞 寃利?
+- ?쇨????ъ슜 諛⑹떇
 
 ---
 
-## 📁 파일 구조
+## ?뱚 ?뚯씪 援ъ“
 
 ```
 src/config/
-├── index.ts       # 통합 export (여기서만 import)
-├── env.ts         # 환경 변수 (타입 안전, 검증)
-└── constants.ts   # 앱 상수 (비민감 정보)
+?쒋?? index.ts       # ?듯빀 export (?ш린?쒕쭔 import)
+?쒋?? env.ts         # ?섍꼍 蹂??(????덉쟾, 寃利?
+?붴?? constants.ts   # ???곸닔 (鍮꾨?媛??뺣낫)
 ```
 
 ---
 
-## 🚀 사용법
+## ?? ?ъ슜踰?
 
-### 기본 사용
+### 湲곕낯 ?ъ슜
 
 ```typescript
-// ✅ Correct: 중앙화된 설정 사용
+// ??Correct: 以묒븰?붾맂 ?ㅼ젙 ?ъ슜
 import { KAKAO_CONFIG, STORAGE_KEYS } from '@/config';
 
 const kakaoKey = KAKAO_CONFIG.JS_KEY;
 localStorage.setItem(STORAGE_KEYS.THEME, 'mystic');
 
-// ❌ Wrong: 직접 process.env 접근
+// ??Wrong: 吏곸젒 process.env ?묎렐
 const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
 localStorage.setItem('theme', 'mystic');
 ```
 
-### 검증 사용
+### 寃利??ъ슜
 
 ```typescript
 import { KAKAO_CONFIG, FEATURES } from '@/config';
 
-// Feature flag 체크
+// Feature flag 泥댄겕
 if (!FEATURES.KAKAO_LOGIN) {
-  return <div>로그인 기능이 설정되지 않았습니다</div>;
+  return <div>濡쒓렇??湲곕뒫???ㅼ젙?섏? ?딆븯?듬땲??/div>;
 }
 
-// Configuration 검증
+// Configuration 寃利?
 if (!KAKAO_CONFIG.isConfigured) {
   console.error(KAKAO_CONFIG.error);
   // "NEXT_PUBLIC_KAKAO_JS_KEY is not configured"
@@ -66,9 +66,9 @@ if (!KAKAO_CONFIG.isConfigured) {
 
 ---
 
-## 📦 주요 Export
+## ?벀 二쇱슂 Export
 
-### `env.ts` - 환경 변수
+### `env.ts` - ?섍꼍 蹂??
 
 ```typescript
 // Environment info
@@ -109,12 +109,12 @@ export const FEATURES = {
 };
 ```
 
-### `constants.ts` - 앱 상수
+### `constants.ts` - ???곸닔
 
 ```typescript
 // Business info
 export const BUSINESS_INFO = {
-  NAME: '990 사주마미',
+  NAME: '990 ?ъ＜留덈?',
   REGISTRATION_NUMBER: string,
   // ...
 };
@@ -132,7 +132,7 @@ export const JELLY_PRICING = {
 export const STORAGE_KEYS = {
   KAKAO_TOKEN: 'kakao_token',
   USER_DATA: 'user_data',
-  SAJU_PROFILES: 'secret_paws_saju_profiles',
+  SAJU_PROFILES: 'secret_saju_profiles',
   // ...
 };
 
@@ -146,30 +146,30 @@ export const API_ROUTES = {
 
 ---
 
-## 🔧 검증 시스템
+## ?뵩 寃利??쒖뒪??
 
-### 자동 검증 (서버 시작 시)
+### ?먮룞 寃利?(?쒕쾭 ?쒖옉 ??
 
-서버가 시작될 때 `validateEnvironment()`가 자동 실행됩니다:
+?쒕쾭媛 ?쒖옉????`validateEnvironment()`媛 ?먮룞 ?ㅽ뻾?⑸땲??
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔧 ENVIRONMENT CONFIGURATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺
+?뵩 ENVIRONMENT CONFIGURATION
+?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺
 Environment: development
 Base URL: http://localhost:3000
 
 Features:
-  ✓ Kakao Login: ✅
-  ✓ Payment: ❌
-  ✓ Database: ❌
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️  WARNINGS:
+  ??Kakao Login: ??
+  ??Payment: ??
+  ??Database: ??
+?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺
+?좑툘  WARNINGS:
   - Payment gateway is not configured
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺
 ```
 
-### 수동 검증
+### ?섎룞 寃利?
 
 ```typescript
 import { validateEnvironment } from '@/config';
@@ -187,9 +187,9 @@ if (validation.warnings.length > 0) {
 
 ---
 
-## 🎯 사용 예시
+## ?렞 ?ъ슜 ?덉떆
 
-### 컴포넌트에서
+### 而댄룷?뚰듃?먯꽌
 
 ```typescript
 import { KAKAO_CONFIG, FEATURES } from '@/config';
@@ -198,9 +198,9 @@ export default function LoginPage() {
   if (!FEATURES.KAKAO_LOGIN) {
     return (
       <div className="error">
-        로그인 기능이 설정되지 않았습니다.
+        濡쒓렇??湲곕뒫???ㅼ젙?섏? ?딆븯?듬땲??
         <br />
-        관리자에게 문의하세요.
+        愿由ъ옄?먭쾶 臾몄쓽?섏꽭??
       </div>
     );
   }
@@ -209,7 +209,7 @@ export default function LoginPage() {
 }
 ```
 
-### API 라우트에서
+### API ?쇱슦?몄뿉??
 
 ```typescript
 import { PAYMENT_CONFIG, ENV } from '@/config';
@@ -233,44 +233,44 @@ export async function POST(request: Request) {
 }
 ```
 
-### Storage 사용
+### Storage ?ъ슜
 
 ```typescript
 import { STORAGE_KEYS } from '@/config';
 
-// ✅ Type-safe, no typos
+// ??Type-safe, no typos
 localStorage.setItem(STORAGE_KEYS.THEME, 'mystic');
 const theme = localStorage.getItem(STORAGE_KEYS.THEME);
 
-// ❌ String literals - prone to typos
-localStorage.setItem('theme', 'mystic'); // 다른 곳에서 'theem'으로 쓸 수 있음
+// ??String literals - prone to typos
+localStorage.setItem('theme', 'mystic'); // ?ㅻⅨ 怨녹뿉??'theem'?쇰줈 ?????덉쓬
 ```
 
 ---
 
-## 🔒 보안 가이드
+## ?뵏 蹂댁븞 媛?대뱶
 
-### Git 보안
+### Git 蹂댁븞
 
-- ✅ `.env.local`은 `.gitignore`에 포함
-- ✅ 템플릿 파일만 커밋 (`.env.local.template`)
-- ❌ 실제 키는 절대 커밋하지 않기
+- ??`.env.local`? `.gitignore`???ы븿
+- ???쒗뵆由??뚯씪留?而ㅻ컠 (`.env.local.template`)
+- ???ㅼ젣 ?ㅻ뒗 ?덈? 而ㅻ컠?섏? ?딄린
 
-### 운영 환경
+### ?댁쁺 ?섍꼍
 
 ```typescript
-// 자동 경고 시스템
+// ?먮룞 寃쎄퀬 ?쒖뒪??
 if (PAYMENT_CONFIG.isTestMode && ENV.IS_PROD) {
-  // ⚠️ CRITICAL ERROR 발생
+  // ?좑툘 CRITICAL ERROR 諛쒖깮
   throw new Error('PRODUCTION ENVIRONMENT USING TEST PAYMENT KEYS!');
 }
 ```
 
 ---
 
-## 📝 마이그레이션 가이드
+## ?뱷 留덉씠洹몃젅?댁뀡 媛?대뱶
 
-### 기존 코드 업데이트
+### 湲곗〈 肄붾뱶 ?낅뜲?댄듃
 
 **Before**:
 ```typescript
@@ -290,13 +290,13 @@ localStorage.setItem(STORAGE_KEYS.THEME, theme);
 
 ---
 
-## 🆘 문제 해결
+## ?넊 臾몄젣 ?닿껐
 
 ### "Cannot find module '@/config'"
 
-**해결**:
+**?닿껐**:
 ```json
-// tsconfig.json 확인
+// tsconfig.json ?뺤씤
 {
   "compilerOptions": {
     "paths": {
@@ -306,17 +306,20 @@ localStorage.setItem(STORAGE_KEYS.THEME, theme);
 }
 ```
 
-### 환경 변수 적용 안됨
+### ?섍꼍 蹂???곸슜 ?덈맖
 
-**해결**:
-1. `.env.local` 파일 저장 확인
-2. **서버 재시작** (`npm run dev`)
-3. 클라이언트 변수는 `NEXT_PUBLIC_` 접두사 필수
+**?닿껐**:
+1. `.env.local` ?뚯씪 ????뺤씤
+2. **?쒕쾭 ?ъ떆??* (`npm run dev`)
+3. ?대씪?댁뼵??蹂?섎뒗 `NEXT_PUBLIC_` ?묐몢???꾩닔
 
 ---
 
-## 📚 추가 문서
+## ?뱴 異붽? 臾몄꽌
 
-- [SECURITY.md](../../../SECURITY.md) - 완전한 보안 가이드
-- [.env.local.template](../../../.env.local.template) - 개발 환경 템플릿
-- [.env.production.template](../../../.env.production.template) - 운영 환경 템플릿
+- [SECURITY.md](../../../SECURITY.md) - ?꾩쟾??蹂댁븞 媛?대뱶
+- [.env.local.template](../../../.env.local.template) - 媛쒕컻 ?섍꼍 ?쒗뵆由?
+- [.env.production.template](../../../.env.production.template) - ?댁쁺 ?섍꼍 ?쒗뵆由?
+
+
+Legacy compatibility note: profile storage supports both 'secret_saju_profiles' and legacy 'secret_paws_saju_profiles'.

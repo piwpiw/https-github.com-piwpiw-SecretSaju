@@ -1,4 +1,4 @@
-# Supabase Setup Guide
+﻿# Supabase Setup Guide
 
 ## 🚀 Quick Start
 
@@ -187,4 +187,5 @@ After Supabase is set up:
 3. ✅ Integrate Jelly purchases with database
 4. ✅ Build API endpoints
 
-See [phase10_implementation_plan.md](../../../.gemini/antigravity/brain/ebdc03af-68d7-408a-88f9-293cc05fe8a6/phase10_implementation_plan.md) for details.
+See [phase10_implementation_plan.md](../active-dispatch.md) for details.
+

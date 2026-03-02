@@ -1,8 +1,8 @@
-'use client';
+﻿'use client';
 
 import {
     AlertTriangle, MessageSquare, Star, RefreshCw,
-    ArrowRightLeft, Send, ChevronLeft, CheckCircle2,
+    Send, ChevronLeft, CheckCircle2,
     Loader2, ArrowLeft, ShieldCheck, ChevronRight
 } from 'lucide-react';
 import { useState } from 'react';
@@ -120,11 +120,16 @@ export default function InquiryPage() {
 
             if (!res.ok) {
                 const data = await res.json();
-                throw new Error(data.error || ' 전송 실패');
+                throw new Error(data.error || '전송 실패');
             }
             setStep('done');
         } catch (err: any) {
-            setError(err.message || (locale === 'ko' ? '데이터 전송 중 통신 장애가 발생했습니다.' : 'Network error during transmission.'));
+            setError(
+                err.message ||
+                    (locale === 'ko'
+                        ? '죄송하지만 현재 문의 접수 중 오류가 발생했습니다.'
+                        : 'Network error during transmission.')
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -156,7 +161,7 @@ export default function InquiryPage() {
                                         {locale === 'ko' ? '무엇을' : 'How can we'} <span className="text-primary italic">{locale === 'ko' ? '도와드릴까요?' : 'help you?'}</span>
                                     </h1>
                                     <p className="text-xl md:text-2xl text-secondary font-medium italic opacity-70">
-                                        {locale === 'ko' ? '운명의 파동에 오류가 있다면 상세히 알려주세요.' : 'Report anomalies or let us know your thoughts.'}
+                                        {locale === 'ko' ? '무엇이든지 편하게 말씀해 주세요' : 'Report anomalies or let us know your thoughts.'}
                                     </p>
                                 </div>
                             </div>
@@ -228,7 +233,7 @@ export default function InquiryPage() {
                                             value={subject}
                                             onChange={(e) => setSubject(e.target.value)}
                                             className="w-full bg-transparent border-b-2 border-border-color px-0 py-4 text-foreground font-black text-3xl focus:outline-none focus:border-primary transition-all placeholder:text-neutral-700 italic"
-                                            placeholder={locale === 'ko' ? "핵심 내용을 요약해주세요..." : "Brief summary..."}
+                                            placeholder={locale === 'ko' ? '문의 제목을 입력하세요...' : 'Brief summary...'}
                                             required
                                         />
                                     </div>
@@ -249,7 +254,7 @@ export default function InquiryPage() {
 
                                     <div className="space-y-6">
                                         <label className="text-2xl font-black text-secondary uppercase flex items-center gap-4">
-                                            <span className="w-2 h-6 bg-primary scale-y-50" /> {locale === 'ko' ? '회신 이메일 (선택)' : 'Email (Optional)'}
+                                            <span className="w-2 h-6 bg-primary scale-y-50" /> {locale === 'ko' ? '회신 받는 이메일(선택)' : 'Email (Optional)'}
                                         </label>
                                         <input
                                             type="email"
@@ -277,7 +282,7 @@ export default function InquiryPage() {
                                     ) : (
                                         <>
                                             <Send className="w-8 h-8 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform" />
-                                            {locale === 'ko' ? '메시지 전송하기' : 'TRANSMIT LOG'}
+                                            {locale === 'ko' ? '문의 접수하기' : 'TRANSMIT LOG'}
                                         </>
                                     )}
                                 </button>
@@ -301,11 +306,11 @@ export default function InquiryPage() {
                                 <CheckCircle2 className="w-24 h-24 text-emerald-400" />
                             </motion.div>
                             <h2 className="text-5xl md:text-6xl font-black italic tracking-tighter mb-6 text-foreground uppercase">
-                                {locale === 'ko' ? '수신 완료' : 'RECEIVED'}
+                                {locale === 'ko' ? '성공 접수' : 'RECEIVED'}
                             </h2>
                             <p className="text-2xl text-secondary mb-16 font-bold leading-relaxed opacity-80">
                                 {locale === 'ko' ? '고객님의 목소리가 무사히 도착했습니다.' : 'Your message has safely arrived.'}<br />
-                                {locale === 'ko' ? '빠른 시일 내에 답변드리겠습니다.' : 'We will respond as soon as possible.'}
+                                {locale === 'ko' ? '최대한 빠르게 검토해 연락드리겠습니다.' : 'We will respond as soon as possible.'}
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-6 w-full max-w-lg">
@@ -313,13 +318,13 @@ export default function InquiryPage() {
                                     onClick={() => { setStep('select'); setMessage(''); setEmail(''); setSubject(''); }}
                                     className="flex-1 py-6 rounded-3xl text-xl font-black transition-all bg-surface text-secondary border-2 border-border-color hover:border-primary hover:text-primary uppercase tracking-widest"
                                 >
-                                    {locale === 'ko' ? '돌아가기' : 'Return'}
+                                    {locale === 'ko' ? '목록으로 돌아가기' : 'Return'}
                                 </button>
                                 <Link
                                     href="/"
                                     className="flex-1 py-6 rounded-3xl bg-primary text-white text-xl font-black text-center shadow-lg hover:scale-105 transition-transform uppercase tracking-widest"
                                 >
-                                    {locale === 'ko' ? '메인 화면' : 'HOME'}
+                                    {locale === 'ko' ? '홈으로' : 'HOME'}
                                 </Link>
                             </div>
                         </motion.div>

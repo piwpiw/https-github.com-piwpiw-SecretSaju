@@ -1,0 +1,237 @@
+export type ZodiacItem = {
+    id: string;
+    name: string;
+    emoji: string;
+    dates: string;
+    summary: string;
+    detail: string;
+    love: string;
+    wealth: string;
+    career: string;
+    luckyColor: string;
+    luckyNumber: number;
+    monthRange: [number, number, number, number];
+    planet?: string;
+    element?: string;
+    mode?: string;
+    polarity?: string;
+};
+
+export const ZODIACS: ZodiacItem[] = [
+    {
+        id: "aries",
+        name: "양자리",
+        emoji: "♈",
+        dates: "3.21 ~ 4.19",
+        summary: "결정을 미루지 않을수록 기회가 커집니다.",
+        detail: "작은 선택을 빠르게 실행하면 흐름이 붙는 시기입니다. 당신의 직관적인 추진력이 커다란 프로젝트를 견인하며, 책임감 있는 태도가 두터운 신뢰를 만듭니다.",
+        love: "먼저 다가가는 솔직한 태도가 강한 매력으로 작용합니다.",
+        wealth: "공격적인 투자보다는 단기 성과에 집중할 때 이익이 생깁니다.",
+        career: "주도적으로 아이디어를 내고 먼저 방향을 제시하세요.",
+        luckyColor: "Crimson Red",
+        luckyNumber: 9,
+        monthRange: [3, 21, 4, 19],
+        planet: "화성 (Mars)",
+        element: "Fire 🔥",
+        mode: "Cardinal",
+        polarity: "Positive"
+    },
+    {
+        id: "taurus",
+        name: "황소자리",
+        emoji: "♉",
+        dates: "4.20 ~ 5.20",
+        summary: "익숙한 방식에 작은 변화를 더하면 운이 열립니다.",
+        detail: "안정감을 지키면서도 새로운 방법을 한 가지 도입해 보세요. 꾸준히 다져온 기반 위에서 창의적인 발상이 더해지면 강력한 시너지를 발휘합니다.",
+        love: "편안하고 안정적인 만남에서 뜻밖의 설렘을 발견합니다.",
+        wealth: "장기적인 안목의 저축과 부동산 관련 신호가 긍정적입니다.",
+        career: "실무 영역에서 당신의 꼼꼼함이 빛을 발하는 타이밍입니다.",
+        luckyColor: "Forest Green",
+        luckyNumber: 6,
+        monthRange: [4, 20, 5, 20],
+        planet: "금성 (Venus)",
+        element: "Earth 🌍",
+        mode: "Fixed",
+        polarity: "Negative"
+    },
+    {
+        id: "gemini",
+        name: "쌍둥이자리",
+        emoji: "♊",
+        dates: "5.21 ~ 6.20",
+        summary: "대화가 가장 큰 무기가 되는 날입니다.",
+        detail: "빠른 소통과 정확한 정리가 관건입니다. 메시지를 짧고 선명하게 전달하면 오해를 줄이고, 예기치 못한 네트워킹에서 기회를 잡을 수 있습니다.",
+        love: "가벼운 대화와 유머 코드가 관계의 진전을 이끕니다.",
+        wealth: "비대면 거래와 빠른 정보 습득이 작은 수익을 가져옵니다.",
+        career: "프레젠테이션이나 커뮤니케이션 업무에서 독보적인 성과가 납니다.",
+        luckyColor: "Vivid Yellow",
+        luckyNumber: 5,
+        monthRange: [5, 21, 6, 20],
+        planet: "수성 (Mercury)",
+        element: "Air 💨",
+        mode: "Mutable",
+        polarity: "Positive"
+    },
+    {
+        id: "cancer",
+        name: "게자리",
+        emoji: "♋",
+        dates: "6.21 ~ 7.22",
+        summary: "감정의 균형이 하루의 품질을 결정합니다.",
+        detail: "주변의 요청이 많아질 수 있습니다. 공감은 하되 경계를 분명히 하면, 나만의 에너지 소모를 방지하고 관계의 질을 높일 수 있습니다. 감성을 생산성으로 승화해보세요.",
+        love: "상대방을 향한 따뜻한 한마디가 깊은 유대감을 형성합니다.",
+        wealth: "가족이나 지인과 관련된 지출을 효율적으로 통제해야 합니다.",
+        career: "팀워크를 다지는 데 당신의 포용력이 핵심이 됩니다.",
+        luckyColor: "Silver Pearl",
+        luckyNumber: 2,
+        monthRange: [6, 21, 7, 22],
+        planet: "달 (Moon)",
+        element: "Water 🌊",
+        mode: "Cardinal",
+        polarity: "Negative"
+    },
+    {
+        id: "leo",
+        name: "사자자리",
+        emoji: "♌",
+        dates: "7.23 ~ 8.22",
+        summary: "당당한 태도가 좋은 흐름을 만듭니다.",
+        detail: "스포트라이트를 두려워하지 마세요. 발표나 제안, 협상 등 전면에 나서는 일에서 강력한 기운이 발휘됩니다. 확신 있는 태도로 상황을 주도하세요.",
+        love: "열정적이고 드라마틱한 순간이 관계에 불을 지핍니다.",
+        wealth: "통 큰 결단이 필요합니다. 다만 사치스러운 지출은 경계하세요.",
+        career: "리더십을 발휘하면 주변의 인정을 한몸에 받게 됩니다.",
+        luckyColor: "Royal Gold",
+        luckyNumber: 1,
+        monthRange: [7, 23, 8, 22],
+        planet: "태양 (Sun)",
+        element: "Fire 🔥",
+        mode: "Fixed",
+        polarity: "Positive"
+    },
+    {
+        id: "virgo",
+        name: "처녀자리",
+        emoji: "♍",
+        dates: "8.23 ~ 9.22",
+        summary: "정확한 점검이 실수를 막아줍니다.",
+        detail: "당신의 분석력과 완성도에 강점이 그대로 드러나는 날입니다. 서류, 일정, 숫자 검토를 끝까지 철저히 밀고 나가면 훗날 큰 문제를 예방할 수 있습니다.",
+        love: "세심한 배려와 챙김이 상대방의 마음을 움직입니다.",
+        wealth: "계획적인 지출과 철저한 자금 관리가 자산을 보호합니다.",
+        career: "문서 작업과 데이터 처리에서 완벽한 마무리를 보여주세요.",
+        luckyColor: "Navy Blue",
+        luckyNumber: 4,
+        monthRange: [8, 23, 9, 22],
+        planet: "수성 (Mercury)",
+        element: "Earth 🌍",
+        mode: "Mutable",
+        polarity: "Negative"
+    },
+    {
+        id: "libra",
+        name: "천칭자리",
+        emoji: "♎",
+        dates: "9.23 ~ 10.22",
+        summary: "균형감 있는 조율이 빛납니다.",
+        detail: "중간에서 의견을 연결하고 교량 역할을 하는 데 탁월함이 돋보입니다. 타협점을 세련된 방식으로 제시하면 주변의 분위기와 전체 성과가 동시에 수직 상승합니다.",
+        love: "미적 감각이 돋보이는 데이트나 취향 공유가 관계를 깊게 합니다.",
+        wealth: "협상을 통한 이익 창출이나 계약 체결에 매우 유리한 시기입니다.",
+        career: "갈등을 중재하고 최상의 파트너십을 끌어내세요.",
+        luckyColor: "Pastel Pink",
+        luckyNumber: 7,
+        monthRange: [9, 23, 10, 22],
+        planet: "금성 (Venus)",
+        element: "Air 💨",
+        mode: "Cardinal",
+        polarity: "Positive"
+    },
+    {
+        id: "scorpio",
+        name: "전갈자리",
+        emoji: "♏",
+        dates: "10.23 ~ 11.21",
+        summary: "집중력을 한 곳에 모을 때 결과가 큽니다.",
+        detail: "표면적인 일보다는 근본적인 문제를 파고들 때입니다. 한 번에 여러 일을 벌이기보다 핵심 과제 하나에 깊게 파고들어 명확하고 강력한 결론을 얻어내세요.",
+        love: "은밀하고 딥한 대화를 통해 서로의 감정을 재확인합니다.",
+        wealth: "재조정이나 이면의 자산을 굴리는 숨은 투자에 강운이 있습니다.",
+        career: "위기 상황이나 난제 해결의 마스터키로 활약하게 됩니다.",
+        luckyColor: "Deep Burgundy",
+        luckyNumber: 8,
+        monthRange: [10, 23, 11, 21],
+        planet: "명왕성 (Pluto)",
+        element: "Water 🌊",
+        mode: "Fixed",
+        polarity: "Negative"
+    },
+    {
+        id: "sagittarius",
+        name: "사수자리",
+        emoji: "♐",
+        dates: "11.22 ~ 12.21",
+        summary: "새로운 시도를 두려워하지 마세요.",
+        detail: "관습적인 틀을 깨트릴 때 기운이 트입니다. 낯선 분야에 대한 배움, 이동, 새로운 제안에서 큰 운이 들어옵니다. 스케일을 넓히고 거시적인 그림을 그리세요.",
+        love: "활동적인 데이트나 예상치 못한 서프라이즈가 효과적입니다.",
+        wealth: "해외나 장거리 관련 비즈니스, 먼 곳으로부터 이익이 찾아옵니다.",
+        career: "비전 제시와 장기 기획에서 타의 추종을 불허합니다.",
+        luckyColor: "Vibrant Purple",
+        luckyNumber: 3,
+        monthRange: [11, 22, 12, 21],
+        planet: "목성 (Jupiter)",
+        element: "Fire 🔥",
+        mode: "Mutable",
+        polarity: "Positive"
+    },
+    {
+        id: "capricorn",
+        name: "염소자리",
+        emoji: "♑",
+        dates: "12.22 ~ 1.19",
+        summary: "현실적인 실행력이 성과를 만듭니다.",
+        detail: "머릿속 장기 계획을 আজকের 할 일로 철저하게 세분화해 보세요. 작은 단계들의 완료를 반복할수록 당신의 사회적 신뢰와 실질적 영향력이 빠르고 단단하게 쌓입니다.",
+        love: "화려함보다는 묵묵하고 변함없는 태도로 진심을 증명하세요.",
+        wealth: "결과가 서서히 나타나니 우량주 중심의 견고한 스탠스를 유지하세요.",
+        career: "시스템 구축과 프로젝트 책임자로서 압도적인 역량을 보입니다.",
+        luckyColor: "Charcoal Black",
+        luckyNumber: 10,
+        monthRange: [12, 22, 1, 19],
+        planet: "토성 (Saturn)",
+        element: "Earth 🌍",
+        mode: "Cardinal",
+        polarity: "Negative"
+    },
+    {
+        id: "aquarius",
+        name: "물병자리",
+        emoji: "♒",
+        dates: "1.20 ~ 2.18",
+        summary: "아이디어를 구체화하면 반응이 옵니다.",
+        detail: "독창적이고 혁신적인 생각만 하던 것을 밖으로 꺼내 시안이나 문서화해 보세요. 남들이 시도하지 않았던 실험적인 접근이 예상보다 훨씬 빠르고 뜨거운 공감을 얻습니다.",
+        love: "우정에서 사랑으로, 혹은 친구처럼 편하고 독특한 관계가 깊어집니다.",
+        wealth: "테크 관련 투자 혹은 기발한 부업 아이디어에서 수익이 보입니다.",
+        career: "낡은 프로세스를 뒤집고 새로운 대안을 제시하는 혁신가입니다.",
+        luckyColor: "Electric Blue",
+        luckyNumber: 11,
+        monthRange: [1, 20, 2, 18],
+        planet: "천왕성 (Uranus)",
+        element: "Air 💨",
+        mode: "Fixed",
+        polarity: "Positive"
+    },
+    {
+        id: "pisces",
+        name: "물고기자리",
+        emoji: "♓",
+        dates: "2.19 ~ 3.20",
+        summary: "사람들의 기대를 채우는 빛나는 하루가 됩니다.",
+        detail: "공감 능력과 영감이 극대화되는 시기입니다. 도움 요청이 들어오면 우선순위를 나누되 부드럽게 대응하세요. 철저한 기준 위에 친절을 유지하면 강력한 평판 자산이 됩니다.",
+        love: "낭만적인 무드와 상대의 숨은 마음을 읽어내는 능력이 탁월합니다.",
+        wealth: "직관에 따른 결정이 뜻하지 않은 기회와 연결될 수 있습니다.",
+        career: "크리에이티브한 영역이나 사람을 치유하는 업무에서 두각을 냅니다.",
+        luckyColor: "Seafoam Green",
+        luckyNumber: 12,
+        monthRange: [2, 19, 3, 20],
+        planet: "해왕성 (Neptune)",
+        element: "Water 🌊",
+        mode: "Mutable",
+        polarity: "Negative"
+    }
+];

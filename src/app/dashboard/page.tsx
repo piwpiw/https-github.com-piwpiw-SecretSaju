@@ -3,7 +3,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
-import { getProfiles, SajuProfile } from '@/lib/storage';
 import { analyzeRelationship, RelationshipAnalysis } from '@/lib/compatibility';
 import { calculateHighPrecisionSaju } from '@/core/api/saju-engine';
 import { Plus, Users, Sparkles, TrendingUp, AlertTriangle, Heart, Zap, ChevronRight, Loader2, User, Calendar } from 'lucide-react';
@@ -12,9 +11,13 @@ import JellyBalance from '@/components/shop/JellyBalance';
 import { isUnlocked } from '@/lib/jelly-wallet';
 import DestinyNetwork from '@/components/dashboard/DestinyNetwork';
 import { useLocale } from '@/lib/i18n';
+import SvgChart from '@/components/ui/SvgChart';
+
+import { useProfiles } from '@/components/ProfileProvider';
+import { useWallet } from '@/components/WalletProvider';
 
 interface RelationshipData {
-    profile: SajuProfile;
+    profile: any;
     analysis: RelationshipAnalysis | null;
     isUnlocked: boolean;
 }
@@ -24,24 +27,25 @@ function DashboardContent() {
     const searchParams = useSearchParams();
     const profileId = searchParams.get('profileId');
     const { t, locale } = useLocale();
-    const [mainProfile, setMainProfile] = useState<SajuProfile | null>(null);
+    const { profiles, refreshProfiles } = useProfiles();
+    const { isAdmin } = useWallet();
+
+    const [mainProfile, setMainProfile] = useState<any | null>(null);
     const [relationships, setRelationships] = useState<RelationshipData[]>([]);
     const [insights, setInsights] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        loadDashboard();
+        if (profiles.length > 0) {
+            loadDashboard();
+        } else {
+            setLoading(false);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [profileId]);
+    }, [profileId, profiles]);
 
     const loadDashboard = async () => {
-        const profiles = getProfiles();
         setLoading(true);
-
-        if (profiles.length === 0) {
-            setLoading(false);
-            return;
-        }
 
         const main = profileId ? (profiles.find(p => p.id === profileId) || profiles[0]) : profiles[0];
         setMainProfile(main);
@@ -54,14 +58,16 @@ function DashboardContent() {
                     birthDate: new Date(main.birthdate),
                     birthTime: main.birthTime || '12:00',
                     gender: main.gender === 'male' ? 'M' : 'F',
-                    calendarType: main.calendarType
+                    calendarType: main.calendarType,
+                    isTimeUnknown: main.isTimeUnknown
                 });
 
                 const otherSaju = await calculateHighPrecisionSaju({
                     birthDate: new Date(profile.birthdate),
                     birthTime: profile.birthTime || '12:00',
                     gender: profile.gender === 'male' ? 'M' : 'F',
-                    calendarType: profile.calendarType
+                    calendarType: profile.calendarType,
+                    isTimeUnknown: profile.isTimeUnknown
                 });
 
                 const analysis = analyzeRelationship(
@@ -73,7 +79,7 @@ function DashboardContent() {
                 return {
                     profile,
                     analysis,
-                    isUnlocked: isUnlocked(profile.id),
+                    isUnlocked: isAdmin || isUnlocked(profile.id),
                 };
             }));
 
@@ -144,7 +150,7 @@ function DashboardContent() {
                     </p>
                     <Link
                         href="/my-saju/add"
-                        className="inline-flex items-center gap-4 px-12 py-6 rounded-3xl bg-primary text-white font-black text-xl shadow-2xl hover:scale-105 transition-all"
+                        className="inline-flex items-center gap-4 px-12 py-6 rounded-3xl bg-primary text-white font-black text-xl shadow-2xl hover:scale-105 transition-all min-h-[56px]"
                     >
                         {t('compat.addProfile')} <ChevronRight className="w-6 h-6" />
                     </Link>
@@ -169,14 +175,14 @@ function DashboardContent() {
                     </div>
                     <div className="flex items-center gap-6">
                         <JellyBalance onClick={() => router.push('/shop')} />
-                        <Link href="/my-saju/add" className="w-16 h-16 rounded-3xl bg-surface border border-border-color flex items-center justify-center hover:bg-primary/20 hover:border-primary/50 transition-all shadow-lg group">
+                            <Link href="/my-saju/add" className="w-16 h-16 rounded-3xl bg-surface border border-border-color flex items-center justify-center hover:bg-primary/20 hover:border-primary/50 transition-all shadow-lg group">
                             <Plus className="w-8 h-8 text-foreground group-hover:text-primary transition-colors" />
                         </Link>
                     </div>
                 </div>
 
                 {/* Quick Actions / Daily Fortune */}
-                <div className="mb-20">
+                <div className="mb-20 grid grid-cols-1 gap-6 lg:gap-8">
                     <Link href="/daily" className="group relative block w-full overflow-hidden rounded-4xl bg-gradient-to-br from-primary/20 via-surface to-background p-8 border border-primary/30 shadow-2xl hover:border-primary/60 transition-all">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-primary/20 transition-colors" />
                         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
@@ -191,7 +197,7 @@ function DashboardContent() {
                                     </p>
                                 </div>
                             </div>
-                            <div className="px-10 py-4 bg-primary text-white font-black text-xl rounded-2xl shadow-xl group-hover:scale-105 transition-all">
+                                <div className="px-10 py-4 bg-primary text-white font-black text-xl rounded-2xl shadow-xl group-hover:scale-105 transition-all min-h-[52px] flex items-center">
                                 {locale === 'ko' ? '지금 열어보기' : 'Open Now'}
                             </div>
                         </div>
@@ -208,7 +214,7 @@ function DashboardContent() {
                 </div>
 
                 {/* Relationship Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 xl:gap-9 2xl:gap-10">
                     {relationships.map((rel, idx) => (
                         <motion.div
                             key={rel.profile.id}
@@ -235,7 +241,7 @@ function DashboardContent() {
 
                             {rel.analysis && (
                                 <div className="space-y-8">
-                                    <div className="h-2 bg-background rounded-full overflow-hidden border border-border-color">
+                                    <div className="h-2 bg-background rounded-full overflow-hidden border border-border-color mt-4">
                                         <motion.div
                                             initial={{ width: 0 }}
                                             animate={{ width: `${rel.analysis.score}%` }}
@@ -243,21 +249,38 @@ function DashboardContent() {
                                             className={`h-full bg-gradient-to-r ${rel.analysis.score >= 80 ? 'from-cyan-400 to-indigo-500' : 'from-yellow-400 to-rose-500'}`}
                                         />
                                     </div>
-                                    <p className="text-lg text-secondary font-medium leading-relaxed line-clamp-2">
-                                        {rel.analysis.chemistry}
+                                    <p className="text-sm text-secondary font-medium leading-relaxed line-clamp-2 italic opacity-80 mt-4 mb-6">
+                                        &ldquo;{rel.analysis.chemistry}&rdquo;
                                     </p>
-                                    <div className="grid grid-cols-2 gap-4 pt-6">
-                                        <button className="py-4 rounded-2xl bg-background text-foreground font-bold text-lg border border-border-color hover:bg-white/5 transition-all">
-                                            {locale === 'ko' ? '상세 분석' : 'DETAIL'}
+
+                                    {/* SvgChart - Compact Radar */}
+                                    <div className="flex justify-center my-6 scale-90">
+                                        <SvgChart
+                                            size={140}
+                                            accentColor={rel.analysis.score >= 80 ? "#22d3ee" : "#fbbf24"}
+                                            animDelay={0.2}
+                                            title="Energy Sync"
+                                            data={[
+                                                { label: "Emotion", value: 50 + (rel.analysis.score % 40) },
+                                                { label: "Logic", value: 40 + (rel.analysis.score % 50) },
+                                                { label: "Passion", value: 60 + (rel.profile.name.length * 5 % 30) },
+                                                { label: "Stability", value: Math.min(95, rel.analysis.score + 10) },
+                                            ]}
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                                    <button className="py-3 min-h-[44px] rounded-2xl bg-background text-foreground font-bold text-sm border border-border-color hover:bg-white/5 transition-all tracking-widest uppercase">
+                                            {locale === 'ko' ? '상세 해독' : 'DETAIL'}
                                         </button>
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 router.push(`/relationship/${rel.profile.id}/vs`);
                                             }}
-                                            className="py-4 rounded-2xl bg-gradient-to-r from-primary to-indigo-600 text-white font-black text-lg shadow-lg hover:shadow-primary/20"
+                                            className="py-3 min-h-[44px] rounded-2xl bg-gradient-to-r from-primary to-indigo-600 text-white font-black text-sm shadow-lg hover:shadow-primary/20 tracking-widest italic flex items-center justify-center gap-1"
                                         >
-                                            VS
+                                            <Zap className="w-4 h-4" /> VS
                                         </button>
                                     </div>
                                 </div>

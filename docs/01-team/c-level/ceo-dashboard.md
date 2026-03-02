@@ -1,4 +1,4 @@
-# CEO Dashboard - Secret Saju
+﻿# CEO Dashboard - Secret Saju
 
 **Quick View: Strategic Overview & Key Metrics**
 
@@ -191,10 +191,13 @@ graph LR
 
 ---
 
-**For Immediate Attention**: Review [Implementation Plan](../../implementation_plan.md) and [Task List](../../task.md)
+**For Immediate Attention**: Review [Implementation Plan](../../active-dispatch.md) and [Task List](../../00-overview/execution-backlog-ko.md)
 
 ---
 
 **Document Owner**: CEO  
 **Last Updated**: 2026-01-31  
 **Next Review**: Weekly (Every Monday 9am)
+
+
+

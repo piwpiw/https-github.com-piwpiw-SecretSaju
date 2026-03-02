@@ -2,13 +2,68 @@ import { Resend } from 'resend';
 
 // Initialize Resend Client
 const resend = new Resend(process.env.RESEND_API_KEY || 're_mock_key');
+const HAS_REAL_RESEND_KEY = Boolean(process.env.RESEND_API_KEY);
+export const MAIL_RETRY_TTL_SECONDS = Number(process.env.MAIL_RETRY_TTL_SECONDS ?? 600);
+const MAIL_SCHEMA_COMPARE = process.env.MAIL_SCHEMA_COMPARE === 'true';
 
 const FROM_EMAIL = process.env.NEXT_PUBLIC_FROM_EMAIL || 'noreply@secret-saju.com';
+type MailServiceError = { code: string; message: string };
+type MailResult =
+  | { success: true; data?: unknown; mocked?: boolean }
+  | { success: false; error: string | MailServiceError; mocked?: false };
+
+function normalizeMailError(error: unknown): string | MailServiceError {
+  if (typeof error === 'string') return error;
+  if (error instanceof Error) {
+    return { code: 'MAIL_ERROR', message: error.message };
+  }
+  if (typeof error === 'object' && error !== null) {
+    const record = error as Record<string, unknown>;
+    if (typeof record.code === 'string' || typeof record.message === 'string') {
+      return {
+        code: typeof record.code === 'string' ? record.code : 'MAIL_ERROR',
+        message: typeof record.message === 'string' ? record.message : 'Unknown mail error',
+      };
+    }
+  }
+  return { code: 'MAIL_ERROR', message: 'Unknown mail error' };
+}
+
+function toMockResult<TData = unknown>(mockedData: TData): MailResult {
+  return { success: true, data: mockedData, mocked: true };
+}
+
+function normalizeResendError(error: unknown): { code: string; message: string } {
+    if (error instanceof Error) {
+        return { code: 'RESEND_UNKNOWN_ERROR', message: error.message };
+    }
+
+    if (typeof error === 'object' && error !== null) {
+        const record = error as Record<string, unknown>;
+        const message = typeof record.message === 'string' ? record.message : String(error);
+        const code = typeof record.name === 'string' ? record.name : 'RESEND_UNKNOWN_ERROR';
+        return { code, message };
+    }
+
+    return { code: 'RESEND_UNKNOWN_ERROR', message: String(error) };
+}
+
+function logMailSchemaSample(mode: 'mock' | 'live', data?: unknown) {
+    if (!MAIL_SCHEMA_COMPARE || !data || typeof data !== 'object') return;
+    const keys = Object.keys(data as Record<string, unknown>).sort();
+    if (process.env.NODE_ENV === 'development') {
+        console.debug(`[Mail Schema:${mode}]`, keys.join(','));
+    }
+}
 
 /**
  * Sends a welcome email upon successful sign-up.
  */
 export async function sendWelcomeEmail(to: string, name: string) {
+    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA !== 'true' && !HAS_REAL_RESEND_KEY) {
+        return { success: false, error: 'RESEND_API_KEY is missing' };
+    }
+
     if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
         console.log(`[MOCK MAIL] Welcome Email sent to ${to} (${name})`);
         return { success: true, mocked: true };
@@ -35,10 +90,12 @@ export async function sendWelcomeEmail(to: string, name: string) {
 
         if (error) {
             console.error('Failed to send welcome email:', error);
-            return { success: false, error };
-        }
+        const normalized = normalizeResendError(error);
+        return { success: false, error: normalized };
+      }
 
-        return { success: true, data };
+        logMailSchemaSample('live', data);
+        return { success: true, data } as MailResult;
     } catch (error) {
         console.error('Unhandled email error:', error);
         return { success: false, error };
@@ -49,6 +106,10 @@ export async function sendWelcomeEmail(to: string, name: string) {
  * Sends the Saju Analysis Result (Anonymous Gift feature)
  */
 export async function sendSajuResultEmail(to: string, senderName: string, resultLink: string) {
+    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA !== 'true' && !HAS_REAL_RESEND_KEY) {
+        return { success: false, error: 'RESEND_API_KEY is missing' };
+    }
+
     if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
         console.log(`[MOCK MAIL] Result Email sent to ${to} from ${senderName}. Link: ${resultLink}`);
         return { success: true, mocked: true };
@@ -74,12 +135,69 @@ export async function sendSajuResultEmail(to: string, senderName: string, result
 
         if (error) {
             console.error('Failed to send result email:', error);
-            return { success: false, error };
+            const normalized = normalizeResendError(error);
+            return { success: false, error: normalized };
         }
 
-        return { success: true, data };
+        logMailSchemaSample('live', data);
+        return { success: true, data } as MailResult;
     } catch (error) {
         console.error('Unhandled email error:', error);
-        return { success: false, error };
+        return { success: false, error: normalizeMailError(error) };
     }
+}
+
+/**
+ * Sends a payment completion receipt email.
+ */
+export async function sendPaymentReceiptEmail(
+  to: string,
+  orderId: string,
+  amount: number,
+  jellies: number
+) {
+  if (process.env.NEXT_PUBLIC_USE_MOCK_DATA !== 'true' && !HAS_REAL_RESEND_KEY) {
+    return { success: false, error: 'RESEND_API_KEY is missing' };
+  }
+
+    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        console.log(`[MOCK MAIL] Payment receipt email sent to ${to} (${orderId})`);
+        const result = toMockResult({ email: to, orderId });
+        logMailSchemaSample('mock', result.success ? result.data : undefined);
+        return result;
+    }
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: `Secret Saju <${FROM_EMAIL}>`,
+      to: [to],
+      subject: `Payment confirmed - Order ${orderId}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; background-color: #111827; color: #fff; padding: 24px; border-radius: 12px; max-width: 560px; margin: 0 auto;">
+          <h2 style="color: #a855f7; margin-bottom: 12px;">Payment Completed</h2>
+          <p style="color: #cbd5e1; font-size: 16px; line-height: 1.6;">
+            Your payment has been verified successfully.
+          </p>
+          <table style="width: 100%; margin-top: 16px; color: #e2e8f0;">
+            <tr><td style="padding: 6px 0;">Order ID</td><td>${orderId}</td></tr>
+            <tr><td style="padding: 6px 0;">Paid Amount</td><td>${amount.toLocaleString()} KRW</td></tr>
+            <tr><td style="padding: 6px 0;">Jellies Added</td><td>${jellies}</td></tr>
+          </table>
+          <p style="margin-top: 20px; color: #94a3b8; font-size: 13px;">Thank you for using SecretSaju.</p>
+        </div>
+      `,
+    });
+
+    if (error) {
+      console.error('Failed to send payment receipt email:', error);
+      const normalized = normalizeResendError(error);
+      return { success: false, error: normalized };
+    }
+
+    logMailSchemaSample('live', data);
+    return { success: true, data } as MailResult;
+  } catch (error) {
+    console.error('Unhandled payment receipt email error:', error);
+    return { success: false, error: normalizeMailError(error) };
+  }
 }

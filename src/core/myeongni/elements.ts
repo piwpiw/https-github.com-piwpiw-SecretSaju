@@ -6,6 +6,8 @@
  */
 
 import { FourPillars, Stem, Branch } from '../calendar/ganji';
+import { calculateSaryeong, SaryeongResult } from './jijanggan';
+import { getCurrentSolarTerm, getAnnualSolarTerms } from '../astronomy/solar-terms';
 
 export type Element = '목' | '화' | '토' | '금' | '수';
 
@@ -82,7 +84,7 @@ const WEIGHTS = {
     HOUR_BRANCH: 15
 };
 
-export function analyzeElements(saju: FourPillars): ElementAnalysisResult {
+export function analyzeElements(saju: FourPillars, baseDateKST?: Date): ElementAnalysisResult {
     // SECURITY: Reject if any pillar data is missing
     if (!saju || !saju.year || !saju.month || !saju.day || !saju.hour) {
         throw new Error("[saju-engine] Incomplete pillar data for HIDDEN_WEIGHTED_V1");
@@ -96,20 +98,49 @@ export function analyzeElements(saju: FourPillars): ElementAnalysisResult {
         const sEl = STEM_ELEMENTS[stem];
         if (!sEl) throw new Error(`[saju-engine] Invalid stem element for: ${stem}`);
 
-        scores[sEl] += stemWeight;
-        counts[sEl] += 1;
-
         // Branch (Distribute branch weight across hidden stems)
-        const hidden = HIDDEN_STEMS[branch];
-        if (!hidden) throw new Error(`[saju-engine] Missing hidden stem data for branch: ${branch}`);
+        // Global Standard: For the Month Branch, use exact Saryeong (Commander) calculation if baseDate is provided.
+        // For other branches (Year, Day, Hour), we use the default static weight distribution for now, 
+        // as Saryeong strictly dictates the Seasonal (Month) Qi.
+        let dynamicWeights: { stem: Stem; weight: number }[] | null = null;
+        
+        if (stemWeight === WEIGHTS.MONTH_STEM && baseDateKST) {
+            // Find the exact solar term start date for the current month
+            const year = baseDateKST.getFullYear();
+            const solarTerms = getAnnualSolarTerms(year);
+            // Saju months: 1st month starts at Ipchun (index 0)
+            const currentTerm = getCurrentSolarTerm(baseDateKST);
+            
+            // Sometimes it belongs to the previous year's late solar terms (Sohan, Daehan)
+            // But getCurrentSolarTerm returns the absolute term info.
+            // We just need the exact Date of that term.
+            const exactTermDate = solarTerms.find(t => t.name === currentTerm.name)?.date || baseDateKST;
+            
+            const saryeong = calculateSaryeong(branch, exactTermDate, baseDateKST);
+            dynamicWeights = saryeong.weights;
+        }
 
-        const totalHiddenWeight = hidden.reduce((sum, h) => sum + h.weight, 0);
+        if (dynamicWeights) {
+            // Use dynamically calculated weights
+            dynamicWeights.forEach(h => {
+                const hElement = STEM_ELEMENTS[h.stem];
+                // Weight here is normalized to 30. We scale it to the branchWeight (e.g. 30 for month)
+                const distributedWeight = (h.weight / 30) * branchWeight; 
+                scores[hElement] += distributedWeight;
+            });
+        } else {
+            // Fallback to static weights
+            const hidden = HIDDEN_STEMS[branch];
+            if (!hidden) throw new Error(`[saju-engine] Missing hidden stem data for branch: ${branch}`);
 
-        hidden.forEach(h => {
-            const hElement = STEM_ELEMENTS[h.stem];
-            const distributedWeight = (h.weight / totalHiddenWeight) * branchWeight;
-            scores[hElement] += distributedWeight;
-        });
+            const totalHiddenWeight = hidden.reduce((sum, h) => sum + h.weight, 0);
+
+            hidden.forEach(h => {
+                const hElement = STEM_ELEMENTS[h.stem];
+                const distributedWeight = (h.weight / totalHiddenWeight) * branchWeight;
+                scores[hElement] += distributedWeight;
+            });
+        }
 
         // Count the branch primarily as its main element
         const bEl = BRANCH_ELEMENTS[branch];

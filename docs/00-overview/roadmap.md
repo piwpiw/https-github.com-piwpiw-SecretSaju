@@ -1,4 +1,4 @@
-# Product Roadmap - Secret Saju
+﻿# Product Roadmap - Secret Saju
 
 **2026 Product Evolution Plan**
 
@@ -408,3 +408,30 @@ Original user gets full report unlocked
 **Document Owner**: PM/PO  
 **Last Updated**: 2026-01-31  
 **Next Review**: 2026-04-01 (Monthly)
+
+---
+
+## Execution Backlog Upgrade (UI + Feature + Must-Show Elements)
+
+Execution-ready screen contracts are centralized in [Execution Backlog](./execution-backlog-ko.md). This keeps `roadmap.md` focused on schedule and strategic flow while route-level must-show requirements stay in one file.
+
+### Why this separation
+- Route contract is now the single source of truth for screen-level acceptance.
+- PM, engineering, and QA read the same contract before each sprint.
+- Duplicate tables in multiple docs are removed to reduce drift.
+
+### Usage
+1. Before each sprint, open `execution-backlog-ko.md` and choose active rows.
+2. Link each selected route to at least one test case in `USER_VERIFICATION.md`.
+3. Update `execution-backlog-ko.md` when a route contract changes, then keep the roadmap update entry minimal.
+
+**Update Stamp**: This section now points to the single source-of-truth backlog on 2026-03-01.
+
+## Roadmap 현황
+
+- Beta launch 체크리스트 상태: 결제 안정화/동작 검증 완료 기준 반영
+
+## Handoff Integration Milestones
+- Auth: callback reliability + retry flags + provider error UX
+- Payment: initialize/verify error_code schema alignment + ops alerts
+- Operations: 24h/72h review templates + incident runbooks linked

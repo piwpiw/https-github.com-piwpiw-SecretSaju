@@ -11,6 +11,7 @@
   --text-foreground: #f1f5f9;
   --text-secondary: #94a3b8;
   --border-color: rgba(255, 255, 255, 0.1);
+  --accent-ink: #f59e0b;
   --radius: 0.75rem;
   --font-size-base: 16px;
 }
@@ -24,7 +25,10 @@ body {
   color: var(--text-foreground);
   font-size: var(--font-size-base);
   line-height: 1.7;
-  transition: background-color 0.3s, color 0.3s;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Utility classes using CSS variables */
@@ -96,12 +100,120 @@ body {
   box-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
 }
 
+.surface-orb {
+  @apply relative rounded-[2.5rem] border border-white/10 bg-white/[0.03] backdrop-blur-3xl;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+
+.surface-orb:hover {
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+}
+
+.ui-chip {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] uppercase tracking-[0.32em] font-black;
+  background: linear-gradient(135deg, rgba(129, 140, 254, 0.15), rgba(168, 85, 247, 0.12));
+  border: 1px solid rgba(129, 140, 254, 0.35);
+  color: #c7d2fe;
+}
+
+.panel-shell {
+  @apply rounded-[3rem] backdrop-blur-3xl border relative overflow-hidden transition-all duration-500;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.panel-shell:hover {
+  border-color: rgba(129, 140, 254, 0.45);
+  transform: translateY(-1px);
+}
+
+.ui-title {
+  @apply text-2xl md:text-3xl font-black italic tracking-tighter leading-tight;
+}
+
+.ui-title-gradient {
+  background: linear-gradient(120deg, #f8fafc 0%, #c7d2fe 50%, var(--accent-ink) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-micro-copy {
+  color: var(--text-secondary);
+  @apply text-[11px] uppercase tracking-[0.28em] font-black;
+}
+
+.hero-kicker {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border;
+  background: linear-gradient(120deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15));
+  border-color: rgba(129, 140, 254, 0.4);
+  color: #c7d2fe;
+}
+
+.section-kicker {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border;
+  background: linear-gradient(120deg, rgba(99, 102, 241, 0.14), rgba(167, 139, 250, 0.14));
+  border-color: rgba(129, 140, 254, 0.35);
+  color: #dbeafe;
+  letter-spacing: 0.3em;
+}
+
+.section-title {
+  @apply text-[10px] font-black text-slate-500 uppercase tracking-[0.28em];
+}
+
+.image-copy-chip {
+  @apply text-white border border-white/20 bg-black/20 rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em];
+}
+
+.image-frame {
+  @apply relative overflow-hidden rounded-[2.75rem] border border-white/15;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.image-copy {
+  @apply absolute inset-0 flex items-end px-6 pb-5 text-[11px] uppercase tracking-[0.28em] font-black;
+  background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.65));
+  color: #f8fafc;
+}
+
+.cta-primary {
+  @apply font-black tracking-[0.2em] uppercase;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.cta-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 30px rgba(99, 102, 241, 0.35);
+}
+
+.cta-secondary {
+  @apply font-black tracking-[0.2em] uppercase;
+}
+
 .text-glow-amber {
   text-shadow: 0 0 10px rgba(212, 175, 55, 0.5), 0 0 20px rgba(212, 175, 55, 0.3);
 }
 
 .text-glow-indigo {
   text-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
+}
+
+.image-caption {
+  @apply absolute inset-x-0 bottom-0 px-6 pb-4 text-white;
+  background: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.55));
+}
+
+.image-overlay-title {
+  @apply text-[11px] font-black uppercase tracking-[0.28em] text-slate-200;
+}
+
+.image-overlay-copy {
+  @apply text-sm leading-tight font-semibold text-slate-100;
+}
+
+.premium-chip-row {
+  @apply inline-flex items-center gap-2 px-4 py-1 text-[10px] font-black uppercase tracking-[0.24em];
 }
 
 .mask-fade-b {
@@ -144,4 +256,20 @@ body {
 /* Selection (theme-aware) */
 ::selection {
   background-color: rgba(99, 102, 241, 0.25);
+}
+
+/* Admin Status Badge */
+.admin-badge {
+  @apply px-2 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider;
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  color: #000;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+}
+
+/* Premium Typography Improvements */
+.text-mystic {
+  @apply font-semibold tracking-tight;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

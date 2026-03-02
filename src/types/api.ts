@@ -19,6 +19,7 @@ export interface SajuCalculateRequest {
     birthDate: string; // ISO 8601 format
     birthTime: string; // "HH:mm"
     gender: 'M' | 'F';
+    isTimeUnknown?: boolean;
     calendarType?: 'solar' | 'lunar';
     location?: {
         latitude: number;
@@ -215,7 +216,8 @@ export function isSajuCalculateRequest(data: unknown): data is SajuCalculateRequ
     return (
         typeof req.birthDate === 'string' &&
         typeof req.birthTime === 'string' &&
-        (req.gender === 'M' || req.gender === 'F')
+        (req.gender === 'M' || req.gender === 'F') &&
+        (req.isTimeUnknown === undefined || typeof req.isTimeUnknown === 'boolean')
     );
 }
 

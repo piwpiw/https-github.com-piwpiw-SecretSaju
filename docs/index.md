@@ -1,38 +1,54 @@
-# 📚 SecretSaju Documentation Index (Knowledge Base)
+﻿# SecretSaju Documentation Index
 
-이 문서는 AI 에이전트 다중 협업 환경에서 모든 컨텍스트와 기획, 아키텍처 규칙을 빠르게 인덱싱하기 위한 최상위 목차(Root Index)입니다.
+## Purpose
+This index is the only entry point for documentation navigation.
+Each domain keeps exactly one source-of-truth (SOT) document.
 
-## 🌀 개발 방법론 및 규칙 (Methodology & Rules)
-- **[AI Collaboration Cycle](../.agent/workflows/ai-collaboration.md)**: 전체 개발 프로세스, 지식 트리 구조, 10분 마이크로 타임박싱 및 다중 에이전트 협업 기준.
-- **[Architecture & Maintenance](../.agent/workflows/architecture.md)**: 폴더 구조, Mocking 바이패스, Next.js 컴포넌트 추가/삭제 규칙, 토큰 최적화 방안.
-- **[Zero Script QA](../scripts/zero-script-qa.mjs)**: 코드 커밋 전 자동으로 코드 퀄리티를 통제하여 중복 에러 발생을 근본적으로 차단하는 스크립트.
+## Core SOT Map
+| Domain | Source of Truth | Use Case |
+|---|---|---|
+| Product requirement | `docs/MASTER_PRD.md` | Product scope, phase, release requirement |
+| Execution contract (route/page) | `docs/00-overview/execution-backlog-ko.md` | Screen goals, must-show elements, done criteria |
+| Strategy roadmap | `docs/00-overview/roadmap.md` | Priority, milestone, sequence |
+| Deployment runtime | `docs/01-team/engineering/deployment-guide.md` | Deploy process, command policy, recovery |
+| Error and guardrail | `docs/ERROR_CATALOG.md` | Exception handling baseline |
+| User verification | `docs/USER_VERIFICATION.md` | End-user QA and acceptance flow |
+| Documentation policy | `docs/00-overview/document-governance.md` | SOT ownership and dedupe rules |
+| Active task dispatch | `docs/active-dispatch.md` | Current wave, owner, handoff status |
 
-## 📖 기획 및 설계서 (Planning & Specifications)
-- **[MASTER PRD](./MASTER_PRD.md)**: 전체 서비스의 제품 요구사항 정의서 (Phase 1 ~ Phase 3 로드맵 포함).
-- **[UI/UX DESIGN SPEC](./UI_UX_DESIGN_SPEC.md)**: 글래스모피즘(Glassmorphism) 및 SVG Stitch 기반 동적 차트 등 프론트엔드 디자인 원칙 가이드.
-- **[BLUEPRINT](./BLUEPRINT.md)**: 10단계 초격차 럭셔리 플랫폼 구축을 위한 마일스톤 안내서.
+## Engineering Runtime Docs
+- [Deployment Guide](./01-team/engineering/deployment-guide.md)
+- [Testing Guide](./01-team/engineering/testing-guide.md)
+- [Onboarding](./01-team/engineering/onboarding.md)
+- [Git Workflow](./01-team/engineering/git-workflow.md)
 
-## 🛠 아키텍처 및 가이드 (Technical & User Guides)
-- **[Setup Guide](./guides/setup.md)**: 프로젝트 초기화 및 환경 설정 통합 가이드.
-- **[Deployment Guide](./guides/deployment.md)**: Vercel 및 기타 배포 프로세스 통합 체크리스트.
-- **[Integrations Guide](./guides/integrations.md)**: Kakao, Supabase 등 외부 연동 설정 명세.
-- **[Development Guidelines](./development/guidelines.md)**: 보안, 코드 스타일, 퀵픽스 가이드라인.
-- **[Saju Layers](./SAJU_LAYERS.md)**: 사주 코어 명리학 엔진(DACRE)의 레이어 구조 및 알고리즘 해설 문서.
-- **[Error Catalog](./ERROR_CATALOG.md)**: 프로젝트 내에서 식별되어 관리되는 에러 카탈로그 및 대처 매뉴얼.
+## Team Specs
+- [TEAM_SPEC_기획자](./TEAM_SPEC_기획자.md)
+- [TEAM_SPEC_개발자](./TEAM_SPEC_개발자.md)
+- [TEAM_SPEC_디자이너](./TEAM_SPEC_디자이너.md)
+- [TEAM_SPEC_콘텐츠](./TEAM_SPEC_콘텐츠.md)
 
-## 👥 팀 명세서 (Team Specifics)
-- **기획 팀 (Planning)**: `01-team/TEAM_SPEC_기획자.md`
-- **디자인 팀 (Design)**: `01-team/TEAM_SPEC_디자이너.md`
-- **단일 기능 개발 팀 (Feature Dev)**: `01-team/TEAM_SPEC_개발자.md`
-- **콘텐츠 및 운세 데이터 팀 (Content)**: `01-team/TEAM_SPEC_콘텐츠.md`
+## Fast Command Matrix
+| Goal | Command | Notes |
+|---|---|---|
+| Local fast preflight | `npm run preflight:local` | lint + type-check in parallel |
+| Local serial repro | `npm run preflight:local:serial` | deterministic repro for flaky cases |
+| Local deploy precheck | `npm run deploy:local` | preflight + pre-deploy(skip build/tests) |
+| Full pre-deploy parallel | `npm run pre-deploy:parallel` | env/config/migration + build/tests parallel |
+| Fast production deploy path | `npm run deploy:fast` | prechecks + prebuilt deploy |
 
-## 📦 아카이브 (Archive)
-- [Archived Workflows](archive/workflows.md)
-- [Old UI Specs](archive/ui_specs.md)
-- [Deployment History](archive/DEPLOY_RESULT.md)
-- [Status History](archive/STATUS.md)
-- [QA Reports](archive/qa-report.log)
-- [Moon Phase Script](archive/verify_moon.ts)
+## Update Order (Mandatory)
+1. Update one target SOT document only.
+2. Update `docs/active-dispatch.md` status if scope/owner changed.
+3. Update this index only for link or ownership changes.
+4. Update team spec docs by link, not by duplicate requirements.
+
+## Link Hygiene
+- Use relative paths only.
+- Do not add broken archive links to active sections.
+- Keep duplicate policy text out of team docs; link governance instead.
 
 ---
-> ⚠️ **에이전트 행동 강령**: 새로운 모듈 개발 전 반드시 이 Index를 읽고 관련 문서를 `grep_search` 또는 `view_file`로 확인한 후, 설계 동기화를 거쳐 작업을 시작하십시오.
+**Last Updated**: 2026-03-01  
+**Document Owner**: Product Operations + Engineering Lead  
+**Next Review**: 2026-03-08
