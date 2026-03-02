@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, TrendingUp, CreditCard, Wallet, Building2, Smartphone } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     PRICING_TIERS,
     getPerUnitPrice,
@@ -28,6 +28,7 @@ export default function JellyShopModal({
     );
     const [isPurchasing, setIsPurchasing] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [purchaseError, setPurchaseError] = useState("");
     type TossPaymentMethod = '카드' | '계좌이체' | '토스페이' | '휴대폰';
     const [paymentMethod, setPaymentMethod] = useState<TossPaymentMethod>('카드');
 
@@ -38,8 +39,17 @@ export default function JellyShopModal({
         { id: '휴대폰', label: '휴대폰 결제', icon: Wallet, color: 'from-purple-500 to-pink-500', desc: '통신사 청구' },
     ];
 
+    useEffect(() => {
+      if (!isOpen) {
+        setIsPurchasing(false);
+        setShowSuccess(false);
+        setPurchaseError("");
+      }
+    }, [isOpen]);
+
     const handlePurchase = async (tier: PricingTier) => {
         setIsPurchasing(true);
+        setPurchaseError("");
 
         try {
             // 1. Initialize Payment via our API
@@ -75,7 +85,7 @@ export default function JellyShopModal({
 
         } catch (error: any) {
             console.error('Purchase failed:', error);
-            alert(error.message || '결제 준비 중 오류가 발생했습니다.');
+            setPurchaseError(error?.message || '결제 처리 중 오류가 발생했습니다.');
         } finally {
             setIsPurchasing(false);
         }
@@ -269,6 +279,12 @@ export default function JellyShopModal({
                                 <p className="text-center text-xs text-zinc-500 mt-3">
                                     🔒 토스페이먼츠 보안 결제 · 개인정보 암호화
                                 </p>
+
+                                {purchaseError && (
+                                    <p className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-300 text-center">
+                                        {purchaseError}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Success Animation */}
