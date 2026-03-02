@@ -40,7 +40,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm ci --no-audit --no-fund
+        run: npm ci --no-audit --no-fund --no-optional
 
       - name: Run quality checks in parallel
         shell: bash
@@ -74,6 +74,14 @@ jobs:
             exit 1
           fi
 
+      - name: Upload quality logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-logs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/*.log
+          retention-days: 7
+
   build:
     name: Build
     needs: quality
@@ -92,7 +100,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm ci --no-audit --no-fund
+        run: npm ci --no-audit --no-fund --no-optional
 
       - name: Build app
         run: npm run build
