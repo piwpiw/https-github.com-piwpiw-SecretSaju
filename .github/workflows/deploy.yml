@@ -145,6 +145,7 @@ jobs:
 
       - name: Trigger Render deploy hook (optional)
         run: |
+          set -o pipefail
           node scripts/render-deploy.js 2>&1 | tee /tmp/render-deploy.log
 
       - name: Upload render-deploy log
@@ -161,6 +162,7 @@ jobs:
           if [ -z "$HEALTHCHECK_URL" ]; then
             export HEALTHCHECK_URL="${NEXT_PUBLIC_BASE_URL}/api/health"
           fi
+          set -o pipefail
           node scripts/wait-for-health.js 2>&1 | tee /tmp/healthcheck.log
 
       - name: Upload healthcheck log

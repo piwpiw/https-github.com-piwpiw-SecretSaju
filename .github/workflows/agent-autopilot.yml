@@ -26,7 +26,17 @@ jobs:
         run: npm ci --no-audit --no-fund --no-optional
 
       - name: Run Build and QA
-        run: npm run qa
+        run: |
+          set -o pipefail
+          npm run qa 2>&1 | tee /tmp/autopilot-qa.log
+          
+      - name: Upload AutoPilot QA log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: autopilot-qa-log-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/autopilot-qa.log
+          retention-days: 7
         
       - name: Automerge
         if: success() && startsWith(github.head_ref, 'auto/')
