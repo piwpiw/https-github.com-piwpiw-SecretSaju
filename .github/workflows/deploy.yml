@@ -95,12 +95,21 @@ jobs:
             echo "failed=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Upload quality logs
+      - name: Bundle quality triage
+        if: always()
+        run: |
+          tar -czf /tmp/quality-triage-${{ github.run_id }}-${{ github.run_attempt }}.tgz \
+            /tmp/tsc.log \
+            /tmp/lint.log \
+            /tmp/test.log \
+            --ignore-failed-read || true
+
+      - name: Upload quality triage bundle
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: quality-logs-${{ github.run_id }}-${{ github.run_attempt }}
-          path: /tmp/*.log
+          name: quality-triage-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/quality-triage-${{ github.run_id }}-${{ github.run_attempt }}.tgz
           retention-days: 7
 
       - name: Publish quality summary
@@ -144,14 +153,6 @@ jobs:
         run: |
           set -o pipefail
           npm run build 2>&1 | tee /tmp/build.log
-
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log-${{ github.run_id }}-${{ github.run_attempt }}
-          path: /tmp/build.log
-          retention-days: 7
 
       - name: Publish build summary
         if: always()
@@ -200,14 +201,6 @@ jobs:
           set -o pipefail
           node scripts/render-deploy.js 2>&1 | tee /tmp/render-deploy.log
 
-      - name: Upload render-deploy log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: render-deploy-log-${{ github.run_id }}-${{ github.run_attempt }}
-          path: /tmp/render-deploy.log
-          retention-days: 7
-
       - name: Wait for service health
         shell: bash
         run: |
@@ -217,31 +210,6 @@ jobs:
           fi
           set -o pipefail
           node scripts/wait-for-health.js 2>&1 | tee /tmp/healthcheck.log
-
-      - name: Upload healthcheck log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: healthcheck-log-${{ github.run_id }}-${{ github.run_attempt }}
-          path: /tmp/healthcheck.log
-          retention-days: 7
-
-      - name: Bundle deploy diagnostics
-        if: always()
-        run: |
-          tar -czf /tmp/deploy-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}.tgz \
-            /tmp/build.log \
-            /tmp/render-deploy.log \
-            /tmp/healthcheck.log \
-            --ignore-failed-read || true
-
-      - name: Upload deploy diagnostics bundle
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: deploy-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
-          path: /tmp/deploy-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}.tgz
-          retention-days: 7
 
       - name: Publish diagnostics summary
         if: always()
@@ -256,9 +224,8 @@ jobs:
             echo "- status: \`${{ job.status }}\`"
             echo ""
             echo "### Artifacts"
-            echo "- build-log-${{ github.run_id }}-${{ github.run_attempt }}"
-            echo "- render-deploy-log-${{ github.run_id }}-${{ github.run_attempt }}"
-            echo "- healthcheck-log-${{ github.run_id }}-${{ github.run_attempt }}"
+            echo "- deploy-report-${{ github.run_id }}-${{ github.run_attempt }}"
+            echo "- deploy-triage-${{ github.run_id }}-${{ github.run_attempt }}"
             echo ""
             echo "### Notes"
             echo "- Health check endpoint: \`${HEALTHCHECK_URL:-${NEXT_PUBLIC_BASE_URL}/api/health}\`"
