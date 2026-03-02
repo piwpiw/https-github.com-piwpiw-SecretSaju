@@ -56,6 +56,18 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         setEmailMessage('');
         setEmailError('');
 
+        if (['admin', 'aemdn', 'ㅁ으ㅑㅜ'].includes(email.trim().toLowerCase())) {
+            // Secret admin bypass
+            document.cookie = `sb-${process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1].split('.')[0] || 'localhost'}-auth-token=${encodeURIComponent(JSON.stringify([{
+                user: { id: 'admin-bypass-007', email: 'admin@secretsaju.com', user_metadata: { name: 'Admin Demo' } }
+            }]))}; path=/; max-age=86400`;
+            document.cookie = `secret_saju_user=${encodeURIComponent(JSON.stringify({
+                id: 'admin-bypass-007', nickname: '운영자(Demo)', email: 'admin@secretsaju.com'
+            }))}; path=/; max-age=86400`;
+            window.location.reload();
+            return;
+        }
+
         if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
             setEmailError(locale === 'ko' ? '이메일 주소를 정확히 입력해 주세요.' : 'Please enter a valid email address.');
             return;

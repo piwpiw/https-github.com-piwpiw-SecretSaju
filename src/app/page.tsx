@@ -18,6 +18,7 @@ import OracleBall from "@/components/home/OracleBall";
 import LuckyScoreCard from "@/components/home/LuckyScoreCard";
 import { useProfiles } from "@/components/ProfileProvider";
 import LuxuryToast from "@/components/ui/LuxuryToast";
+import CampaignFeed from "@/components/home/CampaignFeed";
 
 type FlowState = "boot" | "input" | "loading" | "result";
 
@@ -38,12 +39,14 @@ export default function HomePage() {
     }
   }, []);
 
-  const handleBirthSubmit = async (data: { year: number; month: number; day: number; hour: number }) => {
+  const handleBirthSubmit = async (data: { year: number; month: number; day: number; hour: number, timeKnown?: boolean }) => {
     setFlowState("loading");
 
     try {
-      const birthDate = new Date(data.year, data.month - 1, data.day, data.hour);
-      const result = await calculateSaju(birthDate);
+      const parsedHour = Number.isNaN(data.hour) ? 12 : data.hour;
+      const birthDate = new Date(data.year, data.month - 1, data.day, parsedHour, 0);
+      const timeStr = `${parsedHour.toString().padStart(2, '0')}:00`;
+      const result = await calculateSaju(birthDate, "F", timeStr, 'solar', data.timeKnown === false);
       setSajuData(result);
       setFlowState("result");
     } catch (error) {
@@ -102,21 +105,21 @@ export default function HomePage() {
       )}
 
       {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-6 py-16 pb-32">
+      <div className="relative z-10 container mx-auto px-6 py-10 pb-20">
         {/* Dashboard Portal */}
         {(flowState === "boot" || flowState === "input") && (
-          <div className="max-w-5xl mx-auto flex flex-col gap-16 sm:gap-20">
+          <div className="max-w-5xl mx-auto flex flex-col gap-8 sm:gap-16">
             {/* Hero Section (Banner) */}
             <motion.div className="order-1" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: "easeOut" }}>
               <CouponBanner />
             </motion.div>
 
             {/* Personalized Vibe Section */}
-            <section className="order-3 space-y-8 sm:space-y-10">
-              <div className="flex flex-col sm:flex-row items-center justify-between px-4 gap-6">
-                <div>
-                  <h2 className="ui-title-gradient text-3xl tracking-[0.08em] leading-none">글로벌 <span className="text-indigo-500">운세 동기화</span></h2>
-                  <p className="text-micro-copy mt-3 opacity-80">오늘 컨디션과 질문 성향 기반 맞춤 분석 결과를 준비합니다</p>
+            <section className="order-3 space-y-6 sm:space-y-10">
+              <div className="flex flex-col sm:flex-row items-center justify-between px-4 gap-4">
+                <div className="text-center sm:text-left">
+                  <h2 className="ui-title-gradient text-2xl sm:text-3xl tracking-[0.08em] leading-none">글로벌 <span className="text-indigo-500">운세 동기화</span></h2>
+                  <p className="text-micro-copy mt-2 sm:mt-3 opacity-80">오늘 컨디션과 질문 성향 기반 맞춤 분석 결과를 준비합니다</p>
                 </div>
                 <div className="flex items-center gap-3 px-4 py-2 ui-chip">
                   <Activity className="w-3.5 h-3.5 text-indigo-300 animate-pulse" />
@@ -137,19 +140,19 @@ export default function HomePage() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="order-2 panel-shell py-20 sm:py-24 px-6 sm:px-10"
+              className="order-2 panel-shell py-12 sm:py-20 px-4 sm:px-10"
             >
               <div className="absolute top-0 right-10 w-48 h-1 bg-gradient-to-l from-indigo-500/50 to-transparent" />
-              <div className="text-center mb-12 space-y-4">
+              <div className="text-center mb-6 space-y-3">
                 <div className="ui-chip inline-flex">
                   <Compass className="w-3 h-3" /> 핵심 분석 엔진
                 </div>
-                <h3 className="ui-title text-white"><span className="text-indigo-500">핵심</span> 사주 입력</h3>
-                <p className="text-xs text-slate-400 uppercase tracking-widest leading-relaxed">정확한 태어난 시간에 가까운 입력일수록 결과가 정밀해집니다</p>
+                <h3 className="ui-title text-white text-2xl sm:text-3xl"><span className="text-indigo-500">핵심</span> 사주 입력</h3>
+                <p className="text-xs text-slate-400 uppercase tracking-widest">정확한 태어난 시간에 가까운 입력일수록 결과가 정밀해집니다</p>
               </div>
-              <div className="max-w-xl mx-auto">
+              <div className="max-w-xl mx-auto space-y-4">
                 <BirthInputRetro onSubmit={handleBirthSubmit} />
-                <div className="mt-8 flex items-center justify-center gap-2.5 text-[9px] text-slate-500 font-black uppercase tracking-widest italic transition-opacity group-hover:opacity-100 opacity-60">
+                <div className="flex items-center justify-center gap-2.5 text-[9px] text-slate-500 font-black uppercase tracking-widest italic opacity-60">
                   <Shield className="w-3.5 h-3.5 text-indigo-500/50" /> 보안 처리: 기기 로컬 연산 전용
                 </div>
               </div>
