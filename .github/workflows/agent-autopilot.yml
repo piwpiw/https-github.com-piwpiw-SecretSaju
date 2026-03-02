@@ -9,6 +9,10 @@ on:
       - "archives/docs/**"
       - "archives/**"
 
+concurrency:
+  group: autopilot-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   validate-and-merge:
     if: github.event.pull_request.draft == false && startsWith(github.head_ref, 'auto/')
