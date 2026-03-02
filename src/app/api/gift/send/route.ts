@@ -23,13 +23,13 @@ export async function POST(req: Request) {
 
         const senderName = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true' ? '테스트유저' : ((user as any)?.name || '익명의 친구');
 
-        // 1. Generate a mock UUID for the result link (In production, saju_profiles in DB)
+        // 1. Generate an exchange token for the gift result
         const resultToken = crypto.randomUUID();
         const encodedToken = encodeURIComponent(resultToken);
         const expiresAt = new Date(Date.now() + GIFT_TOKEN_TTL_SECONDS * 1000).toISOString();
 
-        // In actual production:
-        // await db.insert('saju_profiles').values({ id: resultToken, ... })
+        // In production:
+        // - Persist token + recipient metadata to a gift table and invalidate after use.
 
         // 2. Send the email using Resend
         const domain = APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || '';

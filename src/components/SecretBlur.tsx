@@ -78,9 +78,12 @@ export function SecretBlur({
             animate={{ scale: 1 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-foreground font-display text-lg mb-4">결제 (준비 중)</p>
+            <p className="text-foreground font-display text-lg mb-2">결제 연동 점검 중</p>
+            <p className="text-zinc-400 text-sm mb-2">
+              결제 모듈은 현재 운영 안정성 점검 단계이며, 임시로 지원 채널을 통해 처리됩니다.
+            </p>
             <p className="text-zinc-400 text-sm mb-6">
-              토스 페이먼츠 연동은 Phase 4에서 적용됩니다.
+              원하시면 지원 페이지에서 결제 준비 상태와 안내를 바로 확인하세요.
             </p>
             <button
               type="button"
@@ -89,6 +92,12 @@ export function SecretBlur({
             >
               닫기
             </button>
+            <a
+              href="/support"
+              className="inline-flex items-center justify-center mt-3 px-5 py-2 rounded-xl border border-white/20 text-white/90 w-full font-medium"
+            >
+              지원 페이지 열기
+            </a>
           </motion.div>
         </motion.div>
       )}
