@@ -72,6 +72,37 @@ jobs:
           name: autopilot-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
           path: /tmp/autopilot-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}.tgz
           retention-days: 7
+          
+      - name: Write AutoPilot report
+        if: always()
+        run: |
+          if [ "${{ job.status }}" != "success" ]; then
+            AUTO_STATUS="failed"
+          else
+            AUTO_STATUS="success"
+          fi
+          cat > /tmp/autopilot-report.json <<EOF
+          {
+            "workflow": "${{ github.workflow }}",
+            "run_id": "${{ github.run_id }}",
+            "run_attempt": "${{ github.run_attempt }}",
+            "ref": "${{ github.ref }}",
+            "sha": "${{ github.sha }}",
+            "status": "${AUTO_STATUS}",
+            "pr_number": "${{ github.event.pull_request.number }}",
+            "branch": "${{ github.head_ref }}",
+            "head_is_draft": "${{ github.event.pull_request.draft }}"
+          }
+          EOF
+          cat /tmp/autopilot-report.json
+
+      - name: Upload AutoPilot report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: autopilot-report-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/autopilot-report.json
+          retention-days: 7
         
       - name: Automerge
         if: success() && github.event.pull_request.draft == false && startsWith(github.head_ref, 'auto/')

@@ -291,3 +291,39 @@ jobs:
               echo ""
             done
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Write compact deploy report
+        if: always()
+        run: |
+          if [ "${Q_FAIL}" = "true" ]; then
+            FAILURE_STAGE=quality
+          elif [ "${DEPLOY_STAGE}" = "hook" ]; then
+            FAILURE_STAGE=deploy-hook
+          elif [ "${DEPLOY_STAGE}" = "healthcheck" ]; then
+            FAILURE_STAGE=healthcheck
+          else
+            FAILURE_STAGE=deploy
+          fi
+
+          cat > /tmp/deploy-report.json <<EOF
+          {
+            "workflow": "${{ github.workflow }}",
+            "run_id": "${{ github.run_id }}",
+            "run_attempt": "${{ github.run_attempt }}",
+            "ref": "${{ github.ref }}",
+            "sha": "${{ github.sha }}",
+            "status": "${{ job.status }}",
+            "quality_failed": "${Q_FAIL}",
+            "failure_stage": "${FAILURE_STAGE}",
+            "healthcheck_url": "${HEALTHCHECK_URL:-${NEXT_PUBLIC_BASE_URL}/api/health}"
+          }
+          EOF
+          cat /tmp/deploy-report.json
+
+      - name: Upload deploy report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-report-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/deploy-report.json
+          retention-days: 7
