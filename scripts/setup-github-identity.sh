@@ -14,7 +14,7 @@ git config --global user.email "$EMAIL"
 git config --global "credential.https://github.com.username" "$USERNAME"
 git config --global credential.interactive false
 git config --global credential.useHttpPath true
-git config --global credential.helper manager-core
+git config --global credential.helper manager
 
 git config --local user.name "$USERNAME"
 git config --local user.email "$EMAIL"
