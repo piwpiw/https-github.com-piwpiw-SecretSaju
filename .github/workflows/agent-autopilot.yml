@@ -3,6 +3,10 @@ name: AutoPilot CI
 on:
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - "archives/docs/**"
 
 jobs:
   validate-and-merge:

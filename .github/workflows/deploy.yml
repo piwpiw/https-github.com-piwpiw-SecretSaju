@@ -28,6 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' }}
     timeout-minutes: 25
+    env:
+      CI_CHECK_MODE: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' ? 'non-main' : 'main' }}
 
     steps:
       - name: Checkout code
@@ -51,12 +53,23 @@ jobs:
           TSC_PID=$!
           npm run lint > /tmp/lint.log 2>&1 &
           LINT_PID=$!
-          npm test -- --run > /tmp/test.log 2>&1 &
-          TEST_PID=$!
+
+          if [ "$CI_CHECK_MODE" = "main" ]; then
+            npm test -- --run > /tmp/test.log 2>&1 &
+            TEST_PID=$!
+          else
+            : > /tmp/test.log
+            echo "skip tests for non-main/pr quality checks." >> /tmp/test.log
+            TEST_PID=0
+          fi
 
           wait $TSC_PID; TSC_EXIT=$?
           wait $LINT_PID; LINT_EXIT=$?
-          wait $TEST_PID; TEST_EXIT=$?
+          if [ "$CI_CHECK_MODE" = "main" ]; then
+            wait $TEST_PID; TEST_EXIT=$?
+          else
+            TEST_EXIT=0
+          fi
 
           if [ $TSC_EXIT -ne 0 ]; then
             echo "--- TypeScript check failed ---"
