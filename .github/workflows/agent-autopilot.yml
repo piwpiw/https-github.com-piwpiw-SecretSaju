@@ -6,6 +6,7 @@ on:
 
 jobs:
   validate-and-merge:
+    if: startsWith(github.head_ref, 'auto/')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -19,9 +20,10 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
+          cache-dependency-path: package-lock.json
           
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-audit --no-fund --no-optional
 
       - name: Run Build and QA
         run: npm run qa
@@ -41,5 +43,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "❌ AutoPilot CI failed during `npm run qa`. Please inspect the Actions tab."
+              body: "AutoPilot CI failed during `npm run qa`. Please inspect the Actions tab."
             })
