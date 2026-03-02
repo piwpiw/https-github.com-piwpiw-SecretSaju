@@ -28,6 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' }}
     timeout-minutes: 25
+    outputs:
+      q_failed: ${{ steps.quality-check.outputs.failed }}
     env:
       RUN_TESTS: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run-tests')) }}
 
@@ -46,6 +48,7 @@ jobs:
         run: npm ci --no-audit --no-fund --no-optional
 
       - name: Run quality checks in parallel
+        id: quality-check
         shell: bash
         run: |
           set +e
@@ -85,7 +88,11 @@ jobs:
           fi
 
           if [ $TSC_EXIT -ne 0 ] || [ $LINT_EXIT -ne 0 ] || [ $TEST_EXIT -ne 0 ]; then
+            echo "failed=true" >> "$GITHUB_OUTPUT"
+            echo "Q_FAIL=true" >> "$GITHUB_ENV"
             exit 1
+          else
+            echo "failed=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Upload quality logs
@@ -165,6 +172,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     timeout-minutes: 20
     env:
+      Q_FAIL: ${{ needs.quality.outputs.q_failed || 'false' }}
       RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
       RENDER_DEPLOY_RETRIES: '6'
       RENDER_DEPLOY_TIMEOUT_MS: '15000'
@@ -253,6 +261,7 @@ jobs:
             echo "### Notes"
             echo "- Health check endpoint: \`${HEALTHCHECK_URL:-${NEXT_PUBLIC_BASE_URL}/api/health}\`"
             echo "- Deploy hook URL configured: $( [ -n \"${RENDER_DEPLOY_HOOK_URL}\" ] && echo true || echo false )"
+            echo "- quality step failed: \`${Q_FAIL}\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Publish failure hints
@@ -260,6 +269,8 @@ jobs:
         run: |
           {
             echo "## Failure Hints"
+            echo ""
+            echo "**Top failure stage:** $( [ "${Q_FAIL}" = "true" ] && echo quality || echo deploy )"
             for f in /tmp/build.log /tmp/render-deploy.log /tmp/healthcheck.log; do
               if [ ! -f "$f" ]; then
                 continue

@@ -83,25 +83,26 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
-            let hint = '';
-            try {
-              const log = fs.readFileSync('/tmp/autopilot-qa.log', 'utf8');
-              const lines = log
+          const fs = require('fs');
+          let hint = '';
+          try {
+            const log = fs.readFileSync('/tmp/autopilot-qa.log', 'utf8');
+            const lines = log
                 .split('\n')
                 .filter((line) => /(error|failed|failure|timeout|unhandled|fatal)/i.test(line))
                 .slice(-20)
                 .join('\n');
               hint = lines || 'No clear pattern found in logs.';
             } catch (error) {
-              hint = `Could not read /tmp/autopilot-qa.log: ${error.message}`;
-            }
+            hint = `Could not read /tmp/autopilot-qa.log: ${error.message}`;
+          }
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: [
+                "AutoPilot failed stage: qa",
                 "AutoPilot CI failed during `npm run qa`. Please inspect the Actions tab.",
                 "",
                 "Possible failure hints:",
