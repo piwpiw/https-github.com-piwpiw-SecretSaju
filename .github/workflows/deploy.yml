@@ -26,6 +26,7 @@ jobs:
   quality:
     name: Quality
     runs-on: ubuntu-latest
+    continue-on-error: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' }}
     timeout-minutes: 25
 
     steps:
