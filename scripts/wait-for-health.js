@@ -1,10 +1,19 @@
 #!/usr/bin/env node
 
 const DEFAULT_PATH = '/api/health';
+const DEFAULT_TIMEOUT_MS = 8000;
+const DEFAULT_OK_MIN = 200;
+const DEFAULT_OK_MAX = 399;
 
 function toPositiveInt(value, fallback) {
   const parsed = Number(value);
   if (!Number.isFinite(parsed) || parsed <= 0) return fallback;
+  return Math.floor(parsed);
+}
+
+function clampRange(value, min, max, fallback) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < min || parsed > max) return fallback;
   return Math.floor(parsed);
 }
 
@@ -41,26 +50,35 @@ async function run() {
 
   const timeoutSec = toPositiveInt(process.env.HEALTHCHECK_TIMEOUT_SEC, 300);
   const intervalSec = toPositiveInt(process.env.HEALTHCHECK_INTERVAL_SEC, 10);
+  const fetchTimeoutMs = clampRange(process.env.HEALTHCHECK_FETCH_TIMEOUT_MS, 500, 60000, DEFAULT_TIMEOUT_MS);
+  const statusMin = clampRange(process.env.HEALTHCHECK_OK_STATUS_MIN, DEFAULT_OK_MIN, 399, DEFAULT_OK_MIN);
+  const statusMax = clampRange(process.env.HEALTHCHECK_OK_STATUS_MAX, 200, 599, DEFAULT_OK_MAX);
   const maxAttempts = Math.max(1, Math.ceil(timeoutSec / intervalSec));
 
   console.log(`[wait-for-health] polling ${healthUrl}`);
-  console.log(`[wait-for-health] timeout=${timeoutSec}s interval=${intervalSec}s attempts=${maxAttempts}`);
+  console.log(
+    `[wait-for-health] timeout=${timeoutSec}s interval=${intervalSec}s attempts=${maxAttempts} fetchTimeout=${fetchTimeoutMs}ms status=${statusMin}-${statusMax}`
+  );
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     try {
-      const response = await fetch(healthUrl, { method: 'GET' });
-      if (response.ok) {
-        console.log(`[wait-for-health] healthy on attempt ${attempt} (status ${response.status})`);
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), fetchTimeoutMs);
+      const response = await fetch(healthUrl, { method: 'GET', signal: controller.signal });
+      clearTimeout(timer);
+
+      const status = response.status;
+      if (status >= statusMin && status <= statusMax) {
+        console.log(`[wait-for-health] healthy on attempt ${attempt} (status ${status})`);
         process.exit(0);
       }
+
       const body = await response.text();
       console.log(
-        `[wait-for-health] attempt ${attempt}/${maxAttempts} not ready (status ${response.status}) ${body.slice(0, 120)}`
+        `[wait-for-health] attempt ${attempt}/${maxAttempts} not ready (status ${status}) ${body.slice(0, 120)}`
       );
     } catch (error) {
-      console.log(
-        `[wait-for-health] attempt ${attempt}/${maxAttempts} failed: ${error?.message || String(error)}`
-      );
+      console.log(`[wait-for-health] attempt ${attempt}/${maxAttempts} failed: ${error?.message || String(error)}`);
     }
 
     if (attempt < maxAttempts) {
@@ -76,4 +94,3 @@ run().catch((error) => {
   console.error(`[wait-for-health] unexpected error: ${error?.message || String(error)}`);
   process.exit(1);
 });
-
