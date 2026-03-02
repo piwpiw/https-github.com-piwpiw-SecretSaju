@@ -33,6 +33,7 @@ export default function MyPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showShop, setShowShop] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [shareMessage, setShareMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
@@ -48,26 +49,42 @@ export default function MyPage() {
       : { name: "브론즈 티어", next: 300, percent: Math.min(100, (nyang / 300) * 100) };
 
   const handleLogout = () => {
-    if (!confirm("정말 로그아웃할까요?")) {
-      return;
-    }
-
     clearUserSession();
     setUser(null);
+    setShowLogoutConfirm(false);
     router.push("/");
   };
 
   const copyReferral = async () => {
     if (!user) return;
+
     const referralLink = `${window.location.origin}/?ref=${user.id}`;
-    const result = await handleShare("초대 링크", `Secret Saju: ${referralLink}`, referralLink);
-    if (result === "copied") {
-      setShareMessage({ type: "success", text: "초대 링크가 복사되었습니다." });
-      setTimeout(() => setShareMessage(null), 2500);
-    } else {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(referralLink);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = referralLink;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+
+      const result = await handleShare("초대 링크", `Secret Saju: ${referralLink}`, referralLink);
+      if (result === "copied") {
+        setShareMessage({ type: "success", text: "초대 링크가 복사되었습니다." });
+      } else {
+        setShareMessage({ type: "error", text: "공유는 실패했지만 클립보드 복사는 완료되었습니다." });
+      }
+    } catch {
       setShareMessage({ type: "error", text: "복사에 실패했습니다. 브라우저 권한을 확인해 주세요." });
-      setTimeout(() => setShareMessage(null), 2500);
     }
+
+    setTimeout(() => setShareMessage(null), 2500);
   };
 
   const mainMenuItems = [
@@ -158,9 +175,7 @@ export default function MyPage() {
               <h1 className="text-3xl font-black">{user.nickname}</h1>
               <p className="text-secondary text-sm mt-1">{user.email || "이메일 미등록"}</p>
               {shareMessage && (
-                <p
-                  className={`mt-2 text-sm font-bold ${shareMessage.type === "success" ? "text-emerald-300" : "text-rose-300"}`}
-                >
+                <p className={`mt-2 text-sm font-bold ${shareMessage.type === "success" ? "text-emerald-300" : "text-rose-300"}`}>
                   {shareMessage.text}
                 </p>
               )}
@@ -173,7 +188,7 @@ export default function MyPage() {
               </button>
             </div>
           </div>
-          <button onClick={handleLogout} className="px-4 py-2 rounded-3xl border border-border-color">
+          <button onClick={() => setShowLogoutConfirm(true)} className="px-4 py-2 rounded-3xl border border-border-color">
             <LogOut className="w-5 h-5" />
           </button>
         </div>
@@ -264,6 +279,29 @@ export default function MyPage() {
       </div>
 
       <JellyShopModal isOpen={showShop} onClose={() => setShowShop(false)} onPurchaseSuccess={() => setShowShop(false)} />
+
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-md rounded-3xl border border-border-color bg-surface p-6">
+            <h3 className="text-xl font-black">로그아웃</h3>
+            <p className="mt-2 text-sm text-secondary">현재 기기에서 로그아웃 하시겠습니까?</p>
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 py-3 rounded-2xl border border-border-color text-foreground font-black"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex-1 py-3 rounded-2xl bg-primary text-white font-black"
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,29 +18,42 @@ const relationshipLabel: Record<string, string> = {
   other: '기타',
 };
 
+const calendarLabel: Record<string, string> = {
+  solar: '양력',
+  lunar: '음력',
+};
+
+const genderLabel: Record<string, string> = {
+  female: '여성',
+  male: '남성',
+};
+
 export default function SajuListPage() {
   const router = useRouter();
   const { profiles, refreshProfiles } = useProfiles();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`'${name}' 프로필을 정말 삭제할까요?`)) {
+  const handleDelete = async () => {
+    if (!pendingDelete) {
       return;
     }
 
     setActionMessage(null);
-    setDeletingId(id);
+    setDeletingId(pendingDelete.id);
+
     try {
-      await SajuProfileRepository.delete(id);
+      await SajuProfileRepository.delete(pendingDelete.id);
       await refreshProfiles();
-      setActionMessage({ type: 'success', text: `${name} 프로필이 삭제되었습니다.` });
+      setActionMessage({ type: 'success', text: `${pendingDelete.name} 프로필이 삭제되었습니다.` });
       setTimeout(() => setActionMessage(null), 2200);
     } catch (error) {
       console.error('Failed to delete profile:', error);
-      setActionMessage({ type: 'error', text: '프로필 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.' });
+      setActionMessage({ type: 'error', text: '프로필 삭제에 실패했습니다. 잠시 후 다시 시도하세요.' });
     } finally {
       setDeletingId(null);
+      setPendingDelete(null);
     }
   };
 
@@ -53,12 +66,12 @@ export default function SajuListPage() {
               onClick={() => router.push('/dashboard')}
               className="flex items-center gap-3 text-lg font-bold text-secondary hover:text-foreground transition-all mb-8"
             >
-              <ArrowLeft className="w-6 h-6" /> 뒤로가기
+              <ArrowLeft className="w-6 h-6" /> 이전으로
             </button>
             <h1 className="text-5xl font-black text-foreground italic tracking-tighter uppercase mb-2">
-              사주 <span className="text-primary italic">목록</span>
+              사주 <span className="text-primary italic">프로필</span>
             </h1>
-            <p className="text-xl text-secondary font-medium italic opacity-70">저장된 프로필 {profiles.length}개</p>
+            <p className="text-xl text-secondary font-medium italic opacity-70">현재 저장된 프로필 {profiles.length}개</p>
           </div>
           <Link
             href="/my-saju/add"
@@ -92,13 +105,15 @@ export default function SajuListPage() {
                 <div className="w-24 h-24 rounded-full bg-background border border-border-color flex items-center justify-center mb-8 group-hover:scale-110 transition-transform group-hover:bg-primary/5">
                   <Plus className="w-12 h-12 text-secondary group-hover:text-primary transition-colors" />
                 </div>
-                <h3 className="text-3xl font-black text-foreground mb-4">프로필이 없습니다.</h3>
-                <p className="text-xl text-secondary font-medium mb-12">먼저 프로필을 등록하고 분석을 시작해 주세요.</p>
+                <h3 className="text-3xl font-black text-foreground mb-4">등록된 프로필이 없습니다.</h3>
+                <p className="text-xl text-secondary font-medium mb-12">
+                  첫 프로필을 저장하면 바로 분석과 궁합 진단을 이어서 볼 수 있습니다.
+                </p>
                 <Link
                   href="/my-saju/add"
                   className="px-10 py-5 rounded-3xl bg-background border-2 border-border-color text-foreground font-bold text-xl hover:border-primary hover:text-primary transition-all shadow-sm"
                 >
-                  프로필 추가하기
+                  프로필 만들기
                 </Link>
               </div>
             </motion.div>
@@ -117,12 +132,12 @@ export default function SajuListPage() {
                     <div>
                       <div className="flex items-start justify-between mb-8">
                         <div className="w-20 h-20 bg-background rounded-3xl flex items-center justify-center border border-border-color text-4xl shadow-inner group-hover:scale-110 transition-transform relative overflow-hidden">
-                          {profile.relationship === 'self' ? '본' : '다'}
+                          {profile.relationship === 'self' ? '👤' : '👥'}
                           <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent" />
                         </div>
                         <button
                           disabled={deletingId === profile.id}
-                          onClick={() => handleDelete(profile.id, profile.name)}
+                          onClick={() => setPendingDelete({ id: profile.id, name: profile.name })}
                           className="p-3 text-secondary hover:text-rose-500 hover:bg-rose-500/10 rounded-2xl transition-all border border-transparent hover:border-rose-500/20 disabled:opacity-50"
                         >
                           {deletingId === profile.id ? <Loader2 className="w-6 h-6 animate-spin" /> : <Trash2 className="w-6 h-6" />}
@@ -141,11 +156,11 @@ export default function SajuListPage() {
                       <div className="space-y-4 mb-10">
                         <div className="flex items-center gap-4 text-sm font-bold text-secondary uppercase tracking-widest">
                           <Calendar className="w-5 h-5 text-primary" />
-                          {String(profile.birthdate).split('T')[0]} ({profile.calendarType === 'solar' ? '양력' : '음력'})
+                          {String(profile.birthdate).split('T')[0]} ({calendarLabel[profile.calendarType] || profile.calendarType})
                         </div>
                         <div className="flex items-center gap-4 text-sm font-bold text-secondary uppercase tracking-widest">
                           <User className="w-5 h-5 text-primary" />
-                          {profile.gender === 'female' ? '여성' : '남성'}
+                          {genderLabel[profile.gender] || profile.gender}
                         </div>
                       </div>
                     </div>
@@ -154,7 +169,7 @@ export default function SajuListPage() {
                       onClick={() => router.push(`/relationship/${profile.id}`)}
                       className="w-full py-5 rounded-2xl bg-background border border-border-color text-foreground font-black text-lg hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-3 group/btn shadow-sm"
                     >
-                      프로필 분석 시작
+                      프로필 분석 보기
                       <ChevronRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                     </button>
                   </motion.div>
@@ -164,6 +179,33 @@ export default function SajuListPage() {
           )}
         </div>
       </div>
+
+      {pendingDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="w-full max-w-md rounded-3xl border border-border-color bg-surface p-6">
+            <h3 className="text-xl font-black">프로필 삭제</h3>
+            <p className="mt-2 text-sm text-secondary">
+              <span className="text-foreground font-bold">{pendingDelete.name}</span> 프로필을 삭제할까요?
+            </p>
+            <p className="mt-1 text-xs text-secondary">삭제된 데이터는 되돌릴 수 없습니다.</p>
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setPendingDelete(null)}
+                className="flex-1 py-3 rounded-2xl border border-border-color text-foreground font-black"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deletingId !== null}
+                className="flex-1 py-3 rounded-2xl bg-rose-500 text-white font-black disabled:opacity-60"
+              >
+                삭제 확정
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
