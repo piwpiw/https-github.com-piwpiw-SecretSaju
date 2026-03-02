@@ -48,7 +48,8 @@ function checkConfigFiles() {
   console.log('[pre-deploy] checking required config files...');
 
   const requiredFiles = [
-    'vercel.json',
+    'render.yaml',
+    'Dockerfile',
     '.github/workflows/deploy.yml',
     'package.json',
   ];

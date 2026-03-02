@@ -1,0 +1,11 @@
+.git
+.github
+.next
+/node_modules
+/coverage
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+*.log

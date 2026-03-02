@@ -1,97 +1,100 @@
-# Supabase 설정 가이드
+﻿# Supabase ?ㅼ젙 媛?대뱶
 
-## 1. Supabase 프로젝트 확인
+## 1. Supabase ?꾨줈?앺듃 ?뺤씤
 
-프로젝트 URL: https://supabase.com/dashboard/project/jyrdihklwkbeypfxbiwp
+?꾨줈?앺듃 URL: https://supabase.com/dashboard/project/jyrdihklwkbeypfxbiwp
 
-## 2. 환경 변수 가져오기
+## 2. ?섍꼍 蹂??媛?몄삤湲?
 
-1. Supabase Dashboard → Settings → API
-2. 다음 값들을 복사:
+1. Supabase Dashboard ??Settings ??API
+2. ?ㅼ쓬 媛믩뱾??蹂듭궗:
    - **Project URL**: `NEXT_PUBLIC_SUPABASE_URL`
    - **anon public**: `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - **service_role secret**: `SUPABASE_SERVICE_ROLE_KEY`
 
-## 3. 마이그레이션 실행
+## 3. 留덉씠洹몃젅?댁뀡 ?ㅽ뻾
 
-### 방법 1: Supabase Dashboard (권장 - 무료)
+### 諛⑸쾿 1: Supabase Dashboard (沅뚯옣 - 臾대즺)
 
-1. Supabase Dashboard → SQL Editor
-2. 다음 파일들을 순서대로 실행:
+1. Supabase Dashboard ??SQL Editor
+2. ?ㅼ쓬 ?뚯씪?ㅼ쓣 ?쒖꽌?濡??ㅽ뻾:
    - `supabase/migrations/001_initial_schema.sql`
    - `supabase/migrations/002_add_orders_table.sql`
 
-### 방법 2: Supabase CLI
+### 諛⑸쾿 2: Supabase CLI
 
 ```bash
-# Supabase CLI 설치
+# Supabase CLI ?ㅼ튂
 npm install -g supabase
 
-# 로그인
+# 濡쒓렇??
 supabase login
 
-# 프로젝트 연결
+# ?꾨줈?앺듃 ?곌껐
 supabase link --project-ref jyrdihklwkbeypfxbiwp
 
-# 마이그레이션 실행
+# 留덉씠洹몃젅?댁뀡 ?ㅽ뻾
 supabase db push
 ```
 
-## 4. 무료 플랜 최적화 설정
+## 4. 臾대즺 ?뚮옖 理쒖쟻???ㅼ젙
 
-### Row Level Security (RLS) 활성화 확인
-- 모든 테이블에 RLS가 활성화되어 있는지 확인
-- `supabase/schema.sql`에 RLS 정책이 포함되어 있음
+### Row Level Security (RLS) ?쒖꽦???뺤씤
+- 紐⑤뱺 ?뚯씠釉붿뿉 RLS媛 ?쒖꽦?붾릺???덈뒗吏 ?뺤씤
+- `supabase/schema.sql`??RLS ?뺤콉???ы븿?섏뼱 ?덉쓬
 
-### 데이터베이스 인덱스 확인
-- 인덱스가 제대로 생성되었는지 확인
-- 쿼리 성능 최적화로 API 호출 감소
+### ?곗씠?곕쿋?댁뒪 ?몃뜳???뺤씤
+- ?몃뜳?ㅺ? ?쒕?濡??앹꽦?섏뿀?붿? ?뺤씤
+- 荑쇰━ ?깅뒫 理쒖쟻?붾줈 API ?몄텧 媛먯냼
 
-### 연결 풀 설정 (과금 절감)
-- Supabase Dashboard → Settings → Database
-- Connection Pooling 활성화
-- Transaction 모드 사용 (무료 플랜 최적화)
+### ?곌껐 ? ?ㅼ젙 (怨쇨툑 ?덇컧)
+- Supabase Dashboard ??Settings ??Database
+- Connection Pooling ?쒖꽦??
+- Transaction 紐⑤뱶 ?ъ슜 (臾대즺 ?뚮옖 理쒖쟻??
 
-## 5. API Rate Limiting 설정
+## 5. API Rate Limiting ?ㅼ젙
 
-Supabase Dashboard → Settings → API:
-- Rate Limiting 활성화
-- 무료 플랜: 500 requests/second
+Supabase Dashboard ??Settings ??API:
+- Rate Limiting ?쒖꽦??
+- 臾대즺 ?뚮옖: 500 requests/second
 
-## 6. 환경 변수 설정
+## 6. ?섍꼍 蹂???ㅼ젙
 
-로컬 개발:
+濡쒖뺄 媛쒕컻:
 ```bash
-# .env.local 파일에 추가
+# .env.local ?뚯씪??異붽?
 NEXT_PUBLIC_SUPABASE_URL=https://jyrdihklwkbeypfxbiwp.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```
 
-Vercel 배포:
-- Vercel Dashboard → Settings → Environment Variables
-- 위의 3개 변수 추가
+Render 諛고룷:
+- Render Dashboard ??Settings ??Environment Variables
+- ?꾩쓽 3媛?蹂??異붽?
 
-## 7. 테스트
+## 7. ?뚯뒪??
 
 ```bash
-# 환경 변수 검증
+# ?섍꼍 蹂??寃利?
 npm run verify:env
 
-# 로컬에서 테스트
+# 濡쒖뺄?먯꽌 ?뚯뒪??
 npm run dev
 ```
 
-## 무료 플랜 제한사항
+## 臾대즺 ?뚮옖 ?쒗븳?ы빆
 
-- **Database**: 500MB 저장공간
+- **Database**: 500MB ??κ났媛?
 - **API Requests**: 500 requests/second
 - **Bandwidth**: 5GB/month
 - **Edge Functions**: 2M invocations/month
 
-## 과금 절감 팁
+## 怨쇨툑 ?덇컧 ??
 
-1. **캐싱 활용**: API 응답 캐싱으로 요청 수 감소
-2. **인덱스 최적화**: 쿼리 성능 향상으로 처리 시간 감소
-3. **Connection Pooling**: 연결 재사용으로 리소스 절약
-4. **RLS 정책 최적화**: 불필요한 쿼리 방지
+1. **罹먯떛 ?쒖슜**: API ?묐떟 罹먯떛?쇰줈 ?붿껌 ??媛먯냼
+2. **?몃뜳??理쒖쟻??*: 荑쇰━ ?깅뒫 ?μ긽?쇰줈 泥섎━ ?쒓컙 媛먯냼
+3. **Connection Pooling**: ?곌껐 ?ъ궗?⑹쑝濡?由ъ냼???덉빟
+4. **RLS ?뺤콉 理쒖쟻??*: 遺덊븘?뷀븳 荑쇰━ 諛⑹?
+
+
+

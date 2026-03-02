@@ -1,0 +1,70 @@
+﻿services:
+  - type: web
+    name: secret-saju
+    env: docker
+    branch: main
+    dockerfilePath: Dockerfile
+    autoDeploy: true
+    region: oregon
+    plan: starter
+    healthCheckPath: /api/health
+    # Optional: attach Environment Group(s) instead of duplicating shared vars here.
+    # envVarGroups:
+    #   - secret-saju-common
+    # Render Environment Group Recommendation:
+    # 1) Create an Env Group with shared keys (NODE_ENV, NEXT_PUBLIC_*, Supabase, payment secrets)
+    # 2) Attach the group to this web service and the worker job below.
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CRON_BASE_URL
+        # Render web service URL
+        value: https://secretsaju.onrender.com
+      - key: NEXT_PUBLIC_BASE_URL
+        # Public origin for users (Cloudflare or Render domain)
+        value: https://secretsaju.onrender.com
+      - key: NEXT_PUBLIC_APP_URL
+        # Public origin for users (Cloudflare or Render domain)
+        value: https://secretsaju.onrender.com
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://jyrdihklwkbeypfxbiwp.supabase.co
+
+  - type: background
+    name: secret-saju-worker
+    env: docker
+    dockerfilePath: Dockerfile
+    autoDeploy: true
+    plan: starter
+    startCommand: node scripts/background-worker.js
+    # Optional: attach shared Environment Group.
+    # envVarGroups:
+    #   - secret-saju-common
+    # Add CRON_SECRET/WEBHOOK secrets using Environment Group if you use this worker with job triggers.
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: WORKER_SLEEP_MS
+        value: "60000"
+
+jobs:
+  - type: cron
+    name: campaign-sync
+    env: docker
+    schedule: "*/15 * * * *"
+    dockerfilePath: Dockerfile
+    startCommand: node scripts/cron-campaign-sync.js
+    # Optional: attach shared Environment Group.
+    # envVarGroups:
+    #   - secret-saju-common
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CRON_BASE_URL
+        # Render web service URL
+        value: https://secretsaju.onrender.com
+      - key: CRON_SECRET
+        # Set this same value in Render Environment for cron endpoint protection.
+        value: render-cron-secret-2026-03-03
+      - key: CRON_SYNC_PATH
+        value: /api/cron/campaigns/sync
+

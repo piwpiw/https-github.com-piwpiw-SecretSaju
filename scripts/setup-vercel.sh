@@ -1,42 +1,38 @@
-#!/bin/bash
+﻿#!/bin/bash
 
-# Vercel 프로젝트 설정 스크립트
-# 사용법: ./scripts/setup-vercel.sh
+# Render setup helper
+# Usage: bash scripts/setup-vercel.sh (or npm run setup:render, setup:vercel)
 
 set -e
 
-echo "🚀 Vercel 프로젝트 설정"
-echo "======================="
+echo "🚀 Render setup"
+echo "================"
 echo ""
-
-# Vercel CLI 확인
-if ! command -v vercel &> /dev/null; then
-    echo "📦 Vercel CLI 설치 중..."
-    npm install -g vercel
-fi
-
-echo "🔐 Vercel 로그인 확인..."
-if ! vercel whoami &> /dev/null; then
-    echo "⚠️  Vercel에 로그인해야 합니다."
-    vercel login
-fi
-
+echo "1) Configure environment variables in Render Dashboard (Environment Groups)."
+echo "2) Connect GitHub branch for main push auto-deploy."
+echo "3) Optional: set RENDER_DEPLOY_HOOK_URL in shell/local env for manual deploy trigger."
+echo "   - If GitHub auto-deploy is enabled, you do not need this."
 echo ""
-echo "📝 프로젝트 설정 시작..."
-echo "   다음 질문에 답변하세요:"
+echo "IMPORTANT: Replace placeholders in render.yaml:"
+echo "- __RENDER_WEB_SERVICE__: service URL (ex: https://secretsaju.onrender.com)"
+echo "- __RENDER_WEB_DOMAIN__: public domain/domainless URL used by users (ex: https://secretsaju.onrender.com)"
 echo ""
-
-# Vercel 프로젝트 연결/생성
-vercel --yes
-
+echo "Set CRON_SECRET in environment as any random long string. Example generator:"
+echo "  node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\""
 echo ""
-echo "✅ Vercel 프로젝트 설정 완료!"
+echo "Required app vars to enter in Render:"
+echo "- NEXT_PUBLIC_BASE_URL"
+echo "- NEXT_PUBLIC_APP_URL"
+echo "- NEXT_PUBLIC_SUPABASE_URL"
+echo "- NEXT_PUBLIC_SUPABASE_ANON_KEY"
+echo "- SUPABASE_SERVICE_ROLE_KEY"
 echo ""
-echo "📋 다음 단계:"
-echo "1. Vercel Dashboard에서 환경 변수 설정"
-echo "2. GitHub 저장소 연결 (자동 배포 활성화)"
-echo "3. 도메인 설정 (선택적)"
+echo "Useful optional vars:"
+echo "- CRON_SECRET"
+echo "- KAKAO_REST_API_KEY"
+echo "- KAKAO_CLIENT_SECRET"
+echo "- NEXT_PUBLIC_KAKAO_JS_KEY"
+echo "- TOSS/Stripe keys"
+echo "- Mail/Notion/AI keys"
 echo ""
-echo "환경 변수 설정 가이드:"
-echo "   Vercel Dashboard → Settings → Environment Variables"
-echo "   npm run verify:env 로 필요한 변수 확인"
+echo "Done."
