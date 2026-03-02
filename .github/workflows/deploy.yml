@@ -117,6 +117,7 @@ jobs:
     needs: quality
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    timeout-minutes: 20
 
     steps:
       - name: Checkout code
@@ -145,11 +146,24 @@ jobs:
           path: /tmp/build.log
           retention-days: 7
 
+      - name: Publish build summary
+        if: always()
+        run: |
+          {
+            echo "## Build Summary"
+            echo ""
+            echo "- status: \`${{ job.status }}\`"
+            echo "- node: \`20\`"
+            echo "- ref: \`${{ github.ref_name }}\`"
+            echo "- commit: \`${{ github.sha }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   deploy:
     name: Trigger Render Deploy
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    timeout-minutes: 20
     env:
       RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
       RENDER_DEPLOY_RETRIES: '6'

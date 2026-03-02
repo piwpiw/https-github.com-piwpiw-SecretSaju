@@ -12,6 +12,7 @@ jobs:
   validate-and-merge:
     if: startsWith(github.head_ref, 'auto/')
     runs-on: ubuntu-latest
+    timeout-minutes: 18
     permissions:
       contents: write
       pull-requests: write
@@ -55,6 +56,21 @@ jobs:
             echo "- status: \`${{ job.status }}\`"
             echo "- node-version: 20"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload AutoPilot diagnostics bundle
+        if: always()
+        run: |
+          tar -czf /tmp/autopilot-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}.tgz \
+            /tmp/autopilot-qa.log \
+            --ignore-failed-read || true
+
+      - name: Upload AutoPilot diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: autopilot-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/autopilot-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}.tgz
+          retention-days: 7
         
       - name: Automerge
         if: success() && startsWith(github.head_ref, 'auto/')
