@@ -37,10 +37,14 @@ export const SIGNUP_REWARDS = {
     PROFILE_SAVE: Number(process.env.NEXT_PUBLIC_PROFILE_SAVE_REWARD) || 0,
 } as const;
 
+
+import { APP_CONFIG } from '@/config';
+
 /**
  * Share URL generator (for Kakao/SNS)
  */
 export function generateInviteUrl(referralCode: string, baseUrl?: string): string {
-    const domain = baseUrl || process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+    const resolvedBaseUrl = baseUrl || APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || '';
+    const domain = resolvedBaseUrl || (typeof window !== 'undefined' ? window.location.origin : '');
     return `${domain}/invite/${referralCode}`;
 }

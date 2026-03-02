@@ -50,12 +50,13 @@ export class SajuProfileRepository {
                         name: req.name,
                         relationship: req.relationship,
                         birthdate: req.birthdate, // "YYYY-MM-DD"
-                        birth_time: req.birthTime ? `1970-01-01T${req.birthTime}:00` : null, // Full ISO needed for timestamptz or just Time? Schema says TIME, but DTO expects string.
+                        birth_time: req.birthTime ? `${req.birthTime}:00` : null, // TIME 컬럼은 HH:mm:ss 형식이 안전합니다.
                         // Note: Postgres TIME type input can be 'HH:MM:SS'. 
                         // Our DTO expects string. We need to be careful with format.
                         is_time_unknown: req.isTimeUnknown || false,
                         calendar_type: req.calendarType,
                         gender: req.gender,
+                        is_leap_month: req.isLeapMonth || false,
                     })
                     .select()
                     .single();

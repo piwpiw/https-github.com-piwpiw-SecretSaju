@@ -2,6 +2,9 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
+const ADMIN_STORAGE_KEY = 'secret_paws_mock_admin';
+const ADMIN_BALANCE_PREVIEW = 999999999;
+
 interface WalletContextType {
     isAdmin: boolean;
     churu: number; // Coins
@@ -32,7 +35,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         }
 
         // Mock Admin Check
-        const mockAdmin = localStorage.getItem('secret_paws_mock_admin');
+        const mockAdmin = localStorage.getItem(ADMIN_STORAGE_KEY);
         if (mockAdmin === 'true') {
             setIsAdmin(true);
         }
@@ -47,7 +50,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
                         setChuru(data.balance);
                     }
                     if (data.isAdmin !== undefined) {
-                        setIsAdmin(data.isAdmin);
+                        setIsAdmin((prev) => prev || data.isAdmin);
                     }
                 }
             } catch (err) {
@@ -81,8 +84,10 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         return false;
     };
 
+    const visibleChuru = isAdmin ? ADMIN_BALANCE_PREVIEW : churu;
+
     return (
-        <WalletContext.Provider value={{ churu, nyang, addChuru, consumeChuru, addNyang, consumeNyang, isAdmin }}>
+        <WalletContext.Provider value={{ churu: visibleChuru, nyang, addChuru, consumeChuru, addNyang, consumeNyang, isAdmin }}>
             {children}
         </WalletContext.Provider>
     );

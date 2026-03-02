@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { sendSajuResultEmail } from '@/lib/mail';
 import { getAuthenticatedUser } from '@/lib/api-auth';
 import crypto from 'crypto';
+import { APP_CONFIG } from '@/config';
 
 /**
  * [gem-backend] 익명 발송 API. 인증된 유저만 젤리를 소모(추후 연결)하여 발송 가능.
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
         // await db.insert('saju_profiles').values({ id: resultToken, ... })
 
         // 2. Send the email using Resend
-        const domain = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || '';
+        const domain = APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || '';
         if (!domain) {
             return NextResponse.json({ error: 'Base URL is not configured' }, { status: 500 });
         }

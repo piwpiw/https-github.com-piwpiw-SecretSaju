@@ -6,4 +6,4 @@ Disallow: /_next/
 Disallow: /mypage
 
 # Sitemap
-Sitemap: https://secretsaju.vercel.app/sitemap.xml
+Sitemap: https://your-domain.com/sitemap.xml

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -6,10 +6,9 @@ import { cn } from "@/lib/utils";
 import { useWallet } from "./WalletProvider";
 import { useTheme } from "./ThemeProvider";
 import { useLocale } from "@/lib/i18n";
-import { User, Menu, X, Sun, Moon, Eye, Globe, ChevronDown, Smartphone, Zap, Activity, Compass, Heart, Shield } from "lucide-react";
+import { User, Menu, Sun, Moon, ChevronDown, Zap, Activity, Compass, Heart, Shield } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { THEMES, ThemeType } from "@/lib/themes";
 import WeatherWidget from "./WeatherWidget";
 import AppDownloadBanner from "./AppDownloadBanner";
 import { useProfiles } from "./ProfileProvider";
@@ -20,19 +19,18 @@ export function Nav() {
   const pathname = usePathname();
   const { churu } = useWallet();
   const { theme, setTheme } = useTheme();
-  const { locale, setLocale, t } = useLocale();
+  const { t } = useLocale();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const { profiles, activeProfile, setActiveProfileById } = useProfiles();
 
   const LINKS = [
-    { href: "/", label: "Ȩ", icon: Compass },
-    { href: "/luck", label: "�/����", icon: Zap },
-    { href: "/destiny", label: "���", icon: Activity },
-    { href: "/calendar", label: "Ķ����", icon: Moon },
-    { href: "/support", label: "����", icon: Heart },
-    { href: "/more", label: "\uB354\uBCF4\uAE30", icon: Shield },
+    { href: "/", label: t("nav.home") || "홈", icon: Compass },
+    { href: "/luck", label: t("nav.fortune") || "운세/궁합", icon: Zap },
+    { href: "/destiny", label: t("nav.destiny") || "사주", icon: Activity },
+    { href: "/calendar", label: t("nav.calendar") || "캘린더", icon: Moon },
+    { href: "/support", label: t("nav.support") || "후원", icon: Heart },
+    { href: "/more", label: t("nav.more") || "더보기", icon: Shield },
   ];
   const themeLabel = theme === "dark" ? "\uB2E4\uD06C \uBAA8\uB4DC" : "\uB77C\uC774\uD2B8 \uBAA8\uB4DC";
   const themeToggleNextLabel = theme === "dark" ? "\uB77C\uC774\uD2B8 \uBAA8\uB4DC\uB85C \uc804\ud658" : "\uB2E4\uD06C \uBAA8\uB4DC\uB85C \uc804\ud658";
@@ -42,7 +40,7 @@ export function Nav() {
       if (typeof window !== "undefined") {
         localStorage.setItem(themeStorageKey, theme);
       }
-    } catch {}
+    } catch { }
   }, [theme]);
 
   const handleThemeToggle = () => setTheme(theme === "dark" ? "light" : "dark");
@@ -67,7 +65,7 @@ export function Nav() {
             </div>
             <div className="hidden sm:flex flex-col">
               <span className="font-black text-lg tracking-tighter uppercase italic text-white leading-none">SECRET SAJU</span>
-              <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-0.5 opacity-60">Celestial Intelligence</span>
+              <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-0.5 opacity-60">운명의 통찰</span>
             </div>
           </Link>
 
@@ -113,7 +111,7 @@ export function Nav() {
                     <User className="w-3 h-3" />
                   </div>
                   <span className="text-[10px] font-black uppercase text-slate-300 italic tracking-widest">
-                    {activeProfile?.name || "GUEST"}
+                    {activeProfile?.name || "게스트"}
                   </span>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-600 group-hover:text-slate-300 transition-colors" />
                 </button>
@@ -128,7 +126,7 @@ export function Nav() {
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         className="absolute top-12 right-0 z-50 w-56 bg-slate-900/95 backdrop-blur-3xl border border-white/5 rounded-3xl shadow-3xl overflow-hidden py-3"
                       >
-                        <div className="px-5 py-2 text-[9px] font-black text-slate-600 uppercase tracking-widest border-b border-white/5 mb-2 italic">Neural Entity Slots</div>
+                        <div className="px-5 py-2 text-[9px] font-black text-slate-600 uppercase tracking-widest border-b border-white/5 mb-2 italic">프로필 슬롯</div>
                         {Array.from({ length: 4 }).map((_, i) => {
                           const profile = profiles[i];
                           return (
@@ -146,9 +144,9 @@ export function Nav() {
                             >
                               <span className="flex items-center gap-3">
                                 <span className={cn("w-6 h-6 rounded-lg flex items-center justify-center text-[9px] font-black", activeProfile?.id === profile?.id ? "bg-indigo-500/20" : "bg-black/20")}>{i + 1}</span>
-                                {profile?.name || "EMPTY SLOT"}
+                                {profile?.name || "비어 있음"}
                               </span>
-                              {!profile && <span className="text-[8px] opacity-30 tracking-widest">+ ADD</span>}
+                              {!profile && <span className="text-[8px] opacity-30 tracking-widest">+ 추가</span>}
                             </button>
                           );
                         })}
@@ -166,7 +164,7 @@ export function Nav() {
             >
               <Zap className="w-3.5 h-3.5 text-indigo-400 fill-current group-hover:scale-110 transition-transform" />
               <span className="text-[11px] font-black text-white italic tracking-tighter">{churu || 0}</span>
-              <span className="hidden sm:inline text-[9px] font-bold text-indigo-400 uppercase tracking-widest opacity-60">JELLY</span>
+              <span className="hidden sm:inline text-[9px] font-bold text-indigo-400 uppercase tracking-widest opacity-60">젤리</span>
             </Link>
 
             <button
@@ -226,6 +224,8 @@ export function Nav() {
     </>
   );
 }
+
+
 
 
 

@@ -5,7 +5,14 @@ import { useState } from "react";
 import confetti from "canvas-confetti";
 
 interface BirthInputRetroProps {
-    onSubmit: (data: { year: number; month: number; day: number; hour: number; timeKnown: boolean }) => void;
+    onSubmit: (data: {
+        year: number;
+        month: number;
+        day: number;
+        hour: number;
+        minute: number;
+        timeKnown: boolean;
+    }) => void;
 }
 
 export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
@@ -13,6 +20,7 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
     const [month, setMonth] = useState("");
     const [day, setDay] = useState("");
     const [hour, setHour] = useState("12");
+    const [minute, setMinute] = useState("00");
     const [timeKnown, setTimeKnown] = useState(true);
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -31,6 +39,7 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
                 month: parseInt(month),
                 day: parseInt(day),
                 hour: timeKnown ? parseInt(hour) : 12,
+                minute: timeKnown ? parseInt(minute) : 0,
                 timeKnown
             });
         }
@@ -132,15 +141,33 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
                                 className="pt-1"
                             >
                                 <label className="block text-sm font-medium text-slate-300 mb-2">태어난 시간 (0~23)</label>
-                                <input
-                                    type="number"
-                                    value={hour}
-                                    onChange={(e) => setHour(e.target.value)}
-                                    placeholder="예: 14"
-                                    min="0"
-                                    max="23"
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white text-base focus:outline-none focus:border-indigo-500/60 focus:bg-indigo-500/5 transition-all placeholder:text-slate-600 text-center"
-                                />
+                                <div className="grid grid-cols-2 gap-3">
+                                    <select
+                                        value={hour}
+                                        onChange={(e) => setHour(e.target.value)}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white text-base focus:outline-none focus:border-indigo-500/60 focus:bg-indigo-500/5 transition-all"
+                                    >
+                                        {Array.from({ length: 24 }, (_, index) => (
+                                            <option key={index} value={index.toString()} className="bg-slate-900">
+                                                {index.toString().padStart(2, "0")}시
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <select
+                                        value={minute}
+                                        onChange={(e) => setMinute(e.target.value)}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white text-base focus:outline-none focus:border-indigo-500/60 focus:bg-indigo-500/5 transition-all"
+                                    >
+                                        {Array.from({ length: 60 }, (_, index) => {
+                                            const value = index.toString().padStart(2, '0');
+                                            return (
+                                                <option key={value} value={value} className="bg-slate-900">
+                                                    {value}분
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </div>
                                 <p className="text-[11px] text-slate-500 mt-2 text-center">시간이 모호하면 주변 사람의 기억 범위를 기준으로 입력하세요</p>
                             </motion.div>
                         )}

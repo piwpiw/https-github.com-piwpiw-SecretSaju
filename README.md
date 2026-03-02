@@ -1,133 +1,133 @@
-# 🐾 Secret Paws - 990 사주마미
+﻿# ?맽 Secret Paws - 990 ?ъ＜留덈?
 
-> **프리미엄 사주 플랫폼 - 완전한 기능 구현 가이드**
+> **?꾨━誘몄뾼 ?ъ＜ ?뚮옯??- ?꾩쟾??湲곕뒫 援ы쁽 媛?대뱶**
 
 <p align="center">
-  <strong>이 프로젝트는 10명의 팀원이 협업할 수 있도록 설계되었습니다.</strong><br>
-  모든 설정, 코드, 문서가 명확하고 체계적으로 관리됩니다.
+  <strong>???꾨줈?앺듃??10紐낆쓽 ??먯씠 ?묒뾽?????덈룄濡??ㅺ퀎?섏뿀?듬땲??</strong><br>
+  紐⑤뱺 ?ㅼ젙, 肄붾뱶, 臾몄꽌媛 紐낇솗?섍퀬 泥닿퀎?곸쑝濡?愿由щ맗?덈떎.
 </p>
 
 ---
 
-## 📚 필수 문서 (READ THIS FIRST!)
+## ?뱴 ?꾩닔 臾몄꽌 (READ THIS FIRST!)
 
-### 🔴 신규 팀원이라면 반드시 읽어야 할 문서
+### ?뵶 ?좉퇋 ??먯씠?쇰㈃ 諛섎뱶???쎌뼱????臾몄꽌
 
-| 문서 | 목적 | 읽는 순서 |
+| 臾몄꽌 | 紐⑹쟻 | ?쎈뒗 ?쒖꽌 |
 |------|------|-----------|
-| **[이 README](#)** | 프로젝트 전체 개요 | 1️⃣ |
-| **[SECURITY.md](./SECURITY.md)** | 환경 변수 및 보안 키 관리 | 2️⃣ |
-| **[KAKAO_SETUP.md](./KAKAO_SETUP.md)** | 카카오 로그인 설정 가이드 | 3️⃣ |
-| **[integration_guide.md](C:/Users/piwpi/.gemini/antigravity/brain/ebdc03af-68d7-408a-88f9-293cc05fe8a6/integration_guide.md)** | API 통합 가이드 | 4️⃣ |
+| **[??README](#)** | ?꾨줈?앺듃 ?꾩껜 媛쒖슂 | 1截뤴깵 |
+| **[SECURITY.md](./SECURITY.md)** | ?섍꼍 蹂??諛?蹂댁븞 ??愿由?| 2截뤴깵 |
+| **[KAKAO_SETUP.md](./KAKAO_SETUP.md)** | 移댁뭅??濡쒓렇???ㅼ젙 媛?대뱶 | 3截뤴깵 |
+| **[integration_guide.md](C:/Users/piwpi/.gemini/antigravity/brain/ebdc03af-68d7-408a-88f9-293cc05fe8a6/integration_guide.md)** | API ?듯빀 媛?대뱶 | 4截뤴깵 |
 
-### 🔷 개발 중 참고 문서
+### ?뵹 媛쒕컻 以?李멸퀬 臾몄꽌
 
-| 문서 | 설명 |
+| 臾몄꽌 | ?ㅻ챸 |
 |------|------|
-| [`src/config/README.md`](#configuration-system) | 설정 시스템 사용법 |
-| [`task.md`](C:/Users/piwpi/.gemini/antigravity/brain/ebdc03af-68d7-408a-88f9-293cc05fe8a6/task.md) | 현재 작업 진행 상황 |
-| [`walkthrough.md`](C:/Users/piwpi/.gemini/antigravity/brain/ebdc03af-68d7-408a-88f9-293cc05fe8a6/walkthrough.md) | 완료된 기능 상세 설명 |
+| [`src/config/README.md`](#configuration-system) | ?ㅼ젙 ?쒖뒪???ъ슜踰?|
+| [`task.md`](C:/Users/piwpi/.gemini/antigravity/brain/ebdc03af-68d7-408a-88f9-293cc05fe8a6/task.md) | ?꾩옱 ?묒뾽 吏꾪뻾 ?곹솴 |
+| [`walkthrough.md`](C:/Users/piwpi/.gemini/antigravity/brain/ebdc03af-68d7-408a-88f9-293cc05fe8a6/walkthrough.md) | ?꾨즺??湲곕뒫 ?곸꽭 ?ㅻ챸 |
 
 ---
 
-## 🎯 프로젝트 현재 상태
+## ?렞 ?꾨줈?앺듃 ?꾩옱 ?곹깭
 
-### ✅ 완료된 Phase (Phases 1-7)
+### ???꾨즺??Phase (Phases 1-7)
 
-- ✅ **Phase 1-2**: 코어 기능 (60갑자 기반 사주 계산, 유명인 매칭)
-- ✅ **Phase 3**: 테마 시스템 (Mystic, Minimal, Cyber)
-- ✅ **Phase 4**: 글로벌 통합 (사업자 정보, 컴플라이언스)
-- ✅ **Phase 5**: 사주 프로필 관리 (CRUD, localStorage)
-- ✅ **Phase 6**: My Page & Wallet (츄르/냥 시스템)
-- ✅ **Phase 7**: Jelly 경제 시스템
-- ✅ **Phase 8**: 카카오 로그인 통합
-- ✅ **Phase 9**: 중앙화된 환경 변수 관리
+- ??**Phase 1-2**: 肄붿뼱 湲곕뒫 (60媛묒옄 湲곕컲 ?ъ＜ 怨꾩궛, ?좊챸??留ㅼ묶)
+- ??**Phase 3**: ?뚮쭏 ?쒖뒪??(Mystic, Minimal, Cyber)
+- ??**Phase 4**: 湲濡쒕쾶 ?듯빀 (?ъ뾽???뺣낫, 而댄뵆?쇱씠?몄뒪)
+- ??**Phase 5**: ?ъ＜ ?꾨줈??愿由?(CRUD, localStorage)
+- ??**Phase 6**: My Page & Wallet (痢꾨Ⅴ/???쒖뒪??
+- ??**Phase 7**: Jelly 寃쎌젣 ?쒖뒪??
+- ??**Phase 8**: 移댁뭅??濡쒓렇???듯빀
+- ??**Phase 9**: 以묒븰?붾맂 ?섍꼍 蹂??愿由?
 
-### 🚧 진행 중 (Next Steps)
+### ?슙 吏꾪뻾 以?(Next Steps)
 
-- [ ] **실제 결제 시스템 연동** (토스페이먼츠)
-- [ ] **Backend API 구축** (Supabase/Custom)
-- [ ] **운세 콘텐츠 생성** (GPT API 또는 DB)
-- [ ] **배포 준비** (Vercel/AWS)
+- [ ] **?ㅼ젣 寃곗젣 ?쒖뒪???곕룞** (?좎뒪?섏씠癒쇱툩)
+- [ ] **Backend API 援ъ텞** (Supabase/Custom)
+- [ ] **?댁꽭 肄섑뀗痢??앹꽦** (GPT API ?먮뒗 DB)
+- [ ] **諛고룷 以鍮?* (Render/AWS)
 
 ---
 
-## 🏗️ 프로젝트 구조 (핵심만 표시)
+## ?룛截??꾨줈?앺듃 援ъ“ (?듭떖留??쒖떆)
 
 ```
 SecretSaju/
-├── 📄 환경 설정 파일
-│   ├── .env.local.template       ⭐ 개발 환경 템플릿
-│   ├── .env.production.template  ⭐ 운영 환경 템플릿
-│   └── .env.local                (Git 제외, 직접 생성)
-│
-├── 📚 문서
-│   ├── README.md                 ⭐ 이 파일
-│   ├── SECURITY.md               ⭐ 보안 및 환경 변수 가이드
-│   ├── KAKAO_SETUP.md            ⭐ 카카오 로그인 설정
-│   └── docs/                     추가 문서
-│
-├── 🎨 src/
-│   ├── config/                   ⭐ 중앙화된 설정 관리
-│   │   ├── env.ts               환경 변수 (타입 안전, 검증)
-│   │   ├── constants.ts         앱 전역 상수
-│   │   └── index.ts             통합 export
-│   │
-│   ├── lib/
-│   │   ├── kakao-auth.ts         ⭐ 카카오 인증
-│   │   ├── jelly-wallet.ts       ⭐ 젤리 경제
-│   │   ├── storage.ts            사주 프로필 관리
-│   │   ├── saju.ts              사주 계산 엔진
-│   │   └── themes.ts            테마 시스템
-│   │
-│   ├── components/
-│   │   ├── KakaoLoginButton.tsx  ⭐ 로그인 버튼
-│   │   ├── shop/                젤리샵 관련
-│   │   ├── WalletProvider.tsx   츄르/냥 지갑
-│   │   └── ...
-│   │
-│   └── app/
-│       ├── mypage/              마이페이지
-│       ├── my-saju/             사주 관리
-│       ├── inquiry/             문의하기
-│       ├── compatibility/       궁합
-│       └── api/
-│           └── auth/kakao/      ⭐ 카카오 OAuth
-│
-└── data/
-    ├── characters.json          60갑자 데이터
-    └── celebrities.ts           유명인 DB
+?쒋?? ?뱞 ?섍꼍 ?ㅼ젙 ?뚯씪
+??  ?쒋?? .env.local.template       狩?媛쒕컻 ?섍꼍 ?쒗뵆由?
+??  ?쒋?? .env.production.template  狩??댁쁺 ?섍꼍 ?쒗뵆由?
+??  ?붴?? .env.local                (Git ?쒖쇅, 吏곸젒 ?앹꽦)
+??
+?쒋?? ?뱴 臾몄꽌
+??  ?쒋?? README.md                 狩????뚯씪
+??  ?쒋?? SECURITY.md               狩?蹂댁븞 諛??섍꼍 蹂??媛?대뱶
+??  ?쒋?? KAKAO_SETUP.md            狩?移댁뭅??濡쒓렇???ㅼ젙
+??  ?붴?? docs/                     異붽? 臾몄꽌
+??
+?쒋?? ?렓 src/
+??  ?쒋?? config/                   狩?以묒븰?붾맂 ?ㅼ젙 愿由?
+??  ??  ?쒋?? env.ts               ?섍꼍 蹂??(????덉쟾, 寃利?
+??  ??  ?쒋?? constants.ts         ???꾩뿭 ?곸닔
+??  ??  ?붴?? index.ts             ?듯빀 export
+??  ??
+??  ?쒋?? lib/
+??  ??  ?쒋?? kakao-auth.ts         狩?移댁뭅???몄쬆
+??  ??  ?쒋?? jelly-wallet.ts       狩??ㅻ━ 寃쎌젣
+??  ??  ?쒋?? storage.ts            ?ъ＜ ?꾨줈??愿由?
+??  ??  ?쒋?? saju.ts              ?ъ＜ 怨꾩궛 ?붿쭊
+??  ??  ?붴?? themes.ts            ?뚮쭏 ?쒖뒪??
+??  ??
+??  ?쒋?? components/
+??  ??  ?쒋?? KakaoLoginButton.tsx  狩?濡쒓렇??踰꾪듉
+??  ??  ?쒋?? shop/                ?ㅻ━??愿??
+??  ??  ?쒋?? WalletProvider.tsx   痢꾨Ⅴ/??吏媛?
+??  ??  ?붴?? ...
+??  ??
+??  ?붴?? app/
+??      ?쒋?? mypage/              留덉씠?섏씠吏
+??      ?쒋?? my-saju/             ?ъ＜ 愿由?
+??      ?쒋?? inquiry/             臾몄쓽?섍린
+??      ?쒋?? compatibility/       沅곹빀
+??      ?붴?? api/
+??          ?붴?? auth/kakao/      狩?移댁뭅??OAuth
+??
+?붴?? data/
+    ?쒋?? characters.json          60媛묒옄 ?곗씠??
+    ?붴?? celebrities.ts           ?좊챸??DB
 ```
 
 ---
 
-## 🚀 빠른 시작 가이드
+## ?? 鍮좊Ⅸ ?쒖옉 媛?대뱶
 
-### 1️⃣ 프로젝트 클론 및 설치
+### 1截뤴깵 ?꾨줈?앺듃 ?대줎 諛??ㅼ튂
 
 ```bash
-# 저장소 클론
+# ??μ냼 ?대줎
 git clone <repository-url>
 cd SecretSaju
 
-# 의존성 설치
+# ?섏〈???ㅼ튂
 npm install
 ```
 
-### 2️⃣ 환경 변수 설정 ⭐
+### 2截뤴깵 ?섍꼍 蹂???ㅼ젙 狩?
 
 ```bash
-# 템플릿 복사
+# ?쒗뵆由?蹂듭궗
 cp .env.local.template .env.local
 
-# .env.local 편집 (VS Code 사용)
+# .env.local ?몄쭛 (VS Code ?ъ슜)
 code .env.local
 ```
 
-#### 필수 설정 항목:
+#### ?꾩닔 ?ㅼ젙 ??ぉ:
 
 ```bash
-# 카카오 로그인 (필수)
+# 移댁뭅??濡쒓렇??(?꾩닔)
 NEXT_PUBLIC_KAKAO_JS_KEY=your_key_here
 KAKAO_REST_API_KEY=your_key_here
 
@@ -135,126 +135,126 @@ KAKAO_REST_API_KEY=your_key_here
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
-> ⚠️ **카카오 키 발급 방법**: [KAKAO_SETUP.md](./KAKAO_SETUP.md) 참고
+> ?좑툘 **移댁뭅????諛쒓툒 諛⑸쾿**: [KAKAO_SETUP.md](./KAKAO_SETUP.md) 李멸퀬
 
-### 3️⃣ 개발 서버 실행
+### 3截뤴깵 媛쒕컻 ?쒕쾭 ?ㅽ뻾
 
 ```bash
 npm run dev
 ```
 
-🎉 **http://localhost:3000** 접속
+?럦 **http://localhost:3000** ?묒냽
 
 ---
 
-## 🔑 환경 변수 완전 가이드
+## ?뵎 ?섍꼍 蹂???꾩쟾 媛?대뱶
 
-### 계층 구조
+### 怨꾩링 援ъ“
 
-| 우선순위 | 카테고리 | 변수 | 상태 |
+| ?곗꽑?쒖쐞 | 移댄뀒怨좊━ | 蹂??| ?곹깭 |
 |---------|---------|------|------|
-| **🔴 필수** | 카카오 로그인 | `NEXT_PUBLIC_KAKAO_JS_KEY` | 구현 완료 |
-| **🔴 필수** | 카카오 로그인 | `KAKAO_REST_API_KEY` | 구현 완료 |
-| 🟡 중요 | 결제 | `NEXT_PUBLIC_TOSS_CLIENT_KEY` | 준비 완료 |
-| 🟡 중요 | 결제 | `TOSS_SECRET_KEY` | 준비 완료 |
-| 🟢 선택 | DB | `NEXT_PUBLIC_SUPABASE_URL` | - |
-| 🟢 선택 | 분석 | `NEXT_PUBLIC_GA_ID` | - |
+| **?뵶 ?꾩닔** | 移댁뭅??濡쒓렇??| `NEXT_PUBLIC_KAKAO_JS_KEY` | 援ы쁽 ?꾨즺 |
+| **?뵶 ?꾩닔** | 移댁뭅??濡쒓렇??| `KAKAO_REST_API_KEY` | 援ы쁽 ?꾨즺 |
+| ?윞 以묒슂 | 寃곗젣 | `NEXT_PUBLIC_TOSS_CLIENT_KEY` | 以鍮??꾨즺 |
+| ?윞 以묒슂 | 寃곗젣 | `TOSS_SECRET_KEY` | 以鍮??꾨즺 |
+| ?윟 ?좏깮 | DB | `NEXT_PUBLIC_SUPABASE_URL` | - |
+| ?윟 ?좏깮 | 遺꾩꽍 | `NEXT_PUBLIC_GA_ID` | - |
 
-### 자동 검증 시스템
+### ?먮룞 寃利??쒖뒪??
 
-서버 시작 시 자동으로 검증:
+?쒕쾭 ?쒖옉 ???먮룞?쇰줈 寃利?
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔧 ENVIRONMENT CONFIGURATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺
+?뵩 ENVIRONMENT CONFIGURATION
+?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺
 Environment: development
 Base URL: http://localhost:3000
 
 Features:
-  ✓ Kakao Login: ✅
-  ✓ Payment: ❌
-  ✓ Database: ❌
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ??Kakao Login: ??
+  ??Payment: ??
+  ??Database: ??
+?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺
 ```
 
-> 📖 **상세 가이드**: [SECURITY.md](./SECURITY.md)
+> ?뱰 **?곸꽭 媛?대뱶**: [SECURITY.md](./SECURITY.md)
 
 ---
 
-## 💡 핵심 기능 설명
+## ?뮕 ?듭떖 湲곕뒫 ?ㅻ챸
 
-### 1. 중앙화된 설정 관리 (`src/config/`)
+### 1. 以묒븰?붾맂 ?ㅼ젙 愿由?(`src/config/`)
 
-**왜 중요한가?**
-10명의 팀원이 협업할 때 환경 변수가 여러 파일에 분산되면 혼란스럽고 오류가 발생합니다.
+**??以묒슂?쒓??**
+10紐낆쓽 ??먯씠 ?묒뾽?????섍꼍 蹂?섍? ?щ윭 ?뚯씪??遺꾩궛?섎㈃ ?쇰??ㅻ읇怨??ㅻ쪟媛 諛쒖깮?⑸땲??
 
-**해결책 - 한 곳에서 관리:**
+**?닿껐梨?- ??怨녹뿉??愿由?**
 
 ```typescript
-// ❌ Before: 여러 파일에서 직접 접근
+// ??Before: ?щ윭 ?뚯씪?먯꽌 吏곸젒 ?묎렐
 const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
 
-// ✅ After: 중앙화된 설정 사용
+// ??After: 以묒븰?붾맂 ?ㅼ젙 ?ъ슜
 import { KAKAO_CONFIG } from '@/config';
 const kakaoKey = KAKAO_CONFIG.JS_KEY;
 
-// 자동 검증
+// ?먮룞 寃利?
 if (!KAKAO_CONFIG.isConfigured) {
   console.error(KAKAO_CONFIG.error);
 }
 ```
 
-**파일 구조:**
+**?뚯씪 援ъ“:**
 
-- **`env.ts`**: 환경 변수 + 검증 로직
-- **`constants.ts`**: 비즈니스 로직 상수
-- **`index.ts`**: 통합 export
+- **`env.ts`**: ?섍꼍 蹂??+ 寃利?濡쒖쭅
+- **`constants.ts`**: 鍮꾩쫰?덉뒪 濡쒖쭅 ?곸닔
+- **`index.ts`**: ?듯빀 export
 
-### 2. 카카오 로그인 (`lib/kakao-auth.ts`)
+### 2. 移댁뭅??濡쒓렇??(`lib/kakao-auth.ts`)
 
-**완전 구현 완료:**
+**?꾩쟾 援ы쁽 ?꾨즺:**
 
-1. **SDK 초기화**: `initKakao()`
-2. **로그인**: `loginWithKakao()`
-3. **로그아웃**: `clearUserSession()`
-4. **세션 확인**: `getUserFromCookie()`
+1. **SDK 珥덇린??*: `initKakao()`
+2. **濡쒓렇??*: `loginWithKakao()`
+3. **濡쒓렇?꾩썐**: `clearUserSession()`
+4. **?몄뀡 ?뺤씤**: `getUserFromCookie()`
 
-**API 플로우:**
+**API ?뚮줈??**
 
 ```
-사용자 로그인 버튼 클릭
-  → Kakao OAuth 페이지
-  → 로그인 성공
-  → /api/auth/kakao/callback (서버)
-  → 쿠키 저장 (kakao_token, user_data)
-  → /mypage 리다이렉트
+?ъ슜??濡쒓렇??踰꾪듉 ?대┃
+  ??Kakao OAuth ?섏씠吏
+  ??濡쒓렇???깃났
+  ??/api/auth/kakao/callback (?쒕쾭)
+  ??荑좏궎 ???(kakao_token, user_data)
+  ??/mypage 由щ떎?대젆??
 ```
 
-### 3. Jelly 경제 시스템 (`lib/jelly-wallet.ts`)
+### 3. Jelly 寃쎌젣 ?쒖뒪??(`lib/jelly-wallet.ts`)
 
-**3단계 가격 정책:**
+**3?④퀎 媛寃??뺤콉:**
 
-| Tier | 젤리 | 보너스 | 가격 | 특징 |
+| Tier | ?ㅻ━ | 蹂대꼫??| 媛寃?| ?뱀쭠 |
 |------|------|--------|------|------|
-| 맛보기 | 1 | 0 | 990원 | - |
-| 똑똑이 | 3 | +1 | 2,900원 | 25% 할인 |
-| **프로** | 10 | +3 | 9,900원 | **최고 가성비** ⭐ |
+| 留쏅낫湲?| 1 | 0 | 990??| - |
+| ?묐삊??| 3 | +1 | 2,900??| 25% ?좎씤 |
+| **?꾨줈** | 10 | +3 | 9,900??| **理쒓퀬 媛?깅퉬** 狩?|
 
-**사용처:**
+**?ъ슜泥?**
 
-- 프로필 추가 (첫 번째 무료, 이후 1젤리)
-- 섹션 잠금 해제 (1젤리)
-- 프리미엄 운세 (3젤리)
+- ?꾨줈??異붽? (泥?踰덉㎏ 臾대즺, ?댄썑 1?ㅻ━)
+- ?뱀뀡 ?좉툑 ?댁젣 (1?ㅻ━)
+- ?꾨━誘몄뾼 ?댁꽭 (3?ㅻ━)
 
-### 4. 사주 프로필 관리 (`lib/storage.ts`)
+### 4. ?ъ＜ ?꾨줈??愿由?(`lib/storage.ts`)
 
-**CRUD 완전 구현:**
+**CRUD ?꾩쟾 援ы쁽:**
 
-- `getProfiles()`: 전체 조회
-- `saveProfile()`: 신규 저장
-- `deleteProfile()`: 삭제
-- `updateProfile()`: 수정
+- `getProfiles()`: ?꾩껜 議고쉶
+- `saveProfile()`: ?좉퇋 ???
+- `deleteProfile()`: ??젣
+- `updateProfile()`: ?섏젙
 
 **Schema:**
 
@@ -262,7 +262,7 @@ if (!KAKAO_CONFIG.isConfigured) {
 {
   id: string;
   name: string;
-  relationship: '본인' | '배우자' | '자녀' | ...;
+  relationship: '蹂몄씤' | '諛곗슦?? | '?먮?' | ...;
   birthdate: 'YYYY-MM-DD';
   birthTime: 'HH:mm';
   isTimeUnknown: boolean;
@@ -273,15 +273,15 @@ if (!KAKAO_CONFIG.isConfigured) {
 
 ---
 
-## 🎨 테마 시스템
+## ?렓 ?뚮쭏 ?쒖뒪??
 
-3가지 테마 지원:
+3媛吏 ?뚮쭏 吏??
 
-1. **Mystic** (기본): 신비로운 남색/금색
-2. **Minimal**: 깔끔한 흰색/초록
-3. **Cyber**: 네온 보라/청록
+1. **Mystic** (湲곕낯): ?좊퉬濡쒖슫 ?⑥깋/湲덉깋
+2. **Minimal**: 源붾걫???곗깋/珥덈줉
+3. **Cyber**: ?ㅼ삩 蹂대씪/泥?줉
 
-**사용법:**
+**?ъ슜踰?**
 
 ```typescript
 import { useTheme } from '@/components/ThemeProvider';
@@ -292,104 +292,104 @@ setTheme('mystic'); // or 'minimal', 'cyber'
 
 ---
 
-## 🧪 테스트 가이드
+## ?㎦ ?뚯뒪??媛?대뱶
 
-### 로컬 테스트 체크리스트
+### 濡쒖뺄 ?뚯뒪??泥댄겕由ъ뒪??
 
 ```bash
-# 1. 카카오 로그인
-✅ /mypage 접속 → 로그인 버튼 클릭
-✅ 카카오 로그인 성공 → 닉네임/이메일 표시 확인
+# 1. 移댁뭅??濡쒓렇??
+??/mypage ?묒냽 ??濡쒓렇??踰꾪듉 ?대┃
+??移댁뭅??濡쒓렇???깃났 ???됰꽕???대찓???쒖떆 ?뺤씤
 
-# 2. 사주 프로필
-✅ /my-saju/add → 프로필 추가
-✅ /my-saju/list → 목록 확인
-✅ 삭제 기능 작동
+# 2. ?ъ＜ ?꾨줈??
+??/my-saju/add ???꾨줈??異붽?
+??/my-saju/list ??紐⑸줉 ?뺤씤
+????젣 湲곕뒫 ?묐룞
 
-# 3. Jelly 시스템
-✅ 젤리샵 모달 오픈
-✅ 프로필 추가 시 젤리 소비 (2번째부터)
+# 3. Jelly ?쒖뒪??
+???ㅻ━??紐⑤떖 ?ㅽ뵂
+???꾨줈??異붽? ???ㅻ━ ?뚮퉬 (2踰덉㎏遺??
 
-# 4. 테마
-✅ 테마 전환 (Mystic ↔ Minimal ↔ Cyber)
+# 4. ?뚮쭏
+???뚮쭏 ?꾪솚 (Mystic ??Minimal ??Cyber)
 ```
 
 ---
 
-## 📦 배포 가이드
+## ?벀 諛고룷 媛?대뱶
 
-### 빠른 배포 (권장)
+### 鍮좊Ⅸ 諛고룷 (沅뚯옣)
 
 ```bash
-# 1. 환경 변수 설정
+# 1. ?섍꼍 蹂???ㅼ젙
 npm run setup:env
 
-# 2. 환경 변수 검증
+# 2. ?섍꼍 蹂??寃利?
 npm run verify:env
 
-# 3. 데이터베이스 마이그레이션
+# 3. ?곗씠?곕쿋?댁뒪 留덉씠洹몃젅?댁뀡
 npm run migrate:db
-# Supabase Dashboard에서 SQL 실행 또는: supabase db push
+# Supabase Dashboard?먯꽌 SQL ?ㅽ뻾 ?먮뒗: supabase db push
 
-# 4. 배포 전 검증
+# 4. 諛고룷 ??寃利?
 npm run pre-deploy
 
-# 5. 배포
+# 5. 諛고룷
 npm run deploy
 ```
 
-자세한 내용은 [`QUICK_DEPLOY.md`](./QUICK_DEPLOY.md) 참고
+?먯꽭???댁슜? [`QUICK_DEPLOY.md`](./QUICK_DEPLOY.md) 李멸퀬
 
-### Vercel 배포
+### Render 諛고룷
 
 ```bash
-# Vercel CLI 설치
-npm i -g vercel
+# Render CLI ?ㅼ튂
+npm i -g Render
 
-# 배포
-vercel --prod
+# 諛고룷
+npm run deploy
 ```
 
-### ⚠️ 운영 배포 전 체크리스트
+### ?좑툘 ?댁쁺 諛고룷 ??泥댄겕由ъ뒪??
 
-- [ ] 환경 변수 설정 완료 (`npm run verify:env`)
-- [ ] 데이터베이스 마이그레이션 실행 완료
-- [ ] 로컬 빌드 성공 (`npm run build`)
-- [ ] 테스트 통과 (`npm test`)
-- [ ] `.env.local` 파일이 Git에 **절대** 커밋되지 않았는지 확인
-- [ ] 카카오 Redirect URI를 실제 도메인으로 변경
-- [ ] Test 키를 Live 키로 교체 (결제)
-- [ ] `validateEnvironment()` 에러 없음 확인
+- [ ] ?섍꼍 蹂???ㅼ젙 ?꾨즺 (`npm run verify:env`)
+- [ ] ?곗씠?곕쿋?댁뒪 留덉씠洹몃젅?댁뀡 ?ㅽ뻾 ?꾨즺
+- [ ] 濡쒖뺄 鍮뚮뱶 ?깃났 (`npm run build`)
+- [ ] ?뚯뒪???듦낵 (`npm test`)
+- [ ] `.env.local` ?뚯씪??Git??**?덈?** 而ㅻ컠?섏? ?딆븯?붿? ?뺤씤
+- [ ] 移댁뭅??Redirect URI瑜??ㅼ젣 ?꾨찓?몄쑝濡?蹂寃?
+- [ ] Test ?ㅻ? Live ?ㅻ줈 援먯껜 (寃곗젣)
+- [ ] `validateEnvironment()` ?먮윭 ?놁쓬 ?뺤씤
 
 ---
 
-## 👥 팀 협업 가이드
+## ?뫁 ? ?묒뾽 媛?대뱶
 
-### Git 브랜치 전략
+### Git 釉뚮옖移??꾨왂
 
 ```
-main (운영)
-  ↑
-develop (개발)
-  ↑
-feature/기능명 (각 팀원 작업)
+main (?댁쁺)
+  ??
+develop (媛쒕컻)
+  ??
+feature/湲곕뒫紐?(媛?????묒뾽)
 ```
 
-### 코드 리뷰 체크리스트
+### 肄붾뱶 由щ럭 泥댄겕由ъ뒪??
 
-- [ ] **환경 변수**: `process.env` 직접 사용 ❌ → `@/config` 사용 ✅
-- [ ] **타입 안전**: `any` 사용 최소화
-- [ ] **에러 처리**: try-catch 적절히 사용
-- [ ] **보안**: 민감한 키 콘솔 출력 금지
+- [ ] **?섍꼍 蹂??*: `process.env` 吏곸젒 ?ъ슜 ????`@/config` ?ъ슜 ??
+- [ ] **????덉쟾**: `any` ?ъ슜 理쒖냼??
+- [ ] **?먮윭 泥섎━**: try-catch ?곸젅???ъ슜
+- [ ] **蹂댁븞**: 誘쇨컧????肄섏넄 異쒕젰 湲덉?
 
-### 컨벤션
+### 而⑤깽??
 
-**파일명:**
-- 컴포넌트: `PascalCase.tsx`
-- 유틸: `camelCase.ts`
-- 설정: `kebab-case.ts`
+**?뚯씪紐?**
+- 而댄룷?뚰듃: `PascalCase.tsx`
+- ?좏떥: `camelCase.ts`
+- ?ㅼ젙: `kebab-case.ts`
 
-**Import 순서:**
+**Import ?쒖꽌:**
 ```typescript
 // 1. External
 import { useState } from 'react';
@@ -409,36 +409,36 @@ import './styles.css';
 
 ---
 
-## 🐛 문제 해결 (FAQ)
+## ?맀 臾몄젣 ?닿껐 (FAQ)
 
-### Q1: "Kakao SDK not loaded" 에러
+### Q1: "Kakao SDK not loaded" ?먮윭
 
-**원인**: Kakao SDK 스크립트가 로드되지 않음
-**해결**:
-1. 브라우저 콘솔에서 `window.Kakao` 확인
-2. `src/app/layout.tsx`에 SDK script 태그 존재 확인
-3. 네트워크 탭에서 스크립트 로드 확인
+**?먯씤**: Kakao SDK ?ㅽ겕由쏀듃媛 濡쒕뱶?섏? ?딆쓬
+**?닿껐**:
+1. 釉뚮씪?곗? 肄섏넄?먯꽌 `window.Kakao` ?뺤씤
+2. `src/app/layout.tsx`??SDK script ?쒓렇 議댁옱 ?뺤씤
+3. ?ㅽ듃?뚰겕 ??뿉???ㅽ겕由쏀듃 濡쒕뱶 ?뺤씤
 
-### Q2: "Redirect URI mismatch" 에러
+### Q2: "Redirect URI mismatch" ?먮윭
 
-**원인**: 카카오 개발자 콘솔 설정 불일치
-**해결**:
-- 카카오 콘솔 → Redirect URI: `http://localhost:3000/api/auth/kakao/callback`
-- 운영: `https://your-domain.com/api/auth/kakao/callback`
+**?먯씤**: 移댁뭅??媛쒕컻??肄섏넄 ?ㅼ젙 遺덉씪移?
+**?닿껐**:
+- 移댁뭅??肄섏넄 ??Redirect URI: `http://localhost:3000/api/auth/kakao/callback`
+- ?댁쁺: `https://your-domain.com/api/auth/kakao/callback`
 
-### Q3: 환경 변수가 적용 안됨
+### Q3: ?섍꼍 蹂?섍? ?곸슜 ?덈맖
 
-**해결**:
-1. `.env.local` 파일 저장 확인
-2. **서버 재시작** (`npm run dev` 다시 실행)
-3. 클라이언트 변수는 `NEXT_PUBLIC_` 접두사 필수
+**?닿껐**:
+1. `.env.local` ?뚯씪 ????뺤씤
+2. **?쒕쾭 ?ъ떆??* (`npm run dev` ?ㅼ떆 ?ㅽ뻾)
+3. ?대씪?댁뼵??蹂?섎뒗 `NEXT_PUBLIC_` ?묐몢???꾩닔
 
-### Q4: "Cannot find module '@/config'" 에러
+### Q4: "Cannot find module '@/config'" ?먮윭
 
-**원인**: TypeScript 경로 설정 문제
-**해결**:
+**?먯씤**: TypeScript 寃쎈줈 ?ㅼ젙 臾몄젣
+**?닿껐**:
 ```json
-// tsconfig.json 확인
+// tsconfig.json ?뺤씤
 {
   "compilerOptions": {
     "paths": {
@@ -450,57 +450,62 @@ import './styles.css';
 
 ---
 
-## 📞 연락처 및 리소스
+## ?뱸 ?곕씫泥?諛?由ъ냼??
 
-### 핵심 담당자
+### ?듭떖 ?대떦??
 
-| 역할 | 담당 영역 | 연락처 |
+| ??븷 | ?대떦 ?곸뿭 | ?곕씫泥?|
 |------|----------|--------|
-| Tech Lead | 아키텍처, 보안 | - |
-| Frontend | UI/UX 구현 | - |
-| Backend | API 통합 | - |
-| DevOps | 배포, 인프라 | - |
+| Tech Lead | ?꾪궎?띿쿂, 蹂댁븞 | - |
+| Frontend | UI/UX 援ы쁽 | - |
+| Backend | API ?듯빀 | - |
+| DevOps | 諛고룷, ?명봽??| - |
 
-### 외부 리소스
+### ?몃? 由ъ냼??
 
 - [Kakao Developers](https://developers.kakao.com/)
 - [Toss Payments Docs](https://developers.tosspayments.com/)
-- [Next.js 공식 문서](https://nextjs.org/docs)
-- [Vercel 배포 가이드](https://vercel.com/docs)
+- [Next.js 怨듭떇 臾몄꽌](https://nextjs.org/docs)
+- [Render 諛고룷 媛?대뱶](https://Render.com/docs)
 
 ---
 
-## 📝 변경 이력
+## ?뱷 蹂寃??대젰
 
-| 날짜 | Phase | 주요 변경 사항 |
+| ?좎쭨 | Phase | 二쇱슂 蹂寃??ы빆 |
 |------|-------|---------------|
-| 2026-01-31 | Phase 9 | 중앙화된 환경 설정 시스템 구축 |
-| 2026-01-31 | Phase 8 | 카카오 로그인 완전 통합 |
-| 2026-01-30 | Phase 7 | Jelly 경제 시스템 구현 |
-| 2026-01-30 | Phase 5-6 | 사주 관리 + My Page 구현 |
+| 2026-01-31 | Phase 9 | 以묒븰?붾맂 ?섍꼍 ?ㅼ젙 ?쒖뒪??援ъ텞 |
+| 2026-01-31 | Phase 8 | 移댁뭅??濡쒓렇???꾩쟾 ?듯빀 |
+| 2026-01-30 | Phase 7 | Jelly 寃쎌젣 ?쒖뒪??援ы쁽 |
+| 2026-01-30 | Phase 5-6 | ?ъ＜ 愿由?+ My Page 援ы쁽 |
 
 ---
 
-## 🎯 다음 마일스톤
+## ?렞 ?ㅼ쓬 留덉씪?ㅽ넠
 
-### Sprint 1 (1-2주)
-- [ ] 토스페이먼츠 실제 결제 연동
-- [ ] Supabase 데이터베이스 설정
-- [ ] 사용자 인증 강화 (JWT)
+### Sprint 1 (1-2二?
+- [ ] ?좎뒪?섏씠癒쇱툩 ?ㅼ젣 寃곗젣 ?곕룞
+- [ ] Supabase ?곗씠?곕쿋?댁뒪 ?ㅼ젙
+- [ ] ?ъ슜???몄쬆 媛뺥솕 (JWT)
 
-### Sprint 2 (3-4주)
-- [ ] 운세 콘텐츠 GPT API 통합
-- [ ] 관리자 대시보드 구축
-- [ ] 푸시 알림 시스템
+### Sprint 2 (3-4二?
+- [ ] ?댁꽭 肄섑뀗痢?GPT API ?듯빀
+- [ ] 愿由ъ옄 ??쒕낫??援ъ텞
+- [ ] ?몄떆 ?뚮┝ ?쒖뒪??
 
-### Sprint 3 (5-6주)
-- [ ] 운영 배포
-- [ ] 모니터링 설정
-- [ ] 성능 최적화
+### Sprint 3 (5-6二?
+- [ ] ?댁쁺 諛고룷
+- [ ] 紐⑤땲?곕쭅 ?ㅼ젙
+- [ ] ?깅뒫 理쒖쟻??
 
 ---
 
 <p align="center">
-  <strong>Made with ❤️ by Secret Paws Team</strong><br>
+  <strong>Made with ?ㅿ툘 by Secret Paws Team</strong><br>
   <sub>Version 1.0.0 | Last Updated: 2026-01-31</sub>
 </p>
+
+
+
+
+

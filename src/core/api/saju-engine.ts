@@ -9,7 +9,11 @@
  * Provides the main entry point for the enterprise-grade saju calculation.
  */
 
-import { getTrueSolarTime, Location, KOREA_LOCATIONS } from '../astronomy/true-solar-time';
+import {
+    calculateTrueSolarTimeWithDetails,
+    Location,
+    KOREA_LOCATIONS,
+} from '../astronomy/true-solar-time';
 import { getYearPillar, getMonthPillar, getDayPillar, getHourPillar, FourPillars, GanJi } from '../calendar/ganji';
 import { SCORING_MODEL, analyzeElements, type ElementAnalysisResult } from '../myeongni/elements';
 
@@ -56,6 +60,27 @@ export interface HighPrecisionSajuResult {
     // Fortune context
     daewun: DaewunInfo;
     currentUn: CurrentUnInfo;
+    meta?: SajuEngineMeta;
+}
+
+export interface SajuEngineMeta {
+    qualityScore: number;
+    inputs: {
+        birthDateValid: boolean;
+        birthTimeValid: boolean;
+        timeUnknownFallbackUsed: boolean;
+        calendarType: 'solar' | 'lunar';
+        isLeapMonth: boolean;
+        usedLocation: Location;
+    };
+    diagnostics: {
+        warnings: string[];
+        lunarConverted: boolean;
+        trueSolarAdjusted: boolean;
+        trueSolarOffsetMinutes: number;
+        equationOfTimeMinutes: number;
+        longitudeOffsetMinutes: number;
+    };
 }
 
 export class SajuEngine {
@@ -72,15 +97,59 @@ export class SajuEngine {
             calendarType = 'solar',
             isLeapMonth = false
         } = input;
+        const resolvedLocation = { ...location };
 
-        // Validation: Required calculation data must be valid
-        if (!birthTime || !birthTime.includes(':')) {
-            throw new Error("[saju-engine] Invalid birth time provided. Logic rejected.");
+        if (!(birthDate instanceof Date) || Number.isNaN(birthDate.getTime())) {
+            throw new Error('[saju-engine] Invalid birthDate');
         }
 
-        const [hours, minutes] = birthTime.split(':').map(Number);
-        if (isNaN(hours) || isNaN(minutes)) {
-            throw new Error("[saju-engine] Parse error on birth time. Calculation aborted.");
+        if (gender !== 'M' && gender !== 'F') {
+            throw new Error('[saju-engine] Invalid gender');
+        }
+
+        const warnings: string[] = [];
+        const qualityPenalty: number[] = [];
+
+        const normalizeTime = (value: string): { hours: number; minutes: number; valid: boolean; source: 'strict' | 'fallback' } => {
+            if (typeof value !== 'string') {
+                warnings.push('birthTime is not provided in string format.');
+                qualityPenalty.push(15);
+                return { hours: 0, minutes: 0, valid: false, source: 'fallback' };
+            }
+
+            const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(value.trim());
+            if (!match) {
+                warnings.push('birthTime has invalid format. HH:mm format required. 00:00 used as fallback.');
+                qualityPenalty.push(20);
+                return { hours: 0, minutes: 0, valid: false, source: 'fallback' };
+            }
+
+            const [h, m] = value.split(':').map(Number);
+            return { hours: h, minutes: m, valid: true, source: 'strict' };
+        };
+
+        const timeInfo = normalizeTime(birthTime ?? '');
+        const { hours, minutes } = timeInfo;
+
+        if (!timeInfo.valid) {
+            qualityPenalty.push(15);
+        }
+        if (isTimeUnknown) {
+            warnings.push('Time is marked unknown, using civil time only for hour pillar anchor.');
+            qualityPenalty.push(8);
+        }
+
+        if (resolvedLocation.latitude < -90 || resolvedLocation.latitude > 90) {
+            warnings.push('Location latitude is out of valid range. fallback to Seoul.');
+            qualityPenalty.push(25);
+            resolvedLocation.latitude = KOREA_LOCATIONS.SEOUL.latitude;
+            resolvedLocation.longitude = KOREA_LOCATIONS.SEOUL.longitude;
+        }
+        if (resolvedLocation.longitude < -180 || resolvedLocation.longitude > 180) {
+            warnings.push('Location longitude is out of valid range. fallback to Seoul.');
+            qualityPenalty.push(25);
+            resolvedLocation.latitude = KOREA_LOCATIONS.SEOUL.latitude;
+            resolvedLocation.longitude = KOREA_LOCATIONS.SEOUL.longitude;
         }
 
         const year = birthDate.getFullYear();
@@ -93,8 +162,10 @@ export class SajuEngine {
 
         // 1. Handle Lunar Date Conversion
         let baseDateKST = new Date(wallClockBirth);
+        let lunarConverted = false;
 
         if (calendarType === 'lunar') {
+            lunarConverted = true;
             const { lunarToSolar } = await import('../calendar/lunar-solar');
             const lunarInput = {
                 year: birthDate.getFullYear(),
@@ -102,13 +173,30 @@ export class SajuEngine {
                 day: birthDate.getDate(),
                 isLeapMonth: isLeapMonth || false
             };
+            const before = new Date(baseDateKST.getTime());
             const solarDate = lunarToSolar(lunarInput);
-            solarDate.setHours(hours, minutes, 0, 0);
-            baseDateKST = solarDate;
+            if (Number.isNaN(solarDate.getTime())) {
+                warnings.push('Lunar conversion returned invalid date. Using civil date for fallback.');
+                qualityPenalty.push(30);
+                solarDate.setHours(hours, minutes, 0, 0);
+                baseDateKST = new Date(wallClockBirth);
+            } else {
+                solarDate.setHours(hours, minutes, 0, 0);
+                baseDateKST = solarDate;
+            }
+            if (before.getTime() !== baseDateKST.getTime()) {
+                warnings.push('Lunar date converted to solar date.');
+            }
         }
 
         // 3. True Solar Time (Astronomical Precision)
-        const trueSolarTime = getTrueSolarTime(baseDateKST, location);
+        const solarDetails = calculateTrueSolarTimeWithDetails(baseDateKST, resolvedLocation);
+        const trueSolarTime = solarDetails.trueSolarTime;
+
+        const trueSolarAdjusted = Math.abs(solarDetails.totalOffset) >= 0.5;
+        if (trueSolarAdjusted) {
+            warnings.push(`True solar time applied (${solarDetails.totalOffset.toFixed(1)}m).`);
+        }
 
         // 4. Calculate Four Pillars
         const yearPillar = getYearPillar(baseDateKST);
@@ -139,6 +227,8 @@ export class SajuEngine {
         const daewun = calculateDaewun(baseDateKST, fourPillars, gender);
         const currentUn = getCurrentUnInfo(baseDateKST, fourPillars, gender);
 
+        const qualityScore = Math.max(0, 100 - Math.min(60, qualityPenalty.reduce((a, b) => a + b, 0)));
+
         // 7. Result Assembly & Integrity Verification
         const resultPayload: Omit<HighPrecisionSajuResult, 'integrity'> = {
             version: ENGINE_VERSION,
@@ -154,7 +244,26 @@ export class SajuEngine {
             gangyak,
             yongshin,
             daewun,
-            currentUn
+            currentUn,
+            meta: {
+                qualityScore,
+                inputs: {
+                    birthDateValid: !(Number.isNaN(birthDate.getTime())),
+                    birthTimeValid: timeInfo.valid,
+                    timeUnknownFallbackUsed: !!isTimeUnknown,
+                    calendarType,
+                    isLeapMonth,
+                    usedLocation: resolvedLocation
+                },
+                diagnostics: {
+                    warnings,
+                    lunarConverted,
+                    trueSolarAdjusted,
+                    trueSolarOffsetMinutes: Number(solarDetails.totalOffset.toFixed(2)),
+                    equationOfTimeMinutes: Number(solarDetails.eot.toFixed(2)),
+                    longitudeOffsetMinutes: Number(solarDetails.longitudeOffset.toFixed(2)),
+                }
+            },
         };
 
         // SHA-256 Hash of canonical stringified result

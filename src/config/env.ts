@@ -46,10 +46,21 @@ export const ENV = {
 // APPLICATION CONFIGURATION
 // ============================================
 
+function normalizeHostToUrl(host: string): string {
+    const trimmed = host.trim();
+    if (!trimmed) return '';
+    return /^https?:\/\//.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
+function getRenderBaseUrl(): string {
+    const renderHost = process.env.RENDER_EXTERNAL_HOSTNAME || process.env.RENDER_EXTERNAL_URL || process.env.RENDER_URL || '';
+    return renderHost ? normalizeHostToUrl(renderHost) : '';
+}
+
 export const APP_CONFIG = {
     NAME: '시크릿사주 - 보헤미안 스튜디오',
     VERSION: '1.0.0',
-    BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : ''),
+    BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || getRenderBaseUrl(),
     API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || '/api',
 } as const;
 

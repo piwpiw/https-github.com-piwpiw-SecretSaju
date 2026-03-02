@@ -1,6 +1,6 @@
-#!/usr/bin/env pwsh
-# deploy.ps1 — SecretSaju 원클릭 배포
-# 사용법: .\deploy.ps1 "커밋 메시지"
+﻿#!/usr/bin/env pwsh
+
+# deploy.ps1 - SecretSaju deployment helper for Render
 
 param(
     [string]$Message = "update: $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
@@ -8,35 +8,40 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "`n🔨 빌드 검증..." -ForegroundColor Cyan
+Write-Host "`n✅ Build started..." -ForegroundColor Cyan
 npx next build 2>&1 | Out-Null
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ 빌드 실패 — 배포 중단" -ForegroundColor Red
+    Write-Host "❌ Build failed" -ForegroundColor Red
     exit 1
 }
-Write-Host "✅ 빌드 성공" -ForegroundColor Green
+Write-Host "✅ Build succeeded" -ForegroundColor Green
 
-Write-Host "`n📦 Git 커밋 & 푸시..." -ForegroundColor Cyan
+Write-Host "`n🚀 Push changes to main" -ForegroundColor Cyan
 git add -A
 $status = git status --porcelain
 if (-not $status) {
-    Write-Host "⏭️  변경사항 없음 — 스킵" -ForegroundColor Yellow
+    Write-Host "⚠️ No changes to commit" -ForegroundColor Yellow
 } else {
     git commit -m $Message
     git push origin main
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "❌ Git push 실패" -ForegroundColor Red
+        Write-Host "❌ Git push failed" -ForegroundColor Red
         exit 1
     }
-    Write-Host "✅ GitHub 푸시 완료" -ForegroundColor Green
+    Write-Host "✅ GitHub push succeeded" -ForegroundColor Green
 }
 
-Write-Host "`n🚀 Vercel 프로덕션 배포..." -ForegroundColor Cyan
-npx vercel --prod --yes 2>&1
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "⚠️  Vercel CLI 배포 실패 — GitHub 연동으로 자동 배포됩니다" -ForegroundColor Yellow
+Write-Host "`n🚀 Trigger Render deploy..." -ForegroundColor Cyan
+if ($env:RENDER_DEPLOY_HOOK_URL) {
+    try {
+        Invoke-RestMethod -Method Post -Uri $env:RENDER_DEPLOY_HOOK_URL | Out-Null
+        Write-Host "✅ Render deploy hook sent" -ForegroundColor Green
+    } catch {
+        Write-Host "⚠️ Failed to call Render deploy hook: $($_.Exception.Message)" -ForegroundColor Yellow
+        Write-Host "💡 Render auto-deploy from main branch may still proceed." -ForegroundColor Cyan
+    }
 } else {
-    Write-Host "✅ 배포 완료!" -ForegroundColor Green
+    Write-Host "💡 RENDER_DEPLOY_HOOK_URL is not set. Render auto-deploy from main branch is used." -ForegroundColor Cyan
 }
 
-Write-Host "`n🎉 완료 — $(Get-Date -Format 'HH:mm:ss')" -ForegroundColor Magenta
+Write-Host "`n🎉 Done at $(Get-Date -Format 'HH:mm:ss')" -ForegroundColor Magenta

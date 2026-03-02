@@ -22,6 +22,10 @@ const ko: Record<string, string> = {
     'nav.jelly': '젤리',
     'nav.menu': '메뉴',
     'nav.daily': '오늘의 운세',
+    'nav.home': '홈',
+    'nav.destiny': '사주',
+    'nav.calendar': '캘린더',
+    'nav.support': '후원',
 
     // Theme
     'theme.dark': '다크 모드',
@@ -150,6 +154,8 @@ const ko: Record<string, string> = {
     'daily.premium.title': '프리미엄 딥 다이브 인사이트',
     'daily.premium.desc': '단순한 길흉 화복을 넘어 당신의 일지에 걸려있는 암합, 충, 형살을 파악해 구체적인 액션 플랜을 제시합니다.',
     'daily.backHome': '메인으로 돌아가기',
+    'daily.ready': '운명 분석 준비 완료',
+    'daily.premium': '프리미엄',
 };
 
 // English translations
@@ -164,6 +170,10 @@ const en: Record<string, string> = {
     'nav.jelly': 'Jelly',
     'nav.menu': 'Menu',
     'nav.daily': 'Daily Fortune',
+    'nav.home': 'Home',
+    'nav.destiny': 'Destiny',
+    'nav.calendar': 'Calendar',
+    'nav.support': 'Support',
 
     // Theme
     'theme.dark': 'Dark Mode',
@@ -292,6 +302,8 @@ const en: Record<string, string> = {
     'daily.premium.title': 'Premium Deep-Dive Insight',
     'daily.premium.desc': 'Beyond simple luck, we analyze the hidden combinations and clashes in your chart to provide specific action plans.',
     'daily.backHome': 'Back to Home',
+    'daily.ready': 'Destiny Ready',
+    'daily.premium': 'Premium',
 };
 
 const translations: Record<Locale, Record<string, string>> = { ko, en };
@@ -303,18 +315,17 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         const saved = localStorage.getItem('locale') as Locale;
-        if (saved && (saved === 'ko' || saved === 'en')) {
-            setLocaleState(saved);
-        }
+        setLocaleState(saved === 'ko' ? 'ko' : 'ko');
+        localStorage.setItem('locale', 'ko');
     }, []);
 
     const setLocale = (newLocale: Locale) => {
-        setLocaleState(newLocale);
-        localStorage.setItem('locale', newLocale);
+        setLocaleState('ko');
+        localStorage.setItem('locale', 'ko');
     };
 
     const t = (key: string): string => {
-        return translations[locale][key] || key;
+        return translations.ko[key] || key;
     };
 
     return (

@@ -11,12 +11,18 @@ export default function LuckyScoreCard() {
     const [score, setScore] = useState(0);
 
     useEffect(() => {
-        if (activeProfile) {
-            const dateStr = new Date().toISOString().split("T")[0];
-            const hash = activeProfile.id.charCodeAt(0) + activeProfile.id.charCodeAt(activeProfile.id.length - 1) + dateStr.length;
-            const calculated = (hash % 30) + 70;
-            setScore(calculated);
+        if (!activeProfile) return;
+
+        const id = activeProfile.id || "";
+        if (id.length < 2) {
+            setScore(78);
+            return;
         }
+
+        const dateStr = new Date().toISOString().split("T")[0];
+        const hash = id.charCodeAt(0) + id.charCodeAt(id.length - 1) + dateStr.length;
+        const calculated = (hash % 30) + 70;
+        setScore(calculated);
     }, [activeProfile]);
 
     if (!activeProfile) return null;
@@ -37,7 +43,12 @@ export default function LuckyScoreCard() {
                             <svg className="absolute inset-0 w-full h-full -rotate-90 drop-shadow-2xl" viewBox="0 0 128 128" aria-hidden>
                                 <circle cx="64" cy="64" r="56" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="4" />
                                 <motion.circle
-                                    cx="64" cy="64" r="56" fill="none" stroke="currentColor" strokeWidth="8"
+                                    cx="64"
+                                    cy="64"
+                                    r="56"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="8"
                                     className="text-indigo-400"
                                     strokeDasharray="351.6"
                                     initial={{ strokeDashoffset: 351.6 }}

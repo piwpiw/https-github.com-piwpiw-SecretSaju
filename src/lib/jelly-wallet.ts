@@ -1,5 +1,7 @@
 'use client';
 
+import { generateUUID } from './uuid';
+
 import type {
     JellyWallet,
     PricingTier,
@@ -198,7 +200,7 @@ export function consumeJelly(
     }
 
     const transaction: Transaction = {
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         type: 'consume',
         amount: -amount,
         jellies: amount,
@@ -322,7 +324,7 @@ export function giftJellies(amount: number, reason: string = 'gift'): void {
     const wallet = getWallet();
 
     const transaction: Transaction = {
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         type: 'purchase',
         amount: 0,
         jellies: amount,

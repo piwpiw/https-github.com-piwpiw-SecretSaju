@@ -5,11 +5,19 @@ import { BrainCircuit, ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+type DailyItem = {
+    id: string;
+    title: string;
+    emoji: string;
+    tags?: string[] | null;
+    path: string;
+};
+
 export default function DailyPsychologySection() {
-    const [items, setItems] = useState<any[]>([]);
+    const [items, setItems] = useState<DailyItem[]>([]);
 
     useEffect(() => {
-        setItems(getPsychologyForToday());
+        setItems(getPsychologyForToday() as DailyItem[]);
     }, []);
 
     return (
@@ -30,32 +38,38 @@ export default function DailyPsychologySection() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {items.map((item) => (
-                    <Link
-                        key={item.id}
-                        href={item.path}
-                        className="group relative flex items-center justify-between p-6 sm:p-8 panel-shell hover:border-rose-500/35 transition-all hover:-translate-y-1 shadow-2xl overflow-hidden"
-                    >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-rose-500/8 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                {items.map((item) => {
+                    const tags = Array.isArray(item.tags) ? item.tags : [];
 
-                        <div className="flex items-center gap-4 sm:gap-6 relative z-10">
-                            <span className="text-3xl sm:text-4xl grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-125 group-hover:rotate-6">
-                                {item.emoji}
-                            </span>
-                            <div className="space-y-2">
-                                <h4 className="text-sm sm:text-base font-black text-white italic tracking-tight group-hover:text-rose-200 transition-colors leading-tight">{item.title}</h4>
-                                <div className="flex flex-wrap gap-2">
-                                    {item.tags.map((tag: string) => (
-                                        <span key={tag} className="px-2 py-0.5 bg-rose-500/10 border border-rose-500/20 rounded-lg text-[8px] font-black text-rose-400 uppercase tracking-widest">{tag}</span>
-                                    ))}
+                    return (
+                        <Link
+                            key={item.id}
+                            href={item.path}
+                            className="group relative flex items-center justify-between p-6 sm:p-8 panel-shell hover:border-rose-500/35 transition-all hover:-translate-y-1 shadow-2xl overflow-hidden"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-rose-500/8 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+
+                            <div className="flex items-center gap-4 sm:gap-6 relative z-10">
+                                <span className="text-3xl sm:text-4xl grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-125 group-hover:rotate-6">
+                                    {item.emoji}
+                                </span>
+                                <div className="space-y-2">
+                                    <h4 className="text-sm sm:text-base font-black text-white italic tracking-tight group-hover:text-rose-200 transition-colors leading-tight">{item.title}</h4>
+                                    {tags.length > 0 ? (
+                                        <div className="flex flex-wrap gap-2">
+                                            {tags.map((tag) => (
+                                                <span key={tag} className="px-2 py-0.5 bg-rose-500/10 border border-rose-500/20 rounded-lg text-[8px] font-black text-rose-400 uppercase tracking-widest">{tag}</span>
+                                            ))}
+                                        </div>
+                                    ) : null}
                                 </div>
                             </div>
-                        </div>
-                        <div className="relative z-10 p-2 rounded-xl bg-white/10 group-hover:bg-rose-500/25 transition-all">
-                            <Sparkles className="w-4 h-4 text-slate-700 group-hover:text-rose-500" />
-                        </div>
-                    </Link>
-                ))}
+                            <div className="relative z-10 p-2 rounded-xl bg-white/10 group-hover:bg-rose-500/25 transition-all">
+                                <Sparkles className="w-4 h-4 text-slate-700 group-hover:text-rose-500" />
+                            </div>
+                        </Link>
+                    );
+                })}
             </div>
 
             <div className="mt-8 sm:mt-12 text-center">

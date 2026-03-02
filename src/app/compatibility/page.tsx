@@ -11,7 +11,8 @@ import {
 import Link from "next/link";
 
 import { calculateHighPrecisionSaju, type HighPrecisionSajuResult } from "@/core/api/saju-engine";
-import { analyzeRelationship, RelationshipType, RelationshipAnalysis } from "@/lib/compatibility";
+import { analyzeRelationship, RelationshipAnalysis } from "@/lib/compatibility";
+import { RelationshipType as ProfileRelationshipType } from "@/types/schema";
 import { useProfiles } from "@/components/ProfileProvider";
 import { useWallet } from "@/components/WalletProvider";
 import JellyBalance from "@/components/shop/JellyBalance";
@@ -20,13 +21,13 @@ import ElementPolygon from "@/components/ui/ElementPolygon";
 import LuxuryToast from "@/components/ui/LuxuryToast";
 import { cn } from "@/lib/utils";
 
-const RELATIONSHIP_PRESETS: { labelKey: string; value: RelationshipType; icon: string }[] = [
-  { labelKey: "common.relation.lover", value: "연인", icon: "💕" },
-  { labelKey: "common.relation.spouse", value: "배우자", icon: "💍" },
-  { labelKey: "common.relation.friend", value: "친구", icon: "🤝" },
-  { labelKey: "common.relation.parent", value: "엄마", icon: "👩‍👧‍👦" },
-  { labelKey: "common.relation.other", value: "상사", icon: "💼" },
-  { labelKey: "common.relation.other", value: "기타", icon: "✨" },
+const RELATIONSHIP_PRESETS: { labelKey: string; value: ProfileRelationshipType; icon: string }[] = [
+  { labelKey: "common.relation.lover", value: "lover", icon: "💕" },
+  { labelKey: "common.relation.spouse", value: "spouse", icon: "💍" },
+  { labelKey: "common.relation.friend", value: "friend", icon: "🤝" },
+  { labelKey: "common.relation.parent", value: "parent", icon: "👩‍👧‍👦" },
+  { labelKey: "common.relation.other", value: "other", icon: "💼" },
+  { labelKey: "common.relation.other", value: "other", icon: "✨" },
 ];
 
 const GRADE_CONFIG = {
@@ -46,7 +47,7 @@ function CompatibilityContent() {
 
   const [personAId, setPersonAId] = useState("");
   const [personBId, setPersonBId] = useState("");
-  const [selectedRelationType, setSelectedRelationType] = useState<RelationshipType>("연인");
+  const [selectedRelationType, setSelectedRelationType] = useState<ProfileRelationshipType>("lover");
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<RelationshipAnalysis | null>(null);
   const [sajuA, setSajuA] = useState<HighPrecisionSajuResult | null>(null);

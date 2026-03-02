@@ -32,7 +32,7 @@ https://github.com/piwpiw/SecretSaju.git
 ?섎㉧吏??紐⑤몢 ?먮룞?낅땲??
 - Git 而ㅻ컠
 - GitHub ?곌껐
-- Vercel 諛고룷
+- Render 諛고룷
 - ?섍꼍 蹂???ㅼ젙
 
 **吏湲?諛붾줈 ?ㅽ뻾?섏꽭??** ??
@@ -330,28 +330,28 @@ NEXT_PUBLIC_TOSS_CLIENT_KEY=your-toss-client-key
 TOSS_SECRET_KEY=your-toss-secret-key
 ```
 
-### 4截뤴깵 Vercel ?꾨줈?앺듃 ?앹꽦
+### 4截뤴깵 Render ?꾨줈?앺듃 ?앹꽦
 
-**Vercel ?꾨줈?앺듃**: https://vercel.com/piwpiw99-5213s-projects/~/settings
+**Render ?꾨줈?앺듃**: https://Render.com/piwpiw99-5213s-projects/~/settings
 
-#### 諛⑸쾿 1: Vercel CLI (沅뚯옣)
+#### 諛⑸쾿 1: Render CLI (沅뚯옣)
 
 ```bash
-# Vercel CLI ?ㅼ튂 (?녿뒗 寃쎌슦)
-npm install -g vercel
+# Render CLI ?ㅼ튂 (?녿뒗 寃쎌슦)
+npm run setup:render
 
-# Vercel 濡쒓렇??
-vercel login
+# Render 로그인(웹 연동)
+Render login not required. 연동은 Render UI 또는 OAuth로 진행
 
 # ?꾨줈?앺듃 ?ㅼ젙
-npm run setup:vercel
+npm run setup:render
 # ?먮뒗
-vercel
+Render
 ```
 
-#### 諛⑸쾿 2: Vercel Dashboard
+#### 諛⑸쾿 2: Render Dashboard
 
-1. https://vercel.com ?묒냽
+1. https://Render.com ?묒냽
 2. **New Project** ?대┃
 3. GitHub ??μ냼 ?곌껐
 4. ?꾨줈?앺듃 ?ㅼ젙:
@@ -393,7 +393,7 @@ npm run deploy
    - 踰덈뱾 ?ш린 媛먯냼
    - 遺덊븘?뷀븳 console.log ?쒓굅
 
-2. **Vercel 臾대즺 ?뚮옖 理쒖쟻??*
+2. **Render 臾대즺 ?뚮옖 理쒖쟻??*
    - ?⑥닔 ?ㅽ뻾 ?쒓컙 理쒖냼??(10珥?
    - 硫붾え由?理쒖쟻??(1024MB)
    - 罹먯떛 媛뺥솕
@@ -405,7 +405,7 @@ npm run deploy
 
 ### ?뱤 臾대즺 ?뚮옖 ?쒗븳
 
-**Vercel Hobby (臾대즺)**
+**Render Hobby (臾대즺)**
 - 100GB ???룺/??
 - 臾댁젣??鍮뚮뱶
 - 臾댁젣???⑥닔 ?ㅽ뻾 (100GB-hours/??
@@ -430,10 +430,10 @@ git remote set-url origin https://github.com/piwpiw/SecretSaju.git
 git push -u origin main --force
 ```
 
-### Vercel 諛고룷 ?ㅻ쪟
+### Render 諛고룷 ?ㅻ쪟
 
-1. ?섍꼍 蹂???뺤씤: Vercel Dashboard ??Settings ??Environment Variables
-2. 鍮뚮뱶 濡쒓렇 ?뺤씤: Vercel Dashboard ??Deployments ??Build Logs
+1. ?섍꼍 蹂???뺤씤: Render Dashboard ??Settings ??Environment Variables
+2. 鍮뚮뱶 濡쒓렇 ?뺤씤: Render Dashboard ??Deployments ??Build Logs
 3. 濡쒖뺄 鍮뚮뱶 ?뚯뒪?? `npm run build`
 
 ### Supabase ?곌껐 ?ㅻ쪟
@@ -447,7 +447,7 @@ git push -u origin main --force
 1. ??GitHub ??μ냼 ?곌껐
 2. ??Supabase 留덉씠洹몃젅?댁뀡 ?ㅽ뻾
 3. ???섍꼍 蹂???ㅼ젙
-4. ??Vercel ?꾨줈?앺듃 ?앹꽦
+4. ??Render ?꾨줈?앺듃 ?앹꽦
 5. ??諛고룷 ?뺤씤
 
 **紐⑤뱺 ?ㅼ젙???꾨즺?섎㈃ ?먮룞?쇰줈 諛고룷?⑸땲??** ?럦
@@ -567,10 +567,10 @@ SELECT * FROM jelly_wallets LIMIT 1;
 
 ---
 
-## 7截뤴깵 Vercel 諛고룷 以鍮?
+## 7截뤴깵 Render 諛고룷 以鍮?
 
 1. **?섍꼍 蹂??蹂듭궗**
-   - `.env.local` ??Vercel Dashboard ??Settings ??Environment Variables
+   - `.env.local` ??Render Dashboard ??Settings ??Environment Variables
 
 2. **Build ?뚯뒪??*
    ```bash
@@ -579,7 +579,7 @@ SELECT * FROM jelly_wallets LIMIT 1;
 
 3. **諛고룷**
    ```bash
-   vercel --prod
+   npm run deploy
    ```
 
 ---
@@ -592,7 +592,7 @@ SELECT * FROM jelly_wallets LIMIT 1;
 - [ ] Kakao Redirect URI ?깅줉
 - [ ] Toss API ??諛쒓툒
 - [ ] 濡쒖뺄?먯꽌 ?꾩껜 ?뚮줈???뚯뒪??
-- [ ] Vercel ?섍꼍 蹂???ㅼ젙
+- [ ] Render ?섍꼍 蹂???ㅼ젙
 - [ ] ?꾨줈?뺤뀡 諛고룷
 
 ---
@@ -681,6 +681,9 @@ git push -u origin main
 1. Git ?몄떆 ?꾨즺
 2. Supabase SQL ?ㅽ뻾 ?꾨즺
 3. `npm run dev`濡?濡쒖뺄 ?뚯뒪??
-4. Vercel 諛고룷
+4. Render 諛고룷
 
 **紐⑤뱺 以鍮꾧? ?꾨즺?섏뿀?듬땲??** ?럦
+
+
+

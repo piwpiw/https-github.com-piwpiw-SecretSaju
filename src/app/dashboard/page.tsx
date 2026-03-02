@@ -161,43 +161,43 @@ function DashboardContent() {
 
     return (
         <main className="min-h-screen relative overflow-hidden">
-            <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 pb-32">
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16 pb-32">
 
                 {/* Header */}
-                <div className="flex flex-col md:flex-row items-center justify-between gap-10 mb-20 text-center md:text-left">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-10 mb-12 sm:mb-20 text-center md:text-left">
                     <div>
-                        <h1 className="text-5xl font-black text-foreground italic tracking-tighter uppercase mb-3">
+                        <h1 className="text-3xl sm:text-5xl font-black text-foreground italic tracking-tighter uppercase mb-2 sm:mb-3">
                             {locale === 'ko' ? '운명망 (Destiny Web)' : 'Dashboard'}
                         </h1>
-                        <p className="text-2xl text-secondary font-medium">
+                        <p className="text-lg sm:text-2xl text-secondary font-medium">
                             {locale === 'ko' ? '나를 중심으로 연결된 모든 인연' : 'Your web of cosmic connections'}
                         </p>
                     </div>
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-4 sm:gap-6">
                         <JellyBalance onClick={() => router.push('/shop')} />
-                            <Link href="/my-saju/add" className="w-16 h-16 rounded-3xl bg-surface border border-border-color flex items-center justify-center hover:bg-primary/20 hover:border-primary/50 transition-all shadow-lg group">
-                            <Plus className="w-8 h-8 text-foreground group-hover:text-primary transition-colors" />
+                        <Link href="/my-saju/add" className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-surface border border-border-color flex items-center justify-center hover:bg-primary/20 hover:border-primary/50 transition-all shadow-lg group">
+                            <Plus className="w-6 h-6 sm:w-8 sm:h-8 text-foreground group-hover:text-primary transition-colors" />
                         </Link>
                     </div>
                 </div>
 
                 {/* Quick Actions / Daily Fortune */}
-                <div className="mb-20 grid grid-cols-1 gap-6 lg:gap-8">
-                    <Link href="/daily" className="group relative block w-full overflow-hidden rounded-4xl bg-gradient-to-br from-primary/20 via-surface to-background p-8 border border-primary/30 shadow-2xl hover:border-primary/60 transition-all">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-primary/20 transition-colors" />
-                        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                            <div className="flex items-center gap-6">
-                                <div className="w-20 h-20 rounded-3xl bg-primary/20 border border-primary/40 flex items-center justify-center">
-                                    <Calendar className="w-10 h-10 text-primary" />
+                <div className="mb-12 sm:mb-20 grid grid-cols-1 gap-6 lg:gap-8">
+                    <Link href="/daily" className="group relative block w-full overflow-hidden rounded-3xl sm:rounded-4xl bg-gradient-to-br from-primary/20 via-surface to-background p-6 sm:p-8 border border-primary/30 shadow-2xl hover:border-primary/60 transition-all">
+                        <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-primary/10 rounded-full blur-3xl -mr-16 sm:-mr-20 -mt-16 sm:-mt-20 group-hover:bg-primary/20 transition-colors" />
+                        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8">
+                            <div className="flex items-center gap-4 sm:gap-6">
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-primary/20 border border-primary/40 flex items-center justify-center">
+                                    <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
                                 </div>
                                 <div>
-                                    <h3 className="text-3xl font-black text-foreground mb-2 italic tracking-tight">{t('nav.daily')}</h3>
-                                    <p className="text-lg text-secondary font-medium">
+                                    <h3 className="text-2xl sm:text-3xl font-black text-foreground mb-1 sm:mb-2 italic tracking-tight">{t('nav.daily')}</h3>
+                                    <p className="text-base sm:text-lg text-secondary font-medium">
                                         {locale === 'ko' ? '매일 새로운 기운을 확인하세요' : 'Check your cosmic flow for today'}
                                     </p>
                                 </div>
                             </div>
-                                <div className="px-10 py-4 bg-primary text-white font-black text-xl rounded-2xl shadow-xl group-hover:scale-105 transition-all min-h-[52px] flex items-center">
+                            <div className="w-full sm:w-auto px-10 py-3 sm:py-4 bg-primary text-white font-black text-lg sm:text-xl rounded-xl sm:rounded-2xl shadow-xl group-hover:scale-105 transition-all min-h-[48px] sm:min-h-[52px] flex items-center justify-center">
                                 {locale === 'ko' ? '지금 열어보기' : 'Open Now'}
                             </div>
                         </div>
@@ -205,7 +205,7 @@ function DashboardContent() {
                 </div>
 
                 {/* Destiny Network Visualization */}
-                <div className="mb-24 bg-surface rounded-5xl p-10 border border-border-color shadow-2xl overflow-hidden min-h-[500px] flex items-center justify-center relative">
+                <div className="mb-16 sm:mb-24 bg-surface rounded-3xl sm:rounded-5xl p-6 sm:p-10 border border-border-color shadow-2xl overflow-hidden min-h-[400px] sm:min-h-[500px] flex items-center justify-center relative">
                     <DestinyNetwork
                         mainProfile={mainProfile}
                         relationships={relationships}
@@ -222,7 +222,7 @@ function DashboardContent() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.1 }}
                             onClick={() => router.push(`/relationship/${rel.profile.id}`)}
-                            className="bg-surface rounded-4xl p-10 border border-border-color hover:border-primary/40 transition-all cursor-pointer shadow-xl group hover:scale-[1.02]"
+                            className="bg-surface rounded-3xl sm:rounded-4xl p-6 sm:p-10 border border-border-color hover:border-primary/40 transition-all cursor-pointer shadow-xl group hover:scale-[1.02]"
                         >
                             <div className="flex items-center justify-between mb-10">
                                 <div className="flex items-center gap-6">
@@ -270,7 +270,7 @@ function DashboardContent() {
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
-                                    <button className="py-3 min-h-[44px] rounded-2xl bg-background text-foreground font-bold text-sm border border-border-color hover:bg-white/5 transition-all tracking-widest uppercase">
+                                        <button className="py-3 min-h-[44px] rounded-2xl bg-background text-foreground font-bold text-sm border border-border-color hover:bg-white/5 transition-all tracking-widest uppercase">
                                             {locale === 'ko' ? '상세 해독' : 'DETAIL'}
                                         </button>
                                         <button
@@ -307,18 +307,18 @@ function DashboardContent() {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
-                        className="mt-24 bg-surface rounded-5xl p-16 border border-primary/20 relative overflow-hidden"
+                        className="mt-16 sm:mt-24 bg-surface rounded-3xl sm:rounded-5xl p-8 sm:p-16 border border-primary/20 relative overflow-hidden"
                     >
                         <div className="absolute top-0 left-0 w-2 h-full bg-primary" />
-                        <div className="flex items-center gap-6 mb-12">
-                            <Sparkles className="w-10 h-10 text-primary" />
-                            <h3 className="text-3xl font-black text-foreground italic uppercase tracking-tight">인사이트 리포트 (Insight Reveal)</h3>
+                        <div className="flex items-center gap-4 sm:gap-6 mb-8 sm:mb-12">
+                            <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
+                            <h3 className="text-xl sm:text-3xl font-black text-foreground italic uppercase tracking-tight">인사이트 리포트 (Insight Reveal)</h3>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
                             {insights.map((insight, i) => (
-                                <div key={i} className="flex gap-6 items-start p-8 rounded-4xl bg-background border border-border-color">
-                                    <div className="w-3 h-3 rounded-full bg-primary mt-3 flex-shrink-0" />
-                                    <p className="text-xl text-foreground font-bold leading-relaxed">{insight}</p>
+                                <div key={i} className="flex gap-4 sm:gap-6 items-start p-6 sm:p-8 rounded-3xl sm:rounded-4xl bg-background border border-border-color">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
+                                    <p className="text-lg sm:text-xl text-foreground font-bold leading-relaxed">{insight}</p>
                                 </div>
                             ))}
                         </div>

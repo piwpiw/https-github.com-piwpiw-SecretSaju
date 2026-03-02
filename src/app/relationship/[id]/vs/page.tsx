@@ -1,389 +1,319 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, Share2, Sparkles, TrendingUp, Heart, Zap, Shield, ChevronRight, Target, Loader2, Download } from 'lucide-react';
-import { getProfiles, SajuProfile } from '@/lib/storage';
-import { calculateHighPrecisionSaju, HighPrecisionSajuResult } from '@/core/api/saju-engine';
-import { analyzeRelationship, RelationshipAnalysis } from '@/lib/compatibility';
-import RadarChart from '@/components/charts/RadarChart';
-import Link from 'next/link';
+import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { useRouter, useParams } from "next/navigation";
+import { ArrowLeft, Share2, Loader2, Zap, Heart, Shield } from "lucide-react";
+import Link from "next/link";
+import RadarChart from "@/components/charts/RadarChart";
+import { getProfiles, SajuProfile } from "@/lib/storage";
+import { calculateHighPrecisionSaju, HighPrecisionSajuResult } from "@/core/api/saju-engine";
+import { analyzeRelationship, RelationshipAnalysis } from "@/lib/compatibility";
+import { TEN_GOD_GROUPS, getTenGodGuide } from "@/lib/terminology";
+
+type Winner = "A" | "B" | "Draw";
 
 interface TraitWinner {
-    category: string;
-    label: string;
-    icon: any;
-    winner: 'A' | 'B' | 'Draw';
-    descA: string;
-    descB: string;
+  category: string;
+  label: string;
+  icon: any;
+  winner: Winner;
+  descA: string;
+  descB: string;
+}
+
+type PillarKey = "hour" | "day" | "month" | "year";
+
+type StemInfo = { ko: string; hanja: string; element: "목" | "화" | "토" | "금" | "수" };
+type BranchInfo = { ko: string; hanja: string; element: "목" | "화" | "토" | "금" | "수" };
+
+const PILLAR_ORDER: PillarKey[] = ["hour", "day", "month", "year"];
+const PILLAR_LABEL: Record<PillarKey, string> = { hour: "시주", day: "일주", month: "월주", year: "년주" };
+
+const STEMS: StemInfo[] = [
+  { ko: "갑", hanja: "甲", element: "목" },
+  { ko: "을", hanja: "乙", element: "목" },
+  { ko: "병", hanja: "丙", element: "화" },
+  { ko: "정", hanja: "丁", element: "화" },
+  { ko: "무", hanja: "戊", element: "토" },
+  { ko: "기", hanja: "己", element: "토" },
+  { ko: "경", hanja: "庚", element: "금" },
+  { ko: "신", hanja: "辛", element: "금" },
+  { ko: "임", hanja: "壬", element: "수" },
+  { ko: "계", hanja: "癸", element: "수" },
+];
+
+const BRANCHES: BranchInfo[] = [
+  { ko: "자", hanja: "子", element: "수" },
+  { ko: "축", hanja: "丑", element: "토" },
+  { ko: "인", hanja: "寅", element: "목" },
+  { ko: "묘", hanja: "卯", element: "목" },
+  { ko: "진", hanja: "辰", element: "토" },
+  { ko: "사", hanja: "巳", element: "화" },
+  { ko: "오", hanja: "午", element: "화" },
+  { ko: "미", hanja: "未", element: "토" },
+  { ko: "신", hanja: "申", element: "금" },
+  { ko: "유", hanja: "酉", element: "금" },
+  { ko: "술", hanja: "戌", element: "토" },
+  { ko: "해", hanja: "亥", element: "수" },
+];
+
+function elementTone(element: string) {
+  if (element === "목") return "bg-emerald-500/20 border-emerald-400/40 text-emerald-100";
+  if (element === "화") return "bg-rose-500/20 border-rose-400/40 text-rose-100";
+  if (element === "토") return "bg-amber-500/20 border-amber-400/40 text-amber-100";
+  if (element === "금") return "bg-slate-500/20 border-slate-300/40 text-slate-100";
+  return "bg-blue-500/20 border-blue-400/40 text-blue-100";
+}
+
+function getStemInfo(stemIndex?: number) {
+  return typeof stemIndex === "number" && stemIndex >= 0 && stemIndex < STEMS.length ? STEMS[stemIndex] : STEMS[4];
+}
+
+function getBranchInfo(branchIndex?: number) {
+  return typeof branchIndex === "number" && branchIndex >= 0 && branchIndex < BRANCHES.length ? BRANCHES[branchIndex] : BRANCHES[0];
+}
+
+function getScore(res: HighPrecisionSajuResult, types: string[]) {
+  return Object.values(res.sipsong).filter((v) => types.includes(v)).length;
+}
+
+function getTraitWinners(a: HighPrecisionSajuResult, b: HighPrecisionSajuResult): TraitWinner[] {
+  const categories = [
+    {
+      category: "leadership",
+      label: "리더십·권위형",
+      icon: Zap,
+      types: [...TEN_GOD_GROUPS.leadership],
+    },
+    {
+      category: "empathy",
+      label: "공감·표현형",
+      icon: Heart,
+      types: [...TEN_GOD_GROUPS.empathy],
+    },
+    {
+      category: "logic",
+      label: "규범·실무형",
+      icon: Shield,
+      types: [...TEN_GOD_GROUPS.logic],
+    },
+  ];
+
+  return categories.map((cat) => {
+    const aScore = getScore(a, cat.types);
+    const bScore = getScore(b, cat.types);
+    const winner: Winner = aScore > bScore ? "A" : bScore > aScore ? "B" : "Draw";
+
+    return {
+      category: cat.category,
+      label: cat.label,
+      icon: cat.icon,
+      winner,
+      descA: winner === "A" ? `${cat.label} 우위` : winner === "Draw" ? "균형" : "상대 우위",
+      descB: winner === "B" ? `${cat.label} 우위` : winner === "Draw" ? "균형" : "상대 우위",
+    };
+  });
 }
 
 export default function VSModePage() {
-    const router = useRouter();
-    const params = useParams();
-    const profileId = params?.id as string;
+  const router = useRouter();
+  const params = useParams();
+  const profileId = params?.id as string;
 
-    const [mainProfile, setMainProfile] = useState<SajuProfile | null>(null);
-    const [targetProfile, setTargetProfile] = useState<SajuProfile | null>(null);
-    const [sajuA, setSajuA] = useState<HighPrecisionSajuResult | null>(null);
-    const [sajuB, setSajuB] = useState<HighPrecisionSajuResult | null>(null);
-    const [analysis, setAnalysis] = useState<RelationshipAnalysis | null>(null);
-    const [winners, setWinners] = useState<TraitWinner[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [shareMessage, setShareMessage] = useState('');
+  const [mainProfile, setMainProfile] = useState<SajuProfile | null>(null);
+  const [targetProfile, setTargetProfile] = useState<SajuProfile | null>(null);
+  const [sajuA, setSajuA] = useState<HighPrecisionSajuResult | null>(null);
+  const [sajuB, setSajuB] = useState<HighPrecisionSajuResult | null>(null);
+  const [analysis, setAnalysis] = useState<RelationshipAnalysis | null>(null);
+  const [winners, setWinners] = useState<TraitWinner[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [shareMessage, setShareMessage] = useState("");
 
-    useEffect(() => {
-        const loadSajuData = async () => {
-            setIsLoading(true);
-            try {
-                const profiles = getProfiles();
-                if (profiles.length < 2) {
-                    router.push('/dashboard');
-                    return;
-                }
+  useEffect(() => {
+    const load = async () => {
+      setIsLoading(true);
+      try {
+        const profiles = getProfiles();
+        if (profiles.length < 2) {
+          router.push("/dashboard");
+          return;
+        }
 
-                const main = profiles[0];
-                const target = profiles.find(p => p.id === profileId);
+        const main = profiles[0];
+        const target = profiles.find((p) => p.id === profileId);
+        if (!target) {
+          router.push("/dashboard");
+          return;
+        }
 
-                if (!target) {
-                    router.push('/dashboard');
-                    return;
-                }
-
-                const resA = await calculateHighPrecisionSaju({
-                    birthDate: new Date(main.birthdate),
-                    birthTime: main.birthTime || '12:00',
-                    gender: main.gender === 'male' ? 'M' : 'F',
-                    calendarType: main.calendarType
-                });
-
-                const resB = await calculateHighPrecisionSaju({
-                    birthDate: new Date(target.birthdate),
-                    birthTime: target.birthTime || '12:00',
-                    gender: target.gender === 'male' ? 'M' : 'F',
-                    calendarType: target.calendarType
-                });
-
-                setMainProfile(main);
-                setTargetProfile(target);
-                setSajuA(resA);
-                setSajuB(resB);
-                setAnalysis(analyzeRelationship(resA, resB, target.relationship as any));
-                setWinners(calculateWinners(resA, resB));
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        loadSajuData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [profileId]);
-
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                setShareMessage('');
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, []);
-
-    const calculateWinners = (a: HighPrecisionSajuResult, b: HighPrecisionSajuResult): TraitWinner[] => {
-        const getScore = (res: HighPrecisionSajuResult, types: string[]) => {
-            const values = Object.values(res.sipsong);
-            return values.filter(v => types.includes(v)).length;
-        };
-
-        const categories = [
-            {
-                category: 'leadership',
-                label: '추진력 & 리더십',
-                icon: Zap,
-                types: ['비견', '겁재', '편관'],
-                desc: '목표를 향해 돌진하는 힘'
-            },
-            {
-                category: 'empathy',
-                label: '공감 & 포용력',
-                icon: Heart,
-                types: ['식신', '정인', '편인'],
-                desc: '상대를 이해하고 감싸는 마음'
-            },
-            {
-                category: 'logic',
-                label: '현실감 & 논리',
-                icon: Shield,
-                types: ['정재', '정관', '상관'],
-                desc: '상황을 냉철하게 분석하는 능력'
-            }
-        ];
-
-        return categories.map(cat => {
-            const scoreA = getScore(a, cat.types);
-            const scoreB = getScore(b, cat.types);
-            return {
-                category: cat.category,
-                label: cat.label,
-                icon: cat.icon,
-                winner: scoreA > scoreB ? 'A' : scoreB > scoreA ? 'B' : 'Draw',
-                descA: scoreA > 2 ? '강력함' : '보통',
-                descB: scoreB > 2 ? '강력함' : '보통'
-            };
+        const resA = await calculateHighPrecisionSaju({
+          birthDate: new Date(main.birthdate),
+          birthTime: main.birthTime || "12:00",
+          gender: main.gender === "male" ? "M" : "F",
+          calendarType: main.calendarType,
         });
+
+        const resB = await calculateHighPrecisionSaju({
+          birthDate: new Date(target.birthdate),
+          birthTime: target.birthTime || "12:00",
+          gender: target.gender === "male" ? "M" : "F",
+          calendarType: target.calendarType,
+        });
+
+        setMainProfile(main);
+        setTargetProfile(target);
+        setSajuA(resA);
+        setSajuB(resB);
+        setAnalysis(analyzeRelationship(resA, resB, target.relationship as any));
+        setWinners(getTraitWinners(resA, resB));
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    const handleShare = async () => {
-        if (!profileId || typeof window === 'undefined') {
-            return;
-        }
-        try {
-            const shareUrl = `${window.location.origin}/relationship/${profileId}`;
-            if (navigator.share) {
-                await navigator.share({
-                    title: 'Destiny Matchup',
-                    text: `${mainProfile?.name ?? 'A'} vs ${targetProfile?.name ?? 'B'}`,
-                    url: shareUrl,
-                });
-            } else {
-                await navigator.clipboard.writeText(shareUrl);
-                setShareMessage('공유 링크가 복사되었습니다.');
-            }
-        } catch (error) {
-            setShareMessage('공유를 사용할 수 없습니다.');
-        }
-    };
+    load();
+  }, [profileId, router]);
 
-    if (isLoading) {
-        return (
-            <main className="min-h-screen bg-background flex flex-col items-center justify-center space-y-6">
-                <Loader2 className="w-12 h-12 animate-spin text-primary" />
-                <p className="text-xl font-bold text-secondary">VS 분석 데이터 로딩 중...</p>
-            </main>
-        );
+  const combinedTerms = useMemo(() => {
+    if (!sajuA || !sajuB) return [];
+    const set = new Set<string>([...Object.values(sajuA.sipsong), ...Object.values(sajuB.sipsong)]);
+    return Array.from(set).slice(0, 8);
+  }, [sajuA, sajuB]);
+
+  const handleShare = async () => {
+    if (!profileId || typeof window === "undefined") return;
+    try {
+      const shareUrl = `${window.location.origin}/relationship/${profileId}`;
+      if (navigator.share) {
+        await navigator.share({
+          title: "궁합 VS 분석",
+          text: `${mainProfile?.name ?? "A"} vs ${targetProfile?.name ?? "B"}`,
+          url: shareUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareMessage("공유 링크를 복사했습니다.");
+      }
+    } catch {
+      setShareMessage("공유 기능을 사용할 수 없습니다.");
     }
+  };
 
-    if (!sajuA || !sajuB || !analysis) return null;
-
+  if (isLoading) {
     return (
-        <main className="min-h-screen bg-background text-foreground overflow-x-hidden relative pb-40">
-
-            {/* Header */}
-            <div className="relative z-50 px-6 py-8 flex items-center justify-between max-w-7xl mx-auto">
-                <button
-                    onClick={() => router.back()}
-                    className="flex items-center gap-3 text-slate-500 hover:text-white transition-all group"
-                >
-                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                    <span className="text-sm font-medium">뒤로</span>
-                </button>
-
-                <div className="flex flex-col items-center">
-                    <motion.div
-                        initial={{ y: -10, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        className="inline-flex px-3 py-1.5 rounded-full mb-2"
-                        style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border-color)' }}
-                    >
-                        <span className="text-xs font-medium" style={{ color: 'var(--primary)' }}>
-                            VS 비교 분석
-                        </span>
-                    </motion.div>
-                        <h1 className="text-2xl font-bold flex items-center gap-3" style={{ color: 'var(--text-foreground)' }}>
-                            <span style={{ color: 'var(--primary)' }}>{mainProfile?.name}</span>
-                            <span style={{ color: 'var(--text-secondary)' }}>vs</span>
-                            <span>{targetProfile?.name}</span>
-                        </h1>
-                        {shareMessage && <div className="text-[10px] mt-3 font-black tracking-[0.2em] text-secondary">{shareMessage}</div>}
-                    </div>
-
-                <button
-                    type="button"
-                    onClick={handleShare}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            handleShare();
-                        }
-                    }}
-                    aria-label="관계 결과 공유"
-                    className="p-3 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition"
-                >
-                    <Share2 className="w-5 h-5 text-slate-400" />
-                </button>
-            </div>
-
-            {/* VS Hero Section */}
-            <div className="relative pt-12 pb-24 px-6 flex justify-between items-center max-w-5xl mx-auto">
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-                    <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-                    <div className="w-[1px] h-full bg-gradient-to-b from-transparent via-purple-500 to-transparent absolute" />
-                </div>
-
-                {/* Character A */}
-                <motion.div
-                    initial={{ x: -100, opacity: 0, rotate: -5 }}
-                    animate={{ x: 0, opacity: 1, rotate: 0 }}
-                    transition={{ type: "spring", damping: 12 }}
-                    className="text-center z-10 relative group"
-                >
-                    <div className="absolute inset-0 bg-cyan-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition duration-700" />
-                    <div className="w-32 h-32 sm:w-48 sm:h-48 rounded-[2.5rem] bg-gradient-to-br from-cyan-400 to-blue-600 p-1 flex items-center justify-center mb-8 shadow-2xl relative">
-                        <div className="absolute inset-0 bg-cyan-400/20 animate-pulse rounded-[2.5rem]" />
-                        <div className="w-full h-full rounded-[2.3rem] bg-[#09090b] flex items-center justify-center overflow-hidden border-2 border-white/10">
-                            <span className="text-6xl sm:text-7xl group-hover:scale-110 transition-transform duration-500">👑</span>
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <div className="text-xs font-medium" style={{ color: 'var(--primary)' }}>나</div>
-                        <h3 className="text-3xl font-black text-white italic tracking-tighter uppercase">{mainProfile?.name}</h3>
-                        <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest bg-white/5 px-2 py-1 rounded-md inline-block border border-white/5">{analysis.pillarA}</div>
-                    </div>
-                </motion.div>
-
-                {/* VS Center */}
-                <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
-                >
-                    <div className="relative">
-                        <div className="text-8xl font-black italic text-white/5 absolute inset-0 blur-sm flex items-center justify-center">VS</div>
-                        <div className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center font-black italic text-2xl shadow-[0_0_30px_rgba(255,255,255,0.4)] relative z-10">VS</div>
-                    </div>
-                </motion.div>
-
-                {/* Character B */}
-                <motion.div
-                    initial={{ x: 100, opacity: 0, rotate: 5 }}
-                    animate={{ x: 0, opacity: 1, rotate: 0 }}
-                    transition={{ type: "spring", damping: 12 }}
-                    className="text-center z-10 relative group"
-                >
-                    <div className="absolute inset-0 bg-purple-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition duration-700" />
-                    <div className="w-32 h-32 sm:w-48 sm:h-48 rounded-[2.5rem] bg-gradient-to-br from-purple-500 to-pink-600 p-1 flex items-center justify-center mb-8 shadow-2xl relative">
-                        <div className="absolute inset-0 bg-purple-400/20 animate-pulse rounded-[2.5rem]" />
-                        <div className="w-full h-full rounded-[2.3rem] bg-[#09090b] flex items-center justify-center overflow-hidden border-2 border-white/10">
-                            <span className="text-6xl sm:text-7xl group-hover:scale-110 transition-transform duration-500">👤</span>
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <div className="text-xs font-medium text-purple-400">상대</div>
-                        <h3 className="text-3xl font-black text-white italic tracking-tighter uppercase">{targetProfile?.name}</h3>
-                        <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest bg-white/5 px-2 py-1 rounded-md inline-block border border-white/5">{analysis.pillarB}</div>
-                    </div>
-                </motion.div>
-            </div>
-
-            {/* Radar Comparison */}
-            <div className="p-8 sm:p-16 flex flex-col items-center relative overflow-hidden">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
-
-                <div className="text-[10px] font-black tracking-[0.4em] text-slate-500 uppercase mb-12 flex items-center gap-4">
-                    <div className="w-8 h-[1px] bg-slate-800" />
-                    오행 균형 차트
-                    <div className="w-8 h-[1px] bg-slate-800" />
-                </div>
-
-                <div className="relative group p-8 rounded-full">
-                    <div className="absolute inset-0 bg-white/[0.02] border border-white/5 rounded-full animate-pulse" />
-                    <RadarChart
-                        dataA={sajuA.elements.scores as any}
-                        dataB={sajuB.elements.scores as any}
-                        size={320}
-                    />
-                </div>
-
-                <div className="flex gap-12 mt-12 bg-white/5 px-8 py-4 rounded-2xl border border-white/5 backdrop-blur-md">
-                    <div className="flex items-center gap-3">
-                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
-                        <span className="text-[10px] font-black text-white uppercase tracking-widest">{mainProfile?.name}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
-                        <span className="text-[10px] font-black text-white uppercase tracking-widest">{targetProfile?.name}</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Battle Insights */}
-            <div className="max-w-3xl mx-auto px-6 space-y-16 py-16">
-                <div className="flex items-center justify-between border-b border-white/5 pb-8">
-                    <h2 className="text-2xl font-bold" style={{ color: 'var(--text-foreground)' }}>속성별 분석</h2>
-                    <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>상세 비교</div>
-                </div>
-
-                <div className="space-y-6">
-                    {winners.map((trait, idx) => (
-                        <motion.div
-                            key={trait.category}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: idx * 0.1 }}
-                            className="bg-surface rounded-4xl p-1 relative group border border-border-color shadow-xl overflow-hidden"
-                        >
-                            <div className="p-8 sm:p-10 relative z-10">
-                                <div className="flex flex-col sm:flex-row items-center justify-between gap-8 mb-10">
-                                    <div className="flex items-center gap-6">
-                                        <div className="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl">
-                                            <trait.icon className={`w-8 h-8 ${trait.winner === 'A' ? 'text-cyan-400' : trait.winner === 'B' ? 'text-purple-400' : 'text-slate-500'}`} />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-2xl font-black text-white italic tracking-tighter uppercase mb-1">{trait.label}</h4>
-                                            <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>능력 지표</p>
-                                        </div>
-                                    </div>
-
-                                    <div className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-[0.2em] border shadow-2xl transition-all ${trait.winner === 'A' ? 'border-primary/30 text-primary bg-primary/10' :
-                                        trait.winner === 'B' ? 'border-indigo-500/30 text-indigo-400 bg-indigo-500/10' :
-                                            'border-border-color text-secondary bg-background'
-                                        }`}>
-                                        {trait.winner === 'A' ? mainProfile?.name : trait.winner === 'B' ? targetProfile?.name : '균형'} 우세
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
-                                    <div className={`p-6 rounded-2xl border transition-all duration-700 ${trait.winner === 'A' ? 'bg-cyan-500/5 border-cyan-500/30 shadow-[0_0_30px_rgba(34,211,238,0.1)]' : 'border-white/5 opacity-20'}`}>
-                                        <div className="text-xs font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>{mainProfile?.name}</div>
-                                        <div className="text-lg font-bold" style={{ color: 'var(--text-foreground)' }}>{trait.descA}</div>
-                                    </div>
-                                    <div className={`p-6 rounded-2xl border transition-all duration-700 ${trait.winner === 'B' ? 'bg-purple-500/5 border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.1)]' : 'border-white/5 opacity-20'}`}>
-                                        <div className="text-xs font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>{targetProfile?.name}</div>
-                                        <div className="text-lg font-bold" style={{ color: 'var(--text-foreground)' }}>{trait.descB}</div>
-                                    </div>
-                                    {/* Link line */}
-                                    <div className="hidden sm:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#09090b] border border-white/10 flex items-center justify-center p-1 z-10">
-                                        <div className="w-full h-full rounded-full bg-gradient-to-br from-cyan-600 to-purple-600 flex items-center justify-center text-[8px] font-black italic text-white">VS</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Bottom Actions */}
-            <div className="max-w-2xl mx-auto px-6 mt-12 space-y-8">
-                <div className="text-center opacity-30">
-                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>시크릿사주 분석 엔진</p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-4 mb-20">
-                    <button className="flex-1 py-5 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
-                        <Download className="w-5 h-5" /> 결과 내보내기
-                    </button>
-                    <Link
-                        href={`/relationship/${profileId}`}
-                        className="flex-1 py-5 rounded-2xl text-sm font-medium flex items-center justify-center gap-3" style={{ backgroundColor: 'var(--surface)', color: 'var(--text-foreground)', border: '1px solid var(--border-color)' }}
-                    >
-                        상세 분석 보기 <ChevronRight className="w-5 h-5" />
-                    </Link>
-                </div>
-            </div>
-        </main>
+      <main className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+        <p className="text-sm font-bold text-secondary">궁합 비교를 불러오는 중...</p>
+      </main>
     );
+  }
+
+  if (!sajuA || !sajuB || !analysis) return null;
+
+  return (
+    <main className="min-h-screen bg-background text-foreground pb-24">
+      <div className="max-w-6xl mx-auto px-5 py-8 space-y-8">
+        <header className="flex items-center justify-between">
+          <button onClick={() => router.back()} className="inline-flex items-center gap-2 text-slate-400 hover:text-white">
+            <ArrowLeft className="w-4 h-4" />
+            뒤로
+          </button>
+          <div className="text-center">
+            <p className="text-xs text-indigo-300 font-bold tracking-widest">궁합 VS 분석</p>
+            <h1 className="text-xl font-black">
+              <span className="text-indigo-300">{mainProfile?.name}</span> vs <span>{targetProfile?.name}</span>
+            </h1>
+            {shareMessage && <p className="text-xs text-slate-400 mt-1">{shareMessage}</p>}
+          </div>
+          <button onClick={handleShare} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+            <Share2 className="w-4 h-4 text-slate-300" />
+          </button>
+        </header>
+
+        <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-5">
+          <p className="text-sm font-bold text-slate-200 mb-3">오행 레이더 비교</p>
+          <div className="flex justify-center">
+            <RadarChart dataA={sajuA.elements.scores as any} dataB={sajuB.elements.scores as any} size={320} />
+          </div>
+        </section>
+
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {winners.map((w) => (
+            <div key={w.category} className="rounded-2xl border border-white/10 bg-slate-900/30 p-4">
+              <div className="flex items-center gap-2 text-slate-200">
+                <w.icon className="w-4 h-4 text-indigo-300" />
+                <p className="text-sm font-bold">{w.label}</p>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                  <p className="text-slate-400">{mainProfile?.name}</p>
+                  <p className="text-white font-bold mt-1">{w.descA}</p>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                  <p className="text-slate-400">{targetProfile?.name}</p>
+                  <p className="text-white font-bold mt-1">{w.descB}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-5">
+          <p className="text-sm font-bold text-white mb-3">만세력 4주 비교 (한자/오행)</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[{ label: mainProfile?.name ?? "A", saju: sajuA }, { label: targetProfile?.name ?? "B", saju: sajuB }].map((person) => (
+              <div key={person.label} className="rounded-2xl border border-white/10 bg-black/25 p-4">
+                <p className="text-sm font-black text-indigo-200 mb-3">{person.label}</p>
+                <div className="grid grid-cols-4 gap-2">
+                  {PILLAR_ORDER.map((k) => {
+                    const p = person.saju.fourPillars[k];
+                    const stem = getStemInfo(p?.stemIndex);
+                    const branch = getBranchInfo(p?.branchIndex);
+                    return (
+                      <div key={`${person.label}-${k}`} className="rounded-xl border border-white/10 bg-slate-950/40 p-2">
+                        <p className="text-[10px] text-slate-400 font-bold">{PILLAR_LABEL[k]}</p>
+                        <div className={`mt-1 rounded border px-2 py-1 ${elementTone(stem.element)}`}>
+                          <p className="text-lg font-black leading-none">{stem.hanja}</p>
+                          <p className="text-[10px]">{stem.ko}·{stem.element}</p>
+                        </div>
+                        <div className={`mt-1 rounded border px-2 py-1 ${elementTone(branch.element)}`}>
+                          <p className="text-lg font-black leading-none">{branch.hanja}</p>
+                          <p className="text-[10px]">{branch.ko}·{branch.element}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-5">
+          <p className="text-sm font-bold text-white mb-3">십성 용어 설명</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {combinedTerms.map((term) => {
+              const guide = getTenGodGuide(term);
+              return (
+                <div key={term} className="rounded-xl border border-white/10 bg-black/30 p-3">
+                  <p className="text-sm font-black text-white">{guide.term}{guide.hanja ? ` (${guide.hanja})` : ""}</p>
+                  <p className="text-xs text-slate-300 mt-1">{guide.plain}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button className="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold">결과 저장(준비중)</button>
+          <Link href={`/relationship/${profileId}`} className="flex-1 py-3 rounded-xl border border-white/15 bg-white/5 text-center font-semibold text-slate-100">
+            상세 분석 보기
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
 }

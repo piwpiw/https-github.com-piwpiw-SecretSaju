@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { AnalysisHistoryLog, AnalysisType } from '@/types/history';
+import { generateUUID } from './uuid';
 
 const HISTORY_STORAGE_KEY = 'secret_paws_analysis_history';
 const ANALYSIS_TYPES: AnalysisType[] = ['SAJU', 'DREAM', 'PALMISTRY', 'NAMING', 'ASTROLOGY', 'TAROT'];
@@ -64,7 +65,7 @@ export function saveAnalysisToHistory(
   if (typeof window === 'undefined') return;
 
   const logs = getAnalysisHistory();
-  const id = crypto.randomUUID();
+  const id = generateUUID();
   const newLog: AnalysisHistoryLog = {
     ...log,
     id,

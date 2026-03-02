@@ -9,6 +9,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { APP_CONFIG } from '@/config';
 
 function generateCode(length = 6): string {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -35,8 +36,9 @@ export async function POST(req: NextRequest) {
             .eq('user_id', userId)
             .single();
 
+        const baseUrl = APP_CONFIG.BASE_URL || 'https://secretsaju.example.com';
         if (existing?.code) {
-            const referralUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://secret-saju.vercel.app'}/join?ref=${existing.code}`;
+            const referralUrl = `${baseUrl}/join?ref=${existing.code}`;
             return NextResponse.json({ code: existing.code, referralUrl });
         }
 
@@ -63,7 +65,7 @@ export async function POST(req: NextRequest) {
             total_redeemed: 0,
         }, { onConflict: 'user_id' });
 
-        const referralUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://secret-saju.vercel.app'}/join?ref=${code}`;
+        const referralUrl = `${baseUrl}/join?ref=${code}`;
         return NextResponse.json({ code, referralUrl });
     } catch (error) {
         console.error('[referral/generate]', error);

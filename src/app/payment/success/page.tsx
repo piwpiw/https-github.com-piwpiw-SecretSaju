@@ -8,15 +8,16 @@ import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 function SuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const paymentKey = searchParams.get('paymentKey');
-  const orderId = searchParams.get('orderId');
-  const amount = searchParams.get('amount');
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-  const [message, setMessage] = useState('Verifying payment status...');
+  const [message, setMessage] = useState('결제 상태를 확인하고 있습니다...');
   const [isMissingParams, setIsMissingParams] = useState(false);
   const verifiedRef = useRef(false);
 
   useEffect(() => {
+    const paymentKey = searchParams.get('paymentKey');
+    const orderId = searchParams.get('orderId');
+    const amount = searchParams.get('amount');
+
     const verifyPayment = async () => {
       if (verifiedRef.current) return;
       verifiedRef.current = true;
@@ -24,7 +25,7 @@ function SuccessContent() {
       if (!paymentKey || !orderId || !amount) {
         setStatus('error');
         setIsMissingParams(true);
-        setMessage('결제 처리 파라미터가 누락되어 결제 결과 확인을 진행할 수 없습니다. 결제를 다시 시작해 주세요.');
+        setMessage('결제 정보가 누락되어 검증을 진행할 수 없습니다. 결제 요청값을 다시 확인해 주세요.');
         return;
       }
 
@@ -40,17 +41,16 @@ function SuccessContent() {
         if (response.ok && data.success) {
           setStatus('success');
           const credited = data.jellies_credited || data.added || 0;
-          setMessage(`Payment verified. ${credited} jellies have been added.`);
+          setMessage(`결제가 완료되어 젤리 ${credited}개가 충전되었습니다.`);
           setTimeout(() => {
             router.push('/mypage');
           }, 3000);
         } else {
-          throw new Error(data.error || 'Payment verification failed.');
+          throw new Error(data.error || '결제 검증에 실패했습니다.');
         }
       } catch (error: any) {
-        console.error('Verification error:', error);
         setStatus('error');
-        setMessage(error.message || 'An unexpected error occurred while verifying payment.');
+        setMessage(error.message || '결제 검증 중 예기치 않은 오류가 발생했습니다.');
       }
     };
 
@@ -59,35 +59,32 @@ function SuccessContent() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-surface p-8 md:p-12 rounded-4xl shadow-2xl max-w-md w-full text-center border border-border-color"
-          role="status"
-          aria-live="polite"
-        >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-surface p-8 md:p-12 rounded-4xl shadow-2xl max-w-md w-full text-center border border-border-color"
+        role="status"
+        aria-live="polite"
+      >
         {status === 'loading' && (
           <div className="flex flex-col items-center">
             <Loader2 className="w-16 h-16 text-primary animate-spin mb-6" />
-            <h2 className="text-2xl font-black text-foreground mb-3">Checking payment</h2>
+            <h2 className="text-2xl font-black text-foreground mb-3">결제 확인 중</h2>
             <p className="text-secondary font-medium">{message}</p>
-            <div role="alert" aria-live="assertive" className="sr-only">
-              {message}
-            </div>
           </div>
         )}
 
         {status === 'success' && (
           <div className="flex flex-col items-center">
             <CheckCircle className="w-20 h-20 text-emerald-500 mb-6" />
-            <h2 className="text-3xl font-black text-foreground uppercase tracking-tight mb-4">Payment Completed</h2>
+            <h2 className="text-3xl font-black text-foreground uppercase tracking-tight mb-4">결제 완료</h2>
             <p className="text-primary font-bold text-xl mb-8">{message}</p>
-            <p className="text-sm text-secondary font-medium italic mb-2">Redirecting to MyPage.</p>
+            <p className="text-sm text-secondary font-medium italic mb-2">마이페이지로 이동 중입니다.</p>
             <button
               onClick={() => router.push('/mypage')}
               className="mt-6 w-full py-5 bg-gradient-to-r from-primary to-indigo-600 text-white font-black text-lg rounded-2xl hover:scale-105 transition-all shadow-xl"
             >
-              Go to MyPage
+              마이페이지로 이동
             </button>
           </div>
         )}
@@ -95,9 +92,8 @@ function SuccessContent() {
         {status === 'error' && (
           <div className="flex flex-col items-center">
             <XCircle className="w-20 h-20 text-rose-500 mb-6" />
-            <h2 className="text-3xl font-black text-foreground uppercase tracking-tight mb-4">Verification Failed</h2>
-          <p className="text-rose-400 font-bold mb-8">{message}</p>
-          <p className="text-xs text-secondary mb-4">결제 파라미터 확인 후 다시 시도해 주세요.</p>
+            <h2 className="text-3xl font-black text-foreground uppercase tracking-tight mb-4">결제 검증 실패</h2>
+            <p className="text-rose-400 font-bold mb-8">{message}</p>
 
             {isMissingParams ? (
               <div className="flex flex-col gap-3 w-full">
@@ -105,13 +101,13 @@ function SuccessContent() {
                   onClick={() => router.push('/shop')}
                   className="w-full py-5 bg-gradient-to-r from-primary to-indigo-600 text-white font-black text-lg rounded-2xl hover:scale-105 transition-all"
                 >
-                  Retry Payment
+                  결제 다시 시도
                 </button>
                 <button
                   onClick={() => router.push('/mypage')}
                   className="w-full py-5 bg-background border border-border-color text-secondary font-black text-lg rounded-2xl hover:text-foreground transition-all"
                 >
-                  Back
+                  이전 화면으로
                 </button>
               </div>
             ) : (
@@ -119,7 +115,7 @@ function SuccessContent() {
                 onClick={() => router.push('/mypage')}
                 className="w-full py-5 bg-background border border-border-color text-secondary font-black text-lg rounded-2xl hover:text-foreground transition-all"
               >
-                Back
+                이전 화면으로
               </button>
             )}
             <button
@@ -146,3 +142,4 @@ export default function SuccessPage() {
     </Suspense>
   );
 }
+

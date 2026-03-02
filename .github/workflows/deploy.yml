@@ -1,6 +1,13 @@
-name: Deploy to Vercel
+name: Render CI + Deploy Trigger
 
 on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "강제 운영 배포 실행"
+        required: false
+        default: "false"
+        type: boolean
   push:
     branches:
       - main
@@ -52,19 +59,26 @@ jobs:
           fi
 
   deploy:
-    name: Deploy
+    name: Trigger Render Deploy
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-          working-directory: ./
+      - name: Trigger Render deploy hook
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "RENDER_DEPLOY_HOOK_URL is not set. Render auto-deploy is expected to handle main branch pushes."
+            exit 0
+          fi
+          status=$(curl -s -o /tmp/render_hook_response.txt -w "%{http_code}" -X POST "$RENDER_DEPLOY_HOOK_URL")
+          if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
+            echo "Render deploy trigger failed with status $status"
+            cat /tmp/render_hook_response.txt
+            exit 1
+          fi
+          echo "Render deploy hook triggered successfully."

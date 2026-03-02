@@ -1,5 +1,5 @@
 /**
- * Analytics Module — GA4 + Vercel Analytics
+ * Analytics Module — GA4 only
  * 
  * 이벤트 트래킹 통합 모듈.
  * GA4 gtag가 로드된 경우 실제 전송, 아닌 경우 dev 콘솔 로깅.
@@ -81,11 +81,6 @@ export function trackEvent(event: AnalyticsEvent, params?: AnalyticsParams) {
       ...params,
       app_version: process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0',
     });
-  }
-
-  // Vercel Analytics (if loaded)
-  if (w.va) {
-    w.va('event', { name: event, ...params });
   }
 
   if (process.env.NODE_ENV === "development") {

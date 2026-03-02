@@ -8,7 +8,13 @@ export default function AppDownloadBanner() {
 
     useEffect(() => {
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        const isDismissed = sessionStorage.getItem("app_banner_dismissed");
+        let isDismissed = false;
+
+        try {
+            isDismissed = sessionStorage.getItem("app_banner_dismissed") === "true";
+        } catch {
+            isDismissed = false;
+        }
 
         if (isMobile && !isDismissed) {
             setIsVisible(true);
@@ -34,7 +40,11 @@ export default function AppDownloadBanner() {
                 <button
                     onClick={() => {
                         setIsVisible(false);
-                        sessionStorage.setItem("app_banner_dismissed", "true");
+                        try {
+                            sessionStorage.setItem("app_banner_dismissed", "true");
+                        } catch {
+                            // Ignore sessionStorage errors in restricted environments.
+                        }
                     }}
                     className="hover:scale-110 transition-transform"
                 >

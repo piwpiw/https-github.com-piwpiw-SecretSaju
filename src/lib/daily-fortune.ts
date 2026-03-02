@@ -1,182 +1,266 @@
-import { getDayPillar, Stem, Branch, getGanJiFromIndex } from '../core/calendar/ganji';
-import { SajuProfile } from './storage';
-import { calculateHighPrecisionSaju } from '../core/api/saju-engine';
-import { Element } from '../core/myeongni/elements';
+﻿import { getDayPillar, getHourPillar, Stem, Branch } from "../core/calendar/ganji";
+import { SajuProfile } from "./storage";
+import { calculateHighPrecisionSaju } from "../core/api/saju-engine";
+import { Element } from "../core/myeongni/elements";
+import { getTenGodSummary } from "./terminology";
 
-export interface DailyFortuneResult {
-    date: string;
-    score: number;
-    weather: 'sunny' | 'cloudy' | 'rain';
-    summary: string;
-    love: string;
-    wealth: string;
-    health: string;
-    luckyItems: string[];
-    premiumInsight: string;
-    hourlyScores: number[];
-    hourlyTips: string[];
+export interface HourlyFlowPoint {
+  slot: string;
+  score: number;
+  direction: "up" | "down" | "stable";
+  reason: string;
+  drivers: string[];
 }
 
-const SipsongMap: Record<string, string> = {
-    '비견': '에너지가 본인에게 집중되며 주체적인 결정을 내리기 좋은 날입니다.',
-    '겁재': '의지가 강해지나 자칫 주변과의 경쟁이나 갈등이 생길 수 있으니 유연함이 필요합니다.',
-    '식신': '표현력이 좋아지고 창의적인 아이디어가 샘솟으며 의식주가 풍족해지는 기운입니다.',
-    '상관': '재능을 발휘하기 좋고 변화를 시도하기 좋으나, 말실수나 상관 견관에 유의하십시오.',
-    '편재': '예상치 못한 큰 기회나 활동 범위가 넓어지며 역동적인 에너지가 들어옵니다.',
-    '정재': '안정적이고 실속 있는 결과를 얻기 좋으며, 성실함이 보상을 받는 흐름입니다.',
-    '편관': '압박감이 클 수 있으나 강한 리더십과 카리스마로 어려운 일을 해결할 수 있습니다.',
-    '정관': '명예와 신용이 상승하며 원칙을 지킬 때 주변의 인정과 도움을 받는 운세입니다.',
-    '편인': '직관과 영감이 예리해지며 깊은 통찰력을 발휘해 핵심을 꿰뚫기 좋습니다.',
-    '정인': '귀인의 도움을 받거나 학문 및 문서 관련 성취가 높고 마음이 평온해지는 날입니다.'
-};
+export interface DailyFortuneResult {
+  date: string;
+  score: number;
+  weather: "sunny" | "cloudy" | "rain";
+  summary: string;
+  love: string;
+  wealth: string;
+  health: string;
+  luckyItems: string[];
+  premiumInsight: string;
+  hourlyScores: number[];
+  hourlyTips: string[];
+  hourlyFlow: HourlyFlowPoint[];
+}
+
+const DAILY_FLOW_WINDOWS = [
+  { slot: "06-09", hour: 6, driverSet: ["오행 조화", "용신 연계"] },
+  { slot: "09-12", hour: 9, driverSet: ["지지 연결", "중심 축 강화"] },
+  { slot: "12-15", hour: 12, driverSet: ["실행 가속", "리듬 정렬"] },
+  { slot: "15-18", hour: 15, driverSet: ["의사결정 구간", "조정 필요"] },
+  { slot: "18-21", hour: 18, driverSet: ["회복/확장", "외연 접속"] },
+  { slot: "21-00", hour: 21, driverSet: ["정리 구간", "수렴" ] },
+];
+
+const DAILY_TIPS_KO = [
+  "조용한 시작으로 기운의 기준점을 세우세요.",
+  "주변과의 소통 톤을 낮추면 흐름이 빨리 정리됩니다.",
+  "중요한 실행은 딱 하나, 우선순위를 줄여 성취를 확보하세요.",
+  "긴장 구간은 기록 후 천천히 의사결정하세요.",
+  "에너지가 회복되는 시간에는 협력 제안 정리가 유리합니다.",
+  "하루 종료 전 복기 10분이 다음 루틴 정확도를 올립니다.",
+];
+
+const DAILY_TIPS_EN = [
+  "Start quietly and lock an intention before action.",
+  "Keep communication calm to reduce friction.",
+  "One high-impact action per phase keeps execution stable.",
+  "Delay high-stakes decisions in the heavy-pressure window.",
+  "Use the wind-down block to coordinate support and handoffs.",
+  "Capture one insight at the end of the day for tomorrow.",
+];
+
+const LUCKY_POOLS_KO = [
+  "청량한 물", "연한 하늘색 옷", "숫자 7", "바람이 부는 곳의 산책", "기념 문구 적기", "노란색 메모", "은색 액세서리", "붉은 계열", "소음 낮추기", "자연광", "따뜻한 차 한 잔", "감사 기록", "느린 호흡",
+];
+
+const LUCKY_POOLS_EN = [
+  "Clear water", "Soft blue outfit", "Number 7", "Short walk", "Journal prompt", "Yellow note", "Silver accessory", "Warm red accent", "Lower noise", "Natural light", "Warm tea", "Gratitude log", "Slow breathing",
+];
 
 const STEM_ELEMENTS: Record<Stem, Element> = {
-    '갑': '목', '을': '목', '병': '화', '정': '화', '무': '토',
-    '기': '토', '경': '금', '신': '금', '임': '수', '계': '수'
+  갑: "목",
+  을: "목",
+  병: "화",
+  정: "화",
+  무: "토",
+  기: "토",
+  경: "금",
+  신: "금",
+  임: "수",
+  계: "수",
+};
+
+const BRANCH_ELEMENTS: Record<Branch, Element> = {
+  자: "수",
+  축: "토",
+  인: "목",
+  묘: "목",
+  진: "토",
+  사: "화",
+  오: "화",
+  미: "토",
+  신: "금",
+  유: "금",
+  술: "토",
+  해: "수",
 };
 
 const ELEMENT_GENERATION: Record<Element, Element> = {
-    '목': '화', '화': '토', '토': '금', '금': '수', '수': '목'
+  목: "화",
+  화: "토",
+  토: "금",
+  금: "수",
+  수: "목",
 };
 
 const ELEMENT_CONTROL: Record<Element, Element> = {
-    '목': '토', '화': '금', '토': '수', '금': '목', '수': '화'
+  목: "토",
+  화: "금",
+  토: "수",
+  금: "목",
+  수: "화",
 };
 
-const YANG_STEMS = new Set(['갑', '병', '무', '경', '임']);
-
-function calculateOneSipsong(selfStem: Stem, target: Stem): string {
-    const selfElement = STEM_ELEMENTS[selfStem];
-    const targetElement = STEM_ELEMENTS[target];
-    const selfYang = YANG_STEMS.has(selfStem);
-    const targetYang = YANG_STEMS.has(target);
-    const samePolarity = selfYang === targetYang;
-
-    if (selfElement === targetElement) return samePolarity ? '비견' : '겁재';
-    if (ELEMENT_GENERATION[selfElement] === targetElement) return samePolarity ? '식신' : '상관';
-    if (ELEMENT_CONTROL[selfElement] === targetElement) return samePolarity ? '편재' : '정재';
-    if (ELEMENT_CONTROL[targetElement] === selfElement) return samePolarity ? '편관' : '정관';
-    // Must be Mother (In-seong)
-    return samePolarity ? '편인' : '정인';
+function pseudoRandom(seed: number): number {
+  let v = seed >>> 0;
+  v ^= v << 13;
+  v ^= v >>> 17;
+  v ^= v << 5;
+  return v >>> 0;
 }
 
-export async function generateDailyFortune(profile: SajuProfile, locale: 'ko' | 'en' = 'ko', targetDate: Date = new Date()): Promise<DailyFortuneResult> {
-    const todayPillar = getDayPillar(targetDate);
+function pick(seed: number, list: string[]): string {
+  return list[Math.abs(seed) % list.length];
+}
 
-    const saju = await calculateHighPrecisionSaju({
-        birthDate: new Date(profile.birthdate),
-        birthTime: profile.birthTime || '12:00',
-        gender: profile.gender === 'male' ? 'M' : 'F',
-        calendarType: profile.calendarType
-    });
+function weatherFromScore(score: number): "sunny" | "cloudy" | "rain" {
+  if (score >= 76) return "sunny";
+  if (score >= 60) return "cloudy";
+  return "rain";
+}
 
-    const selfStem = saju.fourPillars.day.stem;
-    const todayStem = todayPillar.stem;
-    const todayBranch = todayPillar.branch;
-    const sipsong = calculateOneSipsong(selfStem, todayStem);
+function elementDiff(a: Element, b: Element): number {
+  return a === b ? 30 : ELEMENT_GENERATION[a] === b ? 15 : ELEMENT_CONTROL[b] === a ? 12 : -8;
+}
 
-    // 1. Calculate Score based on Yongshin / Heeshin
-    // Base score 70
-    let score = 70;
-    const todayElement = STEM_ELEMENTS[todayStem];
-    const yongshin = saju.yongshin.primary.element;
-    const heeshin = saju.yongshin.secondary.element;
-    const kisin = saju.yongshin.unfavorable.element;
+function relationDrivers(isAligned: boolean, isRisk: boolean, isEvening: boolean): string[] {
+  const drivers = ["오행 흐름", "일지 연계", isAligned ? "용신 가점" : "변화성" ];
+  if (isRisk) drivers.push("지지 충돌 위험");
+  if (isEvening) drivers.push("말미 정리 필요");
+  return drivers;
+}
 
-    if (todayElement === yongshin) score += 20;
-    else if (todayElement === heeshin) score += 10;
-    else if (todayElement === kisin) score -= 15;
-    
-    // 2. Adjust for Shinsal of the day (Simple check)
-    // Noble Star (Chun-eul Gwi-in) check
-    const gwiInMap: Record<string, string[]> = {
-        '갑': ['축', '미'], '무': ['축', '미'], '경': ['축', '미'],
-        '을': ['자', '신'], '기': ['자', '신'],
-        '병': ['유', '해'], '정': ['유', '해'],
-        '신': ['인', '오'],
-        '임': ['사', '묘'], '계': ['사', '묘']
-    };
-    const userGwiIn = gwiInMap[selfStem] || [];
-    if (userGwiIn.includes(todayBranch)) {
-        score += 10;
-    }
+function calculateOneSipsong(selfStem: Stem, target: Stem): string {
+  const selfElement = STEM_ELEMENTS[selfStem];
+  const targetElement = STEM_ELEMENTS[target];
+  const samePolarity = ((selfStem === "갑" || selfStem === "병" || selfStem === "무" || selfStem === "경" || selfStem === "임")
+    === (target === "갑" || target === "병" || target === "무" || target === "경" || target === "임"));
 
-    // 3. Round and clamp score
-    score = Math.min(99, Math.max(40, score));
+  if (selfElement === targetElement) return samePolarity ? "정재" : "편재";
+  if (ELEMENT_GENERATION[selfElement] === targetElement) return samePolarity ? "식신" : "상관";
+  if (ELEMENT_CONTROL[selfElement] === targetElement) return samePolarity ? "편인" : "정인";
+  if (ELEMENT_CONTROL[targetElement] === selfElement) return samePolarity ? "정관" : "편관";
+  return samePolarity ? "정인" : "편인";
+}
 
-    // 4. Weather determination
-    let weather: DailyFortuneResult['weather'] = 'sunny';
-    if (score >= 85) weather = 'sunny';
-    else if (score >= 65) weather = 'cloudy';
-    else weather = 'rain';
+export async function generateDailyFortune(profile: SajuProfile, locale: "ko" | "en" = "ko", targetDate: Date = new Date()): Promise<DailyFortuneResult> {
+  const baseSeed = `${targetDate.toISOString().slice(0, 10)}|${profile.id}|${profile.birthdate}`;
+  const dayIndex = getDayPillar(targetDate).ganjiIndex;
+  const seedBase = Array.from(baseSeed).reduce((acc, ch) => acc * 31 + ch.charCodeAt(0), 2166136261) >>> 0;
 
-    const dateStr = targetDate.toLocaleDateString(locale === 'ko' ? 'ko-KR' : 'en-US', {
-        month: 'long',
-        day: 'numeric',
-        weekday: 'long',
-        year: locale === 'en' ? 'numeric' : undefined
-    });
+  const todayPillar = getDayPillar(targetDate);
+  const todayStem = todayPillar.stem;
+  const todayBranch = todayPillar.branch;
+  const todayElement = STEM_ELEMENTS[todayStem];
 
-    const luckyItemsPoolKo = ["청색 계열", "흰색 상의", "숫자 7", "우드향 향수", "따뜻한 아메리카노", "가벼운 산책", "메탈 액세서리", "노란색 소품", "숫자 1", "클래식 음악", "은색 장신구", "붉은 포인트", "아로마 향", "녹차"];
-    const luckyItemsPoolEn = ["Blue items", "White top", "Number 7", "Woody perfume", "Hot Americano", "Light walk", "Metal accessories", "Yellow items", "Number 1", "Classic music", "Silver jewelry", "Red accents", "Aroma scent", "Green tea"];
-    const pool = locale === 'ko' ? luckyItemsPoolKo : luckyItemsPoolEn;
+  const saju = await calculateHighPrecisionSaju({
+    birthDate: new Date(profile.birthdate),
+    birthTime: profile.birthTime || "12:00",
+    gender: profile.gender === "male" ? "M" : "F",
+    calendarType: profile.calendarType,
+  });
 
-    const luckyItems = [
-        pool[Math.floor(Math.random() * pool.length)],
-        pool[Math.floor(Math.random() * pool.length)],
-        locale === 'ko' ? `숫자 ${Math.floor(Math.random() * 9) + 1}` : `Number ${Math.floor(Math.random() * 9) + 1}`
-    ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3);
+  const selfStem = saju.fourPillars.day.stem;
+  const sipsong = calculateOneSipsong(selfStem, todayStem);
 
-    const summariesEn: Record<string, string> = {
-        '비견': 'A day of strong independence and confidence.',
-        '겁재': 'Energy spent in competition or cooperation with others.',
-        '식신': 'Great for expression and creative ideas.',
-        '상관': 'Good for showing talent, but watch your words.',
-        '편재': 'Unexpected opportunities and expanding horizons.',
-        '정재': 'A steady day for practical results.',
-        '편인': 'Intuition is sharp; good for deep thinking.',
-        '정인': 'Meeting a mentor or academic success.',
-        '편관': 'Some pressure, but strong momentum.',
-        '정관': 'Honor follows if you stick to principles.'
-    };
+  const yongshin = saju.yongshin.primary.element;
+  const heeshin = saju.yongshin.secondary.element;
+  const kisin = saju.yongshin.unfavorable.element;
 
-    const summary = locale === 'ko' ? (SipsongMap[sipsong] || "평온한 하루가 예상됩니다.") : (summariesEn[sipsong] || "A peaceful day ahead.");
-    
-    // Specialized descriptions based on sipsong + yongshin
-    let love = locale === 'ko' ? "서로에 대한 존중이 필요한 날입니다." : "Mutual respect is key today.";
-    if (['정재', '편재', '식신'].includes(sipsong) && todayElement === yongshin) {
-        love = locale === 'ko' ? "상대방의 매력을 다시금 발견하고 깊은 교감을 나누는 길한 운세입니다." : "A great day to rediscover your partner's charm and deepen connections.";
-    }
+  let baseScore = 65;
+  if (todayElement === yongshin) baseScore += 12;
+  else if (todayElement === heeshin) baseScore += 8;
+  else if (todayElement === kisin) baseScore -= 14;
 
-    let wealth = locale === 'ko' ? "충동적인 지출을 관리하는 것이 좋겠습니다." : "Manage impulsive spending today.";
-    if (['정재', '편재', '정인'].includes(sipsong) && (todayElement === yongshin || todayElement === heeshin)) {
-        wealth = locale === 'ko' ? "그동안의 노력이 정직한 결실로 돌아오거나 좋은 제안을 받을 수 있는 흐름입니다." : "Your efforts are returning as practical results or favorable offers.";
-    }
+  if (todayBranch === "인" || todayBranch === "묘") baseScore += 2;
+  if (todayBranch === "신" || todayBranch === "유") baseScore -= 2;
 
-    const health = locale === 'ko' ? "충분한 휴식과 수분 섭취가 에너지를 보충해줍니다." : "Rest and hydration will boost your energy.";
+  const baseFactor = (seedBase % 20) - 10;
+  const score = Math.max(45, Math.min(98, baseScore + baseFactor));
 
-    const premiumInsight = locale === 'ko'
-        ? `오늘의 기운은 귀하의 용신인 '${yongshin}' 오행과 '${sipsong}'의 성분이 조화를 이룹니다. 특히 '${todayStem}(${todayElement})'의 에너지를 적극 활용하여 중요한 결정을 내리기에 적합한 시기입니다.`
-        : `Today's energy harmonizes with your favorable element '${yongshin}' and the '${sipsong}' component. It is an auspicious time to make critical decisions using the '${todayStem}(${todayElement})' energy.`;
+  const dateStr = targetDate.toLocaleDateString(locale === "ko" ? "ko-KR" : "en-US", {
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+    year: locale === "en" ? "numeric" : undefined,
+  });
 
-    const hourlyTipsKo = ["조용한 명상으로 우주의 기운과 정렬하세요.", "주변과의 원만한 대화가 행운을 부릅니다.", "창의적인 영감이 샘솟는 황금 시간대입니다.", "중요한 의사결정은 잠시 미루는 것이 좋습니다.", "적극적인 활동으로 성취를 가시화하세요.", "뜻밖의 귀인을 만날 수 있는 길한 시간입니다."];
-    const hourlyTipsEn = ["Align with the cosmic flow through quiet meditation.", "Smooth communication brings good luck.", "Golden time for creative inspiration.", "Delay critical decisions if possible.", "Visualize success through active movement.", "Favorable time to meet a supportive person."];
-    const tips = locale === 'ko' ? hourlyTipsKo : hourlyTipsEn;
+  const summary = getTenGodSummary(sipsong, locale);
 
-    const hourlyScores = Array.from({ length: 6 }, () => Math.max(40, Math.min(99, score + (Math.floor(Math.random() * 20) - 10))));
-    const hourlyTips = tips.sort(() => Math.random() - 0.5);
+  const luckyPool = locale === "ko" ? LUCKY_POOLS_KO : LUCKY_POOLS_EN;
+  const luckyItems = [
+    luckyPool[(seedBase % luckyPool.length + luckyPool.length) % luckyPool.length],
+    luckyPool[(pseudoRandom(seedBase) % luckyPool.length + luckyPool.length) % luckyPool.length],
+    luckyPool[(pseudoRandom(seedBase + 55) % luckyPool.length + luckyPool.length) % luckyPool.length],
+  ].filter((v, i, arr) => arr.indexOf(v) === i).slice(0, 3);
+
+  let love = locale === "ko" ? "서로의 감정을 먼저 듣고, 결정을 뒤로 미루면 오해를 줄일 수 있습니다." : "Listening first and deciding second reduces misunderstanding.";
+  if (sipsong === "정관" || sipsong === "식신") {
+    love = locale === "ko" ? "의견과 표현을 단계적으로 분리하면 관계의 밀도가 안정적으로 형성됩니다." : "Separating expression from judgment improves relational rhythm.";
+  }
+
+  let wealth = locale === "ko" ? "지출보다 누적을 우선해 구조화된 소비와 기록을 유지하세요." : "Prioritize preserving capital with structured spending and logs.";
+  if (sipsong === "편재" || sipsong === "식신") {
+    wealth = locale === "ko" ? "기회 비용을 먼저 계산하면 수익 구간을 빠르게 포착할 수 있습니다." : "Filtering opportunities by cost of effort improves yield.";
+  }
+
+  const health = locale === "ko" ? "에너지의 고점과 저점을 기록해 체력 회복 타이밍을 맞추세요." : "Track high and low energy windows and restore intentionally.";
+
+  const hourlyFlow: HourlyFlowPoint[] = DAILY_FLOW_WINDOWS.map((window, index) => {
+    const anchor = new Date(targetDate);
+    anchor.setHours(window.hour, 0, 0, 0);
+    const hourPillar = getHourPillar(anchor, todayPillar.stemIndex);
+    const hourEl = STEM_ELEMENTS[hourPillar.stem];
+    const branchEl = BRANCH_ELEMENTS[hourPillar.branch];
+
+    let flow = score + (index - 2) * 3;
+    const aligned = hourEl === yongshin || branchEl === yongshin;
+    const risky = hourEl === kisin || branchEl === kisin;
+    const relationBonus = elementDiff(todayElement, hourEl) / 4;
+    const dayIndexAdjust = Math.sin((dayIndex + index) / 3) * 6;
+
+    flow += (aligned ? 11 : 0);
+    flow -= (risky ? 9 : 0);
+    flow += relationBonus;
+    flow += Math.round(dayIndexAdjust);
+
+    const drivers = relationDrivers(aligned, risky, index >= 4);
 
     return {
-        date: dateStr,
-        score,
-        weather,
-        summary,
-        love,
-        wealth,
-        health,
-        luckyItems,
-        premiumInsight,
-        hourlyScores,
-        hourlyTips
+      slot: window.slot,
+      score: Math.max(35, Math.min(99, Math.round(flow))),
+      direction: index === 0 ? "stable" : flow >= (score + index - 2) ? "up" : "down",
+      reason: locale === "ko"
+        ? `${window.driverSet.join(", ")}: ${window.slot} 구간은 ${hourPillar.branch}지지와 ${window.hour}시축으로 ${aligned ? "상향 신호" : "중립~변동"}이 동시 확인됩니다.`
+        : `${window.driverSet.join(", ")}: ${window.slot} is a ${aligned ? "supportive" : "neutral-to-volatile"} segment from ${hourPillar.branch} with time anchor ${window.hour}:00.`,
+      drivers,
     };
+  });
+
+  const hourlyScores = hourlyFlow.map((entry) => entry.score);
+  const hourlyTips = hourlyFlow.map((_entry, idx) => (locale === "ko" ? pick(seedBase + idx * 77, DAILY_TIPS_KO) : pick(seedBase + idx * 77, DAILY_TIPS_EN)));
+
+  const premiumInsight = locale === "ko"
+    ? `일간 '${todayStem}(${todayElement})'와 용신 '${yongshin}', 피로 요소 '${kisin}'의 상호작용을 기준으로 시간대별 가동 강도를 조절한 결과, '${sipsong}' 패턴에서는 ${hourlyFlow[2].slot}가 핵심 실행 구간으로 보입니다.`
+    : `Align with the day stem '${todayStem}(${todayElement})', favorable '${yongshin}', and sensitive factor '${kisin}'. In '${sipsong}' flow, ${hourlyFlow[2].slot} is the main execution window.`;
+
+  return {
+    date: dateStr,
+    score,
+    weather: weatherFromScore(score),
+    summary,
+    love,
+    wealth,
+    health,
+    luckyItems,
+    premiumInsight,
+    hourlyScores,
+    hourlyTips,
+    hourlyFlow,
+  };
 }

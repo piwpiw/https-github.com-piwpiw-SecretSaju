@@ -1,5 +1,7 @@
 'use client';
 
+import { generateUUID } from './uuid';
+
 export interface SajuProfile {
     id: string;
     name: string;
@@ -24,7 +26,7 @@ export const saveProfile = (profile: Omit<SajuProfile, 'id' | 'createdAt'>) => {
     const profiles = getProfiles();
     const newProfile: SajuProfile = {
         ...profile,
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         createdAt: Date.now(),
     };
     const updated = [...profiles, newProfile];

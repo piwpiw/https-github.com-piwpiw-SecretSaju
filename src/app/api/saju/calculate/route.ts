@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         }
 
         // 4. Validate time format
-        if (birthTime && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(birthTime)) {
+        if (birthTime && !/^([01]\d|2[0-3]):[0-5]\d$/.test(birthTime)) {
             throw new ValidationError(ErrorMessages.INVALID_BIRTH_TIME);
         }
 

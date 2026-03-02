@@ -40,6 +40,7 @@ This document is the canonical page contract for implementation and QA.
 | Route | Priority | Must-Show Minimum | Acceptance Check |
 |---|---|---|---|
 | `/about` | P2 | Feature summary, trust badges, contact CTA | User can find company/about or contact path in one click |
+| `/analysis-history` | P2 | History list, filter tabs, detail entry | User can see past analysis items and navigate to details |
 | `/analysis-history/[type]/[id]` | P2 | Context summary, detail card, related actions | Safe empty state for missing items and back-navigation |
 | `/dashboard` | P2 | Dashboard summary tiles, quick links, trend preview | Core metrics cards and action links are rendered and navigable |
 | `/astrology` | P2 | Core astrology overview, category cards, analysis start CTA | At least one category card and entry CTA are visible |
@@ -63,13 +64,18 @@ This document is the canonical page contract for implementation and QA.
 | `/palmistry` | P2 | Palmistry intro, example cards, start CTA | Example card and action path are visible |
 | `/privacy` | P2 | Privacy scope summary, user rights, withdrawal path | Privacy policy and withdrawal CTA visible |
 | `/psychology` | P2 | Psychology feature list, method summary, start CTA | At least one psychology module can be started |
+| `/psychology/module` | P2 | Module selection, category filter, intro cards | Category filter or search + introductory card visible |
+| `/psychology/module/[id]` | P2 | Test questions, progress bar, navigation | Progress increments and final action triggers result |
+| `/psychology/premium-report` | P2 | Deep analysis preview, payment CTA, value summary | Detailed value proposition and unlock CTA are visible |
 | `/refund` | P2 | Refund policy summary, eligibility and support link | Refund support link and guidance are accessible |
+| `/relationship` | P2 | Relationship index, pair selection, history | Profile selection path or past entries visible |
 | `/relationship/[id]` | P1 | Relationship profile summary and insight block | Relationship card and action links render correctly |
 | `/relationship/[id]/vs` | P1 | Comparison summary and share-ready context | Comparison outcome and secondary action are visible |
 | `/saju` | P2 | Saju concept overview, recent items, analysis start | Profile list and start analysis action are visible |
 | `/select-fortune` | P2 | Fortune type selector, launch CTA | Selector change updates next-step state |
 | `/shinsal` | P2 | Shinsal intro, card list, analysis CTA | At least one card opens preview |
 | `/story` | P2 | Story index, preview card, share path | Story list and one detail route are available |
+| `/story/[id]` | P2 | Story content, interactive elements, next story | Full story text or primary visual content renders |
 | `/tarot` | P2 | Tarot mode selector, draw CTA, result card region | Draw action begins and result card renders |
 | `/terms` | P2 | Terms summary, version/date, download/action path | Terms are readable and links resolve |
 | `/tojeong` | P2 | Tojeong concept summary and start CTA | One clear starting route is visible |
@@ -101,4 +107,4 @@ This document is the canonical page contract for implementation and QA.
 - Route coverage remains synchronized with `src/app` page files.
 
 **Owner**: Product Operations / Engineering Lead
-**Last Updated**: 2026-03-01
+**Last Updated**: 2026-03-02

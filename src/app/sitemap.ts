@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next';
+import { APP_CONFIG } from '@/config';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://secretsaju.vercel.app';
+    const baseUrl = APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:3000';
     const now = new Date();
 
     return [

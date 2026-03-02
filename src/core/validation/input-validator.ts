@@ -37,9 +37,9 @@ export function validateSajuInput(input: SajuCalculationInput): ValidationResult
     if (!input.birthTime) {
         errors.push('Birth time is required.');
     } else {
-        const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        const timeRegex = /^([01]\d|2[0-3]):[0-5]\d$/;
         if (!timeRegex.test(input.birthTime)) {
-            errors.push('Birth time must be in HH:mm format (24-hour).');
+            errors.push('Birth time must be in HH:mm format (24-hour) with minutes from 00 to 59.');
         }
     }
 

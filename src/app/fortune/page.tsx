@@ -154,14 +154,14 @@ function FortuneContent() {
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-40">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(99,102,241,0.15),transparent_70%)]" />
 
-      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
-        <header className="flex items-center justify-between mb-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 relative z-10">
+        <header className="flex items-center justify-between mb-8 sm:mb-12">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-3 text-slate-400 hover:text-white transition-colors group"
+            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            {t("common.back")}
+            <span className="hidden sm:inline">{t("common.back")}</span>
           </button>
           <div className="text-center">
             <h1 className="ui-title">
@@ -176,14 +176,14 @@ function FortuneContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           onSubmit={handleCalculate}
-          className="panel-shell rounded-[3.5rem] p-10 md:p-14 border border-white/10 shadow-2xl mb-16 relative group overflow-hidden"
+          className="panel-shell rounded-3xl sm:rounded-[3.5rem] p-6 sm:p-10 md:p-14 border border-white/10 shadow-2xl mb-12 sm:mb-16 relative group overflow-hidden"
         >
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 sm:w-40 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
           <div className="grid grid-cols-1 gap-10">
-            <div className="space-y-6">
-              <label className="text-xl font-black flex items-center gap-3 text-foreground">
-                <Target className="w-6 h-6 text-primary" />
+            <div className="space-y-4 sm:space-y-6">
+              <label className="text-lg sm:text-xl font-black flex items-center gap-3 text-foreground">
+                <Target className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 {t("input.target_year")}
               </label>
               <div className="grid grid-cols-4 gap-4">
@@ -192,7 +192,7 @@ function FortuneContent() {
                     key={y}
                     type="button"
                     onClick={() => setYear(y)}
-                    className={`py-5 rounded-3xl text-sm font-black transition-all border ${year === y
+                    className={`py-3 sm:py-5 rounded-2xl sm:rounded-3xl text-xs sm:text-sm font-black transition-all border ${year === y
                       ? "bg-primary border-primary text-white shadow-xl scale-105"
                       : "bg-background text-secondary border-white/20 hover:border-primary/40"
                       }`}
@@ -203,12 +203,12 @@ function FortuneContent() {
               </div>
             </div>
 
-            <div className="space-y-6">
-              <label className="text-xl font-black flex items-center gap-3 text-foreground">
-                <History className="w-6 h-6 text-primary" />
+            <div className="space-y-4 sm:space-y-6">
+              <label className="text-lg sm:text-xl font-black flex items-center gap-3 text-foreground">
+                <History className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 {t("input.title")}
               </label>
-              <div className="grid grid-cols-3 gap-6">
+              <div className="grid grid-cols-3 gap-3 sm:gap-6">
                 {[
                   { val: yearInput, set: setYearInput, ph: t("input.year") },
                   { val: month, set: setMonth, ph: t("input.month") },
@@ -220,7 +220,7 @@ function FortuneContent() {
                     placeholder={input.ph}
                     value={input.val}
                     onChange={(e) => input.set(e.target.value)}
-                    className="bg-background border border-border-color rounded-3xl px-6 py-6 text-foreground text-center font-black text-2xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all italic"
+                    className="bg-background border border-border-color rounded-2xl sm:rounded-3xl px-4 py-4 sm:px-6 sm:py-6 text-foreground text-center font-black text-lg sm:text-2xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all italic"
                   />
                 ))}
               </div>
@@ -235,9 +235,9 @@ function FortuneContent() {
             <button
               type="submit"
               disabled={loading || !yearInput || !month || !day}
-              className="w-full py-8 rounded-4xl bg-primary hover:bg-primary/90 text-white font-black text-2xl tracking-[0.2em] shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 disabled:opacity-40"
+              className="w-full py-5 sm:py-8 rounded-3xl sm:rounded-4xl bg-primary hover:bg-primary/90 text-white font-black text-lg sm:text-2xl tracking-[0.1em] sm:tracking-[0.2em] shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 sm:gap-4 disabled:opacity-40"
             >
-              {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : <Calculator className="w-8 h-8" />}
+              {loading ? <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 animate-spin" /> : <Calculator className="w-6 h-6 sm:w-8 sm:h-8" />}
               {loading
                 ? (locale === "ko" ? "분석 중..." : "Analyzing...")
                 : (locale === "ko"
@@ -250,25 +250,25 @@ function FortuneContent() {
         <AnimatePresence>
           {result && (
             <motion.div initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
-              <div className="bg-surface rounded-5xl p-16 border border-primary/20 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-8">
-                  <span className="px-6 py-2 rounded-full text-lg font-black bg-primary/10 text-primary border border-primary/20">
+              <div className="bg-surface rounded-3xl sm:rounded-5xl p-8 sm:p-16 border border-primary/20 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-6 sm:p-8">
+                  <span className="px-4 py-1.5 sm:px-6 sm:py-2 rounded-full text-sm sm:text-lg font-black bg-primary/10 text-primary border border-primary/20">
                     {result.pillarName}
                   </span>
                 </div>
-                <div className="flex items-center gap-4 mb-10">
-                  <Star className="w-8 h-8 text-yellow-400 fill-yellow-400" />
-                  <span className="text-xl font-black text-secondary tracking-[0.2em] uppercase">메시지 해석</span>
+                <div className="flex items-center gap-3 sm:gap-4 mb-8 sm:mb-10">
+                  <Star className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400 fill-yellow-400" />
+                  <span className="text-base sm:text-xl font-black text-secondary tracking-[0.1em] sm:tracking-[0.2em] uppercase">메시지 해석</span>
                 </div>
-                <h2 className="text-4xl md:text-5xl font-black text-foreground italic leading-tight mb-10 drop-shadow-xl">{result.summary}</h2>
-                <div className="h-2 bg-gradient-to-r from-primary to-transparent w-32 mb-10 rounded-full" />
-                <p className="text-2xl text-secondary font-medium leading-relaxed tracking-tight">{result.detail}</p>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground italic leading-tight mb-8 sm:mb-10 drop-shadow-xl">{result.summary}</h2>
+                <div className="h-1.5 sm:h-2 bg-gradient-to-r from-primary to-transparent w-24 sm:w-32 mb-8 sm:mb-10 rounded-full" />
+                <p className="text-lg sm:text-2xl text-secondary font-medium leading-relaxed tracking-tight">{result.detail}</p>
               </div>
 
-              <div className="bg-surface rounded-5xl p-16 border border-border-color">
-                <div className="flex items-center gap-4 mb-10">
-                  <TrendingUp className="w-8 h-8 text-primary" />
-                  <h3 className="text-2xl font-black text-foreground">운세 수치</h3>
+              <div className="bg-surface rounded-3xl sm:rounded-5xl p-8 sm:p-16 border border-border-color">
+                <div className="flex items-center gap-4 mb-8 sm:mb-10">
+                  <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+                  <h3 className="text-xl sm:text-2xl font-black text-foreground">운세 수치</h3>
                 </div>
 
                 <div className="flex justify-center mb-10">

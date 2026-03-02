@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Sparkles, ChevronRight, Calculator, History } from "lucide-react";
+import { motion } from "framer-motion";
 import JellyBalance from "@/components/shop/JellyBalance";
 import { getProfiles, SajuProfile } from "@/lib/storage";
 import { useWallet } from "@/components/WalletProvider";
@@ -11,7 +11,7 @@ import { calculateSajuFromBirthdate } from "@/lib/saju";
 import { saveAnalysisToHistory } from "@/lib/analysis-history";
 import ResultCard from "@/components/ResultCard";
 import { getArchetypeByCode } from "@/lib/archetypes";
-import { Suspense } from "react";
+import AdvancedInterpretationPanel from "@/components/saju/AdvancedInterpretationPanel";
 
 function SajuPageContent() {
   const router = useRouter();
@@ -23,13 +23,15 @@ function SajuPageContent() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [archetype, setArchetype] = useState<any>(null);
+  const selectedProfile = profiles.find((item) => item.id === selectedProfileId);
 
   useEffect(() => {
     const saved = getProfiles();
     const profileIdFromQuery = searchParams?.get("profileId") || "";
     setProfiles(saved);
+
     if (saved.length > 0) {
-      const found = saved.find((p) => p.id === profileIdFromQuery);
+      const found = saved.find((item) => item.id === profileIdFromQuery);
       setSelectedProfileId(found?.id || saved[0].id);
     }
   }, [searchParams]);
@@ -37,16 +39,17 @@ function SajuPageContent() {
   const handleRun = async () => {
     const selected = profiles.find((item) => item.id === selectedProfileId);
     if (!selected) {
+      alert("사주를 실행할 프로필을 먼저 선택해 주세요.");
       return;
     }
 
     if (churu < 3) {
-      alert("젤리가 부족합니다. 3개가 필요합니다.");
+      alert("젤리가 부족합니다. 3젤리가 필요해요.");
       return;
     }
 
     if (!consumeChuru(3)) {
-      alert("젤리가 부족합니다. 3개가 필요합니다.");
+      alert("젤리가 부족합니다. 3젤리가 필요해요.");
       return;
     }
 
@@ -56,7 +59,7 @@ function SajuPageContent() {
         selected.birthdate,
         selected.birthTime,
         selected.calendarType,
-        selected.gender === 'male' ? 'M' : 'F',
+        selected.gender === "male" ? "M" : "F",
         selected.isTimeUnknown
       );
 
@@ -66,12 +69,12 @@ function SajuPageContent() {
       saveAnalysisToHistory(
         {
           type: "SAJU",
-          title: `${selected.name} SAJU Premium Reading`,
-          subtitle: "Four Pillars deep analysis",
+          title: `${selected.name} 사주 프리미엄 분석`,
+          subtitle: "네 기둥 상세 분석",
           profileId: selected.id,
           profileName: selected.name,
           result: analysisResult,
-          resultPreview: typeof analysisResult?.code === "string" ? analysisResult.code : "SAJU result",
+          resultPreview: typeof analysisResult?.code === "string" ? analysisResult.code : "사주 결과",
         },
         {
           resultUrlFactory: (id) => `/analysis-history/SAJU/${id}`,
@@ -87,9 +90,12 @@ function SajuPageContent() {
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
       <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
         <div className="flex items-center justify-between mb-10">
-          <button onClick={() => router.back()} className="flex items-center gap-3 text-slate-300 hover:text-white transition-colors">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-3 text-slate-300 hover:text-white transition-colors"
+          >
             <ArrowLeft className="w-5 h-5" />
-            뒤로
+            이전
           </button>
           <JellyBalance />
         </div>
@@ -102,15 +108,15 @@ function SajuPageContent() {
               <Calculator className="w-6 h-6 text-indigo-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-black italic tracking-tighter uppercase text-white">사주 원국 분석</h1>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Saju Astrology Engine</p>
+              <h1 className="text-3xl font-black italic tracking-tighter uppercase text-white">사주 분석</h1>
+              <p className="text-xs text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">프로필 기반 정밀 사주 엔진</p>
             </div>
           </div>
 
           <div className="space-y-8 relative z-10 mt-10">
             <div className="space-y-4">
               <label className="text-sm font-black flex items-center gap-2 text-slate-300 uppercase tracking-widest">
-                <History className="w-4 h-4 text-indigo-400" /> 분석 대상 프로필
+                <History className="w-4 h-4 text-indigo-400" /> 분석할 프로필
               </label>
               <div className="relative">
                 <select
@@ -119,7 +125,9 @@ function SajuPageContent() {
                   className="w-full rounded-2xl bg-black/40 border border-white/10 px-6 py-5 text-white font-bold text-lg appearance-none focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
                 >
                   {profiles.map((profile) => (
-                    <option key={profile.id} value={profile.id}>{profile.name} ({profile.relationship})</option>
+                    <option key={profile.id} value={profile.id}>
+                      {profile.name} ({profile.relationship})
+                    </option>
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-6 flex items-center pointer-events-none">
@@ -138,21 +146,17 @@ function SajuPageContent() {
               ) : (
                 <Sparkles className="w-6 h-6 fill-white" />
               )}
-              {loading ? "분석 엔진 가동 중..." : "3젤리로 정밀 분석 시작"}
+              {loading ? "사주 분석 중..." : "3젤리로 사주 실행"}
             </button>
           </div>
         </section>
 
         {result && archetype && !loading && (
-          <motion.section
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-16"
-          >
+          <motion.section initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="mt-16">
             <div className="flex items-center gap-4 mb-10 justify-center">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10" />
               <div className="px-6 py-2 rounded-full border border-white/10 bg-white/5 text-xs font-black text-indigo-300 uppercase tracking-[0.3em] flex items-center gap-2 backdrop-blur-md">
-                <Sparkles className="w-4 h-4" /> 분석 완료 보고서
+                <Sparkles className="w-4 h-4" /> 분석 완료
               </div>
               <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10" />
             </div>
@@ -171,6 +175,7 @@ function SajuPageContent() {
               integrity={result.integrity}
               isTimeUnknown={result.isTimeUnknown}
             />
+            <AdvancedInterpretationPanel result={result} profile={selectedProfile ? { name: selectedProfile.name, birthdate: selectedProfile.birthdate, birthTime: selectedProfile.birthTime, calendarType: selectedProfile.calendarType, gender: selectedProfile.gender, relationship: selectedProfile.relationship } : undefined} dayAnimalName={archetype?.animal_name} />
           </motion.section>
         )}
       </div>
@@ -180,8 +185,9 @@ function SajuPageContent() {
 
 export default function SajuPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-slate-200">불러오는 중...</div>}>
       <SajuPageContent />
     </Suspense>
   );
 }
+

@@ -1,162 +1,64 @@
-'use client';
+﻿"use client";
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Heart, Coffee, ShieldCheck, Sparkles, ArrowRight, Zap } from 'lucide-react';
-import { useTheme } from '@/components/ThemeProvider';
-import { useLocale } from '@/lib/i18n';
+import { ArrowLeft, Gem, HeartHandshake, MessageCircle, Send } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-interface DonationTier {
-    id: string;
-    amount: number;
-    label: string;
-    description: string;
-    icon: React.ReactNode;
-    color: string;
-    isPopular?: boolean;
-}
-
-const DONATION_TIERS: DonationTier[] = [
-    {
-        id: 'coffee',
-        amount: 3000,
-        label: '따뜻한 커피 한 잔',
-        description: '개발자의 밤샘 작업에 큰 힘이 됩니다.',
-        icon: <Coffee className="w-6 h-6" />,
-        color: '#d97706',
-    },
-    {
-        id: 'premium',
-        amount: 10000,
-        label: '프리미엄 후원',
-        description: '보다 정교한 사주 엔진 고도화에 사용됩니다.',
-        icon: <Sparkles className="w-6 h-6" />,
-        color: '#8b5cf6',
-        isPopular: true,
-    },
-    {
-        id: 'angel',
-        amount: 50000,
-        label: '시크릿 엔젤',
-        description: '서비스의 안정적인 운영과 확장을 지원합니다.',
-        icon: <Heart className="w-6 h-6" />,
-        color: '#ef4444',
-    }
-];
+const KAKAO_LINK = "https://open.kakao.com/o/secret-saju";
 
 export default function SupportPage() {
-    const { t } = useLocale();
-    const [selectedTier, setSelectedTier] = useState<string | null>(null);
-    const [isProcessing, setIsProcessing] = useState(false);
+  const router = useRouter();
 
-    const handleDonate = async (tier: DonationTier) => {
-        setIsProcessing(true);
-        // Simulate payment logic (Toss 연동 추후 고도화)
-        setTimeout(() => {
-            alert(`${tier.label} 후원 감사드립니다! (데모 버전)`);
-            setIsProcessing(false);
-        }, 1500);
-    };
+  return (
+    <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-28">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_10%,rgba(244,114,182,0.16),transparent_45%),radial-gradient(circle_at_70%_70%,rgba(16,185,129,0.14),transparent_50%)]" />
+      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+        <button onClick={() => router.back()} className="inline-flex items-center gap-2 text-slate-300 hover:text-white mb-8">
+          <ArrowLeft className="w-5 h-5" /> 뒤로가기
+        </button>
 
-    return (
-        <div className="py-12 md:py-24 max-w-4xl mx-auto space-y-16">
-            {/* Header Section */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-center space-y-6"
-            >
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-sm font-medium">
-                    <Zap className="w-4 h-4" />
-                    <span>Project Monetization & Support</span>
-                </div>
-                <h1 className="text-4xl md:text-6xl font-display text-mystic">
-                    Secret Saju를 응원해주세요
-                </h1>
-                <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-                    여러분의 따뜻한 후원은 더 정교한 명리학 엔진 개발과<br />
-                    안정적인 서비스 운영에 소중하게 사용됩니다.
-                </p>
-            </motion.div>
+        <section className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-8 md:p-12">
+          <div className="inline-flex items-center gap-2 text-pink-300 font-black tracking-[0.2em] uppercase">
+            <HeartHandshake className="w-4 h-4" /> 후원하기
+          </div>
+          <h1 className="mt-4 text-4xl font-black italic">프로젝트 운영을 응원해주세요</h1>
+          <p className="mt-4 text-slate-300 max-w-2xl">
+            Secret Saju는 더 나은 해석 품질과 안정적인 서비스를 위해 운영됩니다.
+            소중한 후원은 서버 유지, 데이터 정합성 개선, 오차 보완 작업에 바로 반영됩니다.
+          </p>
 
-            {/* Donation Tiers Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {DONATION_TIERS.map((tier, idx) => (
-                    <motion.div
-                        key={tier.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.1 }}
-                        onClick={() => setSelectedTier(tier.id)}
-                        className={`premium-card p-8 cursor-pointer group hover:scale-[1.02] transition-all relative ${selectedTier === tier.id ? 'ring-2 ring-primary border-primary/50' : ''
-                            }`}
-                    >
-                        {tier.isPopular && (
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-primary text-[10px] font-bold text-white uppercase tracking-tighter shadow-lg shadow-primary/20">
-                                Best Value
-                            </div>
-                        )}
-                        <div className="space-y-6">
-                            <div
-                                className="w-12 h-12 rounded-2xl flex items-center justify-center p-2"
-                                style={{ backgroundColor: `${tier.color}15`, color: tier.color }}
-                            >
-                                {tier.icon}
-                            </div>
-                            <div className="space-y-2">
-                                <h3 className="text-xl font-bold text-white">{tier.label}</h3>
-                                <p className="text-sm text-slate-400 line-clamp-2">{tier.description}</p>
-                            </div>
-                            <div className="pt-4 border-t border-white/5">
-                                <div className="text-2xl font-bold text-white">
-                                    ₩{tier.amount.toLocaleString()}
-                                </div>
-                            </div>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDonate(tier);
-                                }}
-                                disabled={isProcessing}
-                                className="w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-sm bg-white/5 group-hover:bg-primary transition-all text-white disabled:opacity-50"
-                            >
-                                {isProcessing ? (
-                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                ) : (
-                                    <>
-                                        <span>지금 후원하기</span>
-                                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    </motion.div>
-                ))}
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="rounded-3xl border border-white/10 bg-slate-900/50 p-6">
+              <div className="flex items-center gap-2 text-emerald-300 font-black"><Gem className="w-5 h-5" /> 정중한 후원 안내</div>
+              <ul className="mt-3 space-y-2 text-slate-300 text-sm">
+                <li>후원금은 운영비와 장애 대응 자금으로 사용됩니다.</li>
+                <li>기능 고도화(운세 해석 근거, 데이터 정리, UX 개선)에 반영됩니다.</li>
+                <li>원하시면 결제 영수증을 고객지원으로 보내주세요.</li>
+              </ul>
             </div>
+            <div className="rounded-3xl border border-white/10 bg-slate-900/50 p-6">
+              <div className="flex items-center gap-2 text-cyan-300 font-black"><MessageCircle className="w-5 h-5" /> 커뮤니티 톡방</div>
+              <p className="mt-3 text-slate-300 text-sm">이슈 공유와 공지 확인을 위한 오픈 채널을 운영합니다.</p>
+              <a
+                href={KAKAO_LINK}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-flex items-center gap-2 text-white bg-sky-500 rounded-full px-5 py-3 font-black"
+              >
+                <Send className="w-4 h-4" /> 카카오톡 톡방 입장하기
+              </a>
+            </div>
+          </div>
 
-            {/* Trust Section */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                className="premium-card p-8 md:p-12 text-center space-y-8 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 border-indigo-500/10"
-            >
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-500/10 text-indigo-400 mb-4">
-                    <ShieldCheck className="w-8 h-8" />
-                </div>
-                <div className="space-y-4">
-                    <h2 className="text-2xl font-bold text-white">안전한 결제 시스템</h2>
-                    <p className="max-w-xl mx-auto text-slate-400 leading-relaxed">
-                        Toss Payments 및 KakaoPay를 통해 보안이 강화된 안전한 후원이 가능합니다.<br />
-                        후원 내역은 관리자 페이지를 통해 투명하게 관리됩니다.
-                    </p>
-                </div>
-                <div className="flex flex-wrap items-center justify-center gap-6 grayscale opacity-50">
-                    <span className="text-lg font-bold">Toss</span>
-                    <span className="text-lg font-bold">KakaoPay</span>
-                    <span className="text-lg font-bold">VISA</span>
-                    <span className="text-lg font-bold">MasterCard</span>
-                </div>
-            </motion.div>
-        </div>
-    );
+          <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+            <h2 className="font-black text-xl">정직한 커뮤니케이션 약속</h2>
+            <p className="mt-3 text-slate-300">
+              문의 처리 속도, 유지보수 계획, 다음 분기 우선순위는 투명하게 공지하겠습니다.
+              모두가 안심하고 사용할 수 있는 서비스가 되도록 계속 개선하겠습니다.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
 }
+

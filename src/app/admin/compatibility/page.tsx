@@ -59,7 +59,7 @@ export default function CompatibilityAdminPage() {
     const sajuA = mockSajuResult(indexA, 'M');
     const sajuB = mockSajuResult(indexB, 'F');
 
-    const result = analyzeRelationship(sajuA, sajuB, '연인');
+    const result = analyzeRelationship(sajuA, sajuB, 'lover');
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-950 via-pink-950 to-slate-950 text-white p-8">

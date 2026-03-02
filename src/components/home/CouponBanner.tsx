@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import { Gift, ArrowRight, Zap } from "lucide-react";
-import { motion } from "framer-motion";
 
 export default function CouponBanner() {
   return (

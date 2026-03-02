@@ -39,13 +39,14 @@ export default function HomePage() {
     }
   }, []);
 
-  const handleBirthSubmit = async (data: { year: number; month: number; day: number; hour: number, timeKnown?: boolean }) => {
+  const handleBirthSubmit = async (data: { year: number; month: number; day: number; hour: number; minute: number; timeKnown?: boolean }) => {
     setFlowState("loading");
 
     try {
       const parsedHour = Number.isNaN(data.hour) ? 12 : data.hour;
-      const birthDate = new Date(data.year, data.month - 1, data.day, parsedHour, 0);
-      const timeStr = `${parsedHour.toString().padStart(2, '0')}:00`;
+      const parsedMinute = Number.isNaN(data.minute) ? 0 : data.minute;
+      const birthDate = new Date(data.year, data.month - 1, data.day, parsedHour, parsedMinute);
+      const timeStr = `${parsedHour.toString().padStart(2, '0')}:${parsedMinute.toString().padStart(2, '0')}`;
       const result = await calculateSaju(birthDate, "F", timeStr, 'solar', data.timeKnown === false);
       setSajuData(result);
       setFlowState("result");

@@ -59,7 +59,6 @@ export const GOLDEN_DATASET: GoldenCase[] = [
         day: '경진',
         hour: '계미',
       },
-      daewunStart: 2,
     },
   },
   {
@@ -79,7 +78,6 @@ export const GOLDEN_DATASET: GoldenCase[] = [
         day: '무진',
         hour: '정사',
       },
-      daewunStart: 5,
     },
   },
   {

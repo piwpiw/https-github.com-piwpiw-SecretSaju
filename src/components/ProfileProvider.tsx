@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { SajuProfileRepository } from '@/lib/repositories/saju-profile.repository';
 import { SajuProfileResponse, SajuProfileMapper } from '@/types/schema';
 import { STORAGE_KEYS } from '@/config';
+import { getUserFromCookie } from '@/lib/kakao-auth';
 
 interface ProfileContextType {
     profiles: SajuProfileResponse[];
@@ -19,8 +20,9 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     const [activeProfile, setActiveProfile] = useState<SajuProfileResponse | null>(null);
 
     const refreshProfiles = async () => {
-        // userId: 'local-user' for now as per repository fallback
-        const saved = await SajuProfileRepository.findByUserId('local-user');
+        const user = getUserFromCookie();
+        const userId = user ? String(user.id) : 'local-user';
+        const saved = await SajuProfileRepository.findByUserId(userId);
         const formatted = saved.map(SajuProfileMapper.toResponse);
         setProfiles(formatted);
 
