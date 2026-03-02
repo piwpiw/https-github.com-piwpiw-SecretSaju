@@ -50,6 +50,17 @@
 - `npm run pre-deploy:parallel`
   - pre-deploy 내부에서 build/test 단계를 병렬로 처리
 
+## 빠른 반복 배포 지침(최소 변경 모드)
+
+- 수정 범위는 사전 영향도 3단계만 허용: 워크플로(`.github/workflows/deploy.yml`), 배포 스크립트(`scripts/deploy.sh`, `scripts/wait-for-health.js`), 배포 명령(`package.json`).
+- 이 범위를 벗어나는 수정은 `수락 필요`로 간주하고 즉시 중단.
+- 실행은 항상 병렬 확인 후 일괄 반영:
+  - `npm run pre-deploy:parallel`
+  - `npm run deploy:fast`
+  - `npm run deploy:ci`
+- 실패 지점은 첫 실패 항목만 수정하고 재실행, 성공 항목은 건너뛰기(`SKIP_*` 플래그로 최소 재실행).
+- 병목 완화 우선순위: 템플릿 수정보다 설정 누락 제거, 문서 갱신보다 배포 체인 안정성 우선.
+
 ## 표준 배포 흐름
 
 1. 로컬 확인
