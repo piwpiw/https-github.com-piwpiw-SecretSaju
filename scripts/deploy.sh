@@ -1,33 +1,38 @@
-﻿#!/bin/bash
+#!/usr/bin/env bash
 
 # Secret Saju deployment flow (Render)
 # Usage: ./scripts/deploy.sh [production|preview]
+# Optional env:
+# - RUN_INSTALL=true|false (default: true)
+# - SKIP_TESTS=true|false (default: false)
+# - SKIP_BUILD=true|false (default: false)
 
-set -e
+set -euo pipefail
 
-ENV=${1:-production}
-echo "🚀 Deployment mode: $ENV"
+ENVIRONMENT="${1:-production}"
+RUN_INSTALL="${RUN_INSTALL:-true}"
+SKIP_TESTS="${SKIP_TESTS:-false}"
+SKIP_BUILD="${SKIP_BUILD:-false}"
 
-echo "1) Install dependencies"
-npm ci
+echo "Deployment mode: ${ENVIRONMENT}"
 
-echo "2) TypeScript check"
-npm run lint
-
-echo "3) Unit tests"
-npm test -- --run
-
-echo "4) Build"
-npm run build
-
-echo "5) Verify env"
-node scripts/verify-env.js
-
-echo "6) Trigger Render deploy"
-if [ "$ENV" = "production" ]; then
-  node scripts/render-deploy.js
+if [ "${RUN_INSTALL}" = "true" ]; then
+  echo "[1/4] Install dependencies"
+  npm ci --no-audit --no-fund
 else
-  node scripts/render-deploy.js
+  echo "[1/4] Skip install (RUN_INSTALL=false)"
 fi
 
-echo "✅ Done"
+echo "[2/4] Pre-deploy checks"
+FLAGS=(--parallel-checks)
+if [ "${SKIP_TESTS}" = "true" ]; then FLAGS+=(--skip-tests); fi
+if [ "${SKIP_BUILD}" = "true" ]; then FLAGS+=(--skip-build); fi
+node scripts/pre-deploy.js "${FLAGS[@]}"
+
+echo "[3/4] Trigger Render deploy (hook optional)"
+node scripts/render-deploy.js
+
+echo "[4/4] Wait for health"
+node scripts/wait-for-health.js
+
+echo "Deployment automation completed."
