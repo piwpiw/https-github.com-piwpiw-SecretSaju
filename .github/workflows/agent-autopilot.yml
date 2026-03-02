@@ -40,14 +40,6 @@ jobs:
           set -o pipefail
           npm run qa 2>&1 | tee /tmp/autopilot-qa.log
           
-      - name: Upload AutoPilot QA log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: autopilot-qa-log-${{ github.run_id }}-${{ github.run_attempt }}
-          path: /tmp/autopilot-qa.log
-          retention-days: 7
-
       - name: Publish AutoPilot summary
         if: always()
         run: |
@@ -106,6 +98,23 @@ jobs:
         with:
           name: autopilot-report-${{ github.run_id }}-${{ github.run_attempt }}
           path: /tmp/autopilot-report.json
+          retention-days: 7
+
+      - name: Bundle AutoPilot triage artifacts
+        if: always()
+        run: |
+          tar -czf /tmp/autopilot-triage-${{ github.run_id }}-${{ github.run_attempt }}.tgz \
+            /tmp/autopilot-qa.log \
+            /tmp/autopilot-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}.tgz \
+            /tmp/autopilot-report.json \
+            --ignore-failed-read || true
+
+      - name: Upload AutoPilot triage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: autopilot-triage-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/autopilot-triage-${{ github.run_id }}-${{ github.run_attempt }}.tgz
           retention-days: 7
         
       - name: Automerge

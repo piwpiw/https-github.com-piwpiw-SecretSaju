@@ -327,3 +327,21 @@ jobs:
           name: deploy-report-${{ github.run_id }}-${{ github.run_attempt }}
           path: /tmp/deploy-report.json
           retention-days: 7
+
+      - name: Bundle deploy triage artifacts
+        if: always()
+        run: |
+          tar -czf /tmp/deploy-triage-${{ github.run_id }}-${{ github.run_attempt }}.tgz \
+            /tmp/build.log \
+            /tmp/render-deploy.log \
+            /tmp/healthcheck.log \
+            /tmp/deploy-report.json \
+            --ignore-failed-read || true
+
+      - name: Upload deploy triage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-triage-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/deploy-triage-${{ github.run_id }}-${{ github.run_attempt }}.tgz
+          retention-days: 7
