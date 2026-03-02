@@ -10,6 +10,7 @@ import { getProfiles, SajuProfile } from "@/lib/storage";
 import { calculateHighPrecisionSaju, HighPrecisionSajuResult } from "@/core/api/saju-engine";
 import { analyzeRelationship, RelationshipAnalysis } from "@/lib/compatibility";
 import { TEN_GOD_GROUPS, getTenGodGuide } from "@/lib/terminology";
+import { saveAnalysisToHistory } from "@/lib/analysis-history";
 
 type Winner = "A" | "B" | "Draw";
 
@@ -129,6 +130,7 @@ export default function VSModePage() {
   const [winners, setWinners] = useState<TraitWinner[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [shareMessage, setShareMessage] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -199,6 +201,54 @@ export default function VSModePage() {
       }
     } catch {
       setShareMessage("공유 기능을 사용할 수 없습니다.");
+    }
+  };
+
+  const handleSaveResult = () => {
+    if (!analysis || !sajuA || !sajuB || !mainProfile || !targetProfile || isSaving) return;
+
+    setIsSaving(true);
+    try {
+      const saved = saveAnalysisToHistory({
+        type: "SAJU",
+        title: "궁합 VS 분석",
+        subtitle: `${mainProfile.name} vs ${targetProfile.name} / 점수 ${analysis.score}점`,
+        profileId: targetProfile.id,
+        profileName: `${mainProfile.name} / ${targetProfile.name}`,
+        resultUrl: `/relationship/${profileId}/vs`,
+        result: {
+          mode: "relationship-vs",
+          score: analysis.score,
+          chemistry: analysis.chemistry,
+          tension: analysis.tension,
+          advice: analysis.advice,
+          futurePredict: analysis.futurePredict,
+          winners,
+          combinedTerms,
+          sajuA,
+          sajuB,
+          profileA: {
+            id: mainProfile.id,
+            name: mainProfile.name,
+            birthdate: mainProfile.birthdate,
+          },
+          profileB: {
+            id: targetProfile.id,
+            name: targetProfile.name,
+            birthdate: targetProfile.birthdate,
+          },
+          createdAt: new Date().toISOString(),
+        },
+      });
+
+      if (saved) {
+        setShareMessage("분석 결과를 기록에 저장했습니다.");
+      } else {
+        setShareMessage("기록 저장에 실패했습니다.");
+      }
+    } finally {
+      setIsSaving(false);
+      window.setTimeout(() => setShareMessage(""), 2500);
     }
   };
 
@@ -308,7 +358,13 @@ export default function VSModePage() {
         </section>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <button className="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold">결과 저장(준비중)</button>
+          <button
+            onClick={handleSaveResult}
+            disabled={isSaving}
+            className="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold"
+          >
+            {isSaving ? "저장 중..." : "결과 저장"}
+          </button>
           <Link href={`/relationship/${profileId}`} className="flex-1 py-3 rounded-xl border border-white/15 bg-white/5 text-center font-semibold text-slate-100">
             상세 분석 보기
           </Link>

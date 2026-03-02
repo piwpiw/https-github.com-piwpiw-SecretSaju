@@ -7,6 +7,10 @@ export default function PsychologyPremiumReportPage({
   searchParams?: { [key: string]: string | undefined };
 }) {
   const profileId = searchParams?.profileId || "미지정";
+  const hasProfileId = profileId && profileId !== "미지정";
+  const statusText = hasProfileId
+    ? `현재 프로필(${profileId})의 심리 프리미엄 분석은 연동 작업이 완료되지 않아 준비 단계입니다.`
+    : "심리 프리미엄 분석은 현재 연동 준비 단계입니다.";
 
   return (
     <main className="min-h-screen bg-slate-950 text-white relative overflow-hidden pb-36">
@@ -22,16 +26,25 @@ export default function PsychologyPremiumReportPage({
           </div>
           <h1 className="text-3xl font-black leading-tight">심리 프리미엄 리포트</h1>
           <p className="text-slate-300 leading-relaxed">
-            현재 프로필({profileId}) 기반 분석은 데이터 연동 직후 제공 예정입니다.
-            프리미엄 버튼으로 진입은 성공했으며, 연결되지 않은 경로를 방지하기 위해 결과 페이지를 임시 노출합니다.
+            {statusText}
+            <br />
+            프리미엄 경로 진입은 정상적으로 처리되었으나, 보고서 본문은 연동 완료 후 순차 공개됩니다.
           </p>
           <div className="pt-4 border-t border-border-color">
-            <Link
-              href="/psychology"
-              className="inline-flex px-6 py-3 rounded-2xl bg-rose-600 text-white font-black uppercase tracking-widest text-xs shadow-lg"
-            >
-              심리메뉴로 돌아가기
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/psychology"
+                className="inline-flex px-6 py-3 rounded-2xl bg-rose-600 text-white font-black uppercase tracking-widest text-xs shadow-lg"
+              >
+                심리 메뉴로 돌아가기
+              </Link>
+              <Link
+                href="/support"
+                className="inline-flex px-6 py-3 rounded-2xl bg-white/10 border border-white/20 text-white font-black uppercase tracking-widest text-xs"
+              >
+                안내/문의하기
+              </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ type Props = {
 
 export default function PsychologyModulePage({ params }: Props) {
   const { id } = params;
+  const moduleLabel = decodeURIComponent(id);
 
   return (
     <main className="min-h-screen bg-slate-950 text-white relative overflow-hidden pb-32">
@@ -24,18 +25,29 @@ export default function PsychologyModulePage({ params }: Props) {
           </div>
           <h1 className="text-3xl font-black leading-tight">모듈 실행 화면</h1>
           <p className="text-slate-300 text-sm leading-relaxed">
-            요청한 모듈 ID: <span className="text-rose-300 font-black">{id}</span>
+            요청한 모듈 ID: <span className="text-rose-300 font-black">{moduleLabel}</span>
           </p>
           <p className="text-slate-400 leading-relaxed">
-            현재 모듈 상세 분석 페이지는 연동 준비 중입니다. 모듈 진입은 정상적으로 연결되며, 추후 테스트 결과와 분석 그래프를 이 화면에서 렌더링하도록 확장할 수 있습니다.
+            현재 모듈 상세 분석은 연동 준비 중이라 분석 화면은 임시로 노출됩니다.
+            모듈 진입은 정상적으로 처리되었고, 추후 검증 결과/그래프 영역을 이 화면에서 확장할 예정입니다.
           </p>
-          <div className="inline-flex items-center gap-2 text-xs text-slate-400 mt-4">
-            <Clock className="w-4 h-4" />
-            결과는 계정 분석 히스토리에 반영됩니다.
+          <div className="flex flex-col sm:flex-row gap-3 mt-6">
+            <Link
+              href="/psychology"
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-rose-600/90 text-white font-black uppercase tracking-widest text-[11px]"
+            >
+              <Clock className="w-4 h-4" />
+              심리 메뉴로 돌아가기
+            </Link>
+            <Link
+              href="/support"
+              className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-white/10 border border-white/20 text-slate-200 font-black uppercase tracking-widest text-[11px]"
+            >
+              준비 상태 확인
+            </Link>
           </div>
         </div>
       </div>
     </main>
   );
 }
-
