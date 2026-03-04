@@ -56,6 +56,23 @@ const ELEMENT_MAP: Record<string, number> = {
 };
 
 
+const ELEMENT_SLOT_COUNT = FIVE_ELEMENTS.length;
+
+function normalizeElementValues(values: number[] | undefined, fallback = 0): number[] {
+  return Array.from({ length: ELEMENT_SLOT_COUNT }, (_, index) => {
+    const value = Array.isArray(values) ? values[index] : undefined;
+    return Number.isFinite(value) ? Number(value) : fallback;
+  });
+}
+
+function resolveElementIndex(elementName: string | undefined): number {
+  if (!elementName) return 0;
+  const index = ELEMENT_MAP[elementName];
+  if (typeof index !== "number") return 0;
+  if (index < 0 || index >= ELEMENT_SLOT_COUNT) return 0;
+  return index;
+}
+
 function ElementBar({ name, score, color, icon, desc, delay, count }: {
   name: string; score: number; color: string; icon: string; desc: string; delay: number; count: number;
 }) {
@@ -183,12 +200,18 @@ export default function ResultCard({
 
   const ageLabel = ageGroup === "10s" ? "10대" : ageGroup === "20s" ? "20대" : "30대+";
 
-  // Choose which scores to show based on mode
-  const elementScores = analysisMode === 'advanced' ? propElementScores : propElementBasicPercentages;
-  const elementCounts = propElementCounts;
+  // Normalize to avoid runtime/index errors when payload shape drifts.
+  const weightedScores = normalizeElementValues(propElementScores, 0);
+  const basicPercentages = normalizeElementValues(propElementBasicPercentages, 0);
+  const elementCounts = normalizeElementValues(propElementCounts, 0);
+  const elementScores = analysisMode === 'advanced' ? weightedScores : basicPercentages;
 
-  const maxIdx = elementScores.indexOf(Math.max(...elementScores));
-  const dominantElement = FIVE_ELEMENTS[maxIdx];
+  const maxIdx = elementScores.reduce(
+    (bestIndex, currentScore, currentIndex) =>
+      currentScore > elementScores[bestIndex] ? currentIndex : bestIndex,
+    0
+  );
+  const dominantElement = FIVE_ELEMENTS[maxIdx] ?? FIVE_ELEMENTS[0];
   const secretData = getSecretAnalysis(archetype.code);
 
   const cardRef = useRef<HTMLDivElement>(null);
@@ -352,8 +375,8 @@ export default function ResultCard({
                   <div className="grid grid-cols-4 gap-2 max-w-sm w-full mx-auto relative">
                     {['hour', 'day', 'month', 'year'].map((pKey) => {
                       const p = (fourPillars as any)[pKey];
-                      const stemElIdx = ELEMENT_MAP[p.stemElement || '토'];
-                      const branchElIdx = ELEMENT_MAP[p.branchElement || '토'];
+                      const stemElIdx = resolveElementIndex(p.stemElement);
+                      const branchElIdx = resolveElementIndex(p.branchElement);
 
                       const isUnknownHour = pKey === 'hour' && isTimeUnknown;
 
@@ -518,8 +541,8 @@ export default function ResultCard({
               <ElementBar
                 key={el.name}
                 name={el.name}
-                score={elementScores[i]}
-                count={elementCounts[i]}
+                score={elementScores[i] ?? 0}
+                count={elementCounts[i] ?? 0}
                 color={el.color}
                 icon={el.icon}
                 desc={el.desc}

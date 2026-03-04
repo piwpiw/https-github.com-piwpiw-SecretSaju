@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run guard:result-card && next build",
     "start": "next start",
     "lint": "next lint",
     "qa": "node scripts/zero-script-qa.mjs",
@@ -26,6 +26,7 @@
     "preflight:local:serial": "npm run lint && npx tsc --noEmit",
     "preflight:local": "node scripts/preflight-local.js --parallel",
     "deploy:local": "npm run preflight:local && node scripts/pre-deploy.js --skip-build --skip-tests",
+    "guard:result-card": "node scripts/guard-result-card.js",
     "verify:env": "node scripts/verify-env.js",
     "setup:env": "bash scripts/setup-env.sh",
     "setup:github": "bash scripts/setup-github.sh",

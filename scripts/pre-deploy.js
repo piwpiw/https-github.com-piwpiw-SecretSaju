@@ -97,6 +97,7 @@ async function main() {
   const skipEnv = hasFlag('--skip-env');
   const skipConfig = hasFlag('--skip-config');
   const skipMigrations = hasFlag('--skip-migrations');
+  const skipIntegrity = hasFlag('--skip-integrity');
   const skipTests = hasFlag('--skip-tests');
   const skipBuild = hasFlag('--skip-build');
   const parallelChecks = hasFlag('--parallel-checks');
@@ -105,6 +106,7 @@ async function main() {
     env: true,
     config: true,
     migrations: true,
+    integrity: true,
     tests: true,
     build: true,
   };
@@ -127,6 +129,10 @@ async function main() {
     results.migrations = checkMigrations();
   }
 
+  if (!skipIntegrity) {
+    results.integrity = runStep('npm run guard:result-card', 'result-card guard');
+  }
+
   const runnable = [];
   if (!skipTests) runnable.push({ key: 'tests', label: 'tests', command: 'npm test -- --run' });
   if (!skipBuild) runnable.push({ key: 'build', label: 'build', command: 'npm run build' });
@@ -146,6 +152,7 @@ async function main() {
   console.log(`env:        ${results.env ? 'PASS' : 'FAIL'}`);
   console.log(`config:     ${results.config ? 'PASS' : 'FAIL'}`);
   console.log(`migrations: ${results.migrations ? 'PASS' : 'FAIL'}`);
+  console.log(`integrity:  ${results.integrity ? 'PASS' : 'FAIL'}`);
   console.log(`tests:      ${results.tests ? 'PASS' : 'FAIL'}`);
   console.log(`build:      ${results.build ? 'PASS' : 'FAIL'}`);
 
