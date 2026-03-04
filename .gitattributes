@@ -9,3 +9,4 @@
 *.yml text eol=lf
 *.yaml text eol=lf
 src/components/ResultCard.tsx text eol=lf working-tree-encoding=UTF-8
+src/lib/saju-hanja.ts text eol=lf working-tree-encoding=UTF-8

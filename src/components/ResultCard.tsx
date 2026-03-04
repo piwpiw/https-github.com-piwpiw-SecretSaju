@@ -12,6 +12,7 @@ import ElementPolygon from "@/components/ui/ElementPolygon";
 import { QRCodeSVG } from "qrcode.react";
 import { useWallet } from "./WalletProvider";
 import { handleShare } from "@/lib/share";
+import { BRANCH_HANJA, ELEMENT_MAP, ELEMENT_REMEDIES, FIVE_ELEMENTS, STEM_HANJA } from "@/lib/saju-hanja";
 
 interface ResultCardProps {
   archetype: AnimalArchetype & {
@@ -35,27 +36,6 @@ interface ResultCardProps {
 }
 
 // 오행 색상/설명 맵 (Fact-based Standard Colors)
-const FIVE_ELEMENTS = [
-  { name: "木 (목)", color: "from-green-500 to-emerald-600", bg: "bg-emerald-500/20", borderColor: "border-emerald-500/50", textColor: "text-emerald-400", desc: "성장·인자·활동적", icon: "🌿" },
-  { name: "火 (화)", color: "from-red-500 to-rose-600", bg: "bg-rose-500/20", borderColor: "border-rose-500/50", textColor: "text-rose-400", desc: "열정·표현·리더십", icon: "🔥" },
-  { name: "土 (토)", color: "from-yellow-400 to-amber-600", bg: "bg-amber-500/20", borderColor: "border-amber-500/50", textColor: "text-amber-400", desc: "안정·신뢰·중재력", icon: "🏔️" },
-  { name: "金 (금)", color: "from-slate-100 to-zinc-300", bg: "bg-white/10", borderColor: "border-white/30", textColor: "text-white", desc: "결단·정의·냉철함", icon: "⚔️" },
-  { name: "水 (수)", color: "from-blue-600 to-indigo-900", bg: "bg-indigo-500/20", borderColor: "border-indigo-500/50", textColor: "text-indigo-400", desc: "지혜·유연·적응력", icon: "💧" },
-];
-
-const STEM_HANJA: Record<string, string> = {
-  '갑': '甲', '을': '乙', '병': '丙', '정': '丁', '무': '戊', '기': '己', '경': '庚', '신': '辛', '임': '壬', '계': '癸'
-};
-
-const BRANCH_HANJA: Record<string, string> = {
-  '자': '子', '축': '丑', '인': '寅', '묘': '卯', '진': '辰', '사': '巳', '오': '午', '미': '未', '신': '申', '유': '酉', '술': '戌', '해': '亥'
-};
-
-const ELEMENT_MAP: Record<string, number> = {
-  '목': 0, '화': 1, '토': 2, '금': 3, '수': 4
-};
-
-
 const ELEMENT_SLOT_COUNT = FIVE_ELEMENTS.length;
 
 function normalizeElementValues(values: number[] | undefined, fallback = 0): number[] {
@@ -167,14 +147,6 @@ function getSecretAnalysis(code: string) {
     idealType: idealTypes[(base * 11) % idealTypes.length]
   };
 }
-
-const ELEMENT_REMEDIES: Record<string, { color: string; items: string; direction: string; numbers: string }> = {
-  "목": { color: "청색, 초록색", items: "나무 화분, 책, 섬유 소품", direction: "동쪽", numbers: "3, 8" },
-  "화": { color: "적색, 분홍색", items: "밝은 조명, 화려한 액세서리", direction: "남쪽", numbers: "2, 7" },
-  "토": { color: "황색, 브라운", items: "도자기, 원석 팔찌, 흙 화분", direction: "중앙", numbers: "5, 10" },
-  "금": { color: "백색, 금색, 은색", items: "금속 장신구, 금반지, 시계", direction: "서쪽", numbers: "4, 9" },
-  "수": { color: "흑색, 청색", items: "어항, 분수 소품, 매끄러운 소재", direction: "북쪽", numbers: "1, 6" }
-};
 
 export default function ResultCard({
   archetype,
@@ -568,7 +540,8 @@ export default function ResultCard({
             {FIVE_ELEMENTS.filter((_, i) => elementCounts[i] === 0).length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {FIVE_ELEMENTS.filter((_, i) => elementCounts[i] === 0).map((el, i) => {
-                  const remedy = ELEMENT_REMEDIES[el.name.split(" ")[0]];
+                  const remedyKey = el.name.split("(")[0];
+                  const remedy = ELEMENT_REMEDIES[remedyKey] ?? ELEMENT_REMEDIES["\uD1A0"];
                   return (
                     <div key={i} className="bg-black/40 rounded-xl p-4 border border-white/5 shadow-inner">
                       <p className="text-xs font-bold text-indigo-400 mb-2 flex items-center gap-2">
