@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect } from "react";
 import { RefreshCw, Home } from "lucide-react";
@@ -22,9 +22,9 @@ export default function GlobalError({
       <body className="min-h-screen bg-slate-950 text-white">
         <main className="min-h-screen flex flex-col items-center justify-center px-4">
           <div className="max-w-md w-full rounded-2xl border border-white/15 bg-white/5 p-6 shadow-2xl">
-            <h1 className="text-3xl font-bold mb-3">페이지 오류가 발생했습니다</h1>
+            <h1 className="text-3xl font-bold mb-3">전체 화면에서 오류가 발생했습니다</h1>
             <p className="text-white/80 mb-6 leading-relaxed">
-              일시적인 오류가 발생했습니다. 새로고침 후 다시 시도해 주세요.
+              잠시 후 다시 시도해 주세요. 계속 동일하면 새로고침으로 재시도해 주세요.
             </p>
             <div className="flex flex-wrap gap-3">
               <button

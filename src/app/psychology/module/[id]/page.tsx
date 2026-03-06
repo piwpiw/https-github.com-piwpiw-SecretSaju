@@ -11,7 +11,7 @@ type ModuleDefinition = {
 
 const MODULE_LIBRARY: Record<string, ModuleDefinition> = {
   "inner-child": {
-    title: "내면의 아이(Inner Child)",
+    title: "내면의 아이",
     summary: "어린 시절의 미해결 감정을 현재 판단 습관으로 추적해 정리합니다.",
     purpose: "감정 기복이 큰 날에도 판단의 연쇄 반응을 멈추고 회복 루틴을 설계할 수 있게 돕습니다.",
     checklist: ["현재 반복되는 반응을 1개만 기록하기", "자기비난 문장을 사실 진술로 바꾸기", "1주일간 수면/식사 패턴 3가지를 점검하기"],

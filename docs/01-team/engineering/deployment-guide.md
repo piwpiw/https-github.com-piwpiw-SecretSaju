@@ -10,15 +10,24 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - 상충 시 본 문서 기준으로 처리
 - 문서 충돌 판단은 각 문서 상단의 `Last Updated`/`Next Review`로 동기화 상태를 확인
 
+## 배포 정책 (최우선 규칙)
+- 배포 플랫폼은 **Render only**로 고정한다.
+- `RENDER_DEPLOY_HOOK_URL`(또는 `RENDER_DEPLOY_HOOK`)가 없으면 배포를 실패 처리한다.
+- `.vercel` 폴더가 존재하면 배포를 차단한다(예외적으로 `ALLOW_VERCEL_LINK=true`만 허용). 배포 환경은 먼저 해당 폴더를 삭제하고 시작한다.
+- 요청 사항 반영 후 배포 전에는 반드시 로컬 사전 검증을 통과해야 한다. 로컬 검증 실패 시 배포는 즉시 중단한다.
+- 운영 배포(`deploy` / `deploy:fast`): `main` 브랜치의 배포 절차로만 수행한다.
+- Preview: `deploy:preview` / `deploy:preview:fast`는 dev/PR 경로로 수행한다.
+
 ## 배포 대상
 - Production: `main` 브랜치
 - Staging/Preview: `dev` 브랜치 및 PR
 
 ## 표준 배포 흐름
-1. 로컬 사전검증: `npm run deploy:local`
-2. CI 품질/배포 파이프라인 확인
-3. 배포 실행
-4. 배포 후 스모크 및 모니터링
+1. 로컬 안정화 실행: `npm run dev:safe -- --port 3000 --auto-port`
+2. 로컬 사전검증: `npm run deploy:local`
+3. CI 품질/배포 파이프라인 확인
+4. 배포 실행
+5. 배포 후 스모크 및 모니터링
 
 ## 명령 기준 (구현 반영)
 - `npm run preflight:local:parallel`
@@ -27,6 +36,10 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
   - 재현/디버깅용 직렬 실행
 - `npm run preflight:local`
   - 기본값: 병렬 실행
+- `npm run dev:safe -- --port 3000 --auto-port`
+  - 포트 충돌 자동 정리 + preflight + `next dev` 실행
+- `npm run smoke:auth`
+  - 로그인 핵심 라우트 스모크(`/`, `/login`, `/signup`, `/auth/callback`)
 - `npm run deploy:local`
   - `preflight:local` + `pre-deploy --skip-build --skip-tests`
 - `npm run pre-deploy`
@@ -34,11 +47,11 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - `npm run pre-deploy:parallel`
   - `pre-deploy` 내 `tests/build` 병렬 점검
 - `npm run deploy:fast`
-  - `--parallel-checks` + prebuilt 배포 경로
+  - `--parallel-checks` + prebuilt 배포 경로 (Render 훅 필수)
 - `npm run deploy`
-  - 기본 전체 배포(표준 경로)
+  - Render-only 운영 배포(기본 경로)
 - `npm run deploy:preview`
-  - PR/스테이징 배포
+  - Render-only Preview 배포
 
 ## 배포 명령 사용 가이드
 
@@ -49,11 +62,11 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - `npm run preflight:local:serial`
   - 동일 검사 직렬
 - `npm run deploy:fast`
-  - 빠른 검증 경로, 병렬 체크 중심
+  - 빠른 검증 경로, 병렬 체크 중심 (Render 훅 필수)
 - `npm run deploy`
-  - 운영 배포
+  - 운영 배포(Policy + Render Hook 검증 통과 시)
 - `npm run deploy:preview`
-  - 미리보기 배포
+  - 미리보기 배포(Render-only)
 
 ## 검증 속도 참고 (로컬 측정)
 - preflight 병렬: 약 9.4초
@@ -63,12 +76,18 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 ## 운영 규칙
 - 병렬 모드를 기본으로 사용한다.
 - 직렬 모드는 실패 재현, flaky 추적 등 예외 상황에만 사용한다.
+- 로컬 서버 재시작은 수동 `npm run dev` 대신 `npm run dev:safe -- --auto-port`를 기본으로 사용한다.
+- 인증/회원가입 UI 변경 시 `npm run smoke:auth`를 릴리스 전 필수로 수행한다.
+- 모든 사용자 요청 기반 배포는 최소 `deploy:local` 성공을 완료한 뒤에만 시작한다.
+- 변경사항 영향 범위를 가로지르는 페이지/API는 최소 스모크(`/api/saju/calculate`, `/api/payment/verify`, `/api/health`)를 함께 확인해야 한다.
 - 명령 변경 시 `package.json`과 본 문서를 동일 PR에서 갱신한다.
 - CI 정책 변경 시 `.github/workflows/deploy.yml`과 본 문서/상세 가이드를 함께 갱신한다.
 - 관련 명령 변경은 `docs/guides/deployment.md`와 동기화한다.
+- 배포 실행은 반드시 `node scripts/deploy-policy.js` 통과 전제에서 진행한다.
 
 ## 체크포인트
 - [ ] `deploy:local` 성공
+- [ ] `smoke:auth` 성공
 - [ ] 핵심 API 스모크(`/api/saju/calculate`, `/api/payment/verify`)
 - [ ] 결제/환불/웹훅 기본 경로 확인
 - [ ] 정책 페이지(terms/privacy/refund) 링크 확인
@@ -76,10 +95,11 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 
 ## 관련 문서
 - `docs/01-team/engineering/testing-guide.md`
+- `docs/01-team/engineering/local-dev-sop.md`
 - `docs/guides/deployment.md`
 - `docs/00-overview/document-governance.md`
 
 ---
-**Last Updated**: 2026-03-01  
+**Last Updated**: 2026-03-05  
 **Owner**: DevOps + Engineering Lead  
-**Next Review**: 2026-03-08
+**Next Review**: 2026-03-12

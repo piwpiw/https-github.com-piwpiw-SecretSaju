@@ -1,7 +1,7 @@
-﻿# BLUEPRINT: Secret Paws 10단계 고도화
+﻿# BLUEPRINT: Secret Saju 10단계 고도화
 
-**Version:** 1.0 · 20명 동시 개발/검증 대응  
-**목표:** 구조 정리, 10단계 고도화, 예외처리·테스트·관리자/사용자 검증, Content DB·AI 연동 준비
+**Version:** 5.0 (Wave 5+ Sync) · 10-Team Agent Architecture
+**목표:** 구조 정리, Wave 5 엔진 고도화, 예외처리·테스트·관리자/사용자 검증, Crawler·Content DB 연동 완료
 
 ---
 
@@ -84,6 +84,12 @@
 | `src/app/not-found.tsx` | 404 페이지 |
 | `docs/ERROR_CATALOG.md` | 예상 오류 한 줄 체크 |
 | `docs/USER_VERIFICATION.md` | 사용자 E2E 체크리스트 |
+
+## 2026-03-03 운영 체크포인트
+
+- **홈페이지 고도화 반영**: `src/app/page.tsx` 상단 검색 오버레이에 다중 키워드 매칭, 후보 하이라이트, 키보드 탐색(↑/↓/Enter/Escape), 에러 피드백을 반영해 기존 기능 진입 시간을 줄였습니다.
+- **잔여 작업 추적 강화**: `docs/active-dispatch.md`의 `Wave30-10` 진행률(현재 `10/20` 진입)과 `docs/residual-issue-queue-summary.md` 핵심 잔여량을 동시에 모니터링합니다.
+- **신규 기능 후보(다음 검토)**: 검색 미스 보완 후보 제시 강화, 홈 검색 로그 수집, 빠른 이동 메뉴 동기화.
 
 ---
 

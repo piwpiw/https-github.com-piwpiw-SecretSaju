@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { isMockMode } from '@/lib/use-mock';
 
 // Initialize Resend Client
 const resend = new Resend(process.env.RESEND_API_KEY || 're_mock_key');
@@ -60,11 +61,11 @@ function logMailSchemaSample(mode: 'mock' | 'live', data?: unknown) {
  * Sends a welcome email upon successful sign-up.
  */
 export async function sendWelcomeEmail(to: string, name: string) {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA !== 'true' && !HAS_REAL_RESEND_KEY) {
+    if (!isMockMode() && !HAS_REAL_RESEND_KEY) {
         return { success: false, error: 'RESEND_API_KEY is missing' };
     }
 
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    if (isMockMode()) {
         console.log(`[MOCK MAIL] Welcome Email sent to ${to} (${name})`);
         return { success: true, mocked: true };
     }
@@ -106,11 +107,11 @@ export async function sendWelcomeEmail(to: string, name: string) {
  * Sends the Saju Analysis Result (Anonymous Gift feature)
  */
 export async function sendSajuResultEmail(to: string, senderName: string, resultLink: string) {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA !== 'true' && !HAS_REAL_RESEND_KEY) {
+    if (!isMockMode() && !HAS_REAL_RESEND_KEY) {
         return { success: false, error: 'RESEND_API_KEY is missing' };
     }
 
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    if (isMockMode()) {
         console.log(`[MOCK MAIL] Result Email sent to ${to} from ${senderName}. Link: ${resultLink}`);
         return { success: true, mocked: true };
     }
@@ -156,11 +157,11 @@ export async function sendPaymentReceiptEmail(
   amount: number,
   jellies: number
 ) {
-  if (process.env.NEXT_PUBLIC_USE_MOCK_DATA !== 'true' && !HAS_REAL_RESEND_KEY) {
+  if (!isMockMode() && !HAS_REAL_RESEND_KEY) {
     return { success: false, error: 'RESEND_API_KEY is missing' };
   }
 
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    if (isMockMode()) {
         console.log(`[MOCK MAIL] Payment receipt email sent to ${to} (${orderId})`);
         const result = toMockResult({ email: to, orderId });
         logMailSchemaSample('mock', result.success ? result.data : undefined);

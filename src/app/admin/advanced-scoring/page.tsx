@@ -126,10 +126,11 @@ export default function AdvancedScoringPage() {
 
                 {/* Selector */}
                 <div className="mb-8 bg-white/10 backdrop-blur-lg border border-yellow-500/30 rounded-xl p-6">
-                    <label className="block text-sm font-semibold mb-2 text-yellow-400">
+                    <label htmlFor="advanced-scoring-pillar" className="block text-sm font-semibold mb-2 text-yellow-400">
                         일주 선택
                     </label>
                     <select
+                        id="advanced-scoring-pillar"
                         value={selectedIndex}
                         onChange={(e) => setSelectedIndex(Number(e.target.value))}
                         className="w-full bg-slate-900/90 border border-yellow-500/40 rounded-lg px-4 py-3 text-white font-mono text-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 mb-6"
@@ -145,10 +146,11 @@ export default function AdvancedScoringPage() {
                         })}
                     </select>
 
-                    <label className="block text-sm font-semibold mb-2 text-green-400">
+                    <label htmlFor="advanced-scoring-month" className="block text-sm font-semibold mb-2 text-green-400">
                         태어난 월(계절) 시뮬레이션
                     </label>
                     <select
+                        id="advanced-scoring-month"
                         value={selectedMonth}
                         onChange={(e) => setSelectedMonth(e.target.value)}
                         className="w-full bg-slate-900/90 border border-green-500/40 rounded-lg px-4 py-3 text-white font-mono text-lg focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -325,10 +327,10 @@ export default function AdvancedScoringPage() {
                 {/* Footer */}
                 <div className="mt-8 text-center text-sm text-slate-500">
                     <p>전통 명리학의 정통 계산법 | 득령득지득세 100점 체계</p>
-                    <p className="mt-2">
-                        ← <a href="/admin/character-analysis" className="text-yellow-400 hover:underline">Character Analysis</a>
+                <p className="mt-2">
+                        ← <a href="/admin/character-analysis" className="text-yellow-400 hover:underline">캐릭터 분석</a>
                         {" | "}
-                        <a href="/" className="text-yellow-400 hover:underline">Home</a>
+                        <a href="/" className="text-yellow-400 hover:underline">홈</a>
                     </p>
                 </div>
             </div>

@@ -3,17 +3,22 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { HeroSection } from "./HeroSection";
-import { BirthInputForm } from "./BirthInputForm";
 import ResultCard from "./ResultCard";
 import { ShareSection } from "./ShareSection";
 import { SecretBlur } from "./SecretBlur";
 import { calculateSaju } from "@/lib/saju";
 import { getArchetypeByCode } from "@/lib/archetypes";
-import { getFoodRecommendationsByCode } from "@/data/foodRecommendations";
-import { getProductRecommendationsByCode } from "@/data/productRecommendations";
 import { RecommendationsSection } from "./RecommendationsSection";
 import { CelebritySection } from "./CelebritySection";
 import { type AgeGroup } from "@/lib/archetypes";
+import JellyShopModal from "@/components/shop/JellyShopModal";
+
+type Campaign = {
+  title: string;
+  description: string;
+  buttonLabel: string;
+  buttonLink: string;
+};
 
 type ResultState = {
   code: string;
@@ -26,31 +31,38 @@ type ResultState = {
   ageGroup: AgeGroup;
   foods: { name: string; reason: string; emoji: string }[];
   products: { name: string; category: string; reason: string; emoji: string }[];
+  campaigns: Campaign[];
   elementScores: number[];
   elementCounts: number[];
   elementBasicPercentages: number[];
   fourPillars: any;
   version: string;
   integrity: string;
+  gangyak?: any;
+  yongshin?: any;
+  sipsong?: any;
+  sibiwoonseong?: any;
+  gyeokguk?: any;
 };
 
 const FALLBACK_RESULT: ResultState = {
   code: "",
-  animalName: "알 수 없음",
-  pillarNameKo: "—",
-  mask: "결과를 불러오지 못했어요.",
+  animalName: "알 수 없는 사주",
+  pillarNameKo: "사주",
+  mask: "결과 계산 중 일시적으로 오류가 발생했습니다.",
   hashtags: [],
-  displayHook: "다시 시도해 주세요.",
-  displaySecretPreview: "—",
+  displayHook: "잠시 후 다시 시도해 주세요.",
+  displaySecretPreview: "비밀 프리미엄 분석은 잠금 상태입니다.",
   ageGroup: "20s",
   foods: [],
   products: [],
+  campaigns: [],
   elementScores: [0, 0, 0, 0, 0],
   elementCounts: [0, 0, 0, 0, 0],
   elementBasicPercentages: [0, 0, 0, 0, 0],
   fourPillars: null,
   version: "",
-  integrity: ""
+  integrity: "",
 };
 
 export function SecretPawsFlow() {
@@ -59,6 +71,7 @@ export function SecretPawsFlow() {
   const [error, setError] = useState<string | null>(null);
   const [unlockedLv2, setUnlockedLv2] = useState(false);
   const [unlockedLv3, setUnlockedLv3] = useState(false);
+  const [shopOpen, setShopOpen] = useState(false);
 
   const handleSubmit = async (
     birth: { year: number; month: number; day: number },
@@ -73,7 +86,7 @@ export function SecretPawsFlow() {
     try {
       const birthDate = new Date(birth.year, birth.month - 1, birth.day, 12, 0);
       if (Number.isNaN(birthDate.getTime())) {
-        setError("올바른 날짜를 입력해 주세요.");
+        setError("입력한 날짜가 올바르지 않습니다. 다시 확인해 주세요.");
         setLoading(false);
         return;
       }
@@ -81,10 +94,9 @@ export function SecretPawsFlow() {
       const saju = await calculateSaju(birthDate, gender);
       const archetype = getArchetypeByCode(saju.code, saju.ageGroup);
 
-      // Fetch dynamic recommendations from the new DB-driven API
       let foods = FALLBACK_RESULT.foods;
       let products = FALLBACK_RESULT.products;
-      let campaigns = [];
+      let campaigns: Campaign[] = [];
       try {
         const res = await fetch(`/api/recommendations?code=${saju.code}&ageGroup=${saju.ageGroup}`);
         if (res.ok) {
@@ -94,7 +106,7 @@ export function SecretPawsFlow() {
           if (data.campaigns) campaigns = data.campaigns;
         }
       } catch (err) {
-        console.warn('Failed to fetch recommendations API:', err);
+        console.warn("Failed to fetch recommendations API:", err);
       }
 
       setResult({
@@ -114,10 +126,15 @@ export function SecretPawsFlow() {
         elementBasicPercentages: saju.elementBasicPercentages,
         fourPillars: saju.fourPillars,
         version: saju.version,
-        integrity: saju.integrity
-      } as any);
+        integrity: saju.integrity,
+        gangyak: saju.gangyak,
+        yongshin: saju.yongshin,
+        sipsong: saju.sipsong,
+        sibiwoonseong: saju.sibiwoonseong,
+        gyeokguk: saju.gyeokguk,
+      } as ResultState);
     } catch (err) {
-      setError("결과를 불러오지 못했어요. 다시 시도해 주세요.");
+      setError("결과 계산 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
       console.error("[SecretPawsFlow]", err);
     } finally {
       setLoading(false);
@@ -126,15 +143,10 @@ export function SecretPawsFlow() {
 
   return (
     <main className="min-h-screen bg-background">
-      <HeroSection
-        showForm={!result}
-        isLoading={loading}
-        onBirthSubmit={handleSubmit}
-      />
+      <HeroSection showForm={!result} isLoading={loading} onBirthSubmit={handleSubmit} />
 
       {error && (
         <motion.div
-          // ... (fixed middle part)
           className="fixed top-4 left-4 right-4 z-30 mx-auto max-w-md rounded-xl bg-red-500/20 border border-red-500/50 px-4 py-3 text-sm text-red-200 flex items-center justify-between gap-4"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -147,10 +159,11 @@ export function SecretPawsFlow() {
             className="shrink-0 text-red-300 hover:text-white"
             aria-label="닫기"
           >
-            ✕
+            닫기
           </button>
         </motion.div>
       )}
+
       {loading && (
         <motion.div
           className="fixed inset-0 z-20 flex items-center justify-center bg-background/80 backdrop-blur-sm"
@@ -158,13 +171,9 @@ export function SecretPawsFlow() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <motion.div
-            className="text-center"
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-          >
+          <motion.div className="text-center" initial={{ scale: 0.9 }} animate={{ scale: 1 }}>
             <div className="w-16 h-16 rounded-full border-4 border-primary border-t-transparent animate-spin mx-auto mb-4" />
-            <p className="text-zinc-400">결과를 만드는 중...</p>
+            <p className="text-zinc-400">결과를 생성하고 있습니다.</p>
           </motion.div>
         </motion.div>
       )}
@@ -182,41 +191,43 @@ export function SecretPawsFlow() {
                 },
                 displayHook: result.displayHook,
                 displaySecretPreview: result.displaySecretPreview,
-              } as any}
+              }}
               pillarNameKo={result.pillarNameKo}
               ageGroup={result.ageGroup}
               elementScores={result.elementScores}
               elementCounts={result.elementCounts}
               elementBasicPercentages={result.elementBasicPercentages}
               fourPillars={result.fourPillars}
+              gangyak={result.gangyak}
+              yongshin={result.yongshin}
+              sipsong={result.sipsong}
+              sibiwoonseong={result.sibiwoonseong}
+              gyeokguk={result.gyeokguk}
               version={result.version}
               integrity={result.integrity}
               secretUnlocked={unlockedLv3}
-              onUnlockClick={() => setUnlockedLv3(true)}
+              onUnlockClick={() => setShopOpen(true)}
+              onInsufficientJelly={() => setShopOpen(true)}
             />
           </section>
 
-          {/* NEW: Celebrity Matching Section */}
           <CelebritySection pillarCode={result.code} />
 
-          <RecommendationsSection
-            foods={result.foods}
-            products={result.products}
-            campaigns={(result as any).campaigns}
-            animalName={result.animalName}
-          />
-          <ShareSection
-            onShareComplete={() => setUnlockedLv2(true)}
-            unlocked={unlockedLv2}
-          />
-          <SecretBlur
-            hook={result.displayHook}
-            secretPreview={result.displaySecretPreview}
-            unlocked={unlockedLv3}
-            onPaymentClick={() => setUnlockedLv3(true)}
-          />
+          <RecommendationsSection foods={result.foods} products={result.products} campaigns={result.campaigns} animalName={result.animalName} />
+          <ShareSection onShareComplete={() => setUnlockedLv2(true)} unlocked={unlockedLv2} />
+          <SecretBlur hook={result.displayHook} secretPreview={result.displaySecretPreview} unlocked={unlockedLv3} onPaymentClick={() => setShopOpen(true)} />
         </>
       )}
+
+      <JellyShopModal
+        isOpen={shopOpen}
+        onClose={() => setShopOpen(false)}
+        highlightTier="pro"
+        onPurchaseSuccess={() => {
+          setUnlockedLv3(true);
+          setShopOpen(false);
+        }}
+      />
     </main>
   );
 }

@@ -1,0 +1,26 @@
+﻿import { chromium } from "playwright";
+
+const base='http://127.0.0.1:3002';
+const browser = await chromium.launch({ headless: true, channel: 'msedge' });
+const page = await browser.newPage();
+await page.goto(base + '/', { waitUntil: 'domcontentloaded' });
+await page.locator('input[placeholder="홍길동"]').first().fill('HOMEUSER');
+await page.locator('input[placeholder="예: 1990 (또는 19900101)"]').first().fill('1990');
+await page.locator('input[placeholder="1~12"]').first().fill('1');
+await page.locator('input[placeholder="1~31"]').first().fill('1');
+const selects = page.locator('select');
+await selects.nth(0).selectOption('12');
+await selects.nth(1).selectOption('00');
+const btn = page.getByRole('button', { name: '사주 분석 시작' });
+await btn.click();
+await page.waitForTimeout(5000);
+const txt = await page.locator('body').innerText();
+console.log('contains official=', txt.includes('공식 사주 분석 리포트'));
+console.log('contains 분석=', txt.includes('공식 분석') );
+console.log('contains 리포트=', txt.includes('리포트'));
+console.log('contains 사주 분석 중...', txt.includes('사주 분석 중...'));
+console.log('contains 문항', txt.includes('문항'));
+console.log(txt.slice(0, 500));
+console.log('url=', page.url());
+await page.screenshot({ path:'logs/home-now.png', fullPage: true});
+await browser.close();

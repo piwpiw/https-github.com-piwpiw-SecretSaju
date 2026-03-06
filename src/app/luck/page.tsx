@@ -97,7 +97,7 @@ function getRitualAdvice(talismanId?: TalismanId) {
 export default function LuckPage() {
   const router = useRouter();
   const { profiles, activeProfile, setActiveProfileById } = useProfiles();
-  const { consumeChuru, churu } = useWallet();
+  const { consumeChuru, churu, isAdmin } = useWallet();
 
   const [phase, setPhase] = useState<"intro" | "select" | "ritual" | "result">("intro");
   const [selectedTalisman, setSelectedTalisman] = useState<Talisman | null>(null);
@@ -109,7 +109,7 @@ export default function LuckPage() {
   const activeName = activeProfile?.name || "사용자";
 
   const handleStart = () => {
-    if (churu < 5 && activeProfile?.name !== "admin") {
+    if (!isAdmin && churu < 5) {
       setToastMsg("부적 의식을 시작하려면 최소 5 젤리가 필요합니다.");
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
@@ -156,7 +156,7 @@ export default function LuckPage() {
           </button>
           <div className="text-center">
             <h1 className="text-3xl font-black italic tracking-tighter uppercase text-white mb-1">운세 & 부적</h1>
-            <p className="text-[10px] font-black text-indigo-400 tracking-[0.3em] uppercase">Spiritual Talisman Engine</p>
+            <p className="text-[10px] font-black text-indigo-400 tracking-[0.3em] uppercase">영적 부적 엔진</p>
           </div>
           <JellyBalance />
         </header>
@@ -195,7 +195,7 @@ export default function LuckPage() {
                   <Sparkles className="w-8 h-8 text-indigo-500" />
                   의식 시작하기
                 </button>
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Requires 5 Jellies for Activation</p>
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">시작에 5젤리 필요</p>
               </div>
             </motion.section>
           )}
@@ -208,7 +208,7 @@ export default function LuckPage() {
               className="space-y-12"
             >
               <div className="text-center space-y-2">
-                <p className="text-xs font-black text-indigo-500 uppercase tracking-[0.4em]">Choice of Destiny</p>
+                <p className="text-xs font-black text-indigo-500 uppercase tracking-[0.4em]">운명 선택</p>
                 <h2 className="text-3xl font-black italic uppercase">강화할 기운 선택</h2>
               </div>
 
@@ -247,7 +247,7 @@ export default function LuckPage() {
               className="text-center space-y-12"
             >
               <div className="space-y-2">
-                <p className="text-xs font-black text-indigo-500 uppercase tracking-[0.4em]">Ritual Phase</p>
+                <p className="text-xs font-black text-indigo-500 uppercase tracking-[0.4em]">의식 진행 단계</p>
                 <h2 className="text-3xl font-black italic uppercase">의식 가이드</h2>
                 <p className="text-sm text-slate-400">
                   <span className="text-white font-black">{selectedTalisman.name}</span>을 화면에 배치하며 3초 후 최종 결단이 표시됩니다.

@@ -19,6 +19,8 @@ import JellyBalance from "@/components/shop/JellyBalance";
 import { useLocale } from "@/lib/i18n";
 import ElementPolygon from "@/components/ui/ElementPolygon";
 import LuxuryToast from "@/components/ui/LuxuryToast";
+import LoveScoreCounter from "@/components/compatibility/LoveScoreCounter";
+import RelationshipRadar from "@/components/compatibility/RelationshipRadar";
 import { cn } from "@/lib/utils";
 
 const RELATIONSHIP_PRESETS: { labelKey: string; value: ProfileRelationshipType; icon: string }[] = [
@@ -43,7 +45,7 @@ function CompatibilityContent() {
   const searchParams = useSearchParams();
   const { t, locale } = useLocale();
   const { profiles, activeProfile } = useProfiles();
-  const { consumeChuru, churu } = useWallet();
+  const { consumeChuru, churu, isAdmin } = useWallet();
 
   const [personAId, setPersonAId] = useState("");
   const [personBId, setPersonBId] = useState("");
@@ -101,7 +103,7 @@ function CompatibilityContent() {
       return;
     }
 
-    if (churu < 30) {
+    if (!isAdmin && churu < 30) {
       setToastMsg("궁합 정밀 분석에는 30 젤리가 필요합니다.");
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
@@ -308,22 +310,8 @@ function CompatibilityContent() {
                   <h2 className="text-2xl font-black text-slate-500 uppercase tracking-[0.4em] italic">시너지 지수</h2>
                 </div>
 
-                <div className="relative w-80 h-80 mx-auto mb-16 flex items-center justify-center">
-                  <svg className="absolute inset-0 w-full h-full -rotate-90 drop-shadow-[0_0_20px_rgba(79,70,229,0.2)]" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="6" />
-                    <motion.circle
-                      cx="50" cy="50" r="45" fill="none"
-                      stroke="var(--primary)" strokeWidth="6" strokeLinecap="round"
-                      strokeDasharray={`${2 * Math.PI * 45}`}
-                      initial={{ strokeDashoffset: 2 * Math.PI * 45 }}
-                      animate={{ strokeDashoffset: 2 * Math.PI * 45 * (1 - result.score / 100) }}
-                      transition={{ duration: 2, ease: "easeOut" }}
-                    />
-                  </svg>
-                  <div className="text-center relative z-10">
-                    <span className="text-9xl font-black text-white italic tracking-tighter leading-none">{animatedScore}</span>
-                    <span className="text-2xl font-black text-indigo-400 align-top ml-2">%</span>
-                  </div>
+                <div className="mb-16">
+                  <LoveScoreCounter targetScore={result.score} />
                 </div>
 
                 <div className="space-y-6 max-w-2xl mx-auto">
@@ -347,30 +335,72 @@ function CompatibilityContent() {
               {sajuA && sajuB && (
                 <div className="bg-slate-900/40 backdrop-blur-2xl rounded-[4rem] p-12 border border-white/5 space-y-12">
                   <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] text-center italic">오행 공명 분석</h4>
-                  <div className="flex flex-col md:flex-row items-center justify-around gap-16">
-                    <div className="space-y-6 text-center">
+
+                  {/* Pinpoint HD resonance Bridge & Radar overlay */}
+                  <div className="flex flex-col md:flex-row items-center justify-around gap-16 relative z-10">
+                    <motion.div
+                      className="space-y-6 text-center"
+                      animate={{ scale: [1, 1.02, 1] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                    >
                       <div className="relative group">
-                        <div className="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
                         <ElementPolygon
                           scores={[sajuA.elements.scores.목, sajuA.elements.scores.화, sajuA.elements.scores.토, sajuA.elements.scores.금, sajuA.elements.scores.수]}
                           size={220}
                         />
                       </div>
                       <p className="text-xs font-black text-indigo-400 uppercase tracking-widest italic">{selectedPersonA?.name}</p>
+                    </motion.div>
+
+                    <div className="relative w-full md:w-32 h-20 md:h-auto flex items-center justify-center">
+                      <svg viewBox="0 0 100 40" className="w-full h-full overflow-visible hidden md:block">
+                        <motion.path
+                          d="M -10 20 Q 50 20 110 20"
+                          fill="none"
+                          stroke="url(#resonance-gradient)"
+                          strokeWidth="2"
+                          strokeDasharray="4 4"
+                          animate={{ strokeDashoffset: [0, -20] }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        />
+                        <defs>
+                          <linearGradient id="resonance-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#6366f1" stopOpacity="0.2" />
+                            <stop offset="50%" stopColor="#a855f7" stopOpacity="1" />
+                            <stop offset="100%" stopColor="#6366f1" stopOpacity="0.2" />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                      <motion.div
+                        animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        className="p-4 bg-indigo-500/20 rounded-full border border-indigo-500/40 backdrop-blur-md shadow-[0_0_30px_rgba(99,102,241,0.4)]"
+                      >
+                        <Heart className="w-6 h-6 text-white fill-white animate-pulse" />
+                      </motion.div>
                     </div>
-                    <div className="text-slate-800 animate-pulse">
-                      <Zap className="w-8 h-8 rotate-90" />
-                    </div>
-                    <div className="space-y-6 text-center">
+
+                    <motion.div
+                      className="space-y-6 text-center"
+                      animate={{ scale: [1, 1.02, 1] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+                    >
                       <div className="relative group">
-                        <div className="absolute inset-0 bg-purple-500/10 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute inset-0 bg-purple-500/10 blur-3xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
                         <ElementPolygon
                           scores={[sajuB.elements.scores.목, sajuB.elements.scores.화, sajuB.elements.scores.토, sajuB.elements.scores.금, sajuB.elements.scores.수]}
                           size={220}
                         />
                       </div>
                       <p className="text-xs font-black text-purple-400 uppercase tracking-widest italic">{selectedPersonB?.name}</p>
-                    </div>
+                    </motion.div>
+                  </div>
+
+                  {/* 6.1 Compatibility Radar Chart (Combined) */}
+                  <div className="pt-12 border-t border-white/5 text-center">
+                    <h5 className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.4em] mb-12 italic">Ultimate Synergy Radar</h5>
+                    <RelationshipRadar />
                   </div>
                 </div>
               )}
@@ -417,4 +447,3 @@ export default function CompatibilityPage() {
     </Suspense>
   );
 }
-

@@ -1,30 +1,101 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { useWallet } from "@/components/WalletProvider";
 import { clearUserSession, getUserFromCookie } from "@/lib/kakao-auth";
-import { handleShare } from "@/lib/share";
 import AuthModal from "@/components/AuthModal";
 import JellyShopModal from "@/components/shop/JellyShopModal";
-import { Copy, Gem, Gift, History, HelpCircle, LogOut, MessageSquare, ShoppingBag, Star, TrendingUp, User as UserIcon } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Gem, Gift, History, HelpCircle, LogOut, MessageSquare,
+  ShoppingBag, Star, TrendingUp, User as UserIcon,
+  ChevronRight, Sparkles, Zap, Award, Clock, BarChart3,
+  Shield, Settings, Bell, Crown, Orbit
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import PremiumWalletCard from "@/components/mypage/PremiumWalletCard";
+import ReferralCard from "@/components/referral/ReferralCard";
 
 interface UserData {
   id: string | number;
   nickname: string;
   email?: string;
   profileImage?: string;
+  auth_provider?: string | null;
 }
 
-const QUICK_MENU = [
-  { icon: MessageSquare, label: "문의하기", href: "/inquiry" },
-  { icon: Gift, label: "후원하기", href: "/support" },
-  { icon: HelpCircle, label: "FAQ", href: "/faq" },
-  { icon: History, label: "분석 내역", href: "/analysis-history" },
+const QUICK_LINKS = [
+  { icon: MessageSquare, label: "문의하기", href: "/inquiry", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20" },
+  { icon: Gift, label: "후원하기", href: "/support", color: "text-rose-400", bg: "bg-rose-500/10 border-rose-500/20" },
+  { icon: HelpCircle, label: "FAQ", href: "/faq", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20" },
+  { icon: History, label: "분석 내역", href: "/analysis-history", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
 ] as const;
+
+const MAIN_ACTIONS = [
+  {
+    icon: ShoppingBag,
+    label: "젤리 충전",
+    desc: "분석 기능 이용을 위한 크레딧 충전",
+    gradient: "from-indigo-500 to-purple-600",
+    glow: "shadow-indigo-500/20",
+    key: "shop",
+  },
+  {
+    icon: Star,
+    label: "내 프로필 관리",
+    desc: "저장된 사주 프로필 목록",
+    gradient: "from-amber-500 to-orange-600",
+    glow: "shadow-amber-500/20",
+    href: "/my-saju/list",
+  },
+  {
+    icon: TrendingUp,
+    label: "토정비결",
+    desc: "연간 운세 화면으로 이동",
+    gradient: "from-emerald-500 to-teal-600",
+    glow: "shadow-emerald-500/20",
+    href: "/tojeong",
+  },
+  {
+    icon: History,
+    label: "분석 히스토리",
+    desc: "최근 분석 기록 및 보관",
+    gradient: "from-rose-500 to-pink-600",
+    glow: "shadow-rose-500/20",
+    href: "/analysis-history",
+  },
+];
+
+function StatCard({ label, value, unit, color, icon: Icon, percent }: {
+  label: string; value: string | number; unit: string;
+  color: string; icon: typeof Gem; percent?: number;
+}) {
+  return (
+    <div className="rounded-[2rem] border border-white/8 bg-white/[0.03] p-5 flex flex-col gap-3 hover:border-white/15 transition-all group">
+      <div className="flex items-center justify-between">
+        <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">{label}</p>
+        <Icon className={`w-4 h-4 ${color} opacity-60 group-hover:opacity-100 transition-opacity`} />
+      </div>
+      <div className="flex items-end gap-1.5">
+        <span className={`text-3xl font-black italic ${color}`}>{value}</span>
+        <span className="text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">{unit}</span>
+      </div>
+      {percent !== undefined && (
+        <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${percent}%` }}
+            transition={{ duration: 1.4, ease: "easeOut" }}
+            className={`h-full rounded-full ${color.replace("text-", "bg-")}`}
+            style={{ filter: "blur(0px)" }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function MyPage() {
   const router = useRouter();
@@ -34,19 +105,23 @@ export default function MyPage() {
   const [showShop, setShowShop] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [shareMessage, setShareMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [greeting, setGreeting] = useState("안녕하세요");
+
+  const focusScore = Math.min(100, Math.floor((nyang / 1000) * 100));
+  const level = nyang >= 1000
+    ? { name: "다이아 티어", badge: "💎", color: "text-fuchsia-400", border: "border-fuchsia-500/30", bg: "bg-fuchsia-500/10", percent: 100 }
+    : nyang >= 300
+      ? { name: "실버 티어", badge: "⭐", color: "text-slate-300", border: "border-slate-400/30", bg: "bg-slate-400/10", percent: Math.min(100, (nyang / 1000) * 100) }
+      : { name: "브론즈 티어", badge: "🔥", color: "text-amber-400", border: "border-amber-500/30", bg: "bg-amber-500/10", percent: Math.min(100, (nyang / 300) * 100) };
 
   useEffect(() => {
-    const userData = getUserFromCookie();
-    setUser(userData);
-    setIsLoading(false);
+    const h = new Date().getHours();
+    setGreeting(h < 6 ? "늦은 밤이에요" : h < 12 ? "좋은 아침이에요" : h < 18 ? "좋은 오후에요" : "좋은 저녁이에요");
+    const refreshAuth = () => { setUser(getUserFromCookie()); setIsLoading(false); };
+    refreshAuth();
+    window.addEventListener("focus", refreshAuth);
+    return () => window.removeEventListener("focus", refreshAuth);
   }, []);
-
-  const level = nyang >= 1000
-    ? { name: "다이아 티어", next: "MAX", percent: 100 }
-    : nyang >= 300
-      ? { name: "실버 티어", next: 1000, percent: Math.min(100, (nyang / 1000) * 100) }
-      : { name: "브론즈 티어", next: 300, percent: Math.min(100, (nyang / 300) * 100) };
 
   const handleLogout = () => {
     clearUserSession();
@@ -55,253 +130,252 @@ export default function MyPage() {
     router.push("/");
   };
 
-  const copyReferral = async () => {
-    if (!user) return;
-
-    const referralLink = `${window.location.origin}/?ref=${user.id}`;
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(referralLink);
-      } else {
-        const textArea = document.createElement("textarea");
-        textArea.value = referralLink;
-        textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-      }
-
-      const result = await handleShare("초대 링크", `Secret Saju: ${referralLink}`, referralLink);
-      if (result === "copied") {
-        setShareMessage({ type: "success", text: "초대 링크가 복사되었습니다." });
-      } else {
-        setShareMessage({ type: "error", text: "공유는 실패했지만 클립보드 복사는 완료되었습니다." });
-      }
-    } catch {
-      setShareMessage({ type: "error", text: "복사에 실패했습니다. 브라우저 권한을 확인해 주세요." });
-    }
-
-    setTimeout(() => setShareMessage(null), 2500);
-  };
-
-  const mainMenuItems = [
-    {
-      icon: ShoppingBag,
-      label: "젤리 충전",
-      desc: "남은 젤리를 충전하고 분석 기능을 이용하세요.",
-      onClick: () => setShowShop(true),
-    },
-    {
-      icon: Star,
-      label: "내 프로필 관리",
-      desc: "저장된 사주 프로필 목록을 열어보세요.",
-      onClick: () => router.push("/my-saju/list"),
-    },
-    {
-      icon: TrendingUp,
-      label: "토정비결 보기",
-      desc: "연간 운세 화면으로 빠르게 이동합니다.",
-      onClick: () => router.push("/tojeong"),
-    },
-    {
-      icon: History,
-      label: "분석 히스토리",
-      desc: "최근 분석 기록과 보관한 결과를 확인하세요.",
-      onClick: () => router.push("/analysis-history"),
-    },
-  ];
-
   if (isLoading) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-4 border-current border-t-transparent animate-spin" />
+      <main className="min-h-screen flex items-center justify-center bg-slate-950">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-10 h-10 rounded-full border-2 border-indigo-500/30 border-t-indigo-500"
+        />
       </main>
     );
   }
 
   if (!user) {
     return (
-      <main className="min-h-screen relative overflow-hidden flex items-center justify-center px-6 py-16">
+      <main className="min-h-screen relative overflow-hidden flex items-center justify-center px-6 py-16 bg-slate-950">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.08),transparent_70%)]" />
         <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="max-w-lg w-full p-10 rounded-4xl border border-border-color bg-surface text-center"
+          initial={{ opacity: 0, y: 24, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          className="max-w-sm w-full relative z-10"
         >
-          <div className="w-20 h-20 rounded-3xl bg-primary/10 border border-border-color flex items-center justify-center mx-auto mb-6">
-            <UserIcon className="w-10 h-10 text-primary" />
+          <div className="rounded-[3rem] border border-white/10 bg-slate-900/60 backdrop-blur-2xl p-10 text-center shadow-2xl">
+            <div className="w-20 h-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-6">
+              <Crown className="w-10 h-10 text-indigo-400" />
+            </div>
+            <h1 className="text-2xl font-black text-white mb-2">로그인 필요</h1>
+            <p className="text-slate-400 text-sm mb-8 leading-relaxed">
+              내 프로필, 사용 내역, 혜택을 보려면<br />로그인해 주세요.
+            </p>
+            <button
+              onClick={() => setShowAuth(true)}
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-black tracking-widest text-sm hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-indigo-500/20"
+            >
+              로그인 하기
+            </button>
+            <Link href="/" className="text-xs text-slate-500 hover:text-slate-300 mt-6 inline-block tracking-widest uppercase transition-colors">
+              홈으로 돌아가기
+            </Link>
           </div>
-          <h1 className="text-3xl font-black mb-2">로그인 필요</h1>
-          <p className="text-secondary mb-8">내 프로필, 사용 내역, 혜택을 보려면 로그인해주세요.</p>
-          <button
-            onClick={() => setShowAuth(true)}
-            className="w-full py-4 rounded-2xl bg-primary text-white font-black"
-          >
-            로그인 하기
-          </button>
-          <Link href="/" className="text-sm text-secondary hover:text-foreground mt-8 inline-block">
-            홈으로 돌아가기
-          </Link>
         </motion.div>
-
         <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen relative overflow-hidden pb-40">
-      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-12 border-b border-border-color pb-8">
-          <div className="flex items-center gap-6">
-            <div className="w-24 h-24 rounded-4xl bg-background border-4 border-border-color overflow-hidden relative">
-              {user.profileImage ? (
-                <Image src={user.profileImage} alt={user.nickname} fill className="object-cover" unoptimized />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <UserIcon className="w-12 h-12 text-secondary" />
-                </div>
-              )}
-              <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-primary rounded-xl flex items-center justify-center border-2 border-surface">
-                <Gem className="w-5 h-5 text-white" />
-              </div>
-            </div>
-            <div>
-              <p className={`inline-flex px-3 py-1 rounded-full border ${level.next === "MAX" ? "text-fuchsia-300 border-fuchsia-500/30" : "text-emerald-300 border-emerald-500/30"} text-sm font-black uppercase mb-2`}>
-                {level.name}
-              </p>
-              <h1 className="text-3xl font-black">{user.nickname}</h1>
-              <p className="text-secondary text-sm mt-1">{user.email || "이메일 미등록"}</p>
-              {shareMessage && (
-                <p className={`mt-2 text-sm font-bold ${shareMessage.type === "success" ? "text-emerald-300" : "text-rose-300"}`}>
-                  {shareMessage.text}
-                </p>
-              )}
-              <button
-                onClick={copyReferral}
-                className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-foreground bg-surface border border-border-color px-3 py-2 rounded-xl"
-              >
-                <Copy className="w-4 h-4" />
-                초대 링크 보내기
-              </button>
-            </div>
-          </div>
-          <button onClick={() => setShowLogoutConfirm(true)} className="px-4 py-2 rounded-3xl border border-border-color">
-            <LogOut className="w-5 h-5" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="bg-surface p-8 rounded-4xl border border-primary/20"
-          >
-            <p className="text-sm text-primary uppercase font-black">보유 젤리</p>
-            <p className="mt-3 text-4xl font-black">{churu}</p>
-            <button
-              onClick={() => setShowShop(true)}
-              className="mt-6 w-full py-3 rounded-2xl bg-primary text-white"
-            >
-              젤리 충전하기
-            </button>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="bg-surface p-8 rounded-4xl border border-border-color"
-          >
-            <p className="text-sm text-secondary uppercase font-black flex items-center justify-between">
-              <span>경험치</span>
-              <span>{level.next === "MAX" ? "MAX" : `${Math.floor(level.percent)}%`}</span>
-            </p>
-            <p className="mt-3 text-4xl font-black">{nyang}</p>
-            <p className="mt-2 text-sm text-secondary">
-              다음 단계: {level.next === "MAX" ? "최대 달성" : `${level.next} EXP`}
-            </p>
-          </motion.div>
-        </div>
-
-        <div className="space-y-4 mb-12">
-          <h2 className="text-2xl font-black">빠른 메뉴</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {mainMenuItems.map((item) => (
-              <button
-                key={item.label}
-                onClick={item.onClick}
-                className="bg-surface p-6 rounded-3xl border border-border-color hover:border-primary/50 transition-all text-left flex items-center justify-between"
-              >
-                <div className="flex items-center gap-4">
-                  <item.icon className="w-6 h-6 text-primary" />
-                  <div>
-                    <h3 className="text-lg font-black">{item.label}</h3>
-                    <p className="text-sm text-secondary">{item.desc}</p>
-                  </div>
-                </div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="w-5 h-5 text-border-color"
-                >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-12">
-          {QUICK_MENU.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="bg-surface p-5 rounded-3xl border border-border-color text-center hover:border-primary/30"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-background border border-border-color flex items-center justify-center mx-auto mb-3">
-                <item.icon className="w-6 h-6 text-secondary" />
-              </div>
-              <span className="text-sm font-black">{item.label}</span>
-            </Link>
-          ))}
-        </div>
-
-        <p className="text-center text-xs uppercase tracking-[0.3em] text-secondary">Secret Saju</p>
+    <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-40">
+      {/* Ambient background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] opacity-20 bg-radial-gradient" style={{ background: "radial-gradient(ellipse at top, rgba(99,102,241,0.25) 0%, transparent 70%)" }} />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] opacity-10" style={{ background: "radial-gradient(circle, rgba(168,85,247,0.3) 0%, transparent 70%)" }} />
       </div>
 
-      <JellyShopModal isOpen={showShop} onClose={() => setShowShop(false)} onPurchaseSuccess={() => setShowShop(false)} />
+      <div className="max-w-4xl mx-auto px-5 py-10 relative z-10">
 
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md rounded-3xl border border-border-color bg-surface p-6">
-            <h3 className="text-xl font-black">로그아웃</h3>
-            <p className="mt-2 text-sm text-secondary">현재 기기에서 로그아웃 하시겠습니까?</p>
-            <div className="mt-6 flex gap-3">
-              <button
-                onClick={() => setShowLogoutConfirm(false)}
-                className="flex-1 py-3 rounded-2xl border border-border-color text-foreground font-black"
-              >
-                취소
-              </button>
-              <button
-                onClick={handleLogout}
-                className="flex-1 py-3 rounded-2xl bg-primary text-white font-black"
-              >
-                확인
-              </button>
+        {/* ── Header ─────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-start justify-between mb-10"
+        >
+          <div className="flex items-center gap-5">
+            {/* Avatar */}
+            <div className="relative">
+              <div className="w-20 h-20 rounded-3xl overflow-hidden border-2 border-white/10 bg-slate-800">
+                {user.profileImage ? (
+                  <Image src={user.profileImage} alt={user.nickname} fill className="object-cover" unoptimized />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <UserIcon className="w-9 h-9 text-slate-500" />
+                  </div>
+                )}
+              </div>
+              {/* Level badge */}
+              <div className={`absolute -bottom-2 -right-2 px-2 py-0.5 rounded-xl ${level.bg} border ${level.border} text-[10px] font-black ${level.color}`}>
+                {level.badge}
+              </div>
+            </div>
+            {/* Name & greeting */}
+            <div>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-0.5">{greeting} ·</p>
+              <h1 className="text-2xl font-black text-white">{user.nickname}<span className="text-indigo-400">님</span></h1>
+              <div className="flex items-center gap-2 mt-1">
+                <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full ${level.bg} border ${level.border} ${level.color}`}>
+                  {level.name}
+                </span>
+                {user.auth_provider && (
+                  <span className="text-[9px] font-black uppercase tracking-widest text-indigo-400/70 bg-indigo-500/5 px-2 py-0.5 rounded-full border border-indigo-500/10">
+                    {user.auth_provider === "mcp" ? "MCP" : user.auth_provider}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
+
+          {/* Action buttons */}
+          <div className="flex items-center gap-2">
+            <button className="w-10 h-10 rounded-2xl bg-white/5 border border-white/8 flex items-center justify-center hover:bg-white/10 transition-all" aria-label="알림">
+              <Bell className="w-4 h-4 text-slate-400" />
+            </button>
+            <button
+              onClick={() => setShowLogoutConfirm(true)}
+              className="w-10 h-10 rounded-2xl bg-white/5 border border-white/8 flex items-center justify-center hover:bg-rose-500/10 hover:border-rose-500/20 transition-all group"
+              aria-label="로그아웃"
+            >
+              <LogOut className="w-4 h-4 text-slate-400 group-hover:text-rose-400 transition-colors" />
+            </button>
+          </div>
+        </motion.div>
+
+        {/* ── Wallet Card ─────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-6"
+        >
+          <PremiumWalletCard jellies={churu} onClickCharge={() => setShowShop(true)} />
+        </motion.div>
+
+        {/* ── Referral ────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="mb-6"
+        >
+          <ReferralCard />
+        </motion.div>
+
+        {/* ── Stats Grid ──────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="grid grid-cols-3 gap-3 mb-8"
+        >
+          <StatCard label="경험치" value={nyang} unit="exp" color="text-indigo-400" icon={Award} percent={level.percent} />
+          <StatCard label="포커스" value={`${focusScore}`} unit="%" color="text-emerald-400" icon={Zap} percent={focusScore} />
+          <StatCard label="젤리 잔액" value={churu} unit="🍀" color="text-amber-400" icon={Gem} />
+        </motion.div>
+
+        {/* ── Main Actions ────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="mb-8"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-500">주요 메뉴</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {MAIN_ACTIONS.map((item) => {
+              const content = (
+                <div className="flex items-center gap-4 p-5 rounded-[2rem] bg-white/[0.03] border border-white/8 hover:border-white/15 hover:bg-white/[0.05] transition-all group cursor-pointer">
+                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center shadow-lg ${item.glow} flex-shrink-0`}>
+                    <item.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-black text-white text-sm">{item.label}</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5 truncate">{item.desc}</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+                </div>
+              );
+
+              return item.href ? (
+                <Link key={item.label} href={item.href}>{content}</Link>
+              ) : (
+                <button key={item.label} onClick={() => setShowShop(true)} className="text-left w-full">{content}</button>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* ── Quick Links ─────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mb-8"
+        >
+          <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-500 mb-4">빠른 바로가기</h2>
+          <div className="grid grid-cols-4 gap-3">
+            {QUICK_LINKS.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl ${item.bg} border hover:scale-[1.03] transition-all`}
+              >
+                <item.icon className={`w-5 h-5 ${item.color}`} />
+                <span className="text-[11px] font-black text-slate-300 text-center leading-tight">{item.label}</span>
+              </Link>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ── Footer brand ────────────────────────────── */}
+        <div className="flex items-center justify-center gap-2 pt-4 border-t border-white/5">
+          <Orbit className="w-3 h-3 text-indigo-500/50" />
+          <p className="text-[10px] uppercase tracking-[0.35em] text-slate-600 font-black">Secret Saju</p>
+          <Orbit className="w-3 h-3 text-indigo-500/50" />
         </div>
-      )}
+      </div>
+
+      {/* ── Modals ──────────────────────────────────── */}
+      <JellyShopModal isOpen={showShop} onClose={() => setShowShop(false)} onPurchaseSuccess={() => setShowShop(false)} />
+
+      <AnimatePresence>
+        {showLogoutConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 16 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 16 }}
+              className="w-full max-w-sm rounded-[2.5rem] border border-white/10 bg-slate-900/95 backdrop-blur-2xl p-8 text-center"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto mb-5">
+                <LogOut className="w-7 h-7 text-rose-400" />
+              </div>
+              <h3 className="text-xl font-black text-white mb-2">로그아웃</h3>
+              <p className="text-sm text-slate-400 mb-7">현재 기기에서 로그아웃 하시겠습니까?</p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowLogoutConfirm(false)}
+                  className="flex-1 py-3.5 rounded-xl border border-white/10 text-slate-300 font-black text-sm hover:bg-white/5 transition-all"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="flex-1 py-3.5 rounded-xl bg-rose-500 text-white font-black text-sm hover:bg-rose-400 transition-all shadow-lg shadow-rose-500/20"
+                >
+                  로그아웃
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

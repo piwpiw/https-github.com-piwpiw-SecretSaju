@@ -1,6 +1,6 @@
 /**
  * Jelly Wallet System Types
- * Virtual currency for Secret Paws MVP
+ * Virtual currency for Secret Saju
  */
 
 export interface PricingTier {

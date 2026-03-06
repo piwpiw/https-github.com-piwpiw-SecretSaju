@@ -2,7 +2,7 @@
  * ============================================
  * APPLICATION CONSTANTS
  * ============================================
- * 
+ *
  * Non-sensitive configuration values that don't change
  * between environments.
  */
@@ -12,13 +12,13 @@
 // ============================================
 
 export const BUSINESS_INFO = {
-    NAME: '시크릿사주',
-    LEGAL_NAME: '보헤미안 스튜디오',
-    REGISTRATION_NUMBER: '123-45-67890', // User didn't provide this, keeping placeholder for now but updated studio name
-    REPRESENTATIVE: '박인웅',
-    ADDRESS: '서울특별시 강남구 테헤란로 123',
-    EMAIL: 'contact@bohemianstudio.com',
-    PHONE: '070-1234-5678',
+  NAME: 'Bohemian Studio',
+  LEGAL_NAME: 'Bohemian Studio Ltd.',
+  REGISTRATION_NUMBER: '123-45-67890',
+  REPRESENTATIVE: 'Admin',
+  ADDRESS: 'Seoul, Korea 123',
+  EMAIL: 'contact@bohemianstudio.com',
+  PHONE: '070-1234-5678',
 } as const;
 
 // ============================================
@@ -26,39 +26,39 @@ export const BUSINESS_INFO = {
 // ============================================
 
 export const JELLY_PRICING = {
-    TIERS: [
-        {
-            id: 'taste',
-            jellies: 1,
-            bonus: 0,
-            price: 990,
-            label: '맛보기',
-        },
-        {
-            id: 'smart',
-            jellies: 3,
-            bonus: 1,
-            price: 2900,
-            label: '똑똑이',
-            badge: '25% 할인',
-        },
-        {
-            id: 'pro',
-            jellies: 10,
-            bonus: 3,
-            price: 9900,
-            label: '프로',
-            badge: '최고 가성비',
-            popular: true,
-        },
-    ],
-    COSTS: {
-        UNLOCK_PROFILE: 1,
-        UNLOCK_SECTION: 1,
-        DAILY_FORTUNE: 1,
-        PREMIUM_FORTUNE: 3,
-        NEW_YEAR_FORTUNE: 5,
+  TIERS: [
+    {
+      id: 'taste',
+      jellies: 1,
+      bonus: 0,
+      price: 990,
+      label: 'Starter',
     },
+    {
+      id: 'smart',
+      jellies: 3,
+      bonus: 1,
+      price: 2900,
+      label: 'Starter Plus',
+      badge: 'Best Value',
+    },
+    {
+      id: 'pro',
+      jellies: 10,
+      bonus: 3,
+      price: 9900,
+      label: 'Pro',
+      badge: 'Most Popular',
+      popular: true,
+    },
+  ],
+  COSTS: {
+    UNLOCK_PROFILE: 1,
+    UNLOCK_SECTION: 1,
+    DAILY_FORTUNE: 1,
+    PREMIUM_FORTUNE: 3,
+    NEW_YEAR_FORTUNE: 5,
+  },
 } as const;
 
 // ============================================
@@ -66,33 +66,34 @@ export const JELLY_PRICING = {
 // ============================================
 
 /**
- * LocalStorage keys used throughout the app
- * Centralized to prevent typos and conflicts
+ * LocalStorage keys used throughout the app.
+ * Centralized to prevent typos and conflicts.
  */
 export const STORAGE_KEYS = {
-    // Authentication
+  // Authentication
     KAKAO_TOKEN: 'kakao_token',
+    AUTH_SESSION_TOKEN: 'secret_saju_auth_session',
     USER_DATA: 'user_data',
-    MCP_TOKEN: 'mcp_access_token',
-    MCP_REFRESH_TOKEN: 'mcp_refresh_token',
-    MCP_STATE: 'mcp_oauth_state',
-    MCP_CODE_VERIFIER: 'mcp_code_verifier',
+  MCP_TOKEN: 'mcp_access_token',
+  MCP_REFRESH_TOKEN: 'mcp_refresh_token',
+  MCP_STATE: 'mcp_oauth_state',
+  MCP_CODE_VERIFIER: 'mcp_code_verifier',
 
-    // User Data
-    SAJU_PROFILES: 'secret_saju_profiles',
+  // User Data
+  SAJU_PROFILES: 'secret_saju_profiles',
 
-    // Wallet
-    JELLY_WALLET: 'secret_saju_jelly_wallet',
-    UNLOCKS: 'secret_saju_unlocks',
-    CHURU_NYANG_WALLET: 'secret_saju_wallet',
+  // Wallet
+  JELLY_WALLET: 'secret_saju_jelly_wallet',
+  UNLOCKS: 'secret_saju_unlocks',
+  CHURU_NYANG_WALLET: 'secret_saju_wallet',
 
-    // UI State
-    THEME: 'secret_saju_theme',
-    ACTIVE_PROFILE_ID: 'secret_saju_active_profile_id',
+  // UI State
+  THEME: 'secret_saju_theme',
+  ACTIVE_PROFILE_ID: 'secret_saju_active_profile_id',
 
-    // Feature Flags
-    ONBOARDING_COMPLETED: 'secret_saju_onboarding',
-    FIRST_VISIT: 'secret_saju_first_visit',
+  // Feature Flags
+  ONBOARDING_COMPLETED: 'secret_saju_onboarding',
+  FIRST_VISIT: 'secret_saju_first_visit',
 } as const;
 
 // ============================================
@@ -103,29 +104,29 @@ export const STORAGE_KEYS = {
  * Internal API routes
  */
 export const API_ROUTES = {
-    AUTH: {
-        KAKAO_CALLBACK: '/api/auth/kakao/callback',
-        MCP_CALLBACK: '/api/auth/mcp/callback',
-        LOGOUT: '/api/auth/logout',
-    },
-    PAYMENT: {
-        INITIALIZE: '/api/payment/initialize',
-        VERIFY: '/api/payment/verify',
-        WEBHOOK: '/api/payment/webhook',
-    },
-    SAJU: {
-        CALCULATE: '/api/saju/calculate',
-        COMPATIBILITY: '/api/saju/compatibility',
-    },
-    FORTUNE: {
-        DAILY: '/api/fortune/daily',
-        PREMIUM: '/api/fortune/premium',
-        NEW_YEAR: '/api/fortune/new-year',
-    },
-    INQUIRY: {
-        SUBMIT: '/api/inquiry/submit',
-        LIST: '/api/inquiry/list',
-    },
+  AUTH: {
+    KAKAO_CALLBACK: '/api/auth/kakao/callback',
+    MCP_CALLBACK: '/api/auth/mcp/callback',
+    LOGOUT: '/api/auth/logout',
+  },
+  PAYMENT: {
+    INITIALIZE: '/api/payment/initialize',
+    VERIFY: '/api/payment/verify',
+    WEBHOOK: '/api/payment/webhook',
+  },
+  SAJU: {
+    CALCULATE: '/api/saju/calculate',
+    COMPATIBILITY: '/api/saju/compatibility',
+  },
+  FORTUNE: {
+    DAILY: '/api/fortune/daily',
+    PREMIUM: '/api/fortune/premium',
+    NEW_YEAR: '/api/fortune/new-year',
+  },
+  INQUIRY: {
+    SUBMIT: '/api/inquiry/submit',
+    LIST: '/api/inquiry/list',
+  },
 } as const;
 
 // ============================================
@@ -136,14 +137,14 @@ export const API_ROUTES = {
  * External service URLs
  */
 export const EXTERNAL_URLS = {
-    KAKAO: {
-        AUTH: 'https://kauth.kakao.com/oauth',
-        API: 'https://kapi.kakao.com',
-        DEVELOPERS: 'https://developers.kakao.com',
-    },
-    TOSS: {
-        PAYMENTS: 'https://api.tosspayments.com/v1',
-    },
+  KAKAO: {
+    AUTH: 'https://kauth.kakao.com/oauth',
+    API: 'https://kapi.kakao.com',
+    DEVELOPERS: 'https://developers.kakao.com',
+  },
+  TOSS: {
+    PAYMENTS: 'https://api.tosspayments.com/v1',
+  },
 } as const;
 
 // ============================================
@@ -151,20 +152,13 @@ export const EXTERNAL_URLS = {
 // ============================================
 
 export const UI_CONSTANTS = {
-    // Animations
-    ANIMATION_DURATION: 300,
-    LOADING_DELAY: 500,
-
-    // Pagination
-    ITEMS_PER_PAGE: 10,
-
-    // Validation
-    MAX_NAME_LENGTH: 20,
-    MAX_RELATIONSHIP_LENGTH: 10,
-
-    // Delays
-    SUCCESS_MESSAGE_DURATION: 2000,
-    ERROR_MESSAGE_DURATION: 3000,
+  ANIMATION_DURATION: 300,
+  LOADING_DELAY: 500,
+  ITEMS_PER_PAGE: 10,
+  MAX_NAME_LENGTH: 20,
+  MAX_RELATIONSHIP_LENGTH: 10,
+  SUCCESS_MESSAGE_DURATION: 2000,
+  ERROR_MESSAGE_DURATION: 3000,
 } as const;
 
 // ============================================
@@ -172,14 +166,11 @@ export const UI_CONSTANTS = {
 // ============================================
 
 export const DATE_CONSTANTS = {
-    // Formats
-    DATE_FORMAT: 'YYYY-MM-DD',
-    TIME_FORMAT: 'HH:mm',
-    DATETIME_FORMAT: 'YYYY-MM-DD HH:mm:ss',
-
-    // Ranges
-    MIN_BIRTH_YEAR: 1900,
-    MAX_BIRTH_YEAR: new Date().getFullYear(),
+  DATE_FORMAT: 'YYYY-MM-DD',
+  TIME_FORMAT: 'HH:mm',
+  DATETIME_FORMAT: 'YYYY-MM-DD HH:mm:ss',
+  MIN_BIRTH_YEAR: 1900,
+  MAX_BIRTH_YEAR: new Date().getFullYear(),
 } as const;
 
 // ============================================
@@ -187,13 +178,13 @@ export const DATE_CONSTANTS = {
 // ============================================
 
 export const RELATIONSHIP_TYPES = [
-    { value: 'self', label: '본인' },
-    { value: 'spouse', label: '배우자' },
-    { value: 'child', label: '자녀' },
-    { value: 'parent', label: '부모' },
-    { value: 'friend', label: '친구' },
-    { value: 'lover', label: '연인' },
-    { value: 'other', label: '기타' },
+  { value: 'self', label: 'Self' },
+  { value: 'spouse', label: 'Spouse' },
+  { value: 'child', label: 'Child' },
+  { value: 'parent', label: 'Parent' },
+  { value: 'friend', label: 'Friend' },
+  { value: 'lover', label: 'Lover' },
+  { value: 'other', label: 'Other' },
 ] as const;
 
 // ============================================
@@ -201,16 +192,20 @@ export const RELATIONSHIP_TYPES = [
 // ============================================
 
 export const INQUIRY_CATEGORIES = [
-    { id: 'error', label: '오류 문의', description: '해결이 너무치 않나요?' },
-    { id: 'feedback', label: '피드백 보내기', description: '개선 아이디어를 알려주세요' },
-    { id: 'review', label: '리뷰 남기기', description: '사용 후기를 공유해주세요' },
-    { id: 'refund', label: '환불 요청', description: '환불이 필요하신가요?' },
-    { id: 'convert', label: '냥을 츄르로 바꾸기', description: '포인트 전환' },
+  { id: 'error', label: 'Bug', description: 'Technical issue or error reporting' },
+  {
+    id: 'feedback',
+    label: 'Feedback',
+    description: 'Feature suggestions and improvement ideas',
+  },
+  {
+    id: 'review',
+    label: 'Review',
+    description: 'App experience review and rating feedback',
+  },
+  { id: 'refund', label: 'Refund', description: 'Refund request and billing questions' },
+  { id: 'convert', label: 'Conversion', description: 'Requesting account conversion changes' },
 ] as const;
-
-// ============================================
-// TYPE EXPORTS
-// ============================================
 
 export type RelationshipType = typeof RELATIONSHIP_TYPES[number]['value'];
 export type InquiryCategoryId = typeof INQUIRY_CATEGORIES[number]['id'];

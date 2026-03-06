@@ -1,4 +1,6 @@
+import { isMockMode } from '@/lib/use-mock';
 ﻿import { MCP_CONFIG, STORAGE_KEYS, ENV } from '@/config';
+export { STORAGE_KEYS };
 
 export interface McpTokenResponse {
     access_token: string;
@@ -16,7 +18,6 @@ export interface McpUserProfile {
     email: string | null;
     profileImage: string | null;
 }
-
 export type McpCallbackErrorCode =
     | 'missing_required_params'
     | 'missing_oauth_artifacts'
@@ -27,17 +28,33 @@ export type McpCallbackErrorCode =
     | 'user_sync_failed'
     | 'missing_oauth_profile'
     | 'oauth_callback_error'
+    | 'network_error'
+    | 'configuration_error'
+    | 'unauthorized_client'
+    | 'access_denied'
+    | 'unsupported_response_type'
+    | 'invalid_scope'
+    | 'server_error'
+    | 'temporarily_unavailable';
 
 export const MCP_CALLBACK_ERROR_MESSAGES: Record<McpCallbackErrorCode, string> = {
-    missing_required_params: 'missing_required_params',
-    missing_oauth_artifacts: 'missing_oauth_artifacts',
-    invalid_oauth_state: 'invalid_oauth_state',
-    expired_oauth_state: 'expired_oauth_state',
-    token_exchange_failed: 'token_exchange_failed',
-    missing_provider_user_id: 'missing_provider_user_id',
-    user_sync_failed: 'user_sync_failed',
-    missing_oauth_profile: 'missing_oauth_profile',
-    oauth_callback_error: 'oauth_callback_error',
+    missing_required_params: 'Required parameters are missing.',
+    missing_oauth_artifacts: 'OAuth session artifacts not found.',
+    invalid_oauth_state: 'State validation failed.',
+    expired_oauth_state: 'The login session has expired.',
+    token_exchange_failed: 'Failed to exchange the authorization code.',
+    missing_provider_user_id: 'Provider user ID could not be resolved.',
+    user_sync_failed: 'Failed to synchronize user data.',
+    missing_oauth_profile: 'Could not fetch the user profile.',
+    oauth_callback_error: 'An unexpected error occurred during callback.',
+    network_error: 'A network error occurred while communicating with the provider.',
+    configuration_error: 'Auth client is not properly configured.',
+    unauthorized_client: 'The client is not authorized for this request.',
+    access_denied: 'Access was denied by the user or provider.',
+    unsupported_response_type: 'The authorization server does not support this response type.',
+    invalid_scope: 'Requested scope is invalid or exceeding limits.',
+    server_error: 'The authorization server encountered an internal error.',
+    temporarily_unavailable: 'The authorization server is temporarily unavailable.',
 };
 
 const MCP_OAUTH_COOKIE_TTL_SECONDS = 10 * 60;
@@ -213,7 +230,7 @@ export function initiateMcpLogin(): void {
         ? crypto.randomUUID()
         : String(Date.now());
 
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    if (isMockMode()) {
         console.log('[MOCK] MCP OAuth flow bypassed');
         document.cookie = `${STORAGE_KEYS.USER_DATA}=${encodeURIComponent(
             JSON.stringify({ id: 999999, nickname: 'MCP Mock', provider: 'mcp' })
@@ -229,12 +246,16 @@ export function initiateMcpLogin(): void {
     }
 
     const codeVerifier = generateRandomString(128);
+    const state = generateRandomString(128); // Increased entropy for state (BE-11)
+    const statePayload = JSON.stringify({
+        value: state,
+        issuedAt: Date.now(),
+    });
+
     const codeChallenge = generateCodeChallenge(codeVerifier);
 
     codeChallenge
         .then((challenge) => {
-            const state = generateRandomString(32);
-
             if (typeof sessionStorage !== 'undefined') {
                 sessionStorage.setItem('mcp_code_verifier', codeVerifier);
                 sessionStorage.setItem('mcp_oauth_state', state);
@@ -243,7 +264,7 @@ export function initiateMcpLogin(): void {
             const maxAge = MCP_OAUTH_COOKIE_TTL_SECONDS;
             setBrowserCookie(
                 STORAGE_KEYS.MCP_STATE,
-                JSON.stringify({ value: state, issuedAt: Date.now() }),
+                statePayload,
                 maxAge
             );
             setBrowserCookie(STORAGE_KEYS.MCP_CODE_VERIFIER, codeVerifier, maxAge);
@@ -272,7 +293,7 @@ export async function exchangeMcpCodeForToken(
     code: string,
     codeVerifier: string
 ): Promise<McpTokenResponse | null> {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    if (isMockMode()) {
         return {
             access_token: 'mock_mcp_access_token',
             refresh_token: 'mock_mcp_refresh_token',
@@ -313,7 +334,7 @@ export async function exchangeMcpCodeForToken(
 }
 
 export async function refreshMcpToken(refreshToken: string): Promise<McpTokenResponse | null> {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    if (isMockMode()) {
         return {
             access_token: 'mock_mcp_access_token_refreshed',
             refresh_token: refreshToken || 'mock_mcp_refresh_token',
@@ -466,14 +487,24 @@ function normalizeMcpProfile(payload: Record<string, unknown>): McpUserProfile {
         payload.uid ??
         payload.kakao_id;
 
+    function sanitizeString(input: string | null | undefined): string {
+        if (!input) return '';
+        // Remove HTML tags for XSS prevention (G-12)
+        return input.replace(/<\/?[^>]+(>|$)/g, '').trim();
+    }
+
     const parsed = parseUserId(rawId);
 
     const email = (payload.email as string | undefined) || (payload.preferred_username as string | undefined) || null;
-    const nickname =
-        (payload.name as string | undefined) ||
+    const rawNickname =
         (payload.nickname as string | undefined) ||
+        (payload.name as string | undefined) ||
+        (payload.preferred_username as string | undefined) ||
         (payload.login as string | undefined) ||
+        (payload.display_name as string | undefined) ||
         'MCP User';
+
+    const nickname = sanitizeString(rawNickname);
 
     const profileImage =
         (payload.picture as string | undefined) ||
@@ -491,7 +522,7 @@ function normalizeMcpProfile(payload: Record<string, unknown>): McpUserProfile {
 }
 
 export async function getMcpUserProfile(accessToken: string): Promise<McpUserProfile | null> {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    if (isMockMode()) {
         return {
             providerUserId: '999999',
             externalUserId: '999999',

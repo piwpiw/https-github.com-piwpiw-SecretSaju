@@ -4,7 +4,7 @@ import { AnalysisHistoryLog, AnalysisType } from '@/types/history';
 import { generateUUID } from './uuid';
 
 const HISTORY_STORAGE_KEY = 'secret_paws_analysis_history';
-const ANALYSIS_TYPES: AnalysisType[] = ['SAJU', 'DREAM', 'PALMISTRY', 'NAMING', 'ASTROLOGY', 'TAROT'];
+const ANALYSIS_TYPES: AnalysisType[] = ['SAJU', 'DREAM', 'PALMISTRY', 'NAMING', 'ASTROLOGY', 'TAROT', 'TOJEONG'];
 
 function parseStoredLogs(raw: string): unknown[] {
   try {
@@ -114,18 +114,20 @@ export function clearAnalysisHistory() {
 export function getAnalysisTypeInfo(type: AnalysisType): { icon: string; color: string; label: string } {
   switch (type) {
     case 'SAJU':
-      return { icon: '🕯', color: 'text-cyan-400', label: 'SAJU' };
+      return { icon: '🕯', color: 'text-cyan-400', label: '사주' };
     case 'DREAM':
-      return { icon: '🌙', color: 'text-indigo-400', label: 'Dream' };
+      return { icon: '🌙', color: 'text-indigo-400', label: '꿈' };
     case 'PALMISTRY':
-      return { icon: '🖐', color: 'text-emerald-400', label: 'Palmistry' };
+      return { icon: '🖐', color: 'text-emerald-400', label: '관상' };
     case 'NAMING':
-      return { icon: '🧬', color: 'text-rose-400', label: 'Naming' };
+      return { icon: '🧬', color: 'text-rose-400', label: '작명' };
     case 'ASTROLOGY':
-      return { icon: '♈', color: 'text-purple-400', label: 'Astrology' };
+      return { icon: '♈', color: 'text-purple-400', label: '점성술' };
     case 'TAROT':
-      return { icon: '🃏', color: 'text-amber-400', label: 'Tarot' };
+      return { icon: '🃏', color: 'text-amber-400', label: '타로' };
+    case 'TOJEONG':
+      return { icon: '📜', color: 'text-emerald-400', label: '토정' };
     default:
-      return { icon: '📜', color: 'text-slate-400', label: 'Analysis' };
+      return { icon: '📜', color: 'text-slate-400', label: '분석' };
   }
 }

@@ -8,6 +8,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { DATABASE_CONFIG } from '@/config';
 import type { Database } from '@/types/database';
+import { isMockMode } from '@/lib/use-mock';
 
 // Singletons to avoid multiple client instances in production
 let supabaseClient: any = null;
@@ -16,9 +17,18 @@ let fallbackPublicClient: any = null;
 
 function createPublicSupabaseClient() {
     if (fallbackPublicClient) return fallbackPublicClient;
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder';
-    fallbackPublicClient = createClient(supabaseUrl, supabaseKey);
+
+    const mockModeEnabled = isMockMode();
+    if (!DATABASE_CONFIG.isConfigured) {
+        if (typeof window !== 'undefined') {
+            console.warn(
+                '[Supabase] Public client is not configured. Falling back to mock client.'
+            );
+        }
+        return mockModeEnabled || process.env.NODE_ENV !== 'production' ? createMockSupabase() : null;
+    }
+
+    fallbackPublicClient = createClient(DATABASE_CONFIG.URL, DATABASE_CONFIG.ANON_KEY);
     return fallbackPublicClient;
 }
 
@@ -27,7 +37,7 @@ function createPublicSupabaseClient() {
  * Use in React components (client-side only)
  */
 export function getSupabaseClient() {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    if (isMockMode()) {
         return createMockSupabase();
     }
 
@@ -50,7 +60,7 @@ export function getSupabaseClient() {
  * NEVER expose service role key to client
  */
 export function getSupabaseAdmin() {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    if (isMockMode()) {
         return createMockSupabase();
     }
 
@@ -357,16 +367,39 @@ function createMockSupabase() {
         return chain;
     };
 
+    let mockEmail = 'mock@secretsaju.com';
+    const createMockSession = (email: string) => ({
+        user: {
+            id: 'mock-user-123',
+            email,
+            user_metadata: { name: 'Mock User' },
+        },
+        access_token: `mock-access-${email}`,
+        refresh_token: 'mock-refresh-token',
+        expires_in: 7 * 24 * 3600,
+    });
+    let currentMockSession = createMockSession(mockEmail);
+
     return {
         from: (table: string) => createChain(table),
         rpc: async () => ({ data: true, error: null }),
         auth: {
-            getSession: async () => ({ data: { session: { user: { id: 'mock-user-123' } } }, error: null }),
-            getUser: async () => ({ data: { user: { id: 'mock-user-123' } }, error: null }),
+            getSession: async () => ({ data: { session: currentMockSession }, error: null }),
+            getUser: async (_accessToken?: string) => ({ data: { user: currentMockSession.user }, error: null }),
+            signUp: async ({ email }: { email: string; password?: string }) => {
+                mockEmail = email;
+                currentMockSession = createMockSession(email);
+                return { data: { user: currentMockSession.user, session: currentMockSession }, error: null };
+            },
+            signInWithPassword: async ({ email }: { email: string; password: string }) => {
+                mockEmail = email;
+                currentMockSession = createMockSession(email);
+                return { data: { user: currentMockSession.user, session: currentMockSession }, error: null };
+            },
             signInWithOAuth: async () => ({ data: { url: 'http://localhost:3000' }, error: null }),
             signInWithOtp: async ({ email }: { email: string }) => {
                 return {
-                    data: { user: { id: 'mock-user-123', email } },
+                    data: { user: { id: 'mock-user-123', email }, session: createMockSession(email) },
                     error: null
                 };
             },
@@ -381,5 +414,3 @@ export type UserRow = Database['public']['Tables']['users']['Row'];
 export type UnlockLogRow = Database['public']['Tables']['unlocks']['Row'];
 
 export const supabase = createPublicSupabaseClient();
-
-

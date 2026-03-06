@@ -1,7 +1,7 @@
-# MASTER PRD: Secret Paws (멍냥의 이중생활)
+# MASTER PRD: Secret Saju (시크릿사주)
 
-**Version:** 4.0 (10단계 고도화 · 검증 · Content DB·AI 준비)  
-**Objective:** Hyper-Personalized Fortune Telling Platform with Viral Loops, Micro-Transactions, Food/Product Recommendations. 런칭용 예외처리·테스트·관리자/사용자 검증 반영.
+**Version:** 6.0 (Wave 11.5 완료 · Context Efficiency Engineering · Multi-AI MPPS)  
+**Objective:** Hyper-Personalized Fortune Telling Platform with MPPS (Multi-LLM Persona), real-time Transit Engine, and Anti-Hallucination Multi-AI development system.
 
 ---
 
@@ -9,11 +9,11 @@
 
 | 항목 | 내용 |
 |------|------|
-| **서비스명** | 멍냥의 이중생활 (Secret Paws) |
-| **핵심 가치** | 사회적 가면(Persona) 뒤에 숨겨진 본능(Instinct)을 밈(Meme)과 데이터로 폭로한다. |
-| **타겟** | 10대(재미/공유) ~ 30대(현실/자조/결제) |
-| **플랫폼** | 모바일 웹 (Web App), 추후 앱 패키징 가능 |
-| **최소 수준** | **사주아이 수준** — 생년·월·일 입력 → 일주 기반 60동물 결과 + 추천 음식/제품까지 즉시 동작 |
+| **서비스명** | 시크릿사주 (Secret Saju) |
+| **핵심 가치** | 운명의 암호(Secret)를 고정밀 사주 엔진과 미려한 UI로 풀어낸다. |
+| **타겟** | 20대(운세/재미) ~ 40대(현실 조언/심층 분석) |
+| **플랫폼** | 모바일 우선 웹 (Mobile-First Web App) |
+| **최소 수준** | **Jeomsin(점신) 수준** — 고정밀 만세력 + 일일 운세 점수 + 10-Team Agent 기반 무결점 운영 |
 
 ---
 
@@ -21,12 +21,13 @@
 
 | 구분 | 스택 |
 |------|------|
-| **Framework** | Next.js 14 (App Router, TypeScript) |
-| **Styling** | Tailwind CSS, Shadcn/ui 스타일(Design System), Framer Motion |
+| **Framework** | Next.js 15 (App Router, TypeScript, React 19) |
+| **Styling** | Tailwind CSS, Framer Motion, Glassmorphism design system |
 | **Backend/DB** | Supabase (PostgreSQL, Edge Functions, Auth, Storage) |
-| **Payment** | Toss Payments (Widget Mode) |
-| **AI** | OpenAI GPT-4o-mini (Phase 3 개인화 텍스트용, 선택) |
-| **Analytics** | Vercel Analytics + Google Analytics 4 (Phase 2) |
+| **Payment** | Toss Payments (Widget Mode) + Stripe (Checkout, secondary) |
+| **AI** | GPT-4o / Claude 3.5 / Gemini 1.5 (MPPS Ensemble, Wave 11+) |
+| **Analytics** | Vercel Analytics + GA4 |
+| **Auth** | Kakao OAuth + MCP OAuth (custom provider) |
 
 **Design Tokens**
 
@@ -51,58 +52,82 @@
 -- users
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  birth_date TIMESTAMP WITH TIME ZONE NOT NULL,
-  gender TEXT CHECK (gender IN ('M', 'F')),
-  kakao_id TEXT UNIQUE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  kakao_id BIGINT UNIQUE,
+  auth_provider TEXT DEFAULT 'kakao',
+  email TEXT,
+  nickname TEXT,
+  is_admin BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- animal_archetypes (정적 + 추천)
-CREATE TABLE animal_archetypes (
-  code VARCHAR(10) PRIMARY KEY,
-  animal_name TEXT NOT NULL,
-  base_traits JSONB NOT NULL DEFAULT '{}',
-  age_context JSONB NOT NULL DEFAULT '{}',
-  food_recommendations JSONB DEFAULT '[]',
-  product_recommendations JSONB DEFAULT '[]'
-);
-
--- unlock_logs
-CREATE TABLE unlock_logs (
+-- saju_profiles
+CREATE TABLE saju_profiles (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID REFERENCES users(id),
-  target_friend_id UUID,
-  unlock_level INT NOT NULL CHECK (unlock_level IN (2, 3)),
-  amount INT DEFAULT 0,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  relationship TEXT DEFAULT 'self',
+  birthdate DATE NOT NULL,
+  birth_time TIME,
+  calendar_type TEXT NOT NULL,
+  gender TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- jelly_wallets
+CREATE TABLE jelly_wallets (
+  user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  balance INTEGER DEFAULT 0,
+  total_purchased INTEGER DEFAULT 0,
+  total_consumed INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- orders
+CREATE TABLE orders (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  order_id TEXT UNIQUE NOT NULL,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  amount INTEGER NOT NULL,
+  jellies INTEGER NOT NULL,
+  status TEXT DEFAULT 'pending',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- campaigns (Crawlers)
+CREATE TABLE campaigns (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  source TEXT NOT NULL,
+  title TEXT NOT NULL,
+  image_url TEXT,
+  landing_url TEXT NOT NULL,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ```
 
 ### 3.3 추천 데이터 (음식·제품)
-
-- **음식:** `food_recommendations` — `[{ name, reason, emoji }]` (연령대별 확장 가능)
-- **제품:** `product_recommendations` — `[{ name, category, reason, emoji, link? }]`
-- 현재: `src/data/foodRecommendations.ts`, `src/data/productRecommendations.ts`에서 60갑자별 3개씩 풀 기반 매핑. DB 연동 시 `animal_archetypes` JSONB 사용.
+- **현재 활용:** `food_recommendations`, `product_recommendations` 테이블 연동 (Phase 9+).
+- **폴백:** `src/data/foodRecommendations.ts`, `src/data/productRecommendations.ts` 60갑자별 매핑.
 
 ---
 
 ## 4. UX Flow & Features
 
-### Phase 1 (현재 구현 완료)
+### Phase 1 (완료)
+- 메인: 생년월일 입력 → 결과
+- 결과 카드: 동물명, 일주, 해시태그
+- 추천: 음식/제품 3종
 
-1. **The Hook:** 메인 — 생년월일·성별 입력 → 로딩 → 결과
-2. **The Reveal (Lv.1):** 결과 카드 — 동물명, 일주, 겉모습, 해시태그
-3. **추천:** 동물 타입별 추천 음식 3종, 추천 제품 3종
-4. **오늘의 개소리:** `/api/daily-fortune` → 메인 상단 배너
-5. **Viral Lock (Lv.2):** 공유 CTA → 공유/복사 시 카드 뒷면(친구들이 보는 너) 해금
-6. **Monetization (Lv.3):** "새벽 2시의 본능" 블러 → 300원 결제 CTA → 결제 모달(스텁) 후 해금
+### Phase 2 (완료)
+- Supabase 실제 연동 및 마이그레이션
+- Toss Payments 위젯 호출 및 서버 검증 고도화
+- Kakao 공유(동적 OG) 및 Web Share API 연동
+- GA4 분석 통합
 
-### Phase 2 (예측·준비됨)
-
-- Supabase 실제 연동: `.env` 설정, `schema.sql` 마이그레이션, `lib/supabase.ts` 사용
-- Toss Payments: `lib/payment.ts` 위젯 호출, `/api/payment/verify` 서버 검증, `/payment/success`, `/payment/fail` 리다이렉트
-- Share: OG 이미지·딥링크, 공유 메시지 포맷 고정
-- Analytics: `lib/analytics.ts` — result_view, share_click, payment_click, payment_complete
+### Phase 3 (완료/고도화)
+- Wave 5 Saju Engine: Daewun 절기 기반 고정밀화, Sinsal 8종 확장, 용신 기반 일일운세 스코어링
+- 10-Team Agent Architecture: T1~T10 분산 개발 체계 구축
+- Crawlers: DinnerQueen, Revu 어댑터 구현 및 캠페인 데이터 동기화
 
 ### Phase 3 (예측·스텁만)
 
@@ -114,31 +139,38 @@ CREATE TABLE unlock_logs (
 
 ## 5. 구현 체크리스트 (Cursor 업데이트 시 기준)
 
-### ✅ 이미 구현된 요소
+### ✅ 이미 구현된 요소 (Up to Wave 11.5)
 
-- [x] Next.js 14 App Router, TypeScript, Tailwind, Framer Motion
-- [x] DACRE: `lib/saju.ts` (일주 계산), `lib/archetypes.ts` (아키타입 조회)
-- [x] 60동물 목업: `data/animals.json` + 60개 동물명 폴백
-- [x] **추천 음식/제품:** `data/foodRecommendations.ts`, `data/productRecommendations.ts` → 결과 화면 연동
-- [x] UI: HeroSection, BirthInputForm, ResultCard(플립), RecommendationsSection, ShareSection, SecretBlur, SecretPawsFlow
-- [x] API: `/api/recommendations`, `/api/daily-fortune`, `/api/payment/verify` (스텁)
-- [x] 페이지: `/`, `/payment/success`, `/payment/fail`, `/gift` (스텁)
-- [x] Supabase 스키마: `supabase/schema.sql` (users, animal_archetypes, unlock_logs, food/product JSONB)
-- [x] 결제/분석 스텁: `lib/payment.ts`, `lib/analytics.ts`
+- [x] Next.js 15 App Router, TypeScript, Tailwind, Framer Motion
+- [x] **Wave 5 Saju Engine:** Daewun 절기 기반 12절 고정밀화, Sinsal 10종 확장
+- [x] **Toss Payments:** 실결제 + 서버 검증 + Notion sync + 첫구매 보너스 + 환불 정책
+- [x] **Stripe:** Create-checkout 보조 결제 경로
+- [x] **DB:** Supabase RLS 정책 및 Full-Schema 마이그레이션 완료
+- [x] **Auth:** Kakao OAuth + MCP OAuth (custom, PKCE 포함)
+- [x] **UI/UX:** Daily Fortune, Premium Card, Glassmorphism, Ambient Sound, Reading Progress Bar
+- [x] **Crawlers:** 20+ Platform Adapters (DinnerQueen, Revu, SeoulOppa, GangnamFood 등)
+- [x] **i18n:** 한국어/영어 다국어 (en/ko)
+- [x] **Referral:** 추천인 코드 생성 및 사용 로직
+- [x] **Wave 11 MPPS:** AI 라우팅, 페르소나 매트릭스, AI Intelligence Badge, Narrative Section
+- [x] **Wave 11.5:** AI_BOOTSTRAP, ERROR_LEDGER, Context Efficiency Protocol, NEXT_ACTIONS
+- [x] **Admin:** 73개 라우트 감사 통과 (0 failures)
+- [x] **Production:** Vercel 배포 완료 (2026-03-05)
 
-### ⬜ Phase 2에서 구현할 요소
+### ⬜ 남은 구현 항목 (NEXT_ACTIONS.md 참조)
 
-- [ ] `.env`에 Supabase URL/Key 설정 후 DB 마이그레이션
-- [ ] Toss 클라이언트 키·success/fail URL 설정, `lib/payment.ts`에서 위젯 호출
-- [ ] `/payment/success`에서 query로 paymentKey/orderId 수신 → `/api/payment/verify` 호출 → unlock_logs insert
-- [ ] OG 메타태그 및 공유 썸네일
-- [ ] `lib/analytics.ts`에 gtag 또는 Vercel Analytics 연동
+**P0 (LLM API Keys 설정 후 즉시 완료)**
+- [ ] `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GOOGLE_AI_KEY` 환경변수 설정 → Persona API 실연동
 
-### ⬜ Phase 3에서 구현할 요소
+**P1 (다음 스프린트)**
+- [ ] Content DB: `animal_archetypes` Supabase 테이블 보강 (현재 코드 참조)
+- [ ] PWA manifest + Service Worker + 오프라인 캐시
+- [ ] GA4 실이벤트 (`start_analysis`, `payment_complete`)
 
-- [ ] `/gift`: 친구 생년월일 입력 폼 → 결제 → 결과 페이지 고유 링크 생성·전달
-- [ ] (선택) OpenAI로 연령·성별 맞춤 문구 생성
-- [ ] PWA manifest, 오프라인/캐시 전략
+**P2 (품질 향상)**
+- [ ] 선물하기 `/gift` E2E 검증
+- [ ] Mock 모드 통합 유틸리티로 정리
+
+> 전체 목록은 `NEXT_ACTIONS.md` 참조 (P0/P1/P2 우선순위 정의)
 
 ### ✅ 고도화·검증 (v4.0)
 

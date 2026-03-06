@@ -23,7 +23,7 @@ export function Footer() {
                             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-black tracking-tighter">
                                 SS
                             </div>
-                            <span className="text-lg font-black text-foreground uppercase tracking-tight">Secret Saju</span>
+                            <span className="text-lg font-black text-foreground uppercase tracking-tight">시크릿사주</span>
                         </Link>
                         <p className="text-sm max-w-sm leading-relaxed text-secondary">
                             {t('home.feature.desc') || '프리미엄 사주 분석 및 운세 플랫폼'}
@@ -67,19 +67,19 @@ export function Footer() {
                         <Link href="/custom/partnership" className="hover:text-white transition-colors">광고 및 제휴</Link>
                     </div>
 
-                    <div className="text-[11px] leading-relaxed text-slate-400">
+                <div className="text-[11px] leading-relaxed text-slate-400">
                         <p className="font-black text-foreground mb-1">보헤미안 스튜디오 (Bohemian Studio)</p>
                         <p>대표: 박인혁 | 사업자등록번호: 123-45-67890 | 통신판매업신고: 2026-서울강남-0000호</p>
                         <p className="mt-1">주소: 서울특별시 강남구 테헤란로 123, 보헤미안 스튜디오</p>
                         <p className="mt-2">
                             고객센터: 070-1234-5678 (평일 10:00~17:00, 점심 12:00~13:00, 휴무: 주말/공휴일)
                         </p>
-                        <p className="mt-3">© {currentYear} Secret Saju. All rights reserved.</p>
+                        <p className="mt-3">© {currentYear} 시크릿사주. 모든 권리 보유.</p>
                     </div>
                 </div>
 
                 <div className="text-right">
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md font-mono text-secondary">v4.5.1 (Jeomsin)</span>
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md font-mono text-secondary">v4.5.1 (시크릿사주)</span>
                 </div>
             </div>
         </footer>

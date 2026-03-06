@@ -31,7 +31,7 @@ function badgeClass(level: ShinSalType["risk"]) {
 
 export default function ShinsalPage() {
   const router = useRouter();
-  const { churu, consumeChuru } = useWallet();
+  const { churu, consumeChuru, isAdmin } = useWallet();
   const [run, setRun] = useState(false);
   const [selected, setSelected] = useState<ShinSalType | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -39,7 +39,7 @@ export default function ShinsalPage() {
   const handleRun = () => {
     setErrorMessage("");
 
-    if (churu < 5) {
+    if (!isAdmin && churu < 5) {
       setErrorMessage("신살 분석은 5젤리가 필요합니다.");
       return;
     }

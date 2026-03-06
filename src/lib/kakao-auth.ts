@@ -1,6 +1,9 @@
 'use client';
 
 import { KAKAO_CONFIG, STORAGE_KEYS } from '@/config';
+import { isMockMode } from '@/lib/use-mock';
+
+const ADMIN_BYPASS_STORAGE_KEY = 'secret_paws_mock_admin';
 
 declare global {
     interface Window {
@@ -29,7 +32,7 @@ export function initKakao() {
  * Redirects to Kakao OAuth page
  */
 export function loginWithKakao() {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    if (isMockMode()) {
         console.log('[MOCK] Bypassing Kakao Login');
         document.cookie = `${STORAGE_KEYS.USER_DATA}=${encodeURIComponent(JSON.stringify({ id: 999999, nickname: '테스트유저(Mock)' }))}; path=/; max-age=86400`;
         window.location.href = '/dashboard';
@@ -83,7 +86,7 @@ export interface KakaoUser {
  * @param accessToken - Kakao access token
  */
 export async function getKakaoUser(accessToken: string): Promise<KakaoUser | null> {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    if (isMockMode()) {
         return {
             id: 999999,
             kakao_account: { profile: { nickname: '테스트유저(Mock)' }, email: 'mock@secretsaju.com' }
@@ -138,7 +141,7 @@ function normalizeProviderUserId(value: unknown): string | null {
 export function getUserFromCookie(): UserFromCookie | null {
     if (typeof window === 'undefined') return null;
 
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    if (isMockMode()) {
         return {
             id: 999999,
             nickname: '테스트유저(Mock)',
@@ -150,31 +153,34 @@ export function getUserFromCookie(): UserFromCookie | null {
         .split('; ')
         .find(row => row.startsWith(`${STORAGE_KEYS.USER_DATA}=`));
 
-    if (!userCookie) return null;
+    let parsed: any = null;
 
-    try {
-        const parsed = JSON.parse(decodeURIComponent(userCookie.split('=')[1])) as {
-            id?: string | number;
-            nickname?: string;
-            email?: string;
-            profileImage?: string;
-            profile_image_url?: string;
-            auth_provider?: string | null;
-            provider_user_id?: string | null;
-            providerUserId?: string | null;
-        };
-
-        return {
-            id: parsed.id ?? '',
-            nickname: parsed.nickname ?? 'Guest',
-            email: parsed.email,
-            profileImage: parsed.profileImage ?? parsed.profile_image_url,
-            auth_provider: parsed.auth_provider ?? null,
-            provider_user_id: normalizeProviderUserId(parsed.provider_user_id ?? parsed.providerUserId),
-        };
-    } catch {
-        return null;
+    if (userCookie) {
+        try {
+            parsed = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
+            if (typeof localStorage !== 'undefined') {
+                localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(parsed));
+            }
+        } catch { }
+    } else if (typeof localStorage !== 'undefined') {
+        const cached = localStorage.getItem(STORAGE_KEYS.USER_DATA);
+        if (cached) {
+            try {
+                parsed = JSON.parse(cached);
+            } catch { }
+        }
     }
+
+    if (!parsed) return null;
+
+    return {
+        id: parsed.id ?? '',
+        nickname: parsed.nickname ?? 'Guest',
+        email: parsed.email,
+        profileImage: parsed.profileImage ?? parsed.profile_image_url,
+        auth_provider: parsed.auth_provider ?? null,
+        provider_user_id: normalizeProviderUserId(parsed.provider_user_id ?? parsed.providerUserId),
+    };
 }
 
 /**
@@ -191,14 +197,13 @@ export function clearUserSession() {
             sessionStorage.removeItem('mcp_id_token');
             sessionStorage.removeItem('mcp_code_verifier');
             sessionStorage.removeItem('mcp_oauth_state');
-        } catch {}
-
-        sessionStorage.removeItem('mcp_code_verifier');
-        sessionStorage.removeItem('mcp_oauth_state');
+        } catch { }
     }
 
     if (typeof localStorage !== 'undefined') {
         try {
+            localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+            localStorage.removeItem(ADMIN_BYPASS_STORAGE_KEY);
             localStorage.removeItem('mcp_access_token');
             localStorage.removeItem('mcp_refresh_token');
             localStorage.removeItem('mcp_id_token');
@@ -206,14 +211,14 @@ export function clearUserSession() {
             localStorage.removeItem('mcp_code_verifier');
             localStorage.removeItem('kakao_access_token');
             localStorage.removeItem('kakao_refresh_token');
-        } catch {}
+        } catch { }
     }
 
-    const clearCookie = (name: string) => {
-        const base = `${name}=; Max-Age=0; path=/; SameSite=Lax;`;
-        document.cookie = base;
-        document.cookie = `${base} domain=${window.location.hostname};`;
-        document.cookie = `${base} domain=.${window.location.hostname};`;
+        const clearCookie = (name: string) => {
+            const base = `${name}=; Max-Age=0; path=/; SameSite=Lax;`;
+            document.cookie = base;
+            document.cookie = `${base} domain=${window.location.hostname};`;
+            document.cookie = `${base} domain=.${window.location.hostname};`;
         if (window.location.protocol === 'https:') {
             document.cookie = `${base} Secure;`;
             document.cookie = `${base} domain=${window.location.hostname}; Secure;`;
@@ -227,13 +232,9 @@ export function clearUserSession() {
     clearCookie(STORAGE_KEYS.MCP_REFRESH_TOKEN);
     clearCookie(STORAGE_KEYS.MCP_STATE);
     clearCookie(STORAGE_KEYS.MCP_CODE_VERIFIER);
+    clearCookie(STORAGE_KEYS.AUTH_SESSION_TOKEN);
+    clearCookie(ADMIN_BYPASS_STORAGE_KEY);
 
-    document.cookie = `${STORAGE_KEYS.KAKAO_TOKEN}=; Max-Age=0; path=/`;
-    document.cookie = `${STORAGE_KEYS.USER_DATA}=; Max-Age=0; path=/`;
-    document.cookie = `${STORAGE_KEYS.MCP_TOKEN}=; Max-Age=0; path=/`;
-    document.cookie = `${STORAGE_KEYS.MCP_REFRESH_TOKEN}=; Max-Age=0; path=/`;
-    document.cookie = `${STORAGE_KEYS.MCP_STATE}=; Max-Age=0; path=/`;
-    document.cookie = `${STORAGE_KEYS.MCP_CODE_VERIFIER}=; Max-Age=0; path=/`;
     logoutKakao();
 }
 

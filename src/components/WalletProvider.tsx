@@ -1,9 +1,19 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { getUserFromCookie } from '@/lib/kakao-auth';
 
 const ADMIN_STORAGE_KEY = 'secret_paws_mock_admin';
 const ADMIN_BALANCE_PREVIEW = 999999999;
+const ADMIN_EMAILS = ['piwpiw@naver.com'];
+const ADMIN_COOKIE_NAME = 'secret_paws_mock_admin';
+
+function hasCookieAdminFlag(): boolean {
+    if (typeof document === 'undefined') return false;
+    return document.cookie
+        .split('; ')
+        .some((row) => row.startsWith(`${ADMIN_COOKIE_NAME}=`) && row.split('=')[1] === 'true');
+}
 
 interface WalletContextType {
     isAdmin: boolean;
@@ -36,7 +46,14 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
         // Mock Admin Check
         const mockAdmin = localStorage.getItem(ADMIN_STORAGE_KEY);
-        if (mockAdmin === 'true') {
+        const cookieAdmin = hasCookieAdminFlag();
+        if (mockAdmin === 'true' || cookieAdmin) {
+            setIsAdmin(true);
+        }
+
+        const cookieUser = getUserFromCookie();
+        const email = cookieUser?.email?.toLowerCase();
+        if (email && ADMIN_EMAILS.includes(email)) {
             setIsAdmin(true);
         }
 
@@ -77,6 +94,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
     const addNyang = (amount: number) => setNyang((prev) => prev + amount);
     const consumeNyang = (amount: number) => {
+        if (isAdmin) return true;
         if (nyang >= amount) {
             setNyang((prev) => prev - amount);
             return true;

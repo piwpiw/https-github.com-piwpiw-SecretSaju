@@ -13,6 +13,7 @@ export class SajuProfileRepository {
     static async findByUserId(userId: string): Promise<SajuProfile[]> {
         // 1. Try Supabase first
         const supabase = getSupabaseClient();
+        const localProfiles = this.findByUserIdLocal(userId);
 
         // Check if configured (not null)
         if (supabase) {
@@ -23,8 +24,14 @@ export class SajuProfileRepository {
                     .eq('user_id', userId)
                     .order('created_at', { ascending: false });
 
-                if (!error && data) {
+                if (!error && data && data.length > 0) {
                     return (data as unknown as SajuProfileDTO[]).map(SajuProfileMapper.toDomain);
+                }
+
+                // Supabase is reachable but may return empty due migration/RLS/local-only saves.
+                // In that case, return local profiles to keep UX stable.
+                if (!error && (!data || data.length === 0)) {
+                    return localProfiles;
                 }
             } catch (e) {
                 console.warn('Supabase fetch failed, falling back to local storage', e);
@@ -32,7 +39,7 @@ export class SajuProfileRepository {
         }
 
         // 2. Fallback to localStorage (Dual Mode)
-        return this.findByUserIdLocal();
+        return localProfiles;
     }
 
     /**
@@ -101,15 +108,15 @@ export class SajuProfileRepository {
     // LOCAL STORAGE FALLBACKS (Private)
     // ============================================
 
-    private static findByUserIdLocal(): SajuProfile[] {
+    private static findByUserIdLocal(userId: string = 'local-user'): SajuProfile[] {
         if (typeof window === 'undefined') return [];
 
         try {
             const rawParams = readProfileStoragePayload();
             // Map raw params (any) to SajuProfile domain
-            return rawParams.map((p: any) => ({
+            const mapped = rawParams.map((p: any) => ({
                 id: p.id,
-                userId: 'local-user', // Storage doesn't track user ID usually
+                userId: p.userId || 'local-user', // Storage may not track user ID in legacy format
                 name: p.name,
                 relationship: p.relationship, // Might need normalization
                 birthdate: new Date(p.birthdate),
@@ -125,13 +132,16 @@ export class SajuProfileRepository {
                 createdAt: new Date(p.createdAt || Date.now()),
                 updatedAt: new Date(p.createdAt || Date.now()),
             }));
+
+            // Legacy local data may not have userId, so treat missing as local-user.
+            return mapped.filter((p) => (p.userId || 'local-user') === userId);
         } catch {
             return [];
         }
     }
 
     private static createLocal(req: CreateSajuProfileRequest): SajuProfile {
-        const profiles = this.findByUserIdLocal();
+        const profiles = this.findByUserIdLocal('local-user');
 
         // Create new domain object
         const newProfile: SajuProfile = {
@@ -150,7 +160,7 @@ export class SajuProfileRepository {
     }
 
     private static deleteLocal(id: string): void {
-        const profiles = this.findByUserIdLocal();
+        const profiles = this.findByUserIdLocal('local-user');
         const updated = profiles.filter(p => p.id !== id);
         writeProfileStoragePayload(updated);
     }

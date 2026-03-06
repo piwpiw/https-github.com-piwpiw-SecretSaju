@@ -1,831 +1,913 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
-import { type AnimalArchetype, type AgeGroup } from "@/lib/archetypes";
-import { Sparkles, Eye, Lock, Shield, Zap, Heart, Star, TrendingUp, Download, Info } from "lucide-react";
-import confetti from "canvas-confetti";
-import html2canvas from "html2canvas";
-import { useState, useRef } from "react";
-import LuxuryToast from "@/components/ui/LuxuryToast";
-import { AnimatePresence } from "framer-motion";
-import ElementPolygon from "@/components/ui/ElementPolygon";
-import { QRCodeSVG } from "qrcode.react";
-import { useWallet } from "./WalletProvider";
-import { handleShare } from "@/lib/share";
-import { APP_CONFIG } from "@/config/env";
+import { type ReactNode, useState } from "react";
+import { AgeGroup } from "@/lib/archetypes";
+import KeywordChips from "@/components/result/KeywordChips";
+import InteractiveInsightLab from "@/components/result/InteractiveInsightLab";
+import ShareCard from "@/components/result/ShareCard";
+import PillarVisualizer from "@/components/result/PillarVisualizer";
+import SvgChart from "@/components/ui/SvgChart";
+import AmbientSoundPortal from "@/components/ui/AmbientSoundPortal";
+import ReadingProgressBar from "@/components/ui/ReadingProgressBar";
+import AIIntelligenceBadge from "@/components/ui/AIIntelligenceBadge";
+import { CalendarDays, Lock, Target, TrendingUp, Orbit, Crown, Flame, Gem, ChevronRight } from "lucide-react";
 
-interface ResultCardProps {
-  archetype: AnimalArchetype & {
-    displayHook: string;
-    displaySecretPreview: string;
+type Archetype = {
+  code: string;
+  animal_name: string;
+  base_traits: {
+    mask: string;
+    hashtags: string[];
+  };
+  displayHook: string;
+  displaySecretPreview: string;
+};
+
+type Props = {
+  archetype: Archetype;
+  personName?: string;
+  analysisMeta?: {
+    source: "high-precision" | "fallback";
+    qualityScore: number;
+    reliability: "high" | "medium" | "low";
+    warnings: string[];
+    calendarType: "solar" | "lunar";
+    timeUnknownFallbackUsed: boolean;
+    usedLocation: string;
   };
   pillarNameKo: string;
   ageGroup: AgeGroup;
-  elementScores: number[]; // Required: Weighted scores [Wood, Fire, Earth, Metal, Water]
-  elementCounts: number[]; // Required: Basic counts (0-8)
-  elementBasicPercentages: number[]; // Required: Percentages based on counts
-  fourPillars?: any; // High precision pillars
+  elementScores: number[];
+  elementCounts: number[];
+  elementBasicPercentages: number[];
+  fourPillars: any;
   daewun?: any;
   gyeokguk?: any;
+  gangyak?: {
+    deukryeong?: number;
+    deukji?: number;
+    deukse?: number;
+    total?: number;
+    level?: string;
+    description?: string;
+  };
+  yongshin?: {
+    primary?: { element?: string; reason?: string };
+    secondary?: { element?: string; reason?: string };
+    unfavorable?: { element?: string; reason?: string };
+    source?: string;
+  };
+  sipsong?: Record<string, string>;
+  sibiwoonseong?: Record<string, string>;
   version?: string;
   integrity?: string;
-  secretUnlocked?: boolean;
   isTimeUnknown?: boolean;
+  secretUnlocked?: boolean;
   onUnlockClick?: () => void;
   onInsufficientJelly?: () => void;
+};
+
+type MetricCard = {
+  label: string;
+  value: string;
+  color: string;
+  icon: ReactNode;
+};
+
+type InsightFocus = "base" | "love" | "money" | "career";
+
+function InfoTip({ title, description }: { title: string; description: string }) {
+  return (
+    <span className="relative inline-flex items-center group align-middle">
+      <button
+        type="button"
+        className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-white/30 text-[10px] font-black leading-none text-white/80 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+        aria-label={`${title} 설명`}
+      >
+        i
+      </button>
+      <span className="pointer-events-none absolute left-1/2 top-6 z-20 w-56 -translate-x-1/2 whitespace-normal rounded-lg border border-white/15 bg-slate-950/95 px-3 py-2 text-[11px] leading-relaxed text-slate-100 opacity-0 shadow-2xl transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+        <strong className="block text-indigo-200 mb-1">{title}</strong>
+        {description}
+      </span>
+    </span>
+  );
 }
 
-// ?�행 ?�상/?�명 �?(Fact-based Standard Colors)
-const FIVE_ELEMENTS = [
-  { name: "??(�?", color: "from-green-500 to-emerald-600", bg: "bg-emerald-500/20", borderColor: "border-emerald-500/50", textColor: "text-emerald-400", desc: "?�장·?�자·?�동??, icon: "?��" },
-  { name: "??(??", color: "from-red-500 to-rose-600", bg: "bg-rose-500/20", borderColor: "border-rose-500/50", textColor: "text-rose-400", desc: "?�정·?�현·리더??, icon: "?��" },
-  { name: "??(??", color: "from-yellow-400 to-amber-600", bg: "bg-amber-500/20", borderColor: "border-amber-500/50", textColor: "text-amber-400", desc: "?�정·?�뢰·중재??, icon: "?���? },
-  { name: "??(�?", color: "from-slate-100 to-zinc-300", bg: "bg-white/10", borderColor: "border-white/30", textColor: "text-white", desc: "결단·?�의·?�철??, icon: "?�️" },
-  { name: "�?(??", color: "from-blue-600 to-indigo-900", bg: "bg-indigo-500/20", borderColor: "border-indigo-500/50", textColor: "text-indigo-400", desc: "지?�·유?�·적?�력", icon: "?��" },
+type PillarView = {
+  key: "year" | "month" | "day" | "hour";
+  labelKo: string;
+  labelHanja: string;
+  stemRaw: string;
+  branchRaw: string;
+  stemKo: string;
+  stemHanja: string;
+  stemElement: string;
+  stemEmoji: string;
+  branchKo: string;
+  branchHanja: string;
+  branchAnimalKo: string;
+  branchEmoji: string;
+  meaning: string;
+};
+
+const ELEMENTS = [
+  { key: "목(木)", label: "목(木)", emoji: "🌳", meaning: "성장·기획·확장", glow: "34,197,94", bar: "bg-emerald-400" },
+  { key: "화(火)", label: "화(火)", emoji: "🔥", meaning: "표현·열정·행동", glow: "244,63,94", bar: "bg-rose-400" },
+  { key: "토(土)", label: "토(土)", emoji: "⛰️", meaning: "안정·중재·관리", glow: "245,158,11", bar: "bg-amber-300" },
+  { key: "금(金)", label: "금(金)", emoji: "⚔️", meaning: "결단·원칙·정리", glow: "203,213,225", bar: "bg-slate-200" },
+  { key: "수(水)", label: "수(水)", emoji: "🌊", meaning: "지혜·통찰·유연", glow: "99,102,241", bar: "bg-indigo-300" },
+] as const;
+
+const STEM_META: Record<string, { ko: string; hanja: string; element: string; emoji: string }> = {
+  "甲": { ko: "갑", hanja: "甲", element: "목(木)", emoji: "🌳" },
+  "乙": { ko: "을", hanja: "乙", element: "목(木)", emoji: "🌿" },
+  "丙": { ko: "병", hanja: "丙", element: "화(火)", emoji: "🔥" },
+  "丁": { ko: "정", hanja: "丁", element: "화(火)", emoji: "🕯️" },
+  "戊": { ko: "무", hanja: "戊", element: "토(土)", emoji: "⛰️" },
+  "己": { ko: "기", hanja: "己", element: "토(土)", emoji: "🏞️" },
+  "庚": { ko: "경", hanja: "庚", element: "금(金)", emoji: "⚔️" },
+  "辛": { ko: "신", hanja: "辛", element: "금(金)", emoji: "💎" },
+  "壬": { ko: "임", hanja: "壬", element: "수(水)", emoji: "🌊" },
+  "癸": { ko: "계", hanja: "癸", element: "수(水)", emoji: "💧" },
+  "갑": { ko: "갑", hanja: "甲", element: "목(木)", emoji: "🌳" },
+  "을": { ko: "을", hanja: "乙", element: "목(木)", emoji: "🌿" },
+  "병": { ko: "병", hanja: "丙", element: "화(火)", emoji: "🔥" },
+  "정": { ko: "정", hanja: "丁", element: "화(火)", emoji: "🕯️" },
+  "무": { ko: "무", hanja: "戊", element: "토(土)", emoji: "⛰️" },
+  "기": { ko: "기", hanja: "己", element: "토(土)", emoji: "🏞️" },
+  "경": { ko: "경", hanja: "庚", element: "금(金)", emoji: "⚔️" },
+  "신": { ko: "신", hanja: "辛", element: "금(金)", emoji: "💎" },
+  "임": { ko: "임", hanja: "壬", element: "수(水)", emoji: "🌊" },
+  "계": { ko: "계", hanja: "癸", element: "수(水)", emoji: "💧" },
+};
+
+const BRANCH_META: Record<string, { ko: string; hanja: string; animalKo: string; emoji: string }> = {
+  "子": { ko: "자", hanja: "子", animalKo: "쥐", emoji: "🐭" },
+  "丑": { ko: "축", hanja: "丑", animalKo: "소", emoji: "🐮" },
+  "寅": { ko: "인", hanja: "寅", animalKo: "호랑이", emoji: "🐯" },
+  "卯": { ko: "묘", hanja: "卯", animalKo: "토끼", emoji: "🐰" },
+  "辰": { ko: "진", hanja: "辰", animalKo: "용", emoji: "🐲" },
+  "巳": { ko: "사", hanja: "巳", animalKo: "뱀", emoji: "🐍" },
+  "午": { ko: "오", hanja: "午", animalKo: "말", emoji: "🐴" },
+  "未": { ko: "미", hanja: "未", animalKo: "양", emoji: "🐑" },
+  "申": { ko: "신", hanja: "申", animalKo: "원숭이", emoji: "🐵" },
+  "酉": { ko: "유", hanja: "酉", animalKo: "닭", emoji: "🐔" },
+  "戌": { ko: "술", hanja: "戌", animalKo: "개", emoji: "🐶" },
+  "亥": { ko: "해", hanja: "亥", animalKo: "돼지", emoji: "🐷" },
+  "자": { ko: "자", hanja: "子", animalKo: "쥐", emoji: "🐭" },
+  "축": { ko: "축", hanja: "丑", animalKo: "소", emoji: "🐮" },
+  "인": { ko: "인", hanja: "寅", animalKo: "호랑이", emoji: "🐯" },
+  "묘": { ko: "묘", hanja: "卯", animalKo: "토끼", emoji: "🐰" },
+  "진": { ko: "진", hanja: "辰", animalKo: "용", emoji: "🐲" },
+  "사": { ko: "사", hanja: "巳", animalKo: "뱀", emoji: "🐍" },
+  "오": { ko: "오", hanja: "午", animalKo: "말", emoji: "🐴" },
+  "미": { ko: "미", hanja: "未", animalKo: "양", emoji: "🐑" },
+  "신": { ko: "신", hanja: "申", animalKo: "원숭이", emoji: "🐵" },
+  "유": { ko: "유", hanja: "酉", animalKo: "닭", emoji: "🐔" },
+  "술": { ko: "술", hanja: "戌", animalKo: "개", emoji: "🐶" },
+  "해": { ko: "해", hanja: "亥", animalKo: "돼지", emoji: "🐷" },
+};
+
+const PILLAR_META = {
+  year: { labelKo: "년주", labelHanja: "年柱", meaning: "가문·조상·초년의 흐름" },
+  month: { labelKo: "월주", labelHanja: "月柱", meaning: "사회성·직업·성장 환경" },
+  day: { labelKo: "일주", labelHanja: "日柱", meaning: "본인 기질·관계의 중심" },
+  hour: { labelKo: "시주", labelHanja: "時柱", meaning: "후반 인생·자녀·내면" },
+} as const;
+
+const ageGroupToKo = (ageGroup: AgeGroup): string => {
+  if (ageGroup === "10s") return "10대";
+  if (ageGroup === "20s") return "20대";
+  if (ageGroup === "30s") return "30대";
+  if (ageGroup === "40s") return "40대";
+  if (ageGroup === "50s") return "50대";
+  if (ageGroup === "60s") return "60대";
+  return ageGroup;
+};
+
+const cleanText = (value: unknown, fallback: string) => {
+  if (typeof value !== "string") return fallback;
+  if (!value.trim()) return fallback;
+  return value;
+};
+
+const toArray = (items: number[] | undefined, fallback: number[]) => {
+  const safe = Array.isArray(items) ? items : [];
+  return [...safe, ...fallback].slice(0, fallback.length);
+};
+
+const toPercent = (value: number, total: number) => {
+  if (!total) return 0;
+  return Math.max(0, Math.min(100, Math.round((value / total) * 100)));
+};
+
+const getGangyakTone = (level?: string) => {
+  if (level === "신강") return "text-rose-200 border-rose-300/30 bg-rose-500/10";
+  if (level === "신약") return "text-cyan-200 border-cyan-300/30 bg-cyan-500/10";
+  return "text-emerald-200 border-emerald-300/30 bg-emerald-500/10";
+};
+
+const getElementGlow = (element?: string) => {
+  if (element?.includes("목") || element === "목") return "from-emerald-500/25 to-emerald-900/10 border-emerald-300/25";
+  if (element?.includes("화") || element === "화") return "from-rose-500/25 to-rose-900/10 border-rose-300/25";
+  if (element?.includes("토") || element === "토") return "from-amber-500/25 to-amber-900/10 border-amber-300/25";
+  if (element?.includes("금") || element === "금") return "from-slate-200/25 to-slate-800/20 border-slate-200/25";
+  return "from-sky-500/25 to-indigo-900/20 border-sky-300/25";
+};
+
+const SIPSONG_LABELS = [
+  "비견",
+  "겁재",
+  "식신",
+  "상관",
+  "편재",
+  "정재",
+  "편관",
+  "정관",
+  "편인",
+  "정인",
 ];
 
-const STEM_HANJA: Record<string, string> = {
-  '�?: '??, '??: '�?, '�?: '�?, '??: '�?, '�?: '??, '�?: '�?, '�?: '�?, '??: '�?, '??: '�?, '�?: '??
-};
-
-const BRANCH_HANJA: Record<string, string> = {
-  '??: '�?, '�?: '�?, '??: '�?, '�?: '??, '�?: '�?, '??: '�?, '??: '??, '�?: '??, '??: '??, '??: '??, '??: '??, '??: '�?
-};
-
-const ELEMENT_MAP: Record<string, number> = {
-  '�?: 0, '??: 1, '??: 2, '�?: 3, '??: 4
-};
-
-const STEM_ELEMENTS: Record<string, string> = {
-  '�?: '�?, '??: '�?, '�?: '??, '??: '??, '�?: '??, '�?: '??, '�?: '�?, '??: '�?, '??: '??, '�?: '??
-};
-
-const BRANCH_ELEMENTS: Record<string, string> = {
-  '??: '??, '�?: '??, '??: '�?, '�?: '�?, '�?: '??, '??: '??, '??: '??, '�?: '??, '??: '�?, '??: '�?, '??: '??, '??: '??
-};
-
-
-function ElementBar({ name, score, color, icon, desc, delay, count }: {
-  name: string; score: number; color: string; icon: string; desc: string; delay: number; count: number;
-}) {
-  const [showTooltip, setShowTooltip] = useState(false);
-
-  return (
-    <div
-      className="relative"
-      onMouseEnter={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
-      onClick={() => setShowTooltip(!showTooltip)}
-    >
-      <motion.div
-        initial={{ opacity: 0, x: -15 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay }}
-        className="flex items-center gap-3 cursor-pointer p-2 rounded-xl hover:bg-white/5 transition-colors"
-      >
-        <span className="text-lg w-7 text-center drop-shadow-md">{icon}</span>
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-sm font-bold text-slate-200 tracking-wide">{name}</span>
-            <Info className="w-4 h-4 text-slate-500 hover:text-cyan-400 transition-colors" />
-          </div>
-          <div className="h-3 bg-white/5 rounded-full overflow-hidden shadow-inner relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent w-[200%] animate-[shimmer_2s_infinite]" />
-            <motion.div
-              className={`h-full bg-gradient-to-r ${color} rounded-full`}
-              initial={{ width: 0 }}
-              animate={{ width: `${score}%` }}
-              transition={{ duration: 1.2, delay: delay + 0.2, ease: "easeOut" }}
-            />
-          </div>
-        </div>
-        <span className="text-xs font-black text-white w-8 text-right drop-shadow-md">{score.toFixed(1)}%</span>
-      </motion.div>
-
-      <AnimatePresence>
-        {showTooltip && (
-          <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            className="absolute z-50 bottom-full left-10 mb-2 w-48 p-3 bg-slate-900/90 backdrop-blur-xl border border-white/20 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
-          >
-            <div className="text-xs font-bold text-white mb-1 flex items-center gap-2">
-              <span>{icon}</span> {name}??기운 ({count}�?
-            </div>
-            <p className="text-[10px] text-slate-300 leading-relaxed">
-              ?�주 8글??�?{count}개�? {name}???�당?�며, ?�체 기운 �?{score}%??비중??차�??�니?? {desc} ?�향???��??�니??
-            </p>
-            {/* Arrow */}
-            <div className="absolute top-full left-4 -mt-px border-4 border-transparent border-t-slate-900/90" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-function getSecretAnalysis(code: string) {
-  const base = code.charCodeAt(0) + (code.charCodeAt(1) || 0);
-
-  const romanceStyles = [
-    "밀?�의 고수, ?��?�????�람?�겐 직진",
-    "?�처받기 ?�어??먼�? 철벽치는 ?�??,
-    "?�번 빠�?�??�돌?�보지 ?�는 맹목?�인 ?�랑",
-    "친구?�서 ?�인?�로 ?�며?�는 ?�근???�애",
-    "?�로?�??많이 ?�?????�락??기다�?
-  ];
-
-  const hiddenDesires = [
-    "?�정?�인 ?�상?�출, ?�극?�인 ?�탈??꿈꿈",
-    "?�군가??감정 ?�레기통???�닌, 기댈 곳이 ?�요??,
-    "모두?�게 ?�정받고 구속받�? ?�는 ?�유",
-    "????명의 ?��??�인 ?? 맹목?�인 ?�랑",
-    "??버리�??�자만의 ?�굴�??�나�??�음"
-  ];
-
-  const idealTypes = [
-    "말하지 ?�아????기분???�아채는 ?�스?�이",
-    "거짓말을 ?��? ?��? ?�는 ?�명???�람",
-    "?��? 리드?�주�?결정???�???�주???�호??,
-    "?�소??것까지 ??챙겨주는 ?�른?�러???�람",
-    "?��? ?�머 코드가 ?�벽?�게 ?�치?�는 ?�람"
-  ];
-
+const parsePillar = (key: "year" | "month" | "day" | "hour", rawPillar: any): PillarView => {
+  const stemRaw = cleanText(rawPillar?.stem, "-");
+  const branchRaw = cleanText(rawPillar?.branch, "-");
+  const stem = STEM_META[stemRaw] ?? { ko: stemRaw, hanja: stemRaw, element: "미상", emoji: "✨" };
+  const branch = BRANCH_META[branchRaw] ?? { ko: branchRaw, hanja: branchRaw, animalKo: "미상", emoji: "🐾" };
+  const base = PILLAR_META[key];
   return {
-    romanceStyle: romanceStyles[base % romanceStyles.length],
-    dowhaScore: 40 + ((base * 13) % 60), // 40~99
-    hiddenDesire: hiddenDesires[(base * 7) % hiddenDesires.length],
-    idealType: idealTypes[(base * 11) % idealTypes.length]
+    key,
+    labelKo: base.labelKo,
+    labelHanja: base.labelHanja,
+    stemRaw,
+    branchRaw,
+    stemKo: stem.ko,
+    stemHanja: stem.hanja,
+    stemElement: stem.element,
+    stemEmoji: stem.emoji,
+    branchKo: branch.ko,
+    branchHanja: branch.hanja,
+    branchAnimalKo: branch.animalKo,
+    branchEmoji: branch.emoji,
+    meaning: base.meaning,
   };
-}
-
-const ELEMENT_REMEDIES: Record<string, { color: string; items: string; direction: string; numbers: string }> = {
-  "�?: { color: "�?��, 초록??, items: "?�무 ?�분, �? ?�유 ?�품", direction: "?�쪽", numbers: "3, 8" },
-  "??: { color: "?�색, 분홍??, items: "밝�? 조명, ?�려???�세?�리", direction: "?�쪽", numbers: "2, 7" },
-  "??: { color: "?�색, 브라??, items: "?�자�? ?�석 ?�찌, ???�분", direction: "중앙", numbers: "5, 10" },
-  "�?: { color: "백색, 금색, ?�??, items: "금속 ?�신�? 금반지, ?�계", direction: "?�쪽", numbers: "4, 9" },
-  "??: { color: "?�색, �?��", items: "?�항, 분수 ?�품, 매끄?�운 ?�재", direction: "북쪽", numbers: "1, 6" }
 };
 
-export default function ResultCard({
+function ResultCard({
   archetype,
+  personName,
   pillarNameKo,
   ageGroup,
-  secretUnlocked = false,
-  onUnlockClick,
-  onInsufficientJelly,
-  elementScores: propElementScores,
-  elementCounts: propElementCounts,
-  elementBasicPercentages: propElementBasicPercentages,
+  elementScores,
+  elementCounts,
+  elementBasicPercentages,
   fourPillars,
+  analysisMeta,
   daewun,
   gyeokguk,
+  gangyak,
+  yongshin,
+  sipsong,
+  sibiwoonseong,
   version,
   integrity,
-  isTimeUnknown
-}: ResultCardProps) {
-  const [aiText, setAiText] = useState<string | null>(null);
-  const [isAiLoading, setIsAiLoading] = useState(false);
-  const [analysisMode, setAnalysisMode] = useState<'basic' | 'advanced'>('advanced');
-  const { consumeChuru, churu } = useWallet();
+  isTimeUnknown,
+  secretUnlocked,
+  onUnlockClick,
+  onInsufficientJelly,
+}: Props) {
+  const [insightFocus, setInsightFocus] = useState<InsightFocus>("base");
+  const normalizedElementScores = toArray(elementScores, [20, 20, 20, 20, 20]);
+  const normalizedElementCounts = toArray(elementCounts, [1, 1, 1, 1, 1]);
+  const normalizedPercentages = toArray(elementBasicPercentages, [20, 20, 20, 20, 20]);
 
-  const ageLabel = ageGroup === "10s" ? "10?�" : ageGroup === "20s" ? "20?�" : "30?�+";
+  const qualityScore = analysisMeta ? Math.max(0, Math.min(100, Math.round(analysisMeta.qualityScore))) : 0;
+  const reliabilityLabel =
+    analysisMeta?.reliability === "high" ? "높음" : analysisMeta?.reliability === "medium" ? "보통" : "낮음";
 
-  // Choose which scores to show based on mode
-  const elementScores = analysisMode === 'advanced' ? propElementScores : propElementBasicPercentages;
-  const elementCounts = propElementCounts;
+  const safePersonName = cleanText(personName, "사용자");
+  const safeArchetypeName = cleanText(archetype.animal_name, "기본 사주");
+  const safeArchetypeHook = cleanText(archetype.displayHook, "핵심 성향 해석을 준비 중입니다.");
+  const safeSecretPreview = cleanText(archetype.displaySecretPreview, "프리미엄 해제 시 상세 리포트를 확인할 수 있습니다.");
+  const warningList = (analysisMeta?.warnings || []).filter((item) => typeof item === "string" && item.length > 0).slice(0, 4);
 
-  const maxIdx = elementScores.indexOf(Math.max(...elementScores));
-  const dominantElement = FIVE_ELEMENTS[maxIdx];
-  const secretData = getSecretAnalysis(archetype.code);
+  const topElementIndex = normalizedElementScores.reduce(
+    (maxIdx, curr, idx) => (curr > normalizedElementScores[maxIdx] ? idx : maxIdx),
+    0,
+  );
+  const lowestElementIndex = normalizedElementScores.reduce(
+    (minIdx, curr, idx) => (curr < normalizedElementScores[minIdx] ? idx : minIdx),
+    0,
+  );
 
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const shareBaseUrl = (APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL || "https://localhost:3000").replace(/^https?:\/\//, "");
+  const pillarCards: PillarView[] = fourPillars
+    ? [
+        parsePillar("year", fourPillars.year),
+        parsePillar("month", fourPillars.month),
+        parsePillar("day", fourPillars.day),
+        parsePillar("hour", fourPillars.hour),
+      ]
+    : [];
 
-  const handlePersonalize = async () => {
-    if (churu < 300) {
-      onInsufficientJelly?.();
-      return;
-    }
+  const metricRows = ELEMENTS.map((metric, index) => ({
+    ...metric,
+    score: Math.max(0, Math.round(normalizedElementScores[index] || 0)),
+    count: Math.max(0, Math.round(normalizedElementCounts[index] || 0)),
+    percent: Math.max(0, Math.min(100, Math.round(normalizedPercentages[index] || 0))),
+  }));
 
-    setIsAiLoading(true);
-    try {
-      const res = await fetch('/api/ai/personalize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: archetype.code, ageGroup, gender: 'M' })
-      });
+  const totalTenGodCount = Object.values(sipsong || {}).length;
+  const tenGodSummary = SIPSONG_LABELS.map((label) => ({
+    label,
+    value: toPercent(Object.values(sipsong || {}).filter((item) => item === label).length, totalTenGodCount),
+  })).filter((item) => item.value > 0);
 
-      const data = await res.json();
+  const strongestTenGod = tenGodSummary.reduce(
+    (best, item) => (item.value > best.value ? item : best),
+    tenGodSummary[0] ?? { label: "데이터 준비 중", value: 0 },
+  );
 
-      if (res.status === 402 || data.code === 'INSUFFICIENT_JELLIES') {
-        onInsufficientJelly?.();
-        return;
-      }
+  const phaseEntries = [
+    { key: "year", label: "년주", value: sibiwoonseong?.year || "-" },
+    { key: "month", label: "월주", value: sibiwoonseong?.month || "-" },
+    { key: "day", label: "일주", value: sibiwoonseong?.day || "-" },
+    { key: "hour", label: "시주", value: sibiwoonseong?.hour || "-" },
+  ];
 
-      if (data.success) {
-        setAiText(data.text);
-        consumeChuru(300); // UI sync
-        triggerConfetti();
-      } else {
-        setToastMessage(data.error || "분석 �??�류가 발생?�습?�다.");
-        setShowToast(true);
-      }
-    } catch (err) {
-      console.error(err);
-      setToastMessage("?�버 ?�결???�패?�습?�다.");
-      setShowToast(true);
-    } finally {
-      setIsAiLoading(false);
-    }
+  const gangyakBreakdown = [
+    { label: "득령", value: Number(gangyak?.deukryeong || 0), hint: "월지에서 받는 계절 기운" },
+    { label: "득지", value: Number(gangyak?.deukji || 0), hint: "지지에서 받는 뿌리 힘" },
+    { label: "득세", value: Number(gangyak?.deukse || 0), hint: "주변 천간의 보조 에너지" },
+  ];
+
+  const premiumBulletsByFocus: Record<InsightFocus, string[]> = {
+    base: [
+      `${safePersonName}님의 용신/희신 조합에 맞춘 보완 전략`,
+      `${safePersonName}님의 십성 강약이 커리어와 관계에 미치는 영향`,
+      `올해 집중해야 할 시기와 피해야 할 소모 패턴`,
+    ],
+    love: [
+      `${safePersonName}님의 연애 템포와 감정 표현 리듬`,
+      `가까워질수록 반복되는 관계 패턴과 충돌 포인트`,
+      `잘 맞는 상대 기운과 피해야 할 감정 소모 구조`,
+    ],
+    money: [
+      `${safePersonName}님의 소비 습관과 재물 보존 포인트`,
+      `돈이 들어올 때와 새는 때를 가르는 십성 패턴`,
+      `올해 재정적으로 무리하지 말아야 할 구간`,
+    ],
+    career: [
+      `${safePersonName}님의 직업 적성 축과 역할 포지션`,
+      `성과를 내는 방식과 압박 상황에서의 반응 패턴`,
+      `이직·확장·집중에 유리한 실행 타이밍`,
+    ],
   };
 
-  const triggerConfetti = () => {
-    const duration = 2000;
-    const end = Date.now() + duration;
+  const premiumBullets = premiumBulletsByFocus[insightFocus];
 
-    const frame = () => {
-      confetti({
-        particleCount: 5,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ['#a855f7', '#ec4899', '#06b6d4']
-      });
-      confetti({
-        particleCount: 5,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ['#a855f7', '#ec4899', '#06b6d4']
-      });
-
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
-    };
-    frame();
+  const premiumReportCopyByFocus: Record<InsightFocus, string> = {
+    base:
+      analysisMeta?.source === "high-precision"
+        ? "고정밀 해석 + 실전 조언 + PDF 리포트 확장이 제공됩니다."
+        : "현재는 기본 해석만 제공됩니다. 프리미엄 해제로 확장 리포트를 열 수 있습니다.",
+    love: "연애·썸·재회 관점으로 감정선과 관계 패턴을 더 깊게 풉니다.",
+    money: "재물 흐름, 소비 위험, 축적 포인트를 돈 관점으로 더 구체화합니다.",
+    career: "직업 적성, 성과 방식, 일의 리듬을 커리어 관점으로 더 세밀하게 풉니다.",
   };
 
-  const [isExporting, setIsExporting] = useState(false);
+  const reportCards: MetricCard[] = [
+    {
+      label: "분석 방식",
+      value: analysisMeta?.source === "high-precision" ? "고정밀 만세력 연산" : "기본 규칙 연산",
+      color: "from-indigo-500/30 to-violet-700/20",
+      icon: <Target className="w-4 h-4" />,
+    },
+    {
+      label: "시간 입력 상태",
+      value: isTimeUnknown ? "시간 미입력(12:00 대체)" : "시간 완전 입력",
+      color: "from-cyan-500/30 to-blue-700/20",
+      icon: <CalendarDays className="w-4 h-4" />,
+    },
+    {
+      label: "연령 해석 컨텍스트",
+      value: `${ageGroupToKo(ageGroup)} 기준 해석`,
+      color: "from-fuchsia-500/30 to-pink-700/20",
+      icon: <Orbit className="w-4 h-4" />,
+    },
+  ];
 
-  const handleExportImage = async () => {
-    if (!cardRef.current) return;
-    try {
-      setIsExporting(true); // ?�터마크 ?�시???�더�??�리�?
-
-      // ?�태 반영???�한 미세 ?�레??
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      setToastMessage("?�스?�그램 9:16 맞춤 ?�더�?�?..");
-      setShowToast(true);
-
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 3, // 초고?�질
-        backgroundColor: "#020617", // slate-950
-        logging: false,
-        useCORS: true,
-        windowWidth: 1080,
-        windowHeight: 1920,
-      });
-
-      const image = canvas.toDataURL("image/png", 1.0);
-      const link = document.createElement("a");
-      link.download = `Saju_Secret_${archetype.code}_${Date.now()}.png`;
-      link.href = image;
-      link.click();
-
-      triggerConfetti();
-      setToastMessage("?�스?�그램 맞춤 ?�???�료! ?�토리에 공유?�보?�요 ??);
-
-      setTimeout(() => setShowToast(false), 3000);
-    } catch (err) {
-      console.error(err);
-      setToastMessage("?��?지 ?�?�에 ?�패?�습?�다.");
-      setTimeout(() => setShowToast(false), 3000);
-    } finally {
-      setIsExporting(false); // ?�더�??�복
-    }
-  };
+  const premiumReportCopy = premiumReportCopyByFocus[insightFocus];
 
   return (
-    <>
-      <LuxuryToast message={toastMessage} isVisible={showToast} />
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 relative">
+      <ReadingProgressBar />
+      <AmbientSoundPortal />
 
       <motion.div
-        ref={cardRef}
-        initial={{ opacity: 0, y: 30 }}
+        className="bg-surface border border-border-color rounded-4xl p-6 md:p-10 space-y-6 md:space-y-8 shadow-[0_30px_120px_rgba(76,29,149,0.35)]"
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-        className={`w-full max-w-4xl mx-auto space-y-6 bg-slate-950/80 backdrop-blur-2xl rounded-[2.5rem] relative ${isExporting ? "w-[1080px] h-[1920px] p-16 flex flex-col justify-center items-center scale-[0.3]" : "p-6 sm:p-8 lg:p-12 border border-white/5 shadow-2xl"
-          }`}
-        style={isExporting ? { transformOrigin: "top left" } : {}}
       >
-        {/* Export Watermark Header */}
-        {isExporting && (
-          <div className="absolute top-20 left-0 w-full text-center space-y-4">
-            <h1 className="text-4xl font-black text-white tracking-widest uppercase">Secret Paws: ?�의 본능 ?�적??/h1>
-            <p className="text-2xl text-slate-400">?�신??본능???�키?�처�?마주?�세??/p>
+        <header className="text-center relative py-6 md:py-8 overflow-hidden rounded-3xl border border-indigo-400/25 bg-gradient-to-b from-indigo-500/15 via-slate-900/60 to-slate-950/60">
+          <div className="absolute -top-24 -left-24 w-72 h-72 bg-indigo-500/20 blur-3xl rounded-full" />
+          <div className="absolute -bottom-28 -right-24 w-72 h-72 bg-fuchsia-500/20 blur-3xl rounded-full" />
+          <div className="relative z-10 px-4">
+            <p className="inline-flex px-4 py-2 rounded-full text-xs font-black text-indigo-100 bg-indigo-500/20 border border-indigo-300/30 tracking-[0.2em]">
+              📜 공식 사주 분석 리포트
+            </p>
+            <p className="text-base md:text-lg text-slate-200 mt-4 font-semibold">
+              {safePersonName}님의 사주
+            </p>
+            <h1 className="text-5xl md:text-6xl font-black mt-3 bg-gradient-to-r from-white via-indigo-100 to-fuchsia-200 bg-clip-text text-transparent">
+              {safeArchetypeName}
+            </h1>
+            <div className="flex items-center justify-center gap-2 mt-4 text-sm md:text-base font-bold text-indigo-100 flex-wrap">
+              <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15">{pillarNameKo}</span>
+              <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15">{ageGroupToKo(ageGroup)} 기준</span>
+              {isTimeUnknown ? <span className="px-3 py-1 rounded-full bg-amber-400/15 border border-amber-300/25 text-amber-200">⏰ 시간 미입력 보정 적용</span> : null}
+            </div>
+            <div className="mt-5 flex justify-center">
+              <AIIntelligenceBadge
+                model={analysisMeta?.source === "high-precision" ? "고정밀 AI 모델" : "앙상블 AI 모델"}
+                isEnsemble={true}
+              />
+            </div>
           </div>
-        )}
+        </header>
 
-        {/* Main Card ??Identity */}
-        <div className={`relative bg-black/40 backdrop-blur-3xl rounded-3xl p-8 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden group ${isExporting ? "w-[900px] mt-32" : ""}`}>
-          <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-cyan-500/10 rounded-3xl opacity-50 group-hover:opacity-80 transition-opacity duration-700" />
-
-          {/* Luxury Shine Effect */}
-          <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden rounded-3xl">
-            <motion.div
-              animate={{
-                x: ['-100%', '200%'],
-                transition: { duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }
-              }}
-              className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-20deg]"
-            />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="rounded-3xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/15 via-slate-900/60 to-indigo-900/40 p-5 md:p-7"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-2xl">🧭</span>
+            <h3 className="text-xl md:text-2xl font-black text-emerald-200 inline-flex items-center gap-2">
+              만세력 기반 기본 풀이
+              <InfoTip title="만세력" description="태어난 연·월·일·시를 간지(干支)로 변환해 사주의 기본 구조를 계산하는 기준표입니다." />
+            </h3>
           </div>
+          <p className="text-sm md:text-base text-emerald-50/90 leading-relaxed">
+            전통 명리 구조인 년·월·일·시의 간지(干支)를 기준으로 기본 성향과 흐름을 먼저 제시하고, 그 아래에 시크릿 사주의 확장 해석을 제공합니다.
+          </p>
+          <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {pillarCards.map((pillar) => (
+              <div key={pillar.key} className="rounded-2xl border border-white/15 bg-black/25 p-4 hover:bg-black/35 transition-colors">
+                <p className="text-xs md:text-sm text-emerald-100 font-bold tracking-wide">{pillar.labelKo} {pillar.labelHanja}</p>
+                <p className="text-lg md:text-xl font-black text-white mt-1">{pillar.stemKo}({pillar.stemHanja}) {pillar.branchKo}({pillar.branchHanja})</p>
+                <p className="text-sm text-emerald-100 mt-2">{pillar.stemEmoji} {pillar.stemElement}</p>
+                <p className="text-sm text-emerald-100">{pillar.branchEmoji} 상징 동물: {pillar.branchAnimalKo}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-100">
+            <span>🔢</span>
+            <span className="font-bold">육십갑자 조합 60개 기준</span>
+          </div>
+          <p className="mt-4 text-xs md:text-sm text-emerald-100/80">
+            참고: 사주에서는 십이지를 동물 상징으로 널리 표기하며, 토정비결은 연·월·일과 육십갑자 기반으로 월별 신수를 풀이하는 전통 형식을 따릅니다.
+          </p>
+        </motion.div>
 
-          {/* Traditional Lattice Pattern Overlay */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm2 2h36v36H2V2zm18 1V2h2v36h-2V3zm1-1h18v2H21V2zM2 21v-2h36v2H2z' fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E")` }} />
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500" />
-          <div className="relative z-10">
-            {/* Header */}
-            <div className="text-center mb-10">
+        <div className="grid lg:grid-cols-4 gap-4">
+          {reportCards.map((card) => (
+            <div key={card.label} className={`rounded-2xl p-4 border border-white/15 bg-gradient-to-r ${card.color}`}>
+              <div className="text-sm font-black text-slate-100 tracking-wide inline-flex items-center gap-2">
+                {card.icon}
+                {card.label}
+              </div>
+              <p className="mt-3 text-lg md:text-xl font-black text-white">{card.value}</p>
+            </div>
+          ))}
+
+          <div className="rounded-2xl p-4 border border-emerald-300/30 bg-gradient-to-r from-emerald-500/25 to-cyan-700/20">
+            <div className="text-sm font-black text-emerald-50 tracking-wide inline-flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" /> 신뢰도 점수
+            </div>
+            <p className="mt-2 text-3xl font-black text-white">{qualityScore}<span className="text-base text-emerald-100"> / 100</span></p>
+            <div className="mt-3 h-3 rounded-full bg-black/30 border border-white/20 overflow-hidden">
               <motion.div
-                className={`${isExporting ? "text-9xl mb-12" : "text-7xl mb-6"} relative drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]`}
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              >
-                ?��
-              </motion.div>
-              <div className={`inline-block px-3 py-1 bg-cyan-500/10 border border-cyan-400/20 rounded-full font-mono text-cyan-400 mb-3 tracking-widest shadow-inner ${isExporting ? "text-xl px-6 py-2" : "text-xs"}`}>
-                天機 (천기) · {archetype.code}
-              </div>
-              <h2 className={`${isExporting ? "text-7xl" : "text-5xl md:text-6xl"} font-black mb-3 bg-gradient-to-r from-pink-300 via-purple-300 to-cyan-300 bg-clip-text text-transparent drop-shadow-sm tracking-tight`}>
-                {archetype.animal_name}
-              </h2>
-              <div className={`${isExporting ? "text-3xl" : "text-lg md:text-xl"} font-medium text-slate-200 uppercase tracking-widest`}>{pillarNameKo} ?�주</div>
-
-              {/* Professional Manse-ryeok Grid (8 Characters) */}
-              {fourPillars && (
-                <div className="mt-8 flex flex-col items-center">
-                  <div className="grid grid-cols-4 gap-2 max-w-sm w-full mx-auto relative">
-                    {['hour', 'day', 'month', 'year'].map((pKey) => {
-                      const p = (fourPillars as any)[pKey];
-                      const stemElIdx = STEM_ELEMENTS[p.stem] ? ELEMENT_MAP[STEM_ELEMENTS[p.stem]] : 2;
-                      const branchElIdx = BRANCH_ELEMENTS[p.branch] ? ELEMENT_MAP[BRANCH_ELEMENTS[p.branch]] : 2;
-
-                      const isUnknownHour = pKey === 'hour' && isTimeUnknown;
-
-                      return (
-                        <div key={pKey} className={`flex flex-col gap-2 relative transition-opacity ${isUnknownHour ? 'opacity-40 grayscale-[50%]' : ''}`}>
-                          {isUnknownHour && (
-                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-red-500/20 text-red-200 text-[9px] px-2 py-0.5 rounded-full border border-red-500/30 whitespace-nowrap backdrop-blur-sm z-10 font-bold tracking-widest shadow-lg">
-                              ?�간미상
-                            </div>
-                          )}
-                          <span className="text-[10px] text-slate-500 font-bold uppercase">{pKey === 'year' ? '?? : pKey === 'month' ? '?? : pKey === 'day' ? '?? : '??}</span>
-                          {/* Stem */}
-                          <div className={`aspect-square flex flex-col items-center justify-center rounded-xl border ${FIVE_ELEMENTS[stemElIdx].borderColor} ${FIVE_ELEMENTS[stemElIdx].bg} shadow-sm`}>
-                            <span className="text-2xl font-black text-white">{STEM_HANJA[p.stem] || p.stem}</span>
-                            <span className="text-[9px] font-bold opacity-80 text-white">{p.stem}</span>
-                          </div>
-                          {/* Branch */}
-                          <div className={`aspect-square flex flex-col items-center justify-center rounded-xl border ${FIVE_ELEMENTS[branchElIdx].borderColor} ${FIVE_ELEMENTS[branchElIdx].bg} shadow-sm`}>
-                            <span className="text-2xl font-black text-white">{BRANCH_HANJA[p.branch] || p.branch}</span>
-                            <span className="text-[9px] font-bold opacity-80 text-white">{p.branch}</span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {isTimeUnknown && (
-                    <p className="text-[10px] text-slate-500 mt-4 max-w-xs leading-relaxed opacity-70">
-                      * ?�시 미입??추정???�오 기�?). ?�주(三柱) 분석만으로도 본질 ?�악?� 충분?�니??
-                    </p>
-                  )}
-                </div>
-              )}
-              {!isExporting && (
-                <div className="flex justify-center mt-4">
-                  <div className="px-5 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-full text-xs font-bold text-white shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-                    <span className="mr-2">??/span> {ageLabel} ?�리미엄 ?�명 분석
-                  </div>
-                </div>
-              )}
+                className="h-full bg-gradient-to-r from-emerald-300 via-cyan-300 to-indigo-300"
+                initial={{ width: 0 }}
+                animate={{ width: `${qualityScore}%` }}
+                transition={{ duration: 0.9 }}
+              />
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Social Mask */}
-              <motion.div whileHover={{ scale: 1.02 }} className="p-6 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 hover:border-cyan-500/50 transition-colors shadow-inner">
-                <div className="flex items-center gap-2 mb-4">
-                  <Shield className="w-5 h-5 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
-                  <span className="text-sm font-bold text-cyan-400 tracking-widest uppercase">?�회??가�?(Social Mask)</span>
-                </div>
-                <p className="text-xl font-bold text-white mb-5 leading-relaxed">&quot;{archetype.base_traits.mask}&quot;</p>
-                <div className="flex flex-wrap gap-2">
-                  {archetype.base_traits.hashtags.map((tag, idx) => (
-                    <span key={idx} className="px-3 py-1.5 bg-black/40 border border-cyan-400/20 rounded-full text-[10px] font-bold text-cyan-300">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* Age-specific Hook */}
-              <motion.div whileHover={{ scale: 1.02 }} className="p-6 bg-gradient-to-br from-amber-500/10 to-orange-500/5 backdrop-blur-md rounded-2xl border border-amber-500/20 hover:border-amber-500/50 transition-colors shadow-inner">
-                <div className="flex items-center gap-2 mb-4">
-                  <Zap className="w-5 h-5 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
-                  <span className="text-sm font-bold text-amber-400 tracking-widest uppercase">{ageLabel} ?�용 ?�사?�트</span>
-                </div>
-                <p className="text-[1.1rem] font-medium text-amber-100 leading-relaxed tracking-wide">{archetype.displayHook}</p>
-              </motion.div>
-            </div>
-
-            {/* Secret Preview */}
-            <div className="mt-4 p-5 bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-md rounded-2xl border border-purple-500/20 hover:border-purple-500/40 transition-colors shadow-inner">
-              <div className="flex items-center gap-2 mb-3">
-                <Eye className="w-4 h-4 text-purple-400" />
-                <span className="text-xs font-bold text-purple-400 tracking-widest uppercase">19+ ?�크�?미리보기</span>
-              </div>
-              <p className="text-slate-200 text-sm leading-relaxed font-medium">{archetype.displaySecretPreview}</p>
-            </div>
-
-            {/* AI Personalization Section */}
-            <div className="mt-4 p-6 bg-purple-900/20 rounded-2xl border border-purple-500/30 relative overflow-hidden group/ai">
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-purple-500/10 opacity-0 group-hover/ai:opacity-100 transition-opacity" />
-              <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-yellow-400" /> AI 맞춤 ?�폭 ?�설
-                  </h3>
-                  <p className="text-xs text-slate-400">?�신???�이?� ?�별??기반?�로 가??직설?�인 ?�석???�공?�니??</p>
-                </div>
-                {!aiText && (
-                  <button
-                    onClick={handlePersonalize}
-                    disabled={isAiLoading}
-                    className="shrink-0 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl text-white font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(219,39,119,0.3)] disabled:opacity-50"
-                  >
-                    {isAiLoading ? '분석 �?..' : '맞춤 ?�설 보기 (300 ?�리)'}
-                  </button>
-                )}
-              </div>
-
-              <AnimatePresence>
-                {aiText && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                    animate={{ height: 'auto', opacity: 1, marginTop: 16 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-4 bg-black/40 rounded-xl border border-white/10 text-sm text-slate-200 leading-relaxed font-medium">
-                      {aiText}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <p className="mt-2 text-xs text-emerald-100">판정: {reliabilityLabel}</p>
           </div>
         </div>
 
-        {/* Card 2 ???�행 밸런??*/}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6"
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="p-6 rounded-[2rem] bg-gradient-to-br from-indigo-600/15 to-fuchsia-700/10 border border-indigo-400/25 shadow-2xl"
         >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <h3 className="font-bold text-white">?�행 (五行) 밸런??/h3>
-            </div>
-            {/* Calculation Mode Toggle */}
-            <div className="flex items-center bg-white/5 rounded-full p-1 border border-white/10">
-              <button
-                onClick={() => setAnalysisMode('basic')}
-                className={`text-[10px] px-3 py-1 rounded-full transition-all ${analysisMode === 'basic' ? 'bg-indigo-500 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
-              >
-                기본
-              </button>
-              <button
-                onClick={() => setAnalysisMode('advanced')}
-                className={`text-[10px] px-3 py-1 rounded-full transition-all ${analysisMode === 'advanced' ? 'bg-indigo-500 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
-              >
-                지?�간
-              </button>
-            </div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-2xl">✨</span>
+            <h3 className="text-xl md:text-2xl font-black text-indigo-200">시크릿 핵심 해석</h3>
           </div>
-
-          <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
-            <div className="shrink-0">
-              <ElementPolygon scores={elementScores} size={180} />
-            </div>
-            <div className="flex-1 text-center md:text-left">
-              <p className="text-sm font-bold text-slate-300 mb-2">지배적 ?�행 (Dominant Energy)</p>
-              <div className="text-2xl font-black mb-1">
-                <span className="text-amber-300 drop-shadow-md">{dominantElement.icon} {dominantElement.name}</span>
-              </div>
-              <p className="text-xs text-slate-400 leading-relaxed max-w-[200px] mx-auto md:mx-0">
-                {dominantElement.desc} ?�향??가??강하�??��??�니?? ?�른 기운?�과??조화가 ?�신???�심 무기가 ?�니??
-              </p>
-            </div>
+          <p className="text-lg md:text-2xl font-black text-white leading-snug">“{safeArchetypeHook}”</p>
+          <div className="mt-4">
+            <KeywordChips tags={archetype.base_traits.hashtags || []} />
           </div>
-
-          <div className="space-y-3">
-            {FIVE_ELEMENTS.map((el, i) => (
-              <ElementBar
-                key={el.name}
-                name={el.name}
-                score={elementScores[i]}
-                count={elementCounts[i]}
-                color={el.color}
-                icon={el.icon}
-                desc={el.desc}
-                delay={i * 0.08}
-              />
-            ))}
-          </div>
+          <p className="mt-4 text-sm md:text-base text-slate-200">
+            가장 강한 오행은 <strong className="text-white">{metricRows[topElementIndex].label}</strong>, 가장 약한 오행은 <strong className="text-white">{metricRows[lowestElementIndex].label}</strong>입니다.
+          </p>
         </motion.div>
 
-        {/* Card: 부족한 기운 보완 (개운�? */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-gradient-to-br from-indigo-900/30 to-slate-900/30 backdrop-blur-xl border border-indigo-500/30 rounded-2xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.3)]"
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <Zap className="w-4 h-4 text-indigo-400" />
-            <h3 className="font-bold text-white italic">부족한 기운 채우�?(개운�?</h3>
+        <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7 space-y-5">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🎨</span>
+            <h3 className="text-xl md:text-2xl font-black text-white inline-flex items-center gap-2">
+              오행 히트맵 분석
+              <InfoTip title="오행" description="목·화·토·금·수 5개 기운의 강약 균형을 점수로 시각화한 지표입니다." />
+            </h3>
           </div>
+          <p className="text-sm md:text-base text-slate-300">색이 진할수록 해당 오행의 영향력이 강합니다. 한눈에 강점과 보완점을 확인하세요.</p>
 
-          <div className="space-y-4">
-            {FIVE_ELEMENTS.filter((_, i) => elementCounts[i] === 0).length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {FIVE_ELEMENTS.filter((_, i) => elementCounts[i] === 0).map((el, i) => {
-                  const hangeulName = el.name.includes(" (") ? el.name.split(" (")[1].replace(")", "") : el.name;
-                  const remedy = ELEMENT_REMEDIES[hangeulName];
-                  if (!remedy) return null;
-                  return (
-                    <div key={i} className="bg-black/40 rounded-xl p-4 border border-white/5 shadow-inner">
-                      <p className="text-xs font-bold text-indigo-400 mb-2 flex items-center gap-2">
-                        <span>{el.icon}</span> {el.name} 보충 ?�루??(Remedy)
-                      </p>
-                      <ul className="space-y-2">
-                        <li className="text-[11px] text-slate-300 flex justify-between">
-                          <span className="text-slate-500">추천 ?�이??/span>
-                          <span className="font-bold text-white">{remedy.items}</span>
-                        </li>
-                        <li className="text-[11px] text-slate-300 flex justify-between">
-                          <span className="text-slate-500">?�운???�상</span>
-                          <span className="font-bold text-white">{remedy.color}</span>
-                        </li>
-                        <li className="text-[11px] text-slate-300 flex justify-between">
-                          <span className="text-slate-500">길한 방향</span>
-                          <span className="font-bold text-white">{remedy.direction}</span>
-                        </li>
-                      </ul>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="text-xs text-slate-400 text-center py-4 bg-white/5 rounded-xl border border-dashed border-white/10">
-                ?�신?� 모든 ?�행??골고�?갖춘 ?�벽??균형???�유?�입?�다! ??
-              </p>
-            )}
-            <div className="p-3 bg-indigo-500/10 rounded-lg border border-indigo-500/20">
-              <p className="text-[10px] text-slate-400 leading-relaxed text-center">
-                &quot;비어?�는 기운??채우�??�의 ?�름??바뀝니??quot;<br />
-                ?�문 ?�담가?�이 1?�위�?권장?�는 ?�통 명리?�적 보완법입?�다.
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Card 3 ???�주 ?�심 ?�워??*/}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6"
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <Star className="w-4 h-4 text-cyan-400" />
-            <h3 className="font-bold text-white">?�주 ?�심 분석</h3>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { label: "?�?��?�?, value: elementScores[0] > 50 ? "?�교?? : "?�향??, icon: "?��", color: "border-green-500/30 bg-green-900/10" },
-              { label: "?�물??, value: elementScores[2] > 50 ? "?�정 추구" : "모험 ?�자", icon: "?��", color: "border-yellow-500/30 bg-yellow-900/10" },
-              { label: "?�애 ?��???, value: elementScores[1] > 50 ? "?�정?�감" : "츤데??, icon: "?��", color: "border-pink-500/30 bg-pink-900/10" },
-              { label: "직업 ?�성", value: elementScores[3] > 50 ? "?�문�?기술" : "창의/?�유??, icon: "?��", color: "border-blue-500/30 bg-blue-900/10" },
-              { label: "?�트?�스 관�?, value: elementScores[4] > 50 ? "?�연?�게 ?��?" : "참다가 ??��", icon: "?��", color: "border-cyan-500/30 bg-cyan-900/10" },
-              { label: "리더???�형", value: elementScores[1] > 60 ? "카리?�마?? : "?�포?�형", icon: "?��", color: "border-amber-500/30 bg-amber-900/10" },
-            ].map((item) => (
-              <div key={item.label} className={`p-3 rounded-xl border ${item.color}`}>
-                <span className="text-lg">{item.icon}</span>
-                <p className="text-xs text-slate-400 mt-1">{item.label}</p>
-                <p className="text-sm font-bold text-white">{item.value}</p>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Card: 격국 �??�??(Fate Structure & Major Luck) */}
-        {gyeokguk && (
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 overflow-hidden"
-          >
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-purple-400" />
-                <h3 className="font-bold text-white uppercase tracking-widest italic text-sm">?�명 ?�계 �??�??(Destiny Architecture)</h3>
-              </div>
-              <div className="px-3 py-1 bg-purple-500/20 rounded-full text-[10px] font-black text-purple-300 border border-purple-500/30">
-                격국: {gyeokguk.name}
-              </div>
-            </div>
-
-            {/* Gyeokguk short desc */}
-            <div className="mb-10 p-4 bg-purple-500/5 border border-purple-500/20 rounded-xl">
-              <p className="text-xs text-slate-300 leading-relaxed italic">
-                &ldquo;?�신???�고난 그릇??<span className="text-purple-400 font-bold">{gyeokguk.name}</span>?� ?�생??주요 ?�마가 ?�며, {gyeokguk.yongshin}??기운??보강?????�의 ?�취?��? 극�??�됩?�다.&rdquo;
-              </p>
-            </div>
-
-            {/* Daewun Cycle */}
-            {daewun && (
-              <div className="relative">
-                <div className="flex items-center gap-2 mb-4 text-[11px] font-black text-slate-500 uppercase tracking-widest">
-                  <div className="w-1 h-3 bg-purple-500 rounded-full" />
-                  10???�??주기 (Major 10-Year Luck Cycle)
-                </div>
-                <div className="overflow-x-auto no-scrollbar py-2 -mx-2 px-2">
-                  <div className="flex gap-3 min-w-[700px]">
-                    {daewun.pillars.map((d: any, i: number) => (
-                      <div key={i} className="flex-1 flex flex-col items-center bg-black/40 border border-white/5 rounded-2xl p-4 group/un hover:border-purple-500/50 transition-all">
-                        <span className="text-[10px] font-black text-slate-500 mb-3">{d.startAge}??/span>
-                        <div className="flex flex-col gap-1 mb-3">
-                          <span className="text-xl font-black text-white">{STEM_HANJA[d.pillar.stem] || d.pillar.stem}</span>
-                          <span className="text-xl font-black text-white">{BRANCH_HANJA[d.pillar.branch] || d.pillar.branch}</span>
-                        </div>
-                        <span className="text-[8px] font-bold text-slate-600 uppercase group-hover/un:text-purple-400 transition-colors">
-                          {d.pillar.stem}{d.pillar.branch}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="mt-4 text-[9px] text-center text-slate-500 font-medium lowercase italic opacity-50">
-                  Slide to view your lifetime cosmic shift
-                </div>
-              </div>
-            )}
-          </motion.div>
-        )}
-
-        {/* Card 4 ??비�? ?�금 */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="relative overflow-hidden rounded-2xl"
-        >
-          {!secretUnlocked && (
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-xl z-10 flex items-center justify-center border-2 border-dashed border-pink-500/40 rounded-2xl">
-              <div className="text-center px-6">
+          <div className="grid md:grid-cols-2 xl:grid-cols-5 gap-3">
+            {metricRows.map((item) => {
+              const alpha = Math.max(0.15, item.score / 100);
+              return (
                 <motion.div
-                  animate={{ rotate: [0, -10, 10, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="text-5xl mb-3"
+                  key={item.key}
+                  whileHover={{ y: -4, scale: 1.01 }}
+                  className="rounded-2xl border border-white/15 p-4"
+                  style={{
+                    background: `linear-gradient(145deg, rgba(${item.glow}, ${alpha}) 0%, rgba(15,23,42,0.72) 100%)`,
+                    boxShadow: `0 14px 38px rgba(${item.glow}, 0.22)`,
+                  }}
                 >
-                  ?��
+                  <div className="flex items-center justify-between">
+                    <p className="text-base font-black text-white">{item.emoji} {item.label}</p>
+                    <p className="text-sm font-bold text-white/90">{item.score}점</p>
+                  </div>
+                  <p className="text-xs text-white/80 mt-1">{item.meaning}</p>
+                  <div className="mt-3 h-2.5 rounded-full bg-black/30 border border-white/20 overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${item.score}%` }}
+                      transition={{ duration: 0.8 }}
+                      className={`h-full ${item.bar}`}
+                    />
+                  </div>
+                  <p className="mt-2 text-[11px] text-white/80">빈도 {item.count} / 비율 {item.percent}%</p>
                 </motion.div>
-                <h3 className="text-2xl font-bold mb-1 bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent">
-                  ?�크�??�사?�트 (Secret Insight)
-                </h3>
-                <p className="text-sm text-slate-400 mb-1">?�화??분석 · ?�애 ?�턴 · ?�겨�?본능</p>
-                <p className="text-xs text-slate-500 mb-5">�??�폭?� 결제 ??공개?�니??/p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={onUnlockClick}
-                  className="px-8 py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500 rounded-xl font-bold text-white shadow-lg"
-                >
-                  <Lock className="w-4 h-4 inline mr-2" />
-                  ?�리�??�금?�기
-                </motion.button>
-              </div>
-            </div>
-          )}
-
-          <div className={`p-6 bg-gradient-to-br from-red-900/20 to-orange-900/15 border border-red-500/25 rounded-2xl ${!secretUnlocked ? "blur-lg" : ""}`}>
-            <div className="flex items-center gap-2 mb-3">
-              <Heart className="w-4 h-4 text-red-400" />
-              <span className="text-xs font-bold text-red-400 tracking-wider uppercase">?�� ?�애 & ?�스?�트 (Instinct)</span>
-            </div>
-            <div className="space-y-3 text-sm text-slate-200">
-              <div className="flex gap-3 items-start">
-                <span className="text-pink-400 flex-shrink-0">?��</span>
-                <div><span className="text-slate-400">?�애 ?��???</span> {secretUnlocked ? secretData.romanceStyle : "?�금 ?�요"}</div>
-              </div>
-              <div className="flex gap-3 items-start">
-                <span className="text-red-400 flex-shrink-0">?��</span>
-                <div><span className="text-slate-400">?�화???�치:</span> {secretUnlocked ? `${secretData.dowhaScore}%` : "?�금 ?�요"}</div>
-              </div>
-              <div className="flex gap-3 items-start">
-                <span className="text-purple-400 flex-shrink-0">?��</span>
-                <div><span className="text-slate-400">?�겨�??�망:</span> {secretUnlocked ? secretData.hiddenDesire : "?�금 ?�요"}</div>
-              </div>
-              <div className="flex gap-3 items-start">
-                <span className="text-orange-400 flex-shrink-0">??/span>
-                <div><span className="text-slate-400">?�상???�턴:</span> {secretUnlocked ? secretData.idealType : "?�금 ?�요"}</div>
-              </div>
-            </div>
+              );
+            })}
           </div>
-        </motion.div>
+        </section>
 
-        {/* Footer Badge */}
-        <div className="text-center pt-2 pb-4 space-y-3">
-          <div className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-cyan-500/10 via-white/5 to-purple-500/10 border border-white/10 rounded-full text-[10px] sm:text-xs text-cyan-100 font-bold uppercase tracking-[0.2em] shadow-lg backdrop-blur-sm">
-            <Sparkles className="w-3 h-3 text-cyan-400" />
-            <span>Digital Persona Certificate</span>
-            <div className="w-1 h-1 rounded-full bg-white/20" />
-            <span className="text-cyan-400/80">{pillarNameKo}</span>
-            <Sparkles className="w-3 h-3 text-purple-400" />
-          </div>
-          {version && integrity && (
-            <div className="flex flex-col items-center gap-1">
-              <p className="text-[9px] text-slate-600 font-mono tracking-tighter uppercase">
-                Engine: {version} · Model: HIDDEN_WEIGHTED_V1
-              </p>
-              <p className="text-[7px] text-slate-700 font-mono break-all max-w-[200px] leading-tight">
-                INTEGRITY: {integrity}
-              </p>
+        <section className="grid xl:grid-cols-[1.1fr_0.9fr] gap-5">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-2xl">🕸️</span>
+              <h3 className="text-xl md:text-2xl font-black text-white">오행 분포 레이더</h3>
             </div>
-          )}
-        </div>
-
-        {/* Export Viral Watermark Footer */}
-        {isExporting && (
-          <div className="absolute bottom-12 left-0 w-full flex flex-col items-center justify-center space-y-6">
-            <div className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
-              <QRCodeSVG
-                value={`https://${shareBaseUrl}/?ref=viral_${archetype.code}`}
-                size={120}
-                bgColor={"#ffffff"}
-                fgColor={"#000000"}
-                level={"H"}
-                className="rounded-lg"
+            <div className="flex justify-center">
+              <SvgChart
+                title="Five Elements Radar"
+                accentColor="#818cf8"
+                data={metricRows.map((item) => ({ label: item.label, value: item.score }))}
               />
             </div>
-            <p className="text-xl font-bold text-white bg-gradient-to-r from-pink-500 to-cyan-500 px-6 py-2 rounded-full">
-              카메?�로 ?�캔?�서 ???�물 ?�인?�기 ?��
+            <p className="mt-4 text-sm text-slate-300">
+              핵심 축은 <strong className="text-white">{metricRows[topElementIndex].label}</strong>이며,
+              보강 우선순위는 <strong className="text-white">{metricRows[lowestElementIndex].label}</strong>입니다.
             </p>
           </div>
-        )}
-      </motion.div >
-      <div className="max-w-2xl mx-auto mt-6 px-4 pb-10 flex flex-col sm:flex-row gap-4">
-        <button
-          onClick={handleExportImage}
-          className="flex-1 py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-black text-white text-lg shadow-[0_10px_30px_rgba(168,85,247,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
-        >
-          <Download className="w-6 h-6" />
-          ?�스?� 맞춤 ?�켓 ?�장
-        </button>
-        <button
-          onClick={async () => {
-            const shareUrl = `https://${shareBaseUrl}/?ref=viral_${archetype.code}`;
-            const result = await handleShare('Secret Paws: ?�의 본능 ?�적??, `?�는 [${archetype.animal_name}] ?�폭??맞았??.. ??본질?� 뭔�? ?�인?�봐 ?��`, shareUrl);
 
-            if (result === 'copied') {
-              setToastMessage("공유 링크가 복사?�었?�니??");
-              setShowToast(true);
-              setTimeout(() => setShowToast(false), 3000);
-            } else if (result === 'shared') {
-              setToastMessage("친구?�게 ?�명??공유?�습?�다 ?��");
-              setShowToast(true);
-              setTimeout(() => setShowToast(false), 3000);
-            }
-          }}
-          className="flex-1 py-4 bg-white/10 backdrop-blur-md rounded-2xl font-black text-white text-lg border border-white/20 hover:bg-white/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
-        >
-          <Sparkles className="w-6 h-6 text-yellow-400" />
-          친구 본능 찌르�?(공유)
-        </button>
+          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-2xl">🧮</span>
+              <h3 className="text-xl md:text-2xl font-black text-white">십성 분포 분석</h3>
+            </div>
+            {tenGodSummary.length > 0 ? (
+              <div className="space-y-3">
+                {tenGodSummary.map((item) => (
+                  <div key={item.label}>
+                    <div className="flex items-center justify-between text-sm font-bold text-slate-200">
+                      <span>{item.label}</span>
+                      <span>{item.value}%</span>
+                    </div>
+                    <div className="mt-1 h-2.5 rounded-full overflow-hidden border border-white/10 bg-black/25">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${item.value}%` }}
+                        transition={{ duration: 0.8 }}
+                        className="h-full bg-gradient-to-r from-fuchsia-400 via-indigo-400 to-cyan-300"
+                      />
+                    </div>
+                  </div>
+                ))}
+                <div className="rounded-2xl border border-fuchsia-300/20 bg-fuchsia-500/10 p-4">
+                  <p className="text-xs font-black tracking-[0.2em] text-fuchsia-200 uppercase">Dominant Ten God</p>
+                  <p className="mt-2 text-xl font-black text-white">{strongestTenGod.label}</p>
+                  <p className="mt-2 text-sm text-slate-300">
+                    현재 사주에서 가장 자주 보이는 작동 방식입니다. 실전 해석에서는 이 축을 중심으로 성향, 직업 적성, 인간관계를 읽습니다.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-slate-400">십성 데이터는 정밀 엔진 결과가 있을 때 함께 표시됩니다.</p>
+            )}
+          </div>
+        </section>
+
+        <section className="grid xl:grid-cols-[1fr_1fr] gap-5">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7">
+            <div className="flex items-center gap-3 mb-4">
+              <Flame className="w-5 h-5 text-amber-300" />
+              <h3 className="text-xl md:text-2xl font-black text-white">신강·신약 밸런스</h3>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm text-slate-400">일간 에너지 지수</p>
+                <p className="mt-2 text-4xl font-black text-white">{Math.round(Number(gangyak?.total || 0))}</p>
+              </div>
+              <div className={`rounded-full border px-4 py-2 text-sm font-black ${getGangyakTone(gangyak?.level)}`}>
+                {gangyak?.level || "중화"}
+              </div>
+            </div>
+            <div className="mt-4 h-3 rounded-full overflow-hidden border border-white/10 bg-black/25">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${Math.max(0, Math.min(100, Math.round(Number(gangyak?.total || 0))))}%` }}
+                transition={{ duration: 0.9 }}
+                className="h-full bg-gradient-to-r from-cyan-300 via-emerald-300 to-rose-300"
+              />
+            </div>
+            <div className="mt-5 space-y-3">
+              {gangyakBreakdown.map((item) => (
+                <div key={item.label} className="rounded-2xl border border-white/10 bg-black/20 p-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-bold text-white">{item.label}</p>
+                    <p className="text-sm font-black text-indigo-200">{item.value}</p>
+                  </div>
+                  <p className="mt-1 text-xs text-slate-400">{item.hint}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-sm text-slate-300">{cleanText(gangyak?.description, "사주의 중심 에너지를 기반으로 강약 균형을 계산했습니다.")}</p>
+          </div>
+
+          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7">
+            <div className="flex items-center gap-3 mb-4">
+              <Crown className="w-5 h-5 text-emerald-300" />
+              <h3 className="text-xl md:text-2xl font-black text-white">용신·희신 전략</h3>
+            </div>
+            <div className="grid gap-3">
+              <div className={`rounded-2xl border bg-gradient-to-br p-4 ${getElementGlow(yongshin?.primary?.element)}`}>
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-200">Primary Yongshin</p>
+                <p className="mt-2 text-2xl font-black text-white">{cleanText(yongshin?.primary?.element, "분석 중")}</p>
+                <p className="mt-2 text-sm text-slate-200">{cleanText(yongshin?.primary?.reason, "사주의 균형을 바로잡는 핵심 오행입니다.")}</p>
+              </div>
+              <div className={`rounded-2xl border bg-gradient-to-br p-4 ${getElementGlow(yongshin?.secondary?.element)}`}>
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-sky-200">Secondary Support</p>
+                <p className="mt-2 text-xl font-black text-white">{cleanText(yongshin?.secondary?.element, "분석 중")}</p>
+                <p className="mt-2 text-sm text-slate-300">{cleanText(yongshin?.secondary?.reason, "용신을 도와주는 보조 오행입니다.")}</p>
+              </div>
+              <div className={`rounded-2xl border bg-gradient-to-br p-4 ${getElementGlow(yongshin?.unfavorable?.element)}`}>
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-rose-200">Watch Out</p>
+                <p className="mt-2 text-xl font-black text-white">{cleanText(yongshin?.unfavorable?.element, "분석 중")}</p>
+                <p className="mt-2 text-sm text-slate-300">{cleanText(yongshin?.unfavorable?.reason, "과도할 때 균형을 깨뜨릴 수 있는 오행입니다.")}</p>
+              </div>
+            </div>
+            <p className="mt-4 text-xs text-slate-500">산출 기준: {cleanText(yongshin?.source, "억부")} 우선</p>
+          </div>
+        </section>
+
+        <InteractiveInsightLab
+          elements={metricRows.map((item) => ({
+            label: item.label,
+            score: item.score,
+            count: item.count,
+            percent: item.percent,
+            meaning: item.meaning,
+            bar: item.bar,
+          }))}
+          tenGods={tenGodSummary}
+          gangyak={gangyakBreakdown}
+          focus={insightFocus}
+          onFocusChange={setInsightFocus}
+        />
+
+        <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-2xl">📈</span>
+            <h3 className="text-xl md:text-2xl font-black text-white">십이운성 흐름 카드</h3>
+          </div>
+          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
+            {phaseEntries.map((phase, index) => (
+              <div key={phase.key} className="rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-500/10 to-slate-900/30 p-4">
+                <p className="text-xs font-black tracking-[0.2em] uppercase text-indigo-200">{phase.label}</p>
+                <p className="mt-2 text-2xl font-black text-white">{phase.value}</p>
+                <p className="mt-2 text-sm text-slate-300">
+                  {index === 0 && "조상·환경에서 흘러오는 초반 에너지"}
+                  {index === 1 && "사회성과 직업 전개에 작동하는 힘"}
+                  {index === 2 && "내 본체와 관계 감수성의 중심"}
+                  {index === 3 && "후반 인생, 자녀, 내면의 숙성도"}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7 space-y-5">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🧱</span>
+            <h3 className="text-xl md:text-2xl font-black text-white">사주 기둥 해설 카드</h3>
+          </div>
+          <PillarVisualizer
+            pillars={pillarCards.map((p) => ({ kan: `${p.stemHanja}(${p.stemKo})`, ji: `${p.branchHanja}(${p.branchKo})`, name: p.labelKo, color: "text-indigo-200" }))}
+          />
+          <div className="grid sm:grid-cols-2 gap-3">
+            {pillarCards.map((pillar) => (
+              <div key={`${pillar.key}-detail`} className="rounded-2xl border border-indigo-300/20 bg-gradient-to-br from-indigo-600/12 to-slate-900/35 p-4">
+                <p className="text-sm font-black text-indigo-200">{pillar.labelKo} {pillar.labelHanja}</p>
+                <p className="text-xl font-black text-white mt-1">{pillar.stemKo}({pillar.stemHanja}) · {pillar.branchKo}({pillar.branchHanja})</p>
+                <p className="text-sm text-indigo-100 mt-2">{pillar.stemEmoji} 천간 오행: {pillar.stemElement}</p>
+                <p className="text-sm text-indigo-100">{pillar.branchEmoji} 상징 동물: {pillar.branchAnimalKo}</p>
+                <p className="text-xs text-slate-300 mt-3">의미: {pillar.meaning}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7 space-y-4">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">📚</span>
+            <h3 className="text-xl md:text-2xl font-black text-white inline-flex items-center gap-2">
+              격국 · 대운 요약
+              <InfoTip title="격국/대운" description="격국은 사주의 기본 구조, 대운은 10년 단위 인생 흐름 변화 구간을 뜻합니다." />
+            </h3>
+          </div>
+
+          {gyeokguk ? (
+            <div className="rounded-xl border border-fuchsia-300/20 bg-gradient-to-r from-fuchsia-500/10 to-indigo-500/10 p-4">
+              <p className="text-xs text-fuchsia-200 inline-flex items-center gap-2">🧩 격국</p>
+              <p className="text-sm md:text-base text-slate-100 mt-1 font-semibold">{cleanText(gyeokguk.name, "격국")}</p>
+              <p className="text-sm text-slate-300 mt-2">{cleanText(gyeokguk.description, "격국 정보를 준비 중입니다.")}</p>
+            </div>
+          ) : null}
+
+          {daewun?.pillars?.length ? (
+            <div className="rounded-xl border border-indigo-300/20 bg-black/20 p-4 space-y-3">
+              <p className="text-sm font-bold text-indigo-100 inline-flex items-center gap-2">📈 대운 기술 타임라인</p>
+              <div className="grid gap-2">
+                {daewun.pillars.slice(0, 6).map((phase: any, index: number) => (
+                  <div key={`${phase?.order}-${phase?.startAge}`} className="rounded-lg bg-gradient-to-r from-indigo-500/10 to-slate-900/20 border border-white/10 p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="font-black text-indigo-200 text-sm inline-flex items-center gap-2">
+                        <span>{index % 2 === 0 ? "🟣" : "🔵"}</span>
+                        {phase?.startAge}~{phase?.endAge}세
+                      </div>
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-white/10 border border-white/10 text-slate-200">
+                        {phase?.order || index + 1}단계
+                      </span>
+                    </div>
+                    <div className="text-slate-100 text-sm mt-1 font-semibold">{cleanText(phase?.pillar?.fullName, "대운")}</div>
+                    <div className="text-slate-400 text-xs mt-1">코드: {cleanText(phase?.pillar?.code, "N/A")}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {(version || integrity) ? (
+            <p className="text-xs text-slate-500">버전: {version || "unknown"} / 무결성: {integrity || "N/A"}</p>
+          ) : null}
+
+          {warningList.length > 0 ? (
+            <div className="rounded-xl border border-amber-400/20 bg-amber-500/5 p-3">
+              <p className="text-sm font-bold text-amber-200 mb-2">주의 사항</p>
+              <ul className="text-sm text-amber-100 space-y-1 list-disc ml-4">
+                {warningList.map((warning, index) => (
+                  <li key={`${warning}-${index}`}>{warning}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </section>
+
+        <section className="rounded-3xl border border-rose-400/20 bg-gradient-to-br from-rose-500/10 to-indigo-900/20 p-5 md:p-7">
+          <div className="flex items-center gap-3 mb-3">
+            <Lock className="w-5 h-5 text-rose-300" />
+            <h3 className="text-xl md:text-2xl font-black text-white">프리미엄 잠금 해제</h3>
+          </div>
+          <p className="text-base text-slate-200">{safeSecretPreview}</p>
+          <p className="text-sm text-slate-400 mt-2">{premiumReportCopy}</p>
+          <div className="mt-5 rounded-[2rem] border border-white/10 bg-black/20 overflow-hidden relative">
+            {!secretUnlocked ? (
+              <>
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6 bg-slate-950/55 backdrop-blur-md">
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-rose-200">Premium Deep Dive Locked</p>
+                  <p className="mt-3 text-lg font-black text-white">십성 직업 코드, 연애 패턴, 돈 흐름, 올해 실행 타이밍이 이어집니다.</p>
+                  <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={onUnlockClick}
+                      className="inline-flex px-5 py-2.5 rounded-xl bg-rose-600 text-white font-black text-sm hover:bg-rose-500 transition-colors"
+                    >
+                      🔓 프리미엄 해제
+                    </button>
+                    {onInsufficientJelly ? (
+                      <button
+                        type="button"
+                        onClick={onInsufficientJelly}
+                        className="inline-flex px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-black text-sm hover:bg-indigo-500 transition-colors"
+                      >
+                        💎 젤리 충전
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="blur-lg opacity-40 pointer-events-none p-6 md:p-7 space-y-4" aria-hidden="true">
+                  {premiumBullets.map((bullet) => (
+                    <div key={bullet} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                      <p className="text-sm font-bold text-white">{bullet}</p>
+                      <p className="mt-2 text-sm text-slate-300">
+                        실제 리포트에서는 근거가 되는 오행, 십성, 운세 흐름과 연결해 문장형 조언까지 제공합니다.
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="p-6 md:p-7 space-y-5">
+                <p className="text-emerald-300 text-sm">✅ 프리미엄 분석이 활성화되었습니다.</p>
+                <div className="grid lg:grid-cols-3 gap-4">
+                  <div className="rounded-2xl border border-indigo-300/20 bg-indigo-500/10 p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.2em] text-indigo-200">Career Signal</p>
+                    <p className="mt-2 text-lg font-black text-white">{strongestTenGod.label}</p>
+                    <p className="mt-2 text-sm text-slate-300">
+                      반복적으로 드러나는 십성 축이 커리어 포지션과 일 처리 스타일을 만듭니다. 이 강점을 기준으로 역할을 잡는 편이 성과 전환이 빠릅니다.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-emerald-300/20 bg-emerald-500/10 p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-200">Relationship Pattern</p>
+                    <p className="mt-2 text-lg font-black text-white">{cleanText(yongshin?.primary?.element, "용신")} 중심 관계 해석</p>
+                    <p className="mt-2 text-sm text-slate-300">
+                      좋은 인연은 나를 보완하는 기운과 함께 들어옵니다. 편한 사람보다 균형을 맞춰주는 사람이 오래 갑니다.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-amber-300/20 bg-amber-500/10 p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.2em] text-amber-200">Execution Timing</p>
+                    <p className="mt-2 text-lg font-black text-white">{phaseEntries[1]?.value || "운성 분석"} 주도 구간</p>
+                    <p className="mt-2 text-sm text-slate-300">
+                      일과 돈은 무작정 밀어붙이기보다, 지금 강한 운성의 리듬에 맞춰 추진할 때 효율이 높습니다.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-[2rem] border border-yellow-300/25 bg-gradient-to-br from-yellow-400/15 via-amber-500/10 to-rose-500/10 p-5">
+                  <div className="flex items-center gap-3">
+                    <Gem className="w-5 h-5 text-yellow-200" />
+                    <h4 className="text-lg font-black text-white">월간 시크릿 멤버십 티저</h4>
+                  </div>
+                  <p className="mt-3 text-sm text-slate-200">
+                    {insightFocus === "love" && "정기 구독에서는 연애 타이밍 알림, 관계 흐름 브리핑, 썸/재회 해석 아카이브를 묶어 제공하는 구조가 설득력 있습니다."}
+                    {insightFocus === "money" && "정기 구독에서는 월간 재물 흐름 브리핑, 소비 경보, 돈이 새는 패턴 분석, 축적 루틴 제안을 묶는 구성이 설득력 있습니다."}
+                    {insightFocus === "career" && "정기 구독에서는 커리어 타이밍 브리핑, 성과 압박 해석, 이직/확장 시그널, 업무 루틴 제안을 묶는 구성이 설득력 있습니다."}
+                    {insightFocus === "base" && "정기 구독에서는 월운 브리핑, 연애/재물 알림, 용신 기반 실전 루틴, 신규 해석 리포트 누적 저장을 묶어 제공하는 구조가 설득력 있습니다."}
+                  </p>
+                  <div className="mt-4 grid md:grid-cols-3 gap-3">
+                    <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-slate-200">
+                      {insightFocus === "love" ? "연애 흐름과 관계 타이밍 리포트" : insightFocus === "money" ? "월간 재물 흐름 리포트" : insightFocus === "career" ? "월간 커리어 브리핑" : "매달 업데이트되는 월운 리포트"}
+                    </div>
+                    <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-slate-200">
+                      {insightFocus === "love" ? "썸·재회·관계 신호 알림" : insightFocus === "money" ? "소비 경보와 축적 가이드" : insightFocus === "career" ? "성과 압박·이직 시그널 알림" : "연애·재물 신호 알림과 실행 가이드"}
+                    </div>
+                    <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-slate-200">
+                      {insightFocus === "love" ? "관계 해석 아카이브 무제한 보관" : insightFocus === "money" ? "재무 해석 아카이브 무제한 보관" : insightFocus === "career" ? "커리어 리포트 아카이브 무제한 보관" : "해제한 리포트 아카이브 무제한 보관"}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onInsufficientJelly || onUnlockClick}
+                    className="mt-4 inline-flex items-center gap-2 rounded-xl border border-yellow-300/30 bg-yellow-400/15 px-4 py-2 text-sm font-black text-yellow-100 hover:bg-yellow-400/20 transition-colors"
+                  >
+                    {insightFocus === "love" ? "연애 멤버십 대기 등록" : insightFocus === "money" ? "재물 멤버십 대기 등록" : insightFocus === "career" ? "커리어 멤버십 대기 등록" : "멤버십 대기 등록"}
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      </motion.div>
+
+      <div className="mt-8 max-w-sm mx-auto">
+        <ShareCard name={`${safeArchetypeName} 결과`} />
       </div>
-    </>
+
+      <p className="mt-5 text-xs text-slate-400 text-center">
+        전통 기준(간지·만세력) 설명을 먼저 제시하고, 이후 AI 확장 해석을 제공하는 2단 구조입니다.
+      </p>
+    </section>
   );
 }
 
-
-
+export { ResultCard };
+export default ResultCard;

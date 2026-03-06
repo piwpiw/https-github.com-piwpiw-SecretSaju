@@ -1,0 +1,2842 @@
+{
+  "generatedAt": "2026-03-05T00:32:15.903Z",
+  "totalPages": 63,
+  "totalItems": 630,
+  "queue": [
+    {
+      "route": "/",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "문서 구조 개선: 페이지당 단일 `h1`을 두고 섹션 계층을 재정렬."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/about",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/admin",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "관리자 RBAC 가드 강화: 비관리자 접근 시 즉시 리다이렉트 + 감사 로그를 남기도록 보강."
+        },
+        {
+          "priority": "P1",
+          "text": "관리자 주요 액션에 확인 단계 추가: 실수 클릭 방지를 위해 확인 모달과 취소 경로를 명확화."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/admin/advanced-scoring",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "관리자 RBAC 가드 강화: 비관리자 접근 시 즉시 리다이렉트 + 감사 로그를 남기도록 보강."
+        },
+        {
+          "priority": "P1",
+          "text": "관리자 주요 액션에 확인 단계 추가: 실수 클릭 방지를 위해 확인 모달과 취소 경로를 명확화."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        }
+      ]
+    },
+    {
+      "route": "/admin/character-analysis",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "관리자 RBAC 가드 강화: 비관리자 접근 시 즉시 리다이렉트 + 감사 로그를 남기도록 보강."
+        },
+        {
+          "priority": "P1",
+          "text": "관리자 주요 액션에 확인 단계 추가: 실수 클릭 방지를 위해 확인 모달과 취소 경로를 명확화."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        }
+      ]
+    },
+    {
+      "route": "/admin/character-profile",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "관리자 RBAC 가드 강화: 비관리자 접근 시 즉시 리다이렉트 + 감사 로그를 남기도록 보강."
+        },
+        {
+          "priority": "P1",
+          "text": "관리자 주요 액션에 확인 단계 추가: 실수 클릭 방지를 위해 확인 모달과 취소 경로를 명확화."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        }
+      ]
+    },
+    {
+      "route": "/admin/compatibility",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "관리자 RBAC 가드 강화: 비관리자 접근 시 즉시 리다이렉트 + 감사 로그를 남기도록 보강."
+        },
+        {
+          "priority": "P1",
+          "text": "관리자 주요 액션에 확인 단계 추가: 실수 클릭 방지를 위해 확인 모달과 취소 경로를 명확화."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        }
+      ]
+    },
+    {
+      "route": "/admin/test-control",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "관리자 RBAC 가드 강화: 비관리자 접근 시 즉시 리다이렉트 + 감사 로그를 남기도록 보강."
+        },
+        {
+          "priority": "P1",
+          "text": "관리자 주요 액션에 확인 단계 추가: 실수 클릭 방지를 위해 확인 모달과 취소 경로를 명확화."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        }
+      ]
+    },
+    {
+      "route": "/analysis-history",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P2",
+          "text": "이벤트 계측 추가: 진입, CTA 클릭, 이탈 지점을 페이지 단위로 수집."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/analysis-history/[type]/[id]",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P2",
+          "text": "이벤트 계측 추가: 진입, CTA 클릭, 이탈 지점을 페이지 단위로 수집."
+        }
+      ]
+    },
+    {
+      "route": "/astrology",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/auth/callback",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/blog",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P2",
+          "text": "이벤트 계측 추가: 진입, CTA 클릭, 이탈 지점을 페이지 단위로 수집."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/calendar",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/compatibility",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/consultation",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/custom/partnership",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/daily",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/dashboard",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/destiny",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/dreams",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/encyclopedia",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/faq",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P2",
+          "text": "이벤트 계측 추가: 진입, CTA 클릭, 이탈 지점을 페이지 단위로 수집."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/fortune",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/gift",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/healing",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/history",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/inquiry",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/legal",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P2",
+          "text": "이벤트 계측 추가: 진입, CTA 클릭, 이탈 지점을 페이지 단위로 수집."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/login",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/luck",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/more",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/my-saju/add",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P2",
+          "text": "이벤트 계측 추가: 진입, CTA 클릭, 이탈 지점을 페이지 단위로 수집."
+        }
+      ]
+    },
+    {
+      "route": "/my-saju/list",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/mypage",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/naming",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "문서 구조 개선: 페이지당 단일 `h1`을 두고 섹션 계층을 재정렬."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/palmistry",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/payment/fail",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P2",
+          "text": "문서 구조 개선: 페이지당 단일 `h1`을 두고 섹션 계층을 재정렬."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/payment/loading",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P2",
+          "text": "이벤트 계측 추가: 진입, CTA 클릭, 이탈 지점을 페이지 단위로 수집."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/payment/success",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "문서 구조 개선: 페이지당 단일 `h1`을 두고 섹션 계층을 재정렬."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/privacy",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/psychology",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/psychology/module",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P2",
+          "text": "이벤트 계측 추가: 진입, CTA 클릭, 이탈 지점을 페이지 단위로 수집."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/psychology/module/[id]",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/psychology/premium-report",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/refund",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/relationship",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P2",
+          "text": "이벤트 계측 추가: 진입, CTA 클릭, 이탈 지점을 페이지 단위로 수집."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/relationship/[id]",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P2",
+          "text": "문서 구조 개선: 페이지당 단일 `h1`을 두고 섹션 계층을 재정렬."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/relationship/[id]/vs",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/result/[token]",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/saju",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/select-fortune",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P1",
+          "text": "폼 검증 강화: 필수값/형식/길이 검증을 클라이언트와 서버 양쪽에서 일치시키기."
+        },
+        {
+          "priority": "P2",
+          "text": "폼 접근성 개선: 입력마다 `label`, `aria-describedby`, 오류 포커스 이동 지원."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P2",
+          "text": "데이터 요청 캐시 정책 정리: 중복 fetch를 줄이고 stale 상태를 명확히 처리."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        }
+      ]
+    },
+    {
+      "route": "/shinsal",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/shop",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/signup",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/story",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/story/[id]",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P3",
+          "text": "키보드 탐색 개선: 탭 순서와 포커스 링 대비를 WCAG 기준으로 정리."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/support",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/tarot",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/terms",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P3",
+          "text": "정보 밀도 개선: 카드/배지/요약문으로 핵심 정보를 빠르게 훑도록 구성."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/tojeong",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P2",
+          "text": "로딩 UX 정교화: 지연 500ms 이상 구간에 단계형 로딩 메시지를 노출."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/wiki",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P1",
+          "text": "오류 상태 UI 추가: 네트워크 실패/권한 실패/빈 응답을 각각 안내."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P3",
+          "text": "이벤트 네이밍 통일: 분석 대시보드에서 페이지 비교가 가능하도록 스키마 정리."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    },
+    {
+      "route": "/wiki/[slug]",
+      "items": [
+        {
+          "priority": "P1",
+          "text": "인증 상태 분기 고도화: 로그인/비로그인 상태에서 CTA를 분리해 잘못된 진입을 줄이기."
+        },
+        {
+          "priority": "P1",
+          "text": "로딩 상태 명시: 첫 진입/재요청 시 Skeleton 또는 Progress UI를 추가."
+        },
+        {
+          "priority": "P2",
+          "text": "오류 복구 액션 개선: 재시도 버튼과 지원 채널 링크를 오류 박스에 통합."
+        },
+        {
+          "priority": "P2",
+          "text": "주요 CTA 검증: 클릭 후 성공/실패 토스트 및 상태 변화를 일관되게 표시."
+        },
+        {
+          "priority": "P2",
+          "text": "접근성 속성 보강: 핵심 인터랙션 요소에 `aria-label`과 landmark role 부여."
+        },
+        {
+          "priority": "P3",
+          "text": "헤딩 카피 최적화: 검색 의도와 일치하는 제목/서브카피로 개선."
+        },
+        {
+          "priority": "P3",
+          "text": "초기 데이터 프리패치 검토: 사용 빈도가 높은 경로에 선로딩 적용."
+        },
+        {
+          "priority": "P2",
+          "text": "빈 목록 UX 추가: 데이터가 없을 때 다음 액션으로 연결되는 Empty State 제공."
+        },
+        {
+          "priority": "P2",
+          "text": "이벤트 계측 추가: 진입, CTA 클릭, 이탈 지점을 페이지 단위로 수집."
+        },
+        {
+          "priority": "P2",
+          "text": "모바일 최적화 점검: 360px 뷰포트 기준으로 터치 타겟 44px 이상 유지."
+        }
+      ]
+    }
+  ]
+}

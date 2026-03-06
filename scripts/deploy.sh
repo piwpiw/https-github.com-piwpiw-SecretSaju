@@ -16,6 +16,9 @@ SKIP_BUILD="${SKIP_BUILD:-false}"
 
 echo "Deployment mode: ${ENVIRONMENT}"
 
+echo "[0/4] Validate deployment policy"
+node scripts/deploy-policy.js --platform render --mode "${ENVIRONMENT}"
+
 if [ "${RUN_INSTALL}" = "true" ]; then
   echo "[1/4] Install dependencies"
   npm ci --no-audit --no-fund
@@ -29,8 +32,8 @@ if [ "${SKIP_TESTS}" = "true" ]; then FLAGS+=(--skip-tests); fi
 if [ "${SKIP_BUILD}" = "true" ]; then FLAGS+=(--skip-build); fi
 node scripts/pre-deploy.js "${FLAGS[@]}"
 
-echo "[3/4] Trigger Render deploy (hook optional)"
-node scripts/render-deploy.js
+echo "[3/4] Trigger Render deploy"
+node scripts/render-deploy.js --mode "${ENVIRONMENT}"
 
 echo "[4/4] Wait for health"
 node scripts/wait-for-health.js

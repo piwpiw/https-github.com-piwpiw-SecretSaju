@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Lunar-Solar Calendar Conversion Module (Standard Professional Implementation)
  */
 
@@ -83,7 +83,7 @@ export function solarToLunar(solar: Date): LunarDate {
 }
 
 /**
- * 음력 띠 (12지신)
+ * 12지신(쥐띠~돼지띠)을 한글/영문으로 매핑
  */
 const ZODIAC_ANIMALS = [
     '쥐', '소', '호랑이', '토끼', '용', '뱀', '말', '양', '원숭이', '닭', '개', '돼지',
@@ -94,11 +94,11 @@ const ZODIAC_ANIMALS_EN = [
 ] as const;
 
 /**
- * 연도로부터 띠 계산
- * 
- * @param year 연도
- * @param lang 언어
- * @returns 띠 이름
+ * 연도를 기준으로 십이지 띠 동물을 반환
+ *
+ * @param year 음력 연도
+ * @param lang 언어 코드 (`ko` 또는 `en`)
+ * @returns 띠 문자열
  */
 export function getZodiacAnimal(year: number, lang: 'ko' | 'en' = 'ko'): string {
     const index = (year - 4) % 12;

@@ -311,6 +311,41 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+-- 가입 보상 지급 (Atomic Reward Check - G-13)
+CREATE OR REPLACE FUNCTION provision_signup_reward(
+  p_user_id UUID,
+  p_channel TEXT DEFAULT 'mcp',
+  p_amount INTEGER DEFAULT 10
+)
+RETURNS BOOLEAN AS $$
+DECLARE
+  v_exists BOOLEAN;
+BEGIN
+  -- 1. 중복 지급 탐색 (type='bonus', purpose='signup_bonus')
+  SELECT EXISTS (
+    SELECT 1 FROM public.jelly_transactions
+    WHERE user_id = p_user_id AND type = 'bonus' AND purpose = 'signup_bonus'
+  ) INTO v_exists;
+
+  IF v_exists THEN
+    RETURN FALSE;
+  END IF;
+
+  -- 2. 거래 내역 삽입
+  INSERT INTO public.jelly_transactions (user_id, type, jellies, purpose, metadata)
+  VALUES (p_user_id, 'bonus', p_amount, 'signup_bonus', jsonb_build_object('channel', p_channel));
+
+  -- 3. 지갑 잔액 업데이트
+  UPDATE public.jelly_wallets
+  SET balance = balance + p_amount,
+      total_rewarded = total_rewarded + p_amount,
+      updated_at = NOW()
+  WHERE user_id = p_user_id;
+
+  RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- ============================================
 -- 8. SECURITY (Row Level Security)
 -- ============================================

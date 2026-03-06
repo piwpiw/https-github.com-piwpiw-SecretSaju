@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Sparkles, Activity, ShieldCheck, Database, Cpu } from "lucide-react";
+import { Activity, ShieldCheck, Database, Cpu } from "lucide-react";
 
 interface LoadingGlitchProps {
     onComplete?: () => void;
@@ -14,9 +14,9 @@ export default function LoadingGlitch({ onComplete }: LoadingGlitchProps) {
 
     const steps = [
         { title: "사주 엔진 초기화 중", icon: Cpu, color: "text-indigo-400", bg: "bg-indigo-500/20" },
-        { title: "십신(十神) 분석 중", icon: Database, color: "text-purple-400", bg: "bg-purple-500/20" },
+        { title: "십성(성향) 분석 중", icon: Database, color: "text-purple-400", bg: "bg-purple-500/20" },
         { title: "60갑자 매칭 중", icon: Activity, color: "text-pink-400", bg: "bg-pink-500/20" },
-        { title: "성격 유형 판별 중", icon: ShieldCheck, color: "text-amber-400", bg: "bg-amber-500/20" },
+        { title: "성격 유형 집계 중", icon: ShieldCheck, color: "text-amber-400", bg: "bg-amber-500/20" },
     ];
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export default function LoadingGlitch({ onComplete }: LoadingGlitchProps) {
     const CurrentIcon = steps[step].icon;
 
     return (
-        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden" style={{ backgroundColor: 'var(--background)' }}>
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden" style={{ backgroundColor: "var(--background)" }}>
             {/* Ambient Background */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.08)_0%,transparent_70%)]"></div>
 
@@ -61,7 +61,7 @@ export default function LoadingGlitch({ onComplete }: LoadingGlitchProps) {
                         animate={{ rotate: -360 }}
                         transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
                     />
-                    <div className="absolute inset-6 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border-color)' }}>
+                    <div className="absolute inset-6 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border-color)" }}>
                         <motion.div
                             key={step}
                             initial={{ scale: 0.8, opacity: 0 }}
@@ -83,13 +83,13 @@ export default function LoadingGlitch({ onComplete }: LoadingGlitchProps) {
                     >
                         {steps[step].title}
                     </motion.div>
-                    <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                    <div className="text-sm" style={{ color: "var(--text-secondary)" }}>
                         {Math.floor(progress)}%
                     </div>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border-color)' }}>
+                <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border-color)" }}>
                     <motion.div
                         className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full"
                         style={{ width: `${Math.min(progress, 100)}%` }}
@@ -100,12 +100,12 @@ export default function LoadingGlitch({ onComplete }: LoadingGlitchProps) {
                 </div>
 
                 {/* Korean status lines */}
-                <div className="mt-6 text-xs flex flex-col items-center gap-1" style={{ color: 'var(--text-secondary)' }}>
+                <div className="mt-6 text-xs flex flex-col items-center gap-1" style={{ color: "var(--text-secondary)" }}>
                     <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity }}>
-                        음양오행 데이터 분석 중...
+                        오행 데이터 분석 중...
                     </motion.div>
                     <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, delay: 0.5, repeat: Infinity }}>
-                        동물 아키타입 매칭 중...
+                        음양 밸런스 계산 중...
                     </motion.div>
                 </div>
             </div>

@@ -35,13 +35,21 @@
 ---
 
 ## 3. 📊 Current State Snapshot `#phase`
-- **Focus**: Q2 성장 기능 (결제 완성, 바이럴 공유, 레퍼럴, 운세 캘린더)
+- **Focus**: Q3 스케일업 (글로벌 확장, AI 에이전트 통합, 데이터 분석 자동화)
 - **Health**:
-  - [UI] ✅ Encyclopedia·MySaju·MyPage·Tarot·AuthCallback 인코딩 및 구문 에러 복구 완료
-  - [API] ✅ Toss 결제 서버 검증 고도화, Referral(추천인) 시스템(생성/사용) 구현 완료
-  - [Engine] ✅ Wave 5 — Daewun 절기 기반 고정밀, Sinsal 8종 확장, 용신 기반 일일운세
-  - [Growth] ✅ GA4 통합, Kakao/Web Share API 연동, 동적 OG Image 생성 완료
-  - [QA] ✅ `npm run qa` Pass (TSC 0 errors, Lint 0 errors, Route Contract Sync 0 issues)
+  - [Crawler] ✅ DinnerQueen/Revu 어댑터 구현 및 테스트 완료 `[KPI-001: Scraper Stability 98%]`
+  - [UI] ✅ Daily Fortune (내일/한달 탭) 및 프리미엄 카드 레이아웃 적용 완료 `[KPI-002: UI Fidelity High]`
+  - [Agent] ✅ 10-Team Agent Architecture (T1~T10) 활성화 및 분산 작업 체계 안정화 `[KPI-003: Agent Sync latency < 100ms]`
+  - [QA] ✅ `npm run qa` Pass (TSC 0, Lint 0)
+
+---
+
+## 3.1 🔥 Project Heat Map & Risks `#heatmap`
+| Region | Activity Level | Risk Level | Mitigation |
+|--------|----------------|------------|------------|
+| `src/core/saju` | 🔴 High | 🟡 Medium | Intensive Unit Testing (`[RISK-001]`) |
+| `src/app/api` | 🟡 Medium | 🔴 High | Security Auth Audit (`[RISK-002]`) |
+| `docs/` | 🟢 Low | 🟢 Low | Auto-sync Workflows |
 
 ---
 
@@ -70,6 +78,8 @@
 ## 7. 📝 Decision Log `#decisions`
 | 날짜 | 결정 | 요약 | 주체 |
 |------|------|------|-----|
+| 26-03-03 | **Next-Gen Doc (V6)** | Mermaid 다이어그램(Architecture/Engine) 도입, KPI/Risk 태깅 시스템 구축, 운영 가이드(`OPERATIONS.md`) 및 핸드오프 템플릿 표준화 완료 | T1 Architect |
+| 26-03-03 | **Agent/Crawler Sync** | 10-Team Agent Architecture 공식 활성화, DinnerQueen/Revu 크롤러 어댑터 구현 및 검증, Daily Fortune 프리미엄 UI(탭/카드) 고도화 완료, 프로젝트 문서군(PRD/Architecture) 동기화 | T1/T2/T4 |
 | 26-03-02 | **Build/Feature Polish** | Referral 시스템(코드 생성/사용), GA4 전환 분석, Kakao 공유(동적 OG), Toss 결제 검증 고도화(Notion sync), 인코딩(Encyclopedia/Tarot 등 5종) 복구, tsc/lint 0 error 달성 | T2/T3/T9 |
 | 26-03-02 | **Wave 5 완료** | Daewun 절기 기반(Jeol-gi 12절) 고정밀화, Sinsal 8종(천을귀인·문창·백호·괴강 추가), 용신 기반 일일운세 스코어링, AuthModal·Footer 인코딩 복구, saju.ts STEM_ELEMENTS 통합, MCP clearMcpStateArtifacts 리팩토링 | T4/T9 |
 

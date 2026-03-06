@@ -65,12 +65,13 @@ export default function FortuneCarousel() {
                         <motion.div
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
+                            whileHover={{ y: -8, scale: 1.02 }}
                             transition={{ duration: 0.45, delay: i * 0.04 }}
                             className={cn(
-                                "panel-shell p-6 sm:p-8 transition-all hover:-translate-y-2 overflow-hidden shadow-2xl h-full flex flex-col justify-between",
+                                "panel-shell p-6 sm:p-8 transition-all overflow-hidden shadow-2xl h-full flex flex-col justify-between",
                                 item.highlight
-                                    ? "border-indigo-500/45 shadow-indigo-950/45 bg-indigo-950/20"
-                                    : "border-white/10 hover:border-indigo-500/30"
+                                    ? "border-indigo-500/45 shadow-indigo-950/45 bg-indigo-950/20 hover:shadow-indigo-500/20"
+                                    : "border-white/10 hover:border-indigo-500/30 hover:shadow-indigo-500/10"
                             )}
                         >
                             <div className={cn(

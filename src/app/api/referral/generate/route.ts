@@ -3,70 +3,108 @@
  * Referral Code Generation API
  *
  * POST /api/referral/generate
- * Body: { userId: string }
- * Returns: { code: string, referralUrl: string }
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 import { APP_CONFIG } from '@/config';
+import { getAuthenticatedUser } from '@/lib/api-auth';
+import { getSupabaseAdmin } from '@/lib/supabase';
+import { generateReferralCode, REFERRAL_REWARDS } from '@/lib/referrals';
 
-function generateCode(length = 6): string {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
+function buildReferralUrl(referralCode: string) {
+    const baseUrl = APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://secretsaju.example.com';
+    return `${baseUrl}/?ref=${encodeURIComponent(referralCode)}`;
 }
 
 export async function POST(req: NextRequest) {
     try {
-        const body = await req.json();
-        const { userId } = body as { userId?: string };
-
-        if (!userId) {
-            return NextResponse.json({ error: 'userId is required' }, { status: 400 });
+        const supabase = getSupabaseAdmin();
+        const authResult = await getAuthenticatedUser(req);
+        if (authResult.error) {
+            return authResult.error;
         }
 
-        // Check if user already has a referral code
-        const { data: existing } = await supabase
-            .from('referral_codes')
-            .select('code')
-            .eq('user_id', userId)
+        const userId = authResult.user.id;
+
+        // Return existing code when available
+        const { data: existing, error: existingError } = await supabase
+            .from('referrals')
+            .select('referral_code')
+            .eq('referrer_user_id', userId)
+            .limit(1)
             .single();
 
-        const baseUrl = APP_CONFIG.BASE_URL || 'https://secretsaju.example.com';
-        if (existing?.code) {
-            const referralUrl = `${baseUrl}/join?ref=${existing.code}`;
-            return NextResponse.json({ code: existing.code, referralUrl });
+        if (existingError && existingError.code !== 'PGRST116') {
+            console.error('[referral/generate] Failed to check existing referral:', existingError);
+            return NextResponse.json({ error: 'Failed to check existing referral code' }, { status: 500 });
         }
 
-        // Generate a unique code
-        let code = generateCode();
-        let attempts = 0;
-        while (attempts < 5) {
-            const { data: conflict } = await supabase
-                .from('referral_codes')
-                .select('code')
-                .eq('code', code)
+        if (existing?.referral_code) {
+            return NextResponse.json({
+                code: existing.referral_code,
+                referral_code: existing.referral_code,
+                referralUrl: buildReferralUrl(existing.referral_code),
+                already_exists: true,
+            });
+        }
+
+        let referralCode = '';
+        let insertData = null;
+
+        for (let attempts = 0; attempts < 10; attempts++) {
+            const candidate = generateReferralCode();
+            const { data: duplicate, error: duplicateError } = await supabase
+                .from('referrals')
+                .select('id')
+                .eq('referral_code', candidate)
                 .single();
 
-            if (!conflict) break;
-            code = generateCode();
-            attempts++;
+            if (duplicateError && duplicateError.code !== 'PGRST116') {
+                console.error('[referral/generate] Failed to check duplicate code:', duplicateError);
+                return NextResponse.json({ error: 'Failed to generate referral code' }, { status: 500 });
+            }
+
+            if (duplicate) {
+                continue;
+            }
+
+            const { data: created, error: createError } = await supabase
+                .from('referrals')
+                .insert({
+                    referrer_user_id: userId,
+                    referral_code: candidate,
+                    referrer_reward_jellies: REFERRAL_REWARDS.REFERRER,
+                    referred_reward_jellies: REFERRAL_REWARDS.REFERRED,
+                })
+                .select('referral_code')
+                .single();
+
+            if (createError) {
+                if (createError.code === '23505') {
+                    continue;
+                }
+
+                console.error('[referral/generate] Failed to create referral:', createError);
+                return NextResponse.json({ error: 'Failed to create referral code' }, { status: 500 });
+            }
+
+            referralCode = created?.referral_code || candidate;
+            insertData = created;
+            break;
         }
 
-        // Upsert the code
-        await supabase.from('referral_codes').upsert({
-            user_id: userId,
-            code,
-            created_at: new Date().toISOString(),
-            total_redeemed: 0,
-        }, { onConflict: 'user_id' });
+        if (!referralCode) {
+            return NextResponse.json({ error: 'Failed to generate unique referral code' }, { status: 500 });
+        }
 
-        const referralUrl = `${baseUrl}/join?ref=${code}`;
-        return NextResponse.json({ code, referralUrl });
+        return NextResponse.json({
+            code: referralCode,
+            referral_code: referralCode,
+            referralUrl: buildReferralUrl(referralCode),
+            reward_jellies: REFERRAL_REWARDS.REFERRED,
+            already_exists: false,
+            referral: insertData,
+        });
     } catch (error) {
         console.error('[referral/generate]', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

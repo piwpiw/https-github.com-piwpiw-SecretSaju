@@ -1,9 +1,23 @@
 #!/usr/bin/env node
 
+const { verifyDeploymentPolicy } = require('./deploy-policy');
+
 const hookUrl = process.env.RENDER_DEPLOY_HOOK_URL || process.env.RENDER_DEPLOY_HOOK;
 const maxRetries = Math.max(1, Number(process.env.RENDER_DEPLOY_RETRIES || 4));
 const timeoutMs = Math.max(1000, Number(process.env.RENDER_DEPLOY_TIMEOUT_MS || 15000));
 const intervalMs = Math.max(500, Number(process.env.RENDER_DEPLOY_RETRY_INTERVAL_MS || 2000));
+
+function readMode() {
+  const argValue = process.argv.find((arg) => arg.startsWith("--mode="));
+  if (argValue) return argValue.split("=", 2)[1];
+
+  const modeIdx = process.argv.indexOf("--mode");
+  if (modeIdx >= 0 && process.argv[modeIdx + 1]) return process.argv[modeIdx + 1];
+
+  return process.env.DEPLOY_MODE || "production";
+}
+
+const mode = readMode();
 
 function timeoutFetch(input, init = {}) {
   const controller = new AbortController();
@@ -12,9 +26,13 @@ function timeoutFetch(input, init = {}) {
     .finally(() => clearTimeout(id));
 }
 
+verifyDeploymentPolicy({
+  mode: mode || "production",
+});
+
 if (!hookUrl) {
-  console.log('[render-deploy] RENDER_DEPLOY_HOOK_URL is not set. Deployment is expected to be driven by Render autoDeploy from main branch.');
-  process.exit(0);
+  console.log('[render-deploy] Render deploy hook is required for policy-enforced deployment.');
+  process.exit(1);
 }
 
 async function run() {

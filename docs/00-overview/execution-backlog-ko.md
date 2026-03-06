@@ -26,6 +26,7 @@ This document is the canonical page contract for implementation and QA.
 
 | `/payment/fail` | P0 | Recover failed payment | Show failure reason, retry payment, safe return | Failure reason, retry CTA, support contact | User can retry or exit without dead-end |
 | `/shop` | P0 | Convert to jelly purchase | Package comparison, purchase start, wallet snapshot | Jelly balance, package cards, value badge, purchase CTA, policy link | A recommended package is clear and checkout handoff works |
+| `/signup` | P1 | Convert first-time visitors into members | Email/social signup flow, field validation, consent and policy links | Signup form, social signup buttons, validation feedback, terms/privacy links | Valid signup can complete without dead-end and redirects to next step |
 | `/mypage` | P0 | Manage account and content assets | Profile CRUD entry points, balance, history | Account summary, balance, profile list, add/edit/delete actions, history link, logout | Core actions are discoverable in one screen |
 | `/compatibility` | P1 | Improve engagement and shareability | Profile pair selection, score, interpretation | Profile selectors, total score, category scores, insight summary, share CTA | Score and insights appear after one profile selection |
 | `/daily` | P1 | Increase daily revisit behavior | Fortune fetch, streak, refresh schedule | Date, forecast, lucky/unlucky signal, streak badge, next refresh, share CTA | Card updates at least once per day |
@@ -71,6 +72,7 @@ This document is the canonical page contract for implementation and QA.
 | `/relationship` | P2 | Relationship index, pair selection, history | Profile selection path or past entries visible |
 | `/relationship/[id]` | P1 | Relationship profile summary and insight block | Relationship card and action links render correctly |
 | `/relationship/[id]/vs` | P1 | Comparison summary and share-ready context | Comparison outcome and secondary action are visible |
+| `/result/[token]` | P1 | Ensure shared result links are safely viewable | Token lookup, result rendering, invalid token fallback | Result header, summary card, retry/back action for invalid token | Shared link opens a valid result or clear empty/error recovery path |
 | `/saju` | P2 | Saju concept overview, recent items, analysis start | Profile list and start analysis action are visible |
 | `/select-fortune` | P2 | Fortune type selector, launch CTA | Selector change updates next-step state |
 | `/shinsal` | P2 | Shinsal intro, card list, analysis CTA | At least one card opens preview |

@@ -26,7 +26,7 @@ export function SecretBlur({
 
   return (
     <section className="w-full max-w-md mx-auto py-12 px-4">
-      <h3 className="font-display text-xl text-foreground mb-4 text-center">비밀 미리보기 (Secret)</h3>
+      <h3 className="font-display text-xl text-foreground mb-4 text-center">비밀 미리보기 (시크릿)</h3>
 
       {unlocked ? (
         <motion.div

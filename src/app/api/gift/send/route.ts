@@ -3,6 +3,7 @@ import { sendSajuResultEmail } from '@/lib/mail';
 import { getAuthenticatedUser } from '@/lib/api-auth';
 import crypto from 'crypto';
 import { APP_CONFIG } from '@/config';
+import { isMockMode } from '@/lib/use-mock';
 
 /**
  * [gem-backend] 익명 발송 API. 인증된 유저만 젤리를 소모(추후 연결)하여 발송 가능.
@@ -11,7 +12,7 @@ export async function POST(req: Request) {
     try {
         const GIFT_TOKEN_TTL_SECONDS = 60 * 60 * 24 * 3;
         const { user, error } = await getAuthenticatedUser(req as any);
-        if (!user && process.env.NEXT_PUBLIC_USE_MOCK_DATA !== 'true') {
+        if (!user && !isMockMode()) {
             return error;
         }
 
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        const senderName = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true' ? '테스트유저' : ((user as any)?.name || '익명의 친구');
+        const senderName = isMockMode() ? '테스트유저' : ((user as any)?.name || '익명의 친구');
 
         // 1. Generate an exchange token for the gift result
         const resultToken = crypto.randomUUID();

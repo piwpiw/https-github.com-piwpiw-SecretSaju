@@ -1,15 +1,39 @@
-'use client';
+﻿'use client';
 
-import { useEffect, useState, Suspense, useRef } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
+import {
+  trackPaymentFail,
+  trackPaymentVerifyRequest,
+  trackPaymentVerifyComplete,
+} from '@/lib/analytics';
+
+type VerifyState = 'loading' | 'success' | 'error';
+
+function getFailureMessage(errorCode?: string) {
+  switch (errorCode) {
+    case 'PAYMENT_AMOUNT_MISMATCH':
+      return '결제 금액 정보가 일치하지 않습니다. 결제 시작 화면에서 다시 시도해 주세요.';
+    case 'PAYMENT_TOSS_VERIFICATION_FAILED':
+      return '결제 승인 확인 실패. 잠시 후 다시 시도하거나 결제 내역을 확인해 주세요.';
+    case 'PAYMENT_ORDER_NOT_PENDING':
+      return '현재 주문 상태가 처리 대상이 아닙니다. 이미 처리되었거나 취소된 건일 수 있습니다.';
+    case 'PAYMENT_IDEMPOTENCY_LIMIT_EXCEEDED':
+      return '요청이 지나치게 반복되었습니다. 1분 후 다시 시도해 주세요.';
+    case 'PAYMENT_VERIFICATION_SIGNATURE_INVALID':
+      return '결제 검증 서명이 유효하지 않습니다. 결제 경로를 다시 확인해 주세요.';
+    default:
+      return '결제 검증에 실패했습니다. 결제 페이지로 돌아가 재시도해 주세요.';
+  }
+}
 
 function SuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-  const [message, setMessage] = useState('결제 상태를 확인하고 있습니다...');
+  const [status, setStatus] = useState<VerifyState>('loading');
+  const [message, setMessage] = useState('결제 연동 확인 중입니다...');
   const [isMissingParams, setIsMissingParams] = useState(false);
   const verifiedRef = useRef(false);
 
@@ -17,45 +41,69 @@ function SuccessContent() {
     const paymentKey = searchParams.get('paymentKey');
     const orderId = searchParams.get('orderId');
     const amount = searchParams.get('amount');
+    const verifyToken = searchParams.get('verifyToken');
+    const verifySignature = searchParams.get('verifySignature');
 
     const verifyPayment = async () => {
       if (verifiedRef.current) return;
       verifiedRef.current = true;
 
-      if (!paymentKey || !orderId || !amount) {
+      if (!paymentKey || !orderId || !amount || !verifyToken || !verifySignature) {
         setStatus('error');
         setIsMissingParams(true);
-        setMessage('결제 정보가 누락되어 검증을 진행할 수 없습니다. 결제 요청값을 다시 확인해 주세요.');
+        setMessage('결제 파라미터가 손상되어 결제 결과를 확인할 수 없습니다. 결제 페이지로 돌아가 재결제해주세요.');
+        trackPaymentFail(orderId, 'MISSING_REQUIRED_PARAMS');
         return;
       }
 
       try {
+        const parsedAmount = Number(amount);
+        trackPaymentVerifyRequest(orderId, parsedAmount, 'success_page');
+
         const response = await fetch('/api/payment/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ paymentKey, orderId, amount }),
+          body: JSON.stringify({
+            paymentKey,
+            orderId,
+            amount: parsedAmount,
+            verifyToken,
+            verifySignature,
+          }),
         });
 
-        const data = await response.json().catch(() => ({} as Record<string, unknown>));
+        const data = (await response.json().catch(() => ({}))) as Record<string, unknown>;
 
-        if (response.ok && data.success) {
+        const errorCode = typeof data.error_code === 'string'
+          ? data.error_code
+          : typeof data.errorCode === 'string'
+            ? data.errorCode
+            : typeof data.error === 'string'
+              ? data.error
+              : undefined;
+
+        if (response.ok && Boolean(data.success)) {
           setStatus('success');
-          const credited = data.jellies_credited || data.added || 0;
-          setMessage(`결제가 완료되어 젤리 ${credited}개가 충전되었습니다.`);
+          const credited = Number(data.jellies_credited || data.added || 0);
+          setMessage(`결제가 완료되었습니다. ${credited}개 젤리가 충전됩니다.`);
+          trackPaymentVerifyComplete(orderId, credited);
           setTimeout(() => {
             router.push('/mypage');
-          }, 3000);
-        } else {
-          throw new Error(data.error || '결제 검증에 실패했습니다.');
+          }, 2500);
+          return;
         }
-      } catch (error: any) {
+
+        trackPaymentFail(orderId, errorCode || 'PAYMENT_VERIFY_FAILED');
+        throw new Error(getFailureMessage(errorCode));
+      } catch (error) {
+        const errMessage = error instanceof Error ? error.message : '결제 인증 처리 중 오류가 발생했습니다.';
         setStatus('error');
-        setMessage(error.message || '결제 검증 중 예기치 않은 오류가 발생했습니다.');
+        setMessage(errMessage);
       }
     };
 
-    verifyPayment();
-  }, [searchParams, router]);
+    void verifyPayment();
+  }, [router, searchParams]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
@@ -79,12 +127,12 @@ function SuccessContent() {
             <CheckCircle className="w-20 h-20 text-emerald-500 mb-6" />
             <h2 className="text-3xl font-black text-foreground uppercase tracking-tight mb-4">결제 완료</h2>
             <p className="text-primary font-bold text-xl mb-8">{message}</p>
-            <p className="text-sm text-secondary font-medium italic mb-2">마이페이지로 이동 중입니다.</p>
+            <p className="text-sm text-secondary font-medium italic mb-2">마이페이지로 이동합니다.</p>
             <button
               onClick={() => router.push('/mypage')}
               className="mt-6 w-full py-5 bg-gradient-to-r from-primary to-indigo-600 text-white font-black text-lg rounded-2xl hover:scale-105 transition-all shadow-xl"
             >
-              마이페이지로 이동
+              바로 이동
             </button>
           </div>
         )}
@@ -107,7 +155,7 @@ function SuccessContent() {
                   onClick={() => router.push('/mypage')}
                   className="w-full py-5 bg-background border border-border-color text-secondary font-black text-lg rounded-2xl hover:text-foreground transition-all"
                 >
-                  이전 화면으로
+                  마이페이지로 이동
                 </button>
               </div>
             ) : (
@@ -115,14 +163,15 @@ function SuccessContent() {
                 onClick={() => router.push('/mypage')}
                 className="w-full py-5 bg-background border border-border-color text-secondary font-black text-lg rounded-2xl hover:text-foreground transition-all"
               >
-                이전 화면으로
+                마이페이지로 이동
               </button>
             )}
+
             <button
               onClick={() => router.push('/')}
               className="w-full mt-3 py-4 bg-background border border-border-color/70 text-secondary font-black text-base rounded-2xl hover:text-foreground transition-all"
             >
-              홈으로
+              홈으로 이동
             </button>
           </div>
         )}
@@ -133,13 +182,14 @@ function SuccessContent() {
 
 export default function SuccessPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-yellow-400" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="w-10 h-10 animate-spin text-yellow-400" />
+        </div>
+      }
+    >
       <SuccessContent />
     </Suspense>
   );
 }
-

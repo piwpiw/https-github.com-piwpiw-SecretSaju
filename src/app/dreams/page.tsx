@@ -2,7 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Search, SendHorizonal } from "lucide-react";
+import { ArrowLeft, Search, SendHorizonal, Sparkles } from "lucide-react";
+import { saveAnalysisToHistory } from "@/lib/analysis-history";
+import AIDreamParser from "@/components/dreams/AIDreamParser";
+import DreamKeywordCloud from "@/components/dreams/DreamKeywordCloud";
+import ScrollReveal from "@/components/ui/ScrollReveal";
+import { motion, AnimatePresence } from "framer-motion";
 
 type DreamMap = Record<string, string>;
 
@@ -18,6 +23,7 @@ export default function DreamsPage() {
   const router = useRouter();
   const [text, setText] = useState("");
   const [history, setHistory] = useState<string[]>([]);
+  const [status, setStatus] = useState("");
 
   const interpretation = useMemo(() => {
     const key = Object.keys(MAP).find((k) => text.includes(k));
@@ -25,9 +31,28 @@ export default function DreamsPage() {
     return MAP[key];
   }, [text]);
 
+  const matchedKey = useMemo(() => Object.keys(MAP).find((k) => text.includes(k)), [text]);
+
   const addLog = () => {
     if (!text.trim()) return;
-    setHistory((prev) => [text.trim(), ...prev].slice(0, 5));
+    const trimmed = text.trim();
+    setHistory((prev) => [trimmed, ...prev].slice(0, 5));
+    const saved = saveAnalysisToHistory(
+      {
+        type: "DREAM",
+        title: "꿈해몽 분석",
+        subtitle: `${matchedKey || "기타"} 해몽`,
+        result: {
+          input: trimmed,
+          interpretation,
+          matchedKeyword: matchedKey || null,
+        },
+        resultUrl: "/dreams",
+        resultPreview: interpretation,
+      }
+    );
+    setStatus(saved ? "기록에 저장되었습니다." : "기록 저장에 실패했습니다.");
+    setTimeout(() => setStatus(""), 2200);
   };
 
   return (
@@ -41,32 +66,31 @@ export default function DreamsPage() {
           <div className="text-xs px-4 py-2 rounded-full border border-white/10 bg-white/10 text-slate-300">꿈해몽 정밀 도우미</div>
         </div>
 
-        <section className="bg-slate-900/55 border border-white/10 rounded-[2.5rem] p-8 md:p-12">
-          <h1 className="text-3xl md:text-4xl font-black italic">꿈해몽</h1>
-          <p className="mt-2 text-slate-300">꿈 키워드를 입력하면 상징을 해석해 현실 적용 가이드를 제공합니다.</p>
-
-          <div className="mt-7 relative">
-            <Search className="absolute left-4 top-4 w-4 h-4 text-slate-400" />
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              rows={5}
-              placeholder="예: 나무가 자라거나 바다에 빠지는 꿈을 꿨다"
-              className="w-full rounded-3xl border border-white/10 bg-slate-950 px-12 py-4 text-white placeholder:text-slate-500"
-            />
+        <ScrollReveal>
+          <div className="mb-8">
+            <DreamKeywordCloud />
           </div>
 
-          <button
-            onClick={addLog}
-            className="mt-4 w-full py-4 rounded-full bg-emerald-500 text-slate-900 font-black uppercase tracking-[0.18em]"
-          >
-            <SendHorizonal className="inline-block w-4 h-4 mr-2" /> 해석 실행
-          </button>
+          <section className="bg-slate-900/55 border border-white/10 rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] -mr-32 -mt-32" />
 
-          <div className="mt-6 rounded-2xl border border-emerald-300/30 bg-emerald-500/10 p-5 text-sm text-emerald-100">
-            {interpretation}
-          </div>
-        </section>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-emerald-400" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-black italic text-white uppercase tracking-widest leading-none">AI 꿈 해몽 비서</h1>
+                <p className="text-[10px] font-black text-emerald-500/60 uppercase tracking-[0.2em] mt-1 italic">심층 상징 추출 엔진</p>
+              </div>
+            </div>
+
+            <p className="text-sm text-slate-300 leading-relaxed max-w-lg mb-8">어젯밤 당신의 무의식이 보낸 메시지를 AI가 정밀 분석합니다. 이미지와 감정을 상세히 기록할수록 높은 정확도의 해석을 도출합니다.</p>
+
+            <AIDreamParser />
+
+            {status ? <p className="mt-4 text-xs text-emerald-300 text-center font-bold tracking-widest uppercase animate-pulse">{status}</p> : null}
+          </section>
+        </ScrollReveal>
 
         {history.length > 0 ? (
           <section className="mt-8">

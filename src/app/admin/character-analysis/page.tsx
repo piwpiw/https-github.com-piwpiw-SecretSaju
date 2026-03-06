@@ -30,10 +30,11 @@ export default function CharacterAnalysisPage() {
 
                 {/* Selector */}
                 <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
-                    <label className="block text-sm font-semibold mb-2 text-cyan-400">
+                    <label htmlFor="character-analysis-pillar" className="block text-sm font-semibold mb-2 text-cyan-400">
                         인물 선택
                     </label>
                     <select
+                        id="character-analysis-pillar"
                         value={selectedIndex}
                         onChange={(e) => setSelectedIndex(Number(e.target.value))}
                         className="w-full bg-slate-900/80 border border-cyan-500/30 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -320,9 +321,9 @@ export default function CharacterAnalysisPage() {
                         사주 명리학의 전통적 분석 방식 | 점수가 아닌 균형과 경향성
                     </p>
                     <p className="text-xs text-slate-600 mt-2">
-                        ← <a href="/admin/test-control" className="text-cyan-400 hover:underline">Admin Dashboard</a>
+                        ← <a href="/admin/test-control" className="text-cyan-400 hover:underline">관리자 대시보드</a>
                         {" | "}
-                        <a href="/" className="text-cyan-400 hover:underline">Home</a>
+                        <a href="/" className="text-cyan-400 hover:underline">홈</a>
                     </p>
                 </div>
             </div>

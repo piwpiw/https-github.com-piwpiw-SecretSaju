@@ -94,6 +94,31 @@ export default function LuckyScoreCard() {
                                 </div>
                             ))}
                         </div>
+
+                        {/* Wave Chart SVG (Trend Visualization) */}
+                        <div className="pt-2 h-10 w-full max-w-[200px] opacity-40">
+                            <svg viewBox="0 0 200 40" className="w-full h-full overflow-visible">
+                                <motion.path
+                                    d="M0 30 Q 25 10 50 30 T 100 30 T 150 30 T 200 30"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    className="text-indigo-400"
+                                    initial={{ pathLength: 0, opacity: 0 }}
+                                    animate={{ pathLength: 1, opacity: 1 }}
+                                    transition={{ duration: 2, delay: 1 }}
+                                />
+                                <motion.circle
+                                    cx="200"
+                                    cy="30"
+                                    r="3"
+                                    className="fill-indigo-400"
+                                    animate={{ r: [3, 5, 3] }}
+                                    transition={{ duration: 2, repeat: Infinity }}
+                                />
+                            </svg>
+                            <p className="text-[8px] font-black uppercase tracking-widest text-slate-500 mt-1">실시간 파동 동기화 중...</p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -12,6 +12,8 @@
   --text-secondary: #94a3b8;
   --border-color: rgba(255, 255, 255, 0.1);
   --accent-ink: #f59e0b;
+  --font-sans: "Pretendard Variable", Pretendard, "Noto Sans KR", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-display: "Noto Sans KR", "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --radius: 0.75rem;
   --font-size-base: 16px;
 }
@@ -33,9 +35,10 @@ body {
 
 /* Utility classes using CSS variables */
 .glass {
-  @apply backdrop-blur-xl;
-  background-color: var(--surface);
-  border: 1px solid var(--border-color);
+  @apply backdrop-blur-2xl;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 .premium-card {
@@ -54,13 +57,25 @@ body {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .animate-shimmer {
@@ -75,18 +90,43 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.03),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.03),
+      transparent);
   animation: shimmer 2s infinite;
 }
 
 /* Premium Design Extensions */
-.perspective-1000 { perspective: 1000px; }
-.perspective-2000 { perspective: 2000px; }
+.btn-neumorphic {
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow:
+    6px 6px 12px rgba(0, 0, 0, 0.4),
+    -2px -2px 8px rgba(255, 255, 255, 0.02),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.btn-neumorphic:active {
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.5),
+    inset -1px -1px 4px rgba(255, 255, 255, 0.01);
+  transform: scale(0.98);
+}
+
+.ui-title-gradient {
+  @apply font-black italic uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-500;
+  filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.3));
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-2000 {
+  perspective: 2000px;
+}
 
 .premium-card-gold {
   @apply relative backdrop-blur-3xl rounded-[2.5rem] overflow-hidden transition-all duration-700;
@@ -117,14 +157,16 @@ body {
 }
 
 .panel-shell {
-  @apply rounded-[3rem] backdrop-blur-3xl border relative overflow-hidden transition-all duration-500;
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-  border-color: rgba(255, 255, 255, 0.12);
+  @apply rounded-[3rem] backdrop-blur-[40px] border relative overflow-hidden transition-all duration-700;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 .panel-shell:hover {
-  border-color: rgba(129, 140, 254, 0.45);
-  transform: translateY(-1px);
+  border-color: rgba(129, 140, 254, 0.3);
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
 }
 
 .ui-title {
@@ -135,6 +177,70 @@ body {
   background: linear-gradient(120deg, #f8fafc 0%, #c7d2fe 50%, var(--accent-ink) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* 8.3 Premium Texture Additions */
+.noise-texture {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+  opacity: 0.1;
+  /* Slightly increased for visibility */
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  z-index: 1;
+}
+
+.premium-glow {
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 50%, rgba(255, 255, 255, 0.08) 100%);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Wave 7: Deep Atmosphere */
+.bg-drift {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  z-index: -10;
+  animation: bg-drift-move 30s ease-in-out infinite alternate;
+}
+
+@keyframes bg-drift-move {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+
+  50% {
+    transform: scale(1.1) translate(-2%, 2%);
+  }
+
+  100% {
+    transform: scale(1) translate(2%, -2%);
+  }
+}
+
+/* 8.3 Premium Texture Additions */
+.noise-texture {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+  opacity: 0.05;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  z-index: 1;
+}
+
+.premium-glow {
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 50%, rgba(255, 255, 255, 0.08) 100%);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .text-micro-copy {
@@ -225,21 +331,29 @@ body {
 }
 
 @keyframes rotate-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Custom Scrollbar Premium */
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
 }
@@ -248,6 +362,7 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;

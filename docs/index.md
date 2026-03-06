@@ -11,6 +11,7 @@ Each domain keeps exactly one source-of-truth (SOT) document.
 | Execution contract (route/page) | `docs/00-overview/execution-backlog-ko.md` | Screen goals, must-show elements, done criteria |
 | Strategy roadmap | `docs/00-overview/roadmap.md` | Priority, milestone, sequence |
 | Deployment runtime | `docs/01-team/engineering/deployment-guide.md` | Deploy process, command policy, recovery |
+| Local dev runtime | `docs/01-team/engineering/local-dev-sop.md` | Dev server startup, port cleanup, recurrence prevention |
 | Error and guardrail | `docs/ERROR_CATALOG.md` | Exception handling baseline |
 | User verification | `docs/USER_VERIFICATION.md` | End-user QA and acceptance flow |
 | Documentation policy | `docs/00-overview/document-governance.md` | SOT ownership and dedupe rules |
@@ -19,6 +20,7 @@ Each domain keeps exactly one source-of-truth (SOT) document.
 ## Engineering Runtime Docs
 - [Deployment Guide](./01-team/engineering/deployment-guide.md)
 - [Testing Guide](./01-team/engineering/testing-guide.md)
+- [Local Dev SOP](./01-team/engineering/local-dev-sop.md)
 - [Onboarding](./01-team/engineering/onboarding.md)
 - [Git Workflow](./01-team/engineering/git-workflow.md)
 
@@ -31,6 +33,8 @@ Each domain keeps exactly one source-of-truth (SOT) document.
 ## Fast Command Matrix
 | Goal | Command | Notes |
 |---|---|---|
+| Local stable startup | `npm run dev:safe -- --port 3000 --auto-port` | kill port listeners + preflight + auto fallback port |
+| Auth route smoke | `npm run smoke:auth` | checks `/`, `/login`, `/signup`, `/auth/callback` |
 | Local fast preflight | `npm run preflight:local` | lint + type-check in parallel |
 | Local serial repro | `npm run preflight:local:serial` | deterministic repro for flaky cases |
 | Local deploy precheck | `npm run deploy:local` | preflight + pre-deploy(skip build/tests) |
@@ -49,6 +53,6 @@ Each domain keeps exactly one source-of-truth (SOT) document.
 - Keep duplicate policy text out of team docs; link governance instead.
 
 ---
-**Last Updated**: 2026-03-01  
+**Last Updated**: 2026-03-05  
 **Document Owner**: Product Operations + Engineering Lead  
-**Next Review**: 2026-03-08
+**Next Review**: 2026-03-12

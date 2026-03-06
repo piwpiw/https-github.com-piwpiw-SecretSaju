@@ -1,4 +1,6 @@
-﻿import Link from "next/link";
+﻿"use client";
+
+import Link from "next/link";
 import { ArrowLeft, Gift, MessageCircle, Copy } from "lucide-react";
 import { useState } from "react";
 

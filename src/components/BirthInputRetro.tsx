@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import confetti from "canvas-confetti";
 
 interface BirthInputRetroProps {
@@ -9,6 +9,7 @@ interface BirthInputRetroProps {
         year: number;
         month: number;
         day: number;
+        name: string;
         hour: number;
         minute: number;
         timeKnown: boolean;
@@ -16,6 +17,7 @@ interface BirthInputRetroProps {
 }
 
 export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
+    const [name, setName] = useState("");
     const [year, setYear] = useState("");
     const [month, setMonth] = useState("");
     const [day, setDay] = useState("");
@@ -23,9 +25,20 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
     const [minute, setMinute] = useState("00");
     const [timeKnown, setTimeKnown] = useState(true);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (year && month && day) {
+        const parsedYear = Number.parseInt(year, 10);
+        const parsedMonth = Number.parseInt(month, 10);
+        const parsedDay = Number.parseInt(day, 10);
+        const parsedHour = Number.parseInt(hour, 10);
+        const parsedMinute = Number.parseInt(minute, 10);
+        const safeYear = Number.isFinite(parsedYear) ? parsedYear : 1990;
+        const safeMonth = Number.isFinite(parsedMonth) ? Math.min(12, Math.max(1, parsedMonth)) : 1;
+        const safeDay = Number.isFinite(parsedDay) ? Math.min(31, Math.max(1, parsedDay)) : 1;
+        const safeHour = Number.isFinite(parsedHour) ? Math.min(23, Math.max(0, parsedHour)) : 12;
+        const safeMinute = Number.isFinite(parsedMinute) ? Math.min(59, Math.max(0, parsedMinute)) : 0;
+
+        try {
             if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
             confetti({
                 particleCount: 80,
@@ -33,17 +46,20 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
                 origin: { y: 0.6 },
                 colors: ['#6366f1', '#a855f7', '#ec4899']
             });
+        } catch { }
 
-            onSubmit({
-                year: parseInt(year),
-                month: parseInt(month),
-                day: parseInt(day),
-                hour: timeKnown ? parseInt(hour) : 12,
-                minute: timeKnown ? parseInt(minute) : 0,
-                timeKnown
-            });
-        }
+        onSubmit({
+            name,
+            year: safeYear,
+            month: safeMonth,
+            day: safeDay,
+            hour: timeKnown ? safeHour : 12,
+            minute: timeKnown ? safeMinute : 0,
+            timeKnown
+        });
     };
+
+    const canSubmit = !!name.trim() && !!year && !!month && !!day;
 
     return (
         <motion.div
@@ -58,7 +74,24 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
                     <p className="text-micro-copy opacity-80">정확한 사주 계산을 위해 날짜를 입력해 주세요</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form
+                    onSubmit={handleSubmit}
+                    className="space-y-5"
+                >
+                    {/* Name */}
+                    <div>
+                        <label className="block text-sm font-medium text-slate-300 mb-2">이름</label>
+                        <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="홍길동"
+                            maxLength={32}
+                            required
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white text-base focus:outline-none focus:border-indigo-500/60 focus:bg-indigo-500/5 transition-all placeholder:text-slate-600"
+                        />
+                    </div>
+
                     {/* Year */}
                     <div>
                         <label className="block text-sm font-medium text-slate-300 mb-2">연도</label>
@@ -177,9 +210,10 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
                     <div className="pt-3">
                         <motion.button
                             type="submit"
+                            disabled={!canSubmit}
                             whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.99 }}
-                            className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-base shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all"
+                            className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-base shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                         >
                             사주 분석 시작
                         </motion.button>

@@ -4,17 +4,40 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Gift, Send, Mail, ArrowLeft, ShieldCheck } from "lucide-react";
 import { useLocale } from "@/lib/i18n";
+import { useRouter } from "next/navigation";
+import { useWallet } from "@/components/WalletProvider";
+import JellyBalance from "@/components/shop/JellyBalance";
+import JellyShopModal from "@/components/shop/JellyShopModal";
 
 export default function GiftPage() {
   const { t, locale } = useLocale();
+  const router = useRouter();
+  const { consumeChuru, churu, isAdmin } = useWallet();
+  const [isShopModalOpen, setIsShopModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", birthDate: "", email: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const hasName = formData.name.trim().length > 1;
+  const hasBirth = formData.birthDate.trim().length > 0;
+  const hasEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+  const isReady = hasName && hasBirth && hasEmail;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError("");
+
+    if (!isAdmin && churu < 3) {
+      setIsShopModalOpen(true);
+      return;
+    }
+
+    const consumed = consumeChuru(3);
+    if (!consumed) {
+      setSubmitError(locale === 'ko' ? "젤리 차감에 실패했습니다. 잠시 후 다시 시도해 주세요." : "Failed to deduct Jelly.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -53,15 +76,18 @@ export default function GiftPage() {
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="text-center md:text-left w-full max-w-4xl mx-auto mb-20 border-b border-border-color pb-16 relative z-10"
+        className="w-full max-w-4xl mx-auto mb-20 relative z-10"
       >
-        <button
-          onClick={() => window.history.back()}
-          className="flex items-center gap-3 text-lg font-bold text-secondary hover:text-foreground transition-all mb-8 mx-auto md:mx-0"
-        >
-          <ArrowLeft className="w-6 h-6" />
-          {t('common.back')}
-        </button>
+        <div className="flex items-center justify-between mb-8 pb-4 border-b border-border-color">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-3 text-lg font-bold text-secondary hover:text-foreground transition-all"
+          >
+            <ArrowLeft className="w-6 h-6" />
+            {t('common.back')}
+          </button>
+          <JellyBalance />
+        </div>
 
         <div className="flex flex-col md:flex-row items-center gap-10">
           <div className="w-32 h-32 rounded-4xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-2xl shadow-pink-500/20 transform rotate-3">
@@ -111,11 +137,15 @@ export default function GiftPage() {
                 <input
                   required
                   type="text"
+                  aria-required="true"
+                  aria-invalid={formData.name.length > 0 && !hasName}
+                  aria-describedby="gift-name-help"
                   placeholder={locale === 'ko' ? '이름을 입력해 주세요' : 'Enter their name'}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full bg-background border-2 border-border-color rounded-3xl px-8 py-6 text-foreground font-black text-3xl focus:outline-none focus:border-pink-500 transition-all placeholder:text-neutral-700 italic"
                 />
+                <p id="gift-name-help" className="text-xs text-slate-400">2글자 이상 입력해 주세요.</p>
               </div>
 
               <div className="space-y-6">
@@ -126,6 +156,7 @@ export default function GiftPage() {
                 <input
                   required
                   type="date"
+                  aria-required="true"
                   value={formData.birthDate}
                   onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
                   className="w-full bg-background border-2 border-border-color rounded-3xl px-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-pink-500 transition-all [color-scheme:dark] italic"
@@ -142,37 +173,57 @@ export default function GiftPage() {
                   <input
                     required
                     type="email"
+                    aria-required="true"
+                    aria-invalid={formData.email.length > 0 && !hasEmail}
+                    aria-describedby="gift-email-help"
                     placeholder="friend@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full bg-background border-2 border-border-color rounded-3xl pl-20 pr-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-pink-500 transition-all placeholder:text-neutral-700 italic"
                   />
+                  {formData.email.length > 0 && !hasEmail ? (
+                    <p id="gift-email-help" className="text-xs text-rose-300 mt-2">올바른 이메일 형식을 입력해 주세요.</p>
+                  ) : (
+                    <p id="gift-email-help" className="text-xs text-slate-500 mt-2">이메일은 영문+숫자 + @ + 도메인 형식이 필요합니다.</p>
+                  )}
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black text-3xl py-10 rounded-4xl flex items-center justify-center gap-6 hover:scale-[1.02] active:scale-[0.98] shadow-2xl shadow-pink-500/30 transition-all disabled:opacity-30 tracking-widest uppercase mt-4"
-              >
-                {isSubmitting ? (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                    className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full"
-                  />
-                ) : (
-                  <>
-                    <span>{locale === 'ko' ? '선물 보내기' : 'SEND GIFT'}</span>
-                    <Send className="w-8 h-8 group-hover:translate-x-3 group-hover:-translate-y-3 transition-transform duration-500" />
-                  </>
-                )}
-              </button>
+              <div className="space-y-2">
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !isReady}
+                  aria-busy={isSubmitting}
+                  className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black text-3xl py-10 rounded-4xl flex items-center justify-center gap-6 hover:scale-[1.02] active:scale-[0.98] shadow-2xl shadow-pink-500/30 transition-all disabled:opacity-30 tracking-widest uppercase mt-4"
+                >
+                  {isSubmitting ? (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                      className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full"
+                    />
+                  ) : (
+                    <>
+                      <span>{locale === 'ko' ? '선물 보내기' : 'SEND GIFT'}</span>
+                      <Send className="w-8 h-8 group-hover:translate-x-3 group-hover:-translate-y-3 transition-transform duration-500" />
+                    </>
+                  )}
+                </button>
+                <div className="flex items-center justify-center gap-2 mt-4 text-emerald-400 font-bold text-base bg-emerald-500/10 py-3 rounded-2xl">
+                  <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center text-xs">J</span>
+                  {locale === 'ko' ? '젤리 3개 소모' : 'Consumes 3 Jellies'}
+                </div>
+              </div>
 
-              {submitError && (
-                <p className="text-sm text-rose-300 bg-rose-500/10 border border-rose-500/30 px-4 py-3 rounded-xl text-center">
+              {submitError && !isSubmitting && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  role="alert"
+                  className="text-sm text-rose-300 bg-rose-500/10 border border-rose-500/30 px-4 py-3 rounded-xl text-center"
+                >
                   {submitError}
-                </p>
+                </motion.p>
               )}
             </motion.form>
           ) : (
@@ -218,6 +269,12 @@ export default function GiftPage() {
         <ShieldCheck className="w-6 h-6 text-emerald-500" />
         <span className="text-sm font-black text-foreground uppercase tracking-widest">Encrypted Destiny Gift Protocol</span>
       </div>
+
+      <JellyShopModal
+        isOpen={isShopModalOpen}
+        onClose={() => setIsShopModalOpen(false)}
+        highlightTier="smart"
+      />
     </main>
   );
 }

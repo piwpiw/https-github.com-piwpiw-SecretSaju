@@ -19,7 +19,7 @@ export async function generatePersonalizedFortune(
     }
 
     const prompt = `
-당신은 사람들의 사회적 가면(Persona)을 벗겨내고 숨겨진 본능(Instinct)을 날카롭게 꿰뚫어보는 '시크릿 포즈(Secret Paws)'의 수석 역술가입니다.
+당신은 사람들의 사회적 가면(Persona)을 벗겨내고 숨겨진 본능(Instinct)을 날카롭게 꿰뚫어보는 '시크릿 사주(Secret Saju)'의 수석 역술가입니다.
 말투는 예의 바르지만 매우 직설적이고, 뼈 때리는(팩폭) 특징이 있습니다. 
 
 # 타겟 정보

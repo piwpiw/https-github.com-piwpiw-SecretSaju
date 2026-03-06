@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import WeatherWidget from "./WeatherWidget";
 import AppDownloadBanner from "./AppDownloadBanner";
 import { useProfiles } from "./ProfileProvider";
+import { isMockMode } from '@/lib/use-mock';
 
 export function Nav() {
   const themeStorageKey = "theme";
@@ -31,6 +32,10 @@ export function Nav() {
     { href: "/calendar", label: t("nav.calendar") || "캘린더", icon: Moon },
     { href: "/support", label: t("nav.support") || "후원", icon: Heart },
     { href: "/more", label: t("nav.more") || "더보기", icon: Shield },
+  ];
+  const AUTH_LINKS = [
+    { href: "/signup", label: "회원가입" },
+    { href: "/login", label: "로그인" },
   ];
   const themeLabel = theme === "dark" ? "\uB2E4\uD06C \uBAA8\uB4DC" : "\uB77C\uC774\uD2B8 \uBAA8\uB4DC";
   const themeToggleNextLabel = theme === "dark" ? "\uB77C\uC774\uD2B8 \uBAA8\uB4DC\uB85C \uc804\ud658" : "\uB2E4\uD06C \uBAA8\uB4DC\uB85C \uc804\ud658";
@@ -57,14 +62,14 @@ export function Nav() {
                 <span className="text-white text-base font-black italic">S</span>
               </div>
               {/* Admin Badge (Visual Only for now) */}
-              {process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true' && (
+              {isMockMode() && (
                 <div className="absolute -top-1 -right-1 admin-badge border border-black/10">
                   A
                 </div>
               )}
             </div>
             <div className="hidden sm:flex flex-col">
-              <span className="font-black text-lg tracking-tighter uppercase italic text-white leading-none">SECRET SAJU</span>
+              <span className="font-black text-lg tracking-tighter uppercase italic text-white leading-none">시크릿사주</span>
               <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-0.5 opacity-60">운명의 통찰</span>
             </div>
           </Link>
@@ -98,6 +103,23 @@ export function Nav() {
 
           {/* Right Side Tools */}
           <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2 border-r border-white/5 pr-3 mr-1">
+              {AUTH_LINKS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "px-3 py-1.5 rounded-lg text-[11px] font-black tracking-tight transition-colors",
+                    pathname === item.href
+                      ? "bg-indigo-500/20 text-indigo-200 border border-indigo-400/30"
+                      : "text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+
             {/* Weather & Active Profile Widget (Desktop) */}
             <div className="hidden xl:flex items-center gap-4 border-r border-white/5 pr-4 mr-2">
               <WeatherWidget />
@@ -199,6 +221,18 @@ export function Nav() {
               className="lg:hidden border-t border-white/5 bg-slate-950 overflow-hidden"
             >
               <div className="p-6 space-y-2">
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  {AUTH_LINKS.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center justify-center px-4 py-3 rounded-xl text-[11px] font-black bg-indigo-500/20 text-indigo-100 border border-indigo-400/30"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
                 {LINKS.map(({ href, label, icon: Icon }) => {
                   const isActive = pathname === href;
                   return (

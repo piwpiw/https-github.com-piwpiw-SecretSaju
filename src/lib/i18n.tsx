@@ -248,7 +248,7 @@ const en: Record<string, string> = {
     'result.insight': 'Age Insight',
     'result.secretPreview': 'Secret Preview',
     'result.elements': 'Five Elements Balance',
-    'result.coreAnalysis': 'Core Saju Analysis',
+    'result.coreAnalysis': '사주 핵심 분석',
     'result.secretUnlock': 'Unlock Secret Analysis',
     'result.exportTicket': 'Save Result Image',
     'result.shareResult': 'Share with Friends',

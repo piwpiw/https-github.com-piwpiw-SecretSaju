@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter, useParams } from "next/navigation";
-import { ArrowLeft, Share2, Loader2, Zap, Heart, Shield } from "lucide-react";
+import { ArrowLeft, Loader2, Zap, Heart, Shield } from "lucide-react";
 import Link from "next/link";
 import RadarChart from "@/components/charts/RadarChart";
 import { getProfiles, SajuProfile } from "@/lib/storage";
@@ -11,6 +11,7 @@ import { calculateHighPrecisionSaju, HighPrecisionSajuResult } from "@/core/api/
 import { analyzeRelationship, RelationshipAnalysis } from "@/lib/compatibility";
 import { TEN_GOD_GROUPS, getTenGodGuide } from "@/lib/terminology";
 import { saveAnalysisToHistory } from "@/lib/analysis-history";
+import KakaoShareButton from "@/components/share/KakaoShareButton";
 
 type Winner = "A" | "B" | "Draw";
 
@@ -185,25 +186,6 @@ export default function VSModePage() {
     return Array.from(set).slice(0, 8);
   }, [sajuA, sajuB]);
 
-  const handleShare = async () => {
-    if (!profileId || typeof window === "undefined") return;
-    try {
-      const shareUrl = `${window.location.origin}/relationship/${profileId}`;
-      if (navigator.share) {
-        await navigator.share({
-          title: "궁합 VS 분석",
-          text: `${mainProfile?.name ?? "A"} vs ${targetProfile?.name ?? "B"}`,
-          url: shareUrl,
-        });
-      } else {
-        await navigator.clipboard.writeText(shareUrl);
-        setShareMessage("공유 링크를 복사했습니다.");
-      }
-    } catch {
-      setShareMessage("공유 기능을 사용할 수 없습니다.");
-    }
-  };
-
   const handleSaveResult = () => {
     if (!analysis || !sajuA || !sajuB || !mainProfile || !targetProfile || isSaving) return;
 
@@ -278,9 +260,15 @@ export default function VSModePage() {
             </h1>
             {shareMessage && <p className="text-xs text-slate-400 mt-1">{shareMessage}</p>}
           </div>
-          <button onClick={handleShare} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-            <Share2 className="w-4 h-4 text-slate-300" />
-          </button>
+          <KakaoShareButton
+            title={`${mainProfile?.name ?? "A"} vs ${targetProfile?.name ?? "B"} 궁합 분석`}
+            description={`궁합 점수 ${analysis?.score ?? 0}점`}
+            score={analysis?.score}
+            profileName={`${mainProfile?.name ?? "A"} vs ${targetProfile?.name ?? "B"}`}
+            className="w-10 h-10 rounded-xl bg-[#FEE500] border border-white/10 flex items-center justify-center"
+          >
+            <span className="w-4 h-4 text-slate-900">공유</span>
+          </KakaoShareButton>
         </header>
 
         <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-5">

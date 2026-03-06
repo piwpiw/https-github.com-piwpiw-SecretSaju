@@ -1,12 +1,39 @@
 import { Client } from '@notionhq/client';
+import { isMockMode } from '@/lib/use-mock';
 
 const MAX_DESCRIPTION_LENGTH = 2000;
 const MAX_METADATA_LENGTH = 1500;
-const MOCK_MODE = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+const MOCK_MODE = isMockMode();
 
 function normalizeText(input: unknown, fallback = ''): string {
     if (typeof input !== 'string') return fallback;
     return input.trim();
+}
+
+function maskEmail(email: string | null | undefined): string {
+    if (!email) return 'N/A';
+    if (typeof email !== 'string') return '***';
+    const [local, domain] = email.split('@');
+    if (!domain) return '***';
+    const maskedLocal = local.length > 2 ? `${local.substring(0, 2)}***` : '***';
+    return `${maskedLocal}@${domain}`;
+}
+
+function maskSensitiveFields(obj: any): any {
+    if (obj === null || typeof obj !== 'object') return obj;
+    const result = Array.isArray(obj) ? [] : {};
+    Object.keys(obj).forEach((key) => {
+        const val = obj[key];
+        const lowerKey = key.toLowerCase();
+        if (lowerKey === 'email' || lowerKey === 'email_address') {
+            (result as any)[key] = maskEmail(val);
+        } else if (typeof val === 'object' && val !== null) {
+            (result as any)[key] = maskSensitiveFields(val);
+        } else {
+            (result as any)[key] = val;
+        }
+    });
+    return result;
 }
 
 function safeJson(value: unknown): string {
@@ -52,7 +79,7 @@ const notion = new Client({
 const DATABASE_ID = process.env.NOTION_DATABASE_ID || '';
 
 export interface NotionLogData {
-    category: 'QA_LOG' | 'USER_FEEDBACK' | 'PAYMENT_EVENT' | 'ERROR';
+    category: 'QA_LOG' | 'USER_FEEDBACK' | 'PAYMENT_EVENT' | 'AUTH_EVENT' | 'ERROR';
     title: string;
     description: string;
     metadata?: any;
@@ -84,13 +111,14 @@ export async function insertNotionRow(data: NotionLogData): Promise<NotionLogRes
         return { success: false, error: message };
     }
 
-    const safeMetadata = data.metadata ? safeJson(data.metadata).substring(0, MAX_METADATA_LENGTH) : '';
+    const maskedMetadata = data.metadata ? maskSensitiveFields(data.metadata) : null;
+    const safeMetadata = maskedMetadata ? safeJson(maskedMetadata).substring(0, MAX_METADATA_LENGTH) : '';
     const metadataText = safeMetadata ? `\n\nMetadata:\n${safeMetadata}` : '';
     const normalizedDescription = `${description}${metadataText}`.substring(0, MAX_DESCRIPTION_LENGTH);
 
     const toKoreanCategory = (rawCategory: string) => {
         const upper = rawCategory.toUpperCase();
-        const allowed = ['QA_LOG', 'USER_FEEDBACK', 'PAYMENT_EVENT', 'ERROR'];
+        const allowed = ['QA_LOG', 'USER_FEEDBACK', 'PAYMENT_EVENT', 'AUTH_EVENT', 'ERROR'];
         return allowed.includes(upper) ? upper : 'ERROR';
     };
 
@@ -135,7 +163,7 @@ export async function insertNotionRow(data: NotionLogData): Promise<NotionLogRes
             try {
                 const response = await notion.pages.create({
                     parent: { database_id: DATABASE_ID },
-                // eslint-disable-next-line
+                    // eslint-disable-next-line
                     properties: selectedProps as any,
 
                 });

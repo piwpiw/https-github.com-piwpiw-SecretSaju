@@ -1,511 +1,109 @@
-﻿# ?맽 Secret Paws - 990 ?ъ＜留덈?
+﻿# 🔮 Secret Saju (시크릿사주)
 
-> **?꾨━誘몄뾼 ?ъ＜ ?뚮옯??- ?꾩쟾??湲곕뒫 援ы쁽 媛?대뱶**
+> **Premium Fortune-Telling Platform — High-Precision Saju Engine & Immersive UI**
 
 <p align="center">
-  <strong>???꾨줈?앺듃??10紐낆쓽 ??먯씠 ?묒뾽?????덈룄濡??ㅺ퀎?섏뿀?듬땲??</strong><br>
-  紐⑤뱺 ?ㅼ젙, 肄붾뱶, 臾몄꽌媛 紐낇솗?섍퀬 泥닿퀎?곸쑝濡?愿由щ맗?덈떎.
+  <strong>This project is orchestrated by a 10-Team Agent Architecture for rapid, high-quality delivery.</strong><br>
+  All configurations, code, and documents are systematically managed.
 </p>
 
 ---
 
-## ?뱴 ?꾩닔 臾몄꽌 (READ THIS FIRST!)
+## 📑 Essential Documents
 
-### ?뵶 ?좉퇋 ??먯씠?쇰㈃ 諛섎뱶???쎌뼱????臾몄꽌
-
-| 臾몄꽌 | 紐⑹쟻 | ?쎈뒗 ?쒖꽌 |
-|------|------|-----------|
-| **[??README](#)** | ?꾨줈?앺듃 ?꾩껜 媛쒖슂 | 1截뤴깵 |
-| **[SECURITY.md](./SECURITY.md)** | ?섍꼍 蹂??諛?蹂댁븞 ??愿由?| 2截뤴깵 |
-| **[KAKAO_SETUP.md](./KAKAO_SETUP.md)** | 移댁뭅??濡쒓렇???ㅼ젙 媛?대뱶 | 3截뤴깵 |
-| **[integration_guide.md](C:/Users/piwpi/.gemini/antigravity/brain/ebdc03af-68d7-408a-88f9-293cc05fe8a6/integration_guide.md)** | API ?듯빀 媛?대뱶 | 4截뤴깵 |
-
-### ?뵹 媛쒕컻 以?李멸퀬 臾몄꽌
-
-| 臾몄꽌 | ?ㅻ챸 |
-|------|------|
-| [`src/config/README.md`](#configuration-system) | ?ㅼ젙 ?쒖뒪???ъ슜踰?|
-| [`task.md`](C:/Users/piwpi/.gemini/antigravity/brain/ebdc03af-68d7-408a-88f9-293cc05fe8a6/task.md) | ?꾩옱 ?묒뾽 吏꾪뻾 ?곹솴 |
-| [`walkthrough.md`](C:/Users/piwpi/.gemini/antigravity/brain/ebdc03af-68d7-408a-88f9-293cc05fe8a6/walkthrough.md) | ?꾨즺??湲곕뒫 ?곸꽭 ?ㅻ챸 |
+| Document | Purpose |
+|----------|---------|
+| **[CONTEXT_ENGINE.md](./.agent/CONTEXT_ENGINE.md)** | **[CRITICAL]** Current project status, decision log, and file map. |
+| **[ARCHITECTURE.md](./docs/ARCHITECTURE.md)** | Technical layers, data flow, and agent roles. |
+| **[MASTER_PRD.md](./docs/MASTER_PRD.md)** | Product requirements, roadmap, and business logic. |
+| **[ERROR_CATALOG.md](./docs/ERROR_CATALOG.md)** | Known error patterns and standard solutions. |
+| **[OPERATIONS.md](./docs/OPERATIONS.md)** | Operational cycle, SLAs, and escalation paths. |
 
 ---
 
-## ?렞 ?꾨줈?앺듃 ?꾩옱 ?곹깭
+## 🚀 Current State (Wave 5)
 
-### ???꾨즺??Phase (Phases 1-7)
+### ✅ Completed Milestones
+- **Saju Engine (Wave 5)**: High-precision calculations based on 12 Solar Terms (Jeol-gi), Sinsal (Gods/Killers) expansion.
+- **Crawler Layer**: DinnerQueen and Revu adapters for real-time campaign data integration.
+- **Premium UI**: Jeomsin-inspired dark theme, glassmorphism, and Framer Motion animations.
+- **Payment & Growth**: Toss Payments (Advanced Verify), Referral system, and Kakao Share API.
 
-- ??**Phase 1-2**: 肄붿뼱 湲곕뒫 (60媛묒옄 湲곕컲 ?ъ＜ 怨꾩궛, ?좊챸??留ㅼ묶)
-- ??**Phase 3**: ?뚮쭏 ?쒖뒪??(Mystic, Minimal, Cyber)
-- ??**Phase 4**: 湲濡쒕쾶 ?듯빀 (?ъ뾽???뺣낫, 而댄뵆?쇱씠?몄뒪)
-- ??**Phase 5**: ?ъ＜ ?꾨줈??愿由?(CRUD, localStorage)
-- ??**Phase 6**: My Page & Wallet (痢꾨Ⅴ/???쒖뒪??
-- ??**Phase 7**: Jelly 寃쎌젣 ?쒖뒪??
-- ??**Phase 8**: 移댁뭅??濡쒓렇???듯빀
-- ??**Phase 9**: 以묒븰?붾맂 ?섍꼍 蹂??愿由?
-
-### ?슙 吏꾪뻾 以?(Next Steps)
-
-- [ ] **?ㅼ젣 寃곗젣 ?쒖뒪???곕룞** (?좎뒪?섏씠癒쇱툩)
-- [ ] **Backend API 援ъ텞** (Supabase/Custom)
-- [ ] **?댁꽭 肄섑뀗痢??앹꽦** (GPT API ?먮뒗 DB)
-- [ ] **諛고룷 以鍮?* (Render/AWS)
+### 🔄 In Progress / Next Steps
+- **AI Agent Integration**: Autonomous content generation for personalized fortune results.
+- **Global Expansion**: Multi-language support and international payment gateways.
+- **Data Analytics**: Advanced user behavior tracking and conversion optimization.
 
 ---
 
-## ?룛截??꾨줈?앺듃 援ъ“ (?듭떖留??쒖떆)
+## 📂 Project Structure
 
 ```
 SecretSaju/
-?쒋?? ?뱞 ?섍꼍 ?ㅼ젙 ?뚯씪
-??  ?쒋?? .env.local.template       狩?媛쒕컻 ?섍꼍 ?쒗뵆由?
-??  ?쒋?? .env.production.template  狩??댁쁺 ?섍꼍 ?쒗뵆由?
-??  ?붴?? .env.local                (Git ?쒖쇅, 吏곸젒 ?앹꽦)
-??
-?쒋?? ?뱴 臾몄꽌
-??  ?쒋?? README.md                 狩????뚯씪
-??  ?쒋?? SECURITY.md               狩?蹂댁븞 諛??섍꼍 蹂??媛?대뱶
-??  ?쒋?? KAKAO_SETUP.md            狩?移댁뭅??濡쒓렇???ㅼ젙
-??  ?붴?? docs/                     異붽? 臾몄꽌
-??
-?쒋?? ?렓 src/
-??  ?쒋?? config/                   狩?以묒븰?붾맂 ?ㅼ젙 愿由?
-??  ??  ?쒋?? env.ts               ?섍꼍 蹂??(????덉쟾, 寃利?
-??  ??  ?쒋?? constants.ts         ???꾩뿭 ?곸닔
-??  ??  ?붴?? index.ts             ?듯빀 export
-??  ??
-??  ?쒋?? lib/
-??  ??  ?쒋?? kakao-auth.ts         狩?移댁뭅???몄쬆
-??  ??  ?쒋?? jelly-wallet.ts       狩??ㅻ━ 寃쎌젣
-??  ??  ?쒋?? storage.ts            ?ъ＜ ?꾨줈??愿由?
-??  ??  ?쒋?? saju.ts              ?ъ＜ 怨꾩궛 ?붿쭊
-??  ??  ?붴?? themes.ts            ?뚮쭏 ?쒖뒪??
-??  ??
-??  ?쒋?? components/
-??  ??  ?쒋?? KakaoLoginButton.tsx  狩?濡쒓렇??踰꾪듉
-??  ??  ?쒋?? shop/                ?ㅻ━??愿??
-??  ??  ?쒋?? WalletProvider.tsx   痢꾨Ⅴ/??吏媛?
-??  ??  ?붴?? ...
-??  ??
-??  ?붴?? app/
-??      ?쒋?? mypage/              留덉씠?섏씠吏
-??      ?쒋?? my-saju/             ?ъ＜ 愿由?
-??      ?쒋?? inquiry/             臾몄쓽?섍린
-??      ?쒋?? compatibility/       沅곹빀
-??      ?붴?? api/
-??          ?붴?? auth/kakao/      狩?移댁뭅??OAuth
-??
-?붴?? data/
-    ?쒋?? characters.json          60媛묒옄 ?곗씠??
-    ?붴?? celebrities.ts           ?좊챸??DB
+├── .agent/                 # Agent orchestration (Context, Protocols)
+├── docs/                   # Structured documentation (PRD, Arch, Guides)
+├── scripts/                # Utility scripts (QA, Migrate, Deploy)
+├── supabase/               # Database schema and migrations
+├── src/
+│   ├── app/                # Next.js App Router (Pages & API)
+│   ├── components/         # Premium UI Components
+│   ├── core/               # Pure logic & Math (Saju Engine)
+│   ├── lib/                # Shared utilities & Adapters (Crawlers, Auth)
+│   └── types/              # Unified TypeScript definitions
+└── public/                 # Static assets
 ```
 
 ---
 
-## ?? 鍮좊Ⅸ ?쒖옉 媛?대뱶
+## 🔧 Getting Started
 
-### 1截뤴깵 ?꾨줈?앺듃 ?대줎 諛??ㅼ튂
-
+### 1. Installation
 ```bash
-# ??μ냼 ?대줎
-git clone <repository-url>
-cd SecretSaju
-
-# ?섏〈???ㅼ튂
 npm install
 ```
 
-### 2截뤴깵 ?섍꼍 蹂???ㅼ젙 狩?
+### 2. Environment Setup
+Copy `.env.local.template` to `.env.local` and fill in the required keys:
+- Supabase URL/Key
+- Toss Payments Client/Secret Key
+- Kakao JS/Rest API Key
 
+### 3. Verification
+Run the QA suite to ensure everything is correct:
 ```bash
-# ?쒗뵆由?蹂듭궗
-cp .env.local.template .env.local
-
-# .env.local ?몄쭛 (VS Code ?ъ슜)
-code .env.local
+npm run qa
 ```
 
-#### ?꾩닔 ?ㅼ젙 ??ぉ:
-
+### 4. Development
 ```bash
-# 移댁뭅??濡쒓렇??(?꾩닔)
-NEXT_PUBLIC_KAKAO_JS_KEY=your_key_here
-KAKAO_REST_API_KEY=your_key_here
-
-# Base URL
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
+npm run dev:safe -- --port 3000 --auto-port
 ```
 
-> ?좑툘 **移댁뭅????諛쒓툒 諛⑸쾿**: [KAKAO_SETUP.md](./KAKAO_SETUP.md) 李멸퀬
+### 5. Browser MCP (Playwright)
+Browser execution MCP is configured for Cursor in `.cursor/mcp.json` and also provided in root `.mcp.json`.
 
-### 3截뤴깵 媛쒕컻 ?쒕쾭 ?ㅽ뻾
-
+Manual run:
 ```bash
-npm run dev
+npm run mcp:browser
 ```
 
-?럦 **http://localhost:3000** ?묒냽
-
----
-
-## ?뵎 ?섍꼍 蹂???꾩쟾 媛?대뱶
-
-### 怨꾩링 援ъ“
-
-| ?곗꽑?쒖쐞 | 移댄뀒怨좊━ | 蹂??| ?곹깭 |
-|---------|---------|------|------|
-| **?뵶 ?꾩닔** | 移댁뭅??濡쒓렇??| `NEXT_PUBLIC_KAKAO_JS_KEY` | 援ы쁽 ?꾨즺 |
-| **?뵶 ?꾩닔** | 移댁뭅??濡쒓렇??| `KAKAO_REST_API_KEY` | 援ы쁽 ?꾨즺 |
-| ?윞 以묒슂 | 寃곗젣 | `NEXT_PUBLIC_TOSS_CLIENT_KEY` | 以鍮??꾨즺 |
-| ?윞 以묒슂 | 寃곗젣 | `TOSS_SECRET_KEY` | 以鍮??꾨즺 |
-| ?윟 ?좏깮 | DB | `NEXT_PUBLIC_SUPABASE_URL` | - |
-| ?윟 ?좏깮 | 遺꾩꽍 | `NEXT_PUBLIC_GA_ID` | - |
-
-### ?먮룞 寃利??쒖뒪??
-
-?쒕쾭 ?쒖옉 ???먮룞?쇰줈 寃利?
-
-```
-?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺
-?뵩 ENVIRONMENT CONFIGURATION
-?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺
-Environment: development
-Base URL: http://localhost:3000
-
-Features:
-  ??Kakao Login: ??
-  ??Payment: ??
-  ??Database: ??
-?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺
-```
-
-> ?뱰 **?곸꽭 媛?대뱶**: [SECURITY.md](./SECURITY.md)
-
----
-
-## ?뮕 ?듭떖 湲곕뒫 ?ㅻ챸
-
-### 1. 以묒븰?붾맂 ?ㅼ젙 愿由?(`src/config/`)
-
-**??以묒슂?쒓??**
-10紐낆쓽 ??먯씠 ?묒뾽?????섍꼍 蹂?섍? ?щ윭 ?뚯씪??遺꾩궛?섎㈃ ?쇰??ㅻ읇怨??ㅻ쪟媛 諛쒖깮?⑸땲??
-
-**?닿껐梨?- ??怨녹뿉??愿由?**
-
-```typescript
-// ??Before: ?щ윭 ?뚯씪?먯꽌 吏곸젒 ?묎렐
-const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
-
-// ??After: 以묒븰?붾맂 ?ㅼ젙 ?ъ슜
-import { KAKAO_CONFIG } from '@/config';
-const kakaoKey = KAKAO_CONFIG.JS_KEY;
-
-// ?먮룞 寃利?
-if (!KAKAO_CONFIG.isConfigured) {
-  console.error(KAKAO_CONFIG.error);
-}
-```
-
-**?뚯씪 援ъ“:**
-
-- **`env.ts`**: ?섍꼍 蹂??+ 寃利?濡쒖쭅
-- **`constants.ts`**: 鍮꾩쫰?덉뒪 濡쒖쭅 ?곸닔
-- **`index.ts`**: ?듯빀 export
-
-### 2. 移댁뭅??濡쒓렇??(`lib/kakao-auth.ts`)
-
-**?꾩쟾 援ы쁽 ?꾨즺:**
-
-1. **SDK 珥덇린??*: `initKakao()`
-2. **濡쒓렇??*: `loginWithKakao()`
-3. **濡쒓렇?꾩썐**: `clearUserSession()`
-4. **?몄뀡 ?뺤씤**: `getUserFromCookie()`
-
-**API ?뚮줈??**
-
-```
-?ъ슜??濡쒓렇??踰꾪듉 ?대┃
-  ??Kakao OAuth ?섏씠吏
-  ??濡쒓렇???깃났
-  ??/api/auth/kakao/callback (?쒕쾭)
-  ??荑좏궎 ???(kakao_token, user_data)
-  ??/mypage 由щ떎?대젆??
-```
-
-### 3. Jelly 寃쎌젣 ?쒖뒪??(`lib/jelly-wallet.ts`)
-
-**3?④퀎 媛寃??뺤콉:**
-
-| Tier | ?ㅻ━ | 蹂대꼫??| 媛寃?| ?뱀쭠 |
-|------|------|--------|------|------|
-| 留쏅낫湲?| 1 | 0 | 990??| - |
-| ?묐삊??| 3 | +1 | 2,900??| 25% ?좎씤 |
-| **?꾨줈** | 10 | +3 | 9,900??| **理쒓퀬 媛?깅퉬** 狩?|
-
-**?ъ슜泥?**
-
-- ?꾨줈??異붽? (泥?踰덉㎏ 臾대즺, ?댄썑 1?ㅻ━)
-- ?뱀뀡 ?좉툑 ?댁젣 (1?ㅻ━)
-- ?꾨━誘몄뾼 ?댁꽭 (3?ㅻ━)
-
-### 4. ?ъ＜ ?꾨줈??愿由?(`lib/storage.ts`)
-
-**CRUD ?꾩쟾 援ы쁽:**
-
-- `getProfiles()`: ?꾩껜 議고쉶
-- `saveProfile()`: ?좉퇋 ???
-- `deleteProfile()`: ??젣
-- `updateProfile()`: ?섏젙
-
-**Schema:**
-
-```typescript
-{
-  id: string;
-  name: string;
-  relationship: '蹂몄씤' | '諛곗슦?? | '?먮?' | ...;
-  birthdate: 'YYYY-MM-DD';
-  birthTime: 'HH:mm';
-  isTimeUnknown: boolean;
-  calendarType: 'solar' | 'lunar';
-  gender: 'female' | 'male';
-}
-```
-
----
-
-## ?렓 ?뚮쭏 ?쒖뒪??
-
-3媛吏 ?뚮쭏 吏??
-
-1. **Mystic** (湲곕낯): ?좊퉬濡쒖슫 ?⑥깋/湲덉깋
-2. **Minimal**: 源붾걫???곗깋/珥덈줉
-3. **Cyber**: ?ㅼ삩 蹂대씪/泥?줉
-
-**?ъ슜踰?**
-
-```typescript
-import { useTheme } from '@/components/ThemeProvider';
-
-const { theme, setTheme } = useTheme();
-setTheme('mystic'); // or 'minimal', 'cyber'
-```
-
----
-
-## ?㎦ ?뚯뒪??媛?대뱶
-
-### 濡쒖뺄 ?뚯뒪??泥댄겕由ъ뒪??
-
+Quick check:
 ```bash
-# 1. 移댁뭅??濡쒓렇??
-??/mypage ?묒냽 ??濡쒓렇??踰꾪듉 ?대┃
-??移댁뭅??濡쒓렇???깃났 ???됰꽕???대찓???쒖떆 ?뺤씤
-
-# 2. ?ъ＜ ?꾨줈??
-??/my-saju/add ???꾨줈??異붽?
-??/my-saju/list ??紐⑸줉 ?뺤씤
-????젣 湲곕뒫 ?묐룞
-
-# 3. Jelly ?쒖뒪??
-???ㅻ━??紐⑤떖 ?ㅽ뵂
-???꾨줈??異붽? ???ㅻ━ ?뚮퉬 (2踰덉㎏遺??
-
-# 4. ?뚮쭏
-???뚮쭏 ?꾪솚 (Mystic ??Minimal ??Cyber)
+npx -y @playwright/mcp@latest --help
 ```
 
 ---
 
-## ?벀 諛고룷 媛?대뱶
+## 🛡️ Development Guidelines
 
-### 鍮좊Ⅸ 諛고룷 (沅뚯옣)
-
-```bash
-# 1. ?섍꼍 蹂???ㅼ젙
-npm run setup:env
-
-# 2. ?섍꼍 蹂??寃利?
-npm run verify:env
-
-# 3. ?곗씠?곕쿋?댁뒪 留덉씠洹몃젅?댁뀡
-npm run migrate:db
-# Supabase Dashboard?먯꽌 SQL ?ㅽ뻾 ?먮뒗: supabase db push
-
-# 4. 諛고룷 ??寃利?
-npm run pre-deploy
-
-# 5. 諛고룷
-npm run deploy
-```
-
-?먯꽭???댁슜? [`QUICK_DEPLOY.md`](./QUICK_DEPLOY.md) 李멸퀬
-
-### Render 諛고룷
-
-```bash
-# Render CLI ?ㅼ튂
-npm i -g Render
-
-# 諛고룷
-npm run deploy
-```
-
-### ?좑툘 ?댁쁺 諛고룷 ??泥댄겕由ъ뒪??
-
-- [ ] ?섍꼍 蹂???ㅼ젙 ?꾨즺 (`npm run verify:env`)
-- [ ] ?곗씠?곕쿋?댁뒪 留덉씠洹몃젅?댁뀡 ?ㅽ뻾 ?꾨즺
-- [ ] 濡쒖뺄 鍮뚮뱶 ?깃났 (`npm run build`)
-- [ ] ?뚯뒪???듦낵 (`npm test`)
-- [ ] `.env.local` ?뚯씪??Git??**?덈?** 而ㅻ컠?섏? ?딆븯?붿? ?뺤씤
-- [ ] 移댁뭅??Redirect URI瑜??ㅼ젣 ?꾨찓?몄쑝濡?蹂寃?
-- [ ] Test ?ㅻ? Live ?ㅻ줈 援먯껜 (寃곗젣)
-- [ ] `validateEnvironment()` ?먮윭 ?놁쓬 ?뺤씤
-
----
-
-## ?뫁 ? ?묒뾽 媛?대뱶
-
-### Git 釉뚮옖移??꾨왂
-
-```
-main (?댁쁺)
-  ??
-develop (媛쒕컻)
-  ??
-feature/湲곕뒫紐?(媛?????묒뾽)
-```
-
-### 肄붾뱶 由щ럭 泥댄겕由ъ뒪??
-
-- [ ] **?섍꼍 蹂??*: `process.env` 吏곸젒 ?ъ슜 ????`@/config` ?ъ슜 ??
-- [ ] **????덉쟾**: `any` ?ъ슜 理쒖냼??
-- [ ] **?먮윭 泥섎━**: try-catch ?곸젅???ъ슜
-- [ ] **蹂댁븞**: 誘쇨컧????肄섏넄 異쒕젰 湲덉?
-
-### 而⑤깽??
-
-**?뚯씪紐?**
-- 而댄룷?뚰듃: `PascalCase.tsx`
-- ?좏떥: `camelCase.ts`
-- ?ㅼ젙: `kebab-case.ts`
-
-**Import ?쒖꽌:**
-```typescript
-// 1. External
-import { useState } from 'react';
-
-// 2. Internal - Config
-import { KAKAO_CONFIG } from '@/config';
-
-// 3. Internal - Components
-import KakaoLoginButton from '@/components/KakaoLoginButton';
-
-// 4. Internal - Lib
-import { loginWithKakao } from '@/lib/kakao-auth';
-
-// 5. Styles
-import './styles.css';
-```
-
----
-
-## ?맀 臾몄젣 ?닿껐 (FAQ)
-
-### Q1: "Kakao SDK not loaded" ?먮윭
-
-**?먯씤**: Kakao SDK ?ㅽ겕由쏀듃媛 濡쒕뱶?섏? ?딆쓬
-**?닿껐**:
-1. 釉뚮씪?곗? 肄섏넄?먯꽌 `window.Kakao` ?뺤씤
-2. `src/app/layout.tsx`??SDK script ?쒓렇 議댁옱 ?뺤씤
-3. ?ㅽ듃?뚰겕 ??뿉???ㅽ겕由쏀듃 濡쒕뱶 ?뺤씤
-
-### Q2: "Redirect URI mismatch" ?먮윭
-
-**?먯씤**: 移댁뭅??媛쒕컻??肄섏넄 ?ㅼ젙 遺덉씪移?
-**?닿껐**:
-- 移댁뭅??肄섏넄 ??Redirect URI: `http://localhost:3000/api/auth/kakao/callback`
-- ?댁쁺: `https://your-domain.com/api/auth/kakao/callback`
-
-### Q3: ?섍꼍 蹂?섍? ?곸슜 ?덈맖
-
-**?닿껐**:
-1. `.env.local` ?뚯씪 ????뺤씤
-2. **?쒕쾭 ?ъ떆??* (`npm run dev` ?ㅼ떆 ?ㅽ뻾)
-3. ?대씪?댁뼵??蹂?섎뒗 `NEXT_PUBLIC_` ?묐몢???꾩닔
-
-### Q4: "Cannot find module '@/config'" ?먮윭
-
-**?먯씤**: TypeScript 寃쎈줈 ?ㅼ젙 臾몄젣
-**?닿껐**:
-```json
-// tsconfig.json ?뺤씤
-{
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
-}
-```
-
----
-
-## ?뱸 ?곕씫泥?諛?由ъ냼??
-
-### ?듭떖 ?대떦??
-
-| ??븷 | ?대떦 ?곸뿭 | ?곕씫泥?|
-|------|----------|--------|
-| Tech Lead | ?꾪궎?띿쿂, 蹂댁븞 | - |
-| Frontend | UI/UX 援ы쁽 | - |
-| Backend | API ?듯빀 | - |
-| DevOps | 諛고룷, ?명봽??| - |
-
-### ?몃? 由ъ냼??
-
-- [Kakao Developers](https://developers.kakao.com/)
-- [Toss Payments Docs](https://developers.tosspayments.com/)
-- [Next.js 怨듭떇 臾몄꽌](https://nextjs.org/docs)
-- [Render 諛고룷 媛?대뱶](https://Render.com/docs)
-
----
-
-## ?뱷 蹂寃??대젰
-
-| ?좎쭨 | Phase | 二쇱슂 蹂寃??ы빆 |
-|------|-------|---------------|
-| 2026-01-31 | Phase 9 | 以묒븰?붾맂 ?섍꼍 ?ㅼ젙 ?쒖뒪??援ъ텞 |
-| 2026-01-31 | Phase 8 | 移댁뭅??濡쒓렇???꾩쟾 ?듯빀 |
-| 2026-01-30 | Phase 7 | Jelly 寃쎌젣 ?쒖뒪??援ы쁽 |
-| 2026-01-30 | Phase 5-6 | ?ъ＜ 愿由?+ My Page 援ы쁽 |
-
----
-
-## ?렞 ?ㅼ쓬 留덉씪?ㅽ넠
-
-### Sprint 1 (1-2二?
-- [ ] ?좎뒪?섏씠癒쇱툩 ?ㅼ젣 寃곗젣 ?곕룞
-- [ ] Supabase ?곗씠?곕쿋?댁뒪 ?ㅼ젙
-- [ ] ?ъ슜???몄쬆 媛뺥솕 (JWT)
-
-### Sprint 2 (3-4二?
-- [ ] ?댁꽭 肄섑뀗痢?GPT API ?듯빀
-- [ ] 愿由ъ옄 ??쒕낫??援ъ텞
-- [ ] ?몄떆 ?뚮┝ ?쒖뒪??
-
-### Sprint 3 (5-6二?
-- [ ] ?댁쁺 諛고룷
-- [ ] 紐⑤땲?곕쭅 ?ㅼ젙
-- [ ] ?깅뒫 理쒖쟻??
+1. **Context-First**: Always check `CONTEXT_ENGINE.md` before starting a task.
+2. **Type Safety**: No `any`. Ensure all data structures follow `src/types/`.
+3. **Pure Logic**: Saju core logic must remain pure (no UI/Window references).
+4. **Agent Collaboration**: Respect team scopes (T1-T10) as defined in `ARCHITECTURE.md`.
 
 ---
 
 <p align="center">
-  <strong>Made with ?ㅿ툘 by Secret Paws Team</strong><br>
-  <sub>Version 1.0.0 | Last Updated: 2026-01-31</sub>
+  <strong>Made with 🔮 by Bohemian Studio</strong><br>
+  <sub>Version 5.0.0 | Last Updated: 2026-03-03</sub>
 </p>
-
-
-
-
-

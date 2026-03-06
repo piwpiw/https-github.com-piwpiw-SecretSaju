@@ -5,6 +5,7 @@ import { getArchetypeByCode } from '@/lib/archetypes';
 import { deductJelly } from '@/lib/wallet-server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { buildCacheKey } from '@/lib/cache';
+import { isMockMode } from '@/lib/use-mock';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +15,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
     try {
         const { user, error } = await getAuthenticatedUser(req);
-        const isMock = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+        const isMock = isMockMode();
 
         if (!user && !isMock) {
             return error;

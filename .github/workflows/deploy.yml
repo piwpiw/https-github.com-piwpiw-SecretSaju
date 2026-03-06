@@ -46,7 +46,11 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm ci --no-audit --no-fund --no-optional
+        run: |
+          npm config set optional false
+          npm config set platform linux
+          npm config set arch x64
+          npm ci --no-audit --no-fund
 
       - name: Run quality checks in parallel
         id: quality-check
@@ -128,47 +132,9 @@ jobs:
             echo "- /tmp/test.log"
           } >> "$GITHUB_STEP_SUMMARY"
 
-  build:
-    name: Build
-    needs: quality
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    timeout-minutes: 20
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci --no-audit --no-fund --no-optional
-
-      - name: Build app
-        run: |
-          set -o pipefail
-          npm run build 2>&1 | tee /tmp/build.log
-
-      - name: Publish build summary
-        if: always()
-        run: |
-          {
-            echo "## Build Summary"
-            echo ""
-            echo "- status: \`${{ job.status }}\`"
-            echo "- node: \`20\`"
-            echo "- ref: \`${{ github.ref_name }}\`"
-            echo "- commit: \`${{ github.sha }}\`"
-          } >> "$GITHUB_STEP_SUMMARY"
-
   deploy:
     name: Trigger Render Deploy
-    needs: build
+    needs: quality
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     timeout-minutes: 20
@@ -195,7 +161,12 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Trigger Render deploy hook (optional)
+      - name: Enforce deployment policy
+        run: |
+          echo "DEPLOY_STAGE=policy" >> "$GITHUB_ENV"
+          node scripts/deploy-policy.js --platform render --mode production
+
+      - name: Trigger Render deploy hook
         run: |
           echo "DEPLOY_STAGE=hook" >> "$GITHUB_ENV"
           set -o pipefail
@@ -249,7 +220,7 @@ jobs:
             else
               echo "**Top failure stage:** deploy"
             fi
-            for f in /tmp/build.log /tmp/render-deploy.log /tmp/healthcheck.log; do
+            for f in /tmp/render-deploy.log /tmp/healthcheck.log; do
               if [ ! -f "$f" ]; then
                 continue
               fi
@@ -299,7 +270,6 @@ jobs:
         if: always()
         run: |
           tar -czf /tmp/deploy-triage-${{ github.run_id }}-${{ github.run_attempt }}.tgz \
-            /tmp/build.log \
             /tmp/render-deploy.log \
             /tmp/healthcheck.log \
             /tmp/deploy-report.json \

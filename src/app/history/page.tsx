@@ -1,14 +1,12 @@
 ﻿'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import {
     History, ArrowLeft, Clock, ChevronRight,
-    Trash2, Database, Search, Calendar, Zap, Sparkles
+    Trash2, Database, Search, Calendar, Zap, Sparkles, BarChart3
 } from 'lucide-react';
-import { getProfiles, SajuProfile } from '@/lib/storage';
-import { useLocale } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -17,22 +15,60 @@ import { AnalysisHistoryLog } from '@/types/history';
 
 export default function HistoryPage() {
     const router = useRouter();
-    const { locale } = useLocale();
     const [loading, setLoading] = useState(true);
     const [logs, setLogs] = useState<AnalysisHistoryLog[]>([]);
     const [filterOpen, setFilterOpen] = useState(false);
     const [dDayRange, setDDayRange] = useState(30);
+    const [query, setQuery] = useState('');
+    const [category, setCategory] = useState('ALL');
+    const [error, setError] = useState("");
+    const categoryLabels: Record<string, string> = {
+        ALL: '전체',
+        SAJU: '사주',
+        DREAM: '해몽',
+        TAROT: '타로',
+        ASTROLOGY: '별자리',
+        PALMISTRY: '손금',
+        NAMING: '작명',
+        TOJEONG: '토정비결',
+    };
+    const renderCategoryLabel = (key: string) => categoryLabels[key] || key;
 
     useEffect(() => {
-        // Load real logs
         const historyLogs = getAnalysisHistory();
         setLogs(historyLogs);
         setLoading(false);
     }, []);
 
+    const now = Date.now();
+    const filteredLogs = useMemo(() => {
+        return logs.filter((log) => {
+            const ts = new Date(log.timestamp).getTime();
+            const inRange = now - ts <= dDayRange * 24 * 60 * 60 * 1000;
+            const inCategory = category === 'ALL' || log.type === category;
+            const inQuery =
+                query.length === 0 ||
+                log.title.toLowerCase().includes(query.toLowerCase()) ||
+                (log.profileName || '').toLowerCase().includes(query.toLowerCase());
+            return inRange && inCategory && inQuery;
+        });
+    }, [logs, dDayRange, category, query, now]);
+
+    const typeStats = useMemo(() => {
+        const stats: Record<string, number> = {};
+        filteredLogs.forEach((log) => {
+            stats[log.type] = (stats[log.type] || 0) + 1;
+        });
+        return stats;
+    }, [filteredLogs]);
+
     const handleDelete = (id: string) => {
-        deleteAnalysisFromHistory(id);
-        setLogs(logs.filter(log => log.id !== id));
+        try {
+          deleteAnalysisFromHistory(id);
+          setLogs(logs.filter(log => log.id !== id));
+        } catch (err) {
+          setError("로그 삭제에 실패했습니다.");
+        }
     };
 
     const handleViewResult = (log: AnalysisHistoryLog) => {
@@ -50,21 +86,19 @@ export default function HistoryPage() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(99,102,241,0.05)_0%,transparent_50%)]" />
 
             <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
-                {/* Header */}
                 <div className="flex items-center justify-between mb-16">
                     <button
                         onClick={() => router.back()}
                         className="flex items-center gap-3 text-slate-500 hover:text-white transition-all group"
                     >
                         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                        <span className="text-xs font-black tracking-widest uppercase italic">BACK_TRACK</span>
+                        <span className="text-xs font-black tracking-widest italic">뒤로가기</span>
                     </button>
                     <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-full">
-                        <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase">LOGS_V3.0</span>
+                        <span className="text-[10px] font-black tracking-widest text-slate-500">기록 보관함</span>
                     </div>
                 </div>
 
-                {/* Hero Section */}
                 <div className="text-center mb-20">
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
@@ -77,18 +111,36 @@ export default function HistoryPage() {
                         운명 <span className="text-indigo-400">데이터 로그</span>
                     </h1>
                     <p className="text-slate-400 text-lg font-medium italic opacity-70 max-w-xl mx-auto">
-                        당신이 탐구했던 모든 운명의 흔적을<br />
-                        타임라인에서 다시 확인하세요.
+                        분석 내역을 검색하고 정렬해 실전에서 바로 재사용하세요.
                     </p>
                 </div>
 
-                {/* Search & Filter Bar */}
+                <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
+                    <div className="rounded-2xl border border-white/10 bg-surface p-5">
+                        <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">전체</p>
+                        <p className="text-3xl mt-2 font-black text-white">{logs.length}</p>
+                        <p className="text-xs text-slate-500 mt-2">전체 분석 이력</p>
+                    </div>
+                    <div className="rounded-2xl border border-white/10 bg-surface p-5">
+                        <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">선택 기간</p>
+                        <p className="text-3xl mt-2 font-black text-white">최근 {dDayRange}일</p>
+                        <p className="text-xs text-slate-500 mt-2">필터 결과: {filteredLogs.length}건</p>
+                    </div>
+                    <div className="rounded-2xl border border-white/10 bg-surface p-5">
+                        <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">주요 타입</p>
+                        <p className="text-lg mt-2 font-black text-white">{Object.entries(typeStats).slice(0, 2).map(([k]) => renderCategoryLabel(k)).join(', ') || '기록 없음'}</p>
+                        <p className="text-xs text-slate-500 mt-2">분석 분포</p>
+                    </div>
+                </section>
+
                 <div className="mb-16 space-y-6">
                     <div className="flex flex-col md:flex-row gap-4">
                         <div className="relative flex-1 group">
                             <input
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
                                 type="text"
-                                placeholder="해독 기록 검색..."
+                                placeholder="기록 검색..."
                                 className="w-full bg-white/[0.03] border border-white/10 rounded-3xl py-5 pl-14 pr-6 text-white text-lg font-bold placeholder:text-slate-700 focus:outline-none focus:border-indigo-500/50 transition-all shadow-2xl"
                             />
                             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
@@ -102,8 +154,17 @@ export default function HistoryPage() {
                             )}
                         >
                             <Zap className={cn("w-4 h-4", filterOpen ? "fill-white" : "")} />
-                            ADVANCED_FILTER
+                            고급 필터
                         </button>
+
+                        {(query || category !== 'ALL' || dDayRange !== 30) && (
+                            <button
+                                onClick={() => { setQuery(''); setCategory('ALL'); setDDayRange(30); }}
+                                className="px-6 py-5 rounded-3xl bg-rose-500/10 border border-rose-500/20 text-rose-500 font-black text-[10px] tracking-widest hover:bg-rose-500/20 transition-all"
+                            >
+                                초기화
+                            </button>
+                        )}
                     </div>
 
                     <AnimatePresence>
@@ -115,14 +176,13 @@ export default function HistoryPage() {
                                 className="overflow-hidden"
                             >
                                 <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] space-y-8">
-                                    {/* D-Day Slider */}
                                     <div className="space-y-6">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <Clock className="w-4 h-4 text-indigo-400" />
-                                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Time Scope (D-Day)</span>
+                                                <span className="text-[10px] font-black text-slate-500 tracking-widest italic">기간 범위 (D-Day)</span>
                                             </div>
-                                            <span className="text-sm font-black text-indigo-400 italic">LAST {dDayRange} DAYS</span>
+                                            <span className="text-sm font-black text-indigo-400 italic">최근 {dDayRange}일</span>
                                         </div>
                                         <div className="px-4">
                                             <input
@@ -133,25 +193,15 @@ export default function HistoryPage() {
                                                 onChange={(e) => setDDayRange(parseInt(e.target.value))}
                                                 className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-indigo-500"
                                             />
-                                            <div className="flex justify-between mt-2 text-[8px] font-black text-slate-700 uppercase tracking-tighter">
-                                                <span>TODAY</span>
-                                                <span>6 MONTHS</span>
-                                                <span>1 YEAR</span>
-                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Category Chips */}
                                     <div className="flex flex-wrap gap-2">
-                                        {['ALL', 'SAJU', 'TAROT', 'DREAM', 'DESTINY'].map(cat => (
-                                            <button key={cat} className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black text-slate-500 hover:text-white hover:border-indigo-500/50 transition-all uppercase tracking-widest">
-                                                {cat}
+                                        {['ALL', 'SAJU', 'DREAM', 'TAROT', 'ASTROLOGY', 'PALMISTRY', 'NAMING', 'TOJEONG'].map(cat => (
+                                            <button key={cat} onClick={() => setCategory(cat)} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border", category === cat ? 'bg-indigo-500 border-indigo-500 text-white' : 'bg-white/5 border-white/10 text-slate-500 hover:text-white hover:border-indigo-500/50')}>
+                                                {renderCategoryLabel(cat)}
                                             </button>
                                         ))}
-                                        <Link href="/calendar" className="ml-auto flex items-center gap-2 text-[10px] font-black text-indigo-400/70 hover:text-indigo-400 transition-colors uppercase tracking-widest italic">
-                                            <Calendar className="w-3 h-3" />
-                                            OPEN_DESTINY_CALENDAR
-                                        </Link>
                                     </div>
                                 </div>
                             </motion.div>
@@ -159,10 +209,17 @@ export default function HistoryPage() {
                     </AnimatePresence>
                 </div>
 
-                {/* Timeline Log List */}
+                <div className="space-y-2">
+                    {error ? <p className="text-rose-300 text-sm border border-rose-500/40 bg-rose-500/10 rounded-xl px-4 py-2">{error}</p> : null}
+                    {loading ? <p className="text-sm text-slate-500">데이터를 불러오는 중입니다...</p> : null}
+                    {filteredLogs.length > 0 ? null : (
+                        <p className="text-slate-400 text-sm">표시할 분석 결과가 없습니다. 프로필 분석을 먼저 실행해 보세요.</p>
+                    )}
+                </div>
+
                 <div className="space-y-6">
                     <AnimatePresence mode="popLayout">
-                        {logs.map((log, i) => {
+                        {filteredLogs.map((log, i) => {
                             const info = getAnalysisTypeInfo(log.type);
                             return (
                                 <motion.div
@@ -171,10 +228,10 @@ export default function HistoryPage() {
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
-                                    transition={{ delay: i * 0.1 }}
-                                    className="bg-surface rounded-[2.5rem] p-8 border border-white/5 hover:border-indigo-500/30 transition-all group flex items-center justify-between shadow-xl"
+                                    transition={{ delay: i * 0.05 }}
+                                    className="bg-surface rounded-[2.5rem] p-5 border border-white/5 hover:border-indigo-500/30 transition-all group flex items-center justify-between shadow-xl"
                                 >
-                                    <div className="flex items-center gap-8">
+                                    <div className="flex items-center gap-4 sm:gap-8">
                                         <div className={`w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform ${info.color}`}>
                                             <span className="text-3xl">{info.icon}</span>
                                         </div>
@@ -195,15 +252,17 @@ export default function HistoryPage() {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-4">
-                                        <button
-                                            onClick={() => handleDelete(log.id)}
-                                            className="p-4 rounded-2xl bg-white/5 text-slate-600 hover:text-rose-500 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/20"
-                                        >
+                                        <div className="flex items-center gap-4">
+                                            <button
+                                                onClick={() => handleDelete(log.id)}
+                                                aria-label={`기록 ${log.title} 삭제`}
+                                                className="p-4 rounded-2xl bg-white/5 text-slate-600 hover:text-rose-500 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/20"
+                                            >
                                             <Trash2 className="w-5 h-5" />
                                         </button>
                                         <button
                                             onClick={() => handleViewResult(log)}
+                                            aria-label={`${log.title} 상세 보기`}
                                             className="p-4 rounded-2xl bg-white/5 text-slate-400 hover:text-white transition-all border border-white/5"
                                         >
                                             <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
@@ -214,23 +273,28 @@ export default function HistoryPage() {
                         })}
                     </AnimatePresence>
 
-                    {logs.length === 0 && (
+                    {filteredLogs.length === 0 && (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             className="text-center py-40 border-2 border-dashed border-white/5 rounded-[3rem]"
                         >
                             <Database className="w-16 h-16 text-slate-800 mx-auto mb-6 opacity-30" />
-                            <p className="text-slate-600 font-black uppercase tracking-widest italic italic">No Data Nodes Found</p>
-                            <Link href="/select-fortune" className="mt-8 inline-block px-10 py-5 bg-indigo-500 text-black font-black text-sm rounded-2xl uppercase tracking-widest hover:scale-105 transition-all">
-                                START_ANALYSIS
+                            <p className="text-slate-600 font-black uppercase tracking-widest italic">표시할 데이터가 없습니다.</p>
+                            <Link href="/select-fortune" className="mt-8 inline-block px-10 py-5 bg-indigo-500 text-black font-black text-sm rounded-2xl tracking-widest hover:scale-105 transition-all">
+                                분석 시작
                             </Link>
                         </motion.div>
                     )}
+                </div>
+
+                <div className="mt-16 flex items-center justify-center gap-3 text-slate-300 text-xs tracking-widest">
+                    <BarChart3 className="w-4 h-4" />
+                    <span>
+                        타입별 분포: {Object.entries(typeStats).map(([k, v]) => `${renderCategoryLabel(k)} ${v}건`).join(' · ')}
+                    </span>
                 </div>
             </div>
         </main>
     );
 }
-
-

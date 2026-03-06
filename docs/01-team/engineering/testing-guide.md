@@ -22,6 +22,25 @@ SOT: 테스트 운영 기준은 이 문서가 단일 기준이다.
   - 직렬 재현용 게이트
 - `npm run pre-deploy -- --parallel-checks`
   - pre-deploy의 병렬 실행 확인
+- `npm run dev:safe -- --port 3000 --auto-port`
+  - 로컬 실행 기본 명령(포트 정리 + preflight + dev server)
+- `npm run dev:safe:quick -- --port 3000`
+  - preflight를 생략한 긴급 재현용 실행
+- `npm run smoke:auth`
+  - 로그인 핵심 라우트(`/`, `/login`, `/signup`, `/auth/callback`) 스모크
+
+## Incident Root Causes (2026-03)
+1. 포트 충돌: 기존 `next dev` 프로세스가 남아 `EADDRINUSE`를 반복 유발
+2. TSX 문자열 파손: 부분 수정 중 따옴표/태그 닫힘 누락으로 빌드 파서 실패
+3. 인코딩 훼손: 한글 문자열이 깨진 상태에서 추가 수정되어 문법 오류가 연쇄 발생
+4. 사전 게이트 누락: 수정 후 preflight 없이 브라우저 확인부터 진행하여 오류 발견이 지연됨
+
+## Recurrence Prevention Gate (Mandatory)
+1. 로컬 실행 시작은 `npm run dev:safe -- --auto-port`를 기본으로 한다.
+2. Auth/Modal/Callback 경로 수정 시 브라우저 검증 전에 `npm run preflight:local`을 반드시 통과한다.
+3. 로그인 계열 변경 시 `npm run smoke:auth`를 통과한다.
+4. 인코딩 깨짐 문구가 보이면 즉시 해당 파일 전체를 UTF-8 기준으로 복구 후 수정한다.
+5. 동일 에러 2회 반복 시, 부분 패치 중단 후 파일 단위 교체 전략으로 전환한다.
 
 ## Test Layers
 1. Static quality: lint + type-check
@@ -44,8 +63,9 @@ SOT: 테스트 운영 기준은 이 문서가 단일 기준이다.
 - `docs/00-overview/execution-backlog-ko.md`
 - `docs/USER_VERIFICATION.md`
 - `docs/01-team/engineering/deployment-guide.md`
+- `docs/01-team/engineering/local-dev-sop.md`
 
 ---
-**Last Updated**: 2026-03-01  
+**Last Updated**: 2026-03-05  
 **Owner**: QA Lead + Engineering Lead  
-**Next Review**: 2026-03-08
+**Next Review**: 2026-03-12

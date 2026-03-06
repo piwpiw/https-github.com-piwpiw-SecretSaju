@@ -1,4 +1,4 @@
-export type AnalysisType = 'SAJU' | 'DREAM' | 'PALMISTRY' | 'NAMING' | 'ASTROLOGY' | 'TAROT';
+export type AnalysisType = 'SAJU' | 'DREAM' | 'PALMISTRY' | 'NAMING' | 'ASTROLOGY' | 'TAROT' | 'TOJEONG';
 
 export interface AnalysisHistoryLog {
     id: string;

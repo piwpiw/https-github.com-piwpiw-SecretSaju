@@ -16,6 +16,7 @@
 | 로드맵/우선순위 | `docs/00-overview/roadmap.md` | PM |
 | 배포 운영 | `docs/01-team/engineering/deployment-guide.md` | DevOps |
 | 테스트 운영 | `docs/01-team/engineering/testing-guide.md` | QA + Eng |
+| 로컬 실행 안정화 | `docs/01-team/engineering/local-dev-sop.md` | Eng Lead |
 | 오류 기준 | `docs/ERROR_CATALOG.md` | Eng |
 | 사용자 검증 | `docs/USER_VERIFICATION.md` | QA |
 | 작업 진행 상태 | `docs/active-dispatch.md` | PMO |
@@ -28,13 +29,15 @@
 5. 팀 스펙 문서는 상세 요구를 복사하지 않고 SOT 링크만 추가한다.
 
 ## 4. 배포/검증 명령 기준
+- 로컬 안정화 실행: `npm run dev:safe -- --port 3000 --auto-port`
 - 로컬 빠른 검증: `npm run deploy:local`
+- 인증 라우트 스모크: `npm run smoke:auth`
 - 로컬 품질 게이트(병렬): `npm run preflight:local`
 - 재현용 직렬 게이트: `npm run preflight:local:serial`
 - CI 정합 사전검증(병렬): `npm run pre-deploy:parallel`
 - 빠른 배포 경로: `npm run deploy:fast`
 
-명령의 상세 동작/옵션은 `docs/01-team/engineering/deployment-guide.md`를 단일 기준으로 한다.
+명령의 상세 동작/옵션은 `docs/01-team/engineering/deployment-guide.md`와 `docs/01-team/engineering/local-dev-sop.md`를 단일 기준으로 한다.
 
 ## 5. 중복/충돌 방지 체크
 - 링크는 상대 경로만 사용한다.
@@ -55,6 +58,6 @@
 - 핵심문서 최신성(7일 내): `>= 90%`
 
 ---
-**Last Updated**: 2026-03-01  
+**Last Updated**: 2026-03-05  
 **Document Owner**: PMO + Engineering Lead  
-**Next Review**: 2026-03-08
+**Next Review**: 2026-03-12

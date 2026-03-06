@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "startedAt": "2026-03-05T05:28:20.495Z",
+    "finishedAt": "2026-03-05T05:28:43.425Z",
+    "durationMs": 22930,
+    "baseUrl": "http://127.0.0.1:3002",
+    "email": "piwpiw@naver.com",
+    "runParallel": false,
+    "useCdp": false,
+    "cdpUrlUsed": ""
+  },
+  "checks": [
+    {
+      "command": "smoke-admin",
+      "args": [
+        "scripts\\smoke-admin-mode.mjs",
+        "--base-url",
+        "http://127.0.0.1:3002",
+        "--email",
+        "piwpiw@naver.com",
+        "--password",
+        "admin"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-03-05T05:28:21.068Z",
+      "endedAt": "2026-03-05T05:28:27.397Z",
+      "durationMs": 6329
+    },
+    {
+      "command": "smoke-home",
+      "args": [
+        "scripts\\mcp-home-smoke.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-03-05T05:28:27.397Z",
+      "endedAt": "2026-03-05T05:28:37.387Z",
+      "durationMs": 9990
+    },
+    {
+      "command": "smoke-browser",
+      "args": [
+        "scripts\\mcp-browser-smoke.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-03-05T05:28:37.387Z",
+      "endedAt": "2026-03-05T05:28:43.425Z",
+      "durationMs": 6038
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0,
+    "status": "passed"
+  }
+}

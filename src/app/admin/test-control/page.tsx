@@ -58,7 +58,7 @@ export default function AdminTestControlPage() {
                 </div>
 
                 {/* Validation Stats */}
-                <div className="grid grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                     <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
                         <div className="text-3xl font-bold text-cyan-400">
                             {totalCount}/60
@@ -84,10 +84,11 @@ export default function AdminTestControlPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Pillar Selector */}
                         <div>
-                            <label className="block text-sm font-semibold mb-2 text-cyan-400">
+                            <label htmlFor="admin-test-control-pillar" className="block text-sm font-semibold mb-2 text-cyan-400">
                                 도표 선택 (Select Pillar)
                             </label>
                             <select
+                                id="admin-test-control-pillar"
                                 value={selectedIndex}
                                 onChange={(e) => setSelectedIndex(Number(e.target.value))}
                                 className="w-full bg-slate-900/80 border border-cyan-500/30 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
@@ -110,13 +111,16 @@ export default function AdminTestControlPage() {
 
                         {/* Age Group Toggle */}
                         <div>
-                            <label className="block text-sm font-semibold mb-2 text-purple-400">
+                            <p id="admin-test-control-age-group" className="block text-sm font-semibold mb-2 text-purple-400">
                                 연령대 (Age Group)
-                            </label>
-                            <div className="flex gap-2">
+                            </p>
+                            <div className="flex gap-2" role="radiogroup" aria-labelledby="admin-test-control-age-group">
                                 {(["10s", "20s", "30s"] as AgeGroup[]).map((age) => (
                                     <button
                                         key={age}
+                                        type="button"
+                                        role="radio"
+                                        aria-checked={ageGroup === age}
                                         onClick={() => setAgeGroup(age)}
                                         className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all ${ageGroup === age
                                             ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/50"
@@ -133,25 +137,31 @@ export default function AdminTestControlPage() {
                     {/* Quick Navigation */}
                     <div className="mt-4 flex gap-2">
                         <button
+                            type="button"
                             onClick={() => setSelectedIndex(Math.max(0, selectedIndex - 1))}
                             disabled={selectedIndex === 0}
+                            aria-label="이전 도표로 이동"
                             className="px-4 py-2 bg-slate-800 rounded-lg hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                         >
                             이전
                         </button>
                         <button
+                            type="button"
                             onClick={() =>
                                 setSelectedIndex(Math.min(59, selectedIndex + 1))
                             }
                             disabled={selectedIndex === 59}
+                            aria-label="다음 도표로 이동"
                             className="px-4 py-2 bg-slate-800 rounded-lg hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                         >
                             다음
                         </button>
                         <div className="flex-1" />
                         <button
+                            type="button"
                             onClick={handleCopy}
                             disabled={isCopying}
+                            aria-label="선택한 아키타입 JSON 복사"
                             className="px-4 py-2 bg-cyan-600/20 border border-cyan-500/30 rounded-lg hover:bg-cyan-600/30 transition-all"
                         >
                             {isCopying ? "복사 중..." : "Copy JSON"}
@@ -159,7 +169,7 @@ export default function AdminTestControlPage() {
                     </div>
 
                     {copyMessage && (
-                        <div className="mt-3 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-200">
+                        <div role="status" aria-live="polite" className="mt-3 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-200">
                             {copyMessage}
                         </div>
                     )}
@@ -265,7 +275,7 @@ export default function AdminTestControlPage() {
                         <span>👑</span>
                         All 60 Archetypes - Quick Validation
                     </h2>
-                    <div className="grid grid-cols-10 gap-2">
+                    <div className="grid grid-cols-6 sm:grid-cols-8 lg:grid-cols-10 gap-2">
                         {PILLAR_CODES.map((code, idx) => {
                             const animal = animalsData.archetypes.find(
                                 (a) => a.code === code
@@ -279,6 +289,7 @@ export default function AdminTestControlPage() {
                             return (
                                 <button
                                     key={code}
+                                    type="button"
                                     onClick={() => setSelectedIndex(idx)}
                                     className={`aspect-square rounded-lg font-mono text-xs flex items-center justify-center transition-all ${selectedIndex === idx
                                         ? "bg-cyan-500 text-white ring-2 ring-cyan-400 scale-110"

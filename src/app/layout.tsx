@@ -1,4 +1,5 @@
 ﻿import type { Metadata, Viewport } from 'next';
+import { Noto_Sans_KR } from 'next/font/google';
 import './globals.css';
 import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
@@ -8,27 +9,33 @@ import { LocaleProvider } from '@/lib/i18n';
 import { ProfileProvider } from '@/components/ProfileProvider';
 import LuckyTicker from '@/components/LuckyTicker';
 import LuckySecretModal from '@/components/home/LuckySecretModal';
+import RouteChangeTracker from '@/components/analytics/RouteChangeTracker';
 import Script from 'next/script';
 import { APP_CONFIG } from '@/config/env';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
-
+const defaultMetadataImagePath = `${APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:3000'}/api/og?name=Secret%20Saju`;
+const notoSans = Noto_Sans_KR({
+  subsets: ['latin'],
+  variable: '--font-noto',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: 'Secret Saju | ?ъ＜ 遺꾩꽍 & ?쇱씪 ?댁꽭',
-  description: '?ъ＜ ?댁꽭, 轅? ?먭툑 ???섏쓽 ?대챸???뺤씤?섎뒗 ?꾨━誘몄뾼 ?댁꽭 ?뚮옯?쇱엯?덈떎.',
+  title: 'Secret Saju | 하이엔드 운명 분석 솔루션',
+  description: '최첨단 사주 엔진과 심리 분석으로 당신의 운명을 동기화하는 프리미엄 플랫폼입니다.',
   metadataBase: new URL(APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:3000'),
   openGraph: {
-    title: 'Secret Saju | ?ъ＜ 遺꾩꽍 & ?쇱씪 ?댁꽭',
-    description: '?ъ＜ ?댁꽭, 轅? ?먭툑 ?????대챸??吏湲?諛붾줈 ?뺤씤?섏꽭??',
+    title: 'Secret Saju | 사주와 운세 분석',
+    description: '사주와 개인 성향 기반 분석으로 오늘의 선택 포인트를 제안합니다.',
     url: APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:3000',
     siteName: 'Secret Saju',
     images: [
       {
-        url: `${APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:3000'}/og-image.jpg`,
+        url: defaultMetadataImagePath,
         width: 1200,
         height: 630,
-        alt: 'Secret Saju | ?ъ＜ 遺꾩꽍 & ?쇱씪 ?댁꽭',
+        alt: 'Secret Saju | 사주와 운세 분석',
       },
     ],
     locale: 'ko_KR',
@@ -36,16 +43,19 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Secret Saju | ?ъ＜ 遺꾩꽍 & ?쇱씪 ?댁꽭',
-    description: '媛??鍮좊Ⅴ怨??뺥솗???꾨━誘몄뾼 ?ъ＜ ?댁꽭瑜??뺤씤?섏꽭??',
-    images: [`${APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:3000'}/og-image.jpg`],
+    title: 'Secret Saju | 사주와 운세 분석',
+    description: '사주와 심리 인사이트로 다음 액션을 제안하는 실전형 운세 서비스.',
+    images: [defaultMetadataImagePath],
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'Secret Saju',
   },
+  manifest: '/manifest.json',
 };
+
+import McpAuthRefresher from '@/components/auth/McpAuthRefresher';
 
 export default function RootLayout({
   children,
@@ -54,24 +64,28 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <head>
-        <link
-          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="antialiased min-h-screen flex flex-col" style={{ fontFamily: '"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif' }}>
+      <body className={`antialiased min-h-screen flex flex-col ${notoSans.className}`}>
+        <div className="bg-drift" />
         <LocaleProvider>
           <ThemeProvider>
             <WalletProvider>
               <ProfileProvider>
+                <McpAuthRefresher />
                 <LuckySecretModal />
                 <LuckyTicker />
                 <Nav />
-                <div className="flex-1 w-full max-w-7xl mx-auto relative px-4 md:px-8">
+                <a
+                  href="#main-content"
+                  className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:bg-black/90 focus:text-white focus:px-3 focus:py-2 focus:rounded"
+                >
+                  본문으로 건너뛰기
+                </a>
+                <main id="main-content" className="flex-1 w-full max-w-7xl mx-auto relative px-4 md:px-8">
+                  <div className="noise-texture opacity-[0.02]" />
                   {children}
-                </div>
-        <Footer />
+                </main>
+                <Footer />
+                <RouteChangeTracker />
               </ProfileProvider>
             </WalletProvider>
           </ThemeProvider>
@@ -97,12 +111,9 @@ export default function RootLayout({
   );
 }
 
-
-
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
   themeColor: '#0f0f1a',
 };
-

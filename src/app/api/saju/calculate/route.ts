@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { getAuthenticatedUser } from '@/lib/api-auth';
 import { calculateHighPrecisionSaju, SajuCalculationInput } from '@/core/api/saju-engine';
 import { formatErrorResponse, ValidationError, SajuCalculationError, ErrorMessages } from '@/lib/errors';
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
         if (error instanceof Error) {
             // Wrap unknown errors as SajuCalculationError
             const sajuError = new SajuCalculationError(
-                '사주 계산 중 오류가 발생했습니다',
+                "사주 계산 중 오류가 발생했습니다",
                 'CALCULATION_FAILED',
                 { originalError: error.message }
             );

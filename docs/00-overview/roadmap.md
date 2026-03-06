@@ -71,9 +71,9 @@ Become the go-to saju platform in Korea by combining:
   - Need production migration
 
 #### Planned (Remaining Q1)
-- [ ] **Beta Launch** (100-500 users)
-- [ ] **Analytics Setup** (GA4, Hotjar)
-- [ ] **Bug Bash** (team + beta users)
+- [ ] **Beta Launch** (100-500 users) `DO-703A`
+- [ ] **Analytics Setup** (GA4, Hotjar) `DO-703B`
+- [ ] **Bug Bash** (team + beta users) `DO-703C`
 
 **Success Metrics**:
 - Beta users: 500
@@ -330,20 +330,20 @@ Original user gets full report unlocked
 - [x] Saju calculation
 - [x] Profile management
 - [x] Jelly system
-- [ ] Payment integration
-- [ ] Share feature
+- [ ] Payment integration `DO-703D`
+- [ ] Share feature `DO-703E`
 
 ### Should-Have (Growth)
-- [ ] Referral system
-- [ ] Celebrity matching
-- [ ] Daily fortune
-- [ ] AI insights
+- [ ] Referral system `DO-703F`
+- [ ] Celebrity matching `DO-703G`
+- [ ] Daily fortune `DO-703H`
+- [ ] AI insights `DO-703I`
 
 ### Nice-to-Have (Premium)
-- [ ] Mobile app
-- [ ] Internationalization
-- [ ] Community
-- [ ] B2B API
+- [ ] Mobile app `DO-703J`
+- [ ] Internationalization `DO-703K`
+- [ ] Community `DO-703L`
+- [ ] B2B API `DO-703M`
 
 ---
 

@@ -1,132 +1,371 @@
 ﻿"use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ArrowLeft, CalendarDays, Loader2, Sparkles, Users, User, ChevronRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { ArrowLeft, Calendar, CalendarDays, Loader2, Sparkles, WalletCards, Briefcase, CheckCircle2, ChevronRight, Lightbulb } from "lucide-react";
 import JellyBalance from "@/components/shop/JellyBalance";
 import { useWallet } from "@/components/WalletProvider";
 import { useProfiles } from "@/components/ProfileProvider";
 import LuxuryToast from "@/components/ui/LuxuryToast";
+import { saveAnalysisToHistory } from "@/lib/analysis-history";
+import { calculateSajuFromBirthdate, getDayPillarIndex, getPillarNameKo } from "@/lib/saju";
+import { buildTojeongReport, TojeongReport } from "@/lib/tojeongEngine";
 
-type MonthItem = {
-  month: string;
-  title: string;
-  description: string;
+type TojeongScore = "high" | "mid" | "low";
+
+type ViewReport = TojeongReport & {
+  trustScore: number;
+  scoreBands: {
+    label: string;
+    score: number;
+    tone: TojeongScore;
+    reason: string;
+    action: string;
+  }[];
 };
 
-const YEAR = 2026;
+function dayOfYear(date: Date) {
+  const start = Date.UTC(date.getFullYear(), 0, 1);
+  const now = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+  return Math.floor((now - start) / (24 * 60 * 60 * 1000)) + 1;
+}
 
-const MONTH_REPORTS: MonthItem[] = [
-  {
-    month: "1~3월",
-    title: "기반을 다지는 시기",
-    description: "계획 수립, 문서 정리, 협업 전환에 유리합니다.",
-  },
-  {
-    month: "4~6월",
-    title: "의미 있는 도전",
-    description: "관계 정리와 투자 판단에서 감정이 먼저 흔들리기 쉬워 냉정을 유지하세요.",
-  },
-  {
-    month: "7~9월",
-    title: "성장과 확장",
-    description: "새 일거리나 제안이 생길 수 있어 우선순위를 명확히 하면 좋습니다.",
-  },
-  {
-    month: "10~12월",
-    title: "성과 회수기",
-    description: "지금까지의 선택을 점검해 마무리 전략을 세우면 효율이 올라갑니다.",
-  },
-];
+function trustScore(report: TojeongReport) {
+  const base = Math.round((report.mainScore * 0.68 + 28));
+  const toneBonus = report.categories.reduce((acc, item) => {
+    if (item.tone === "positive") return acc + 8;
+    if (item.tone === "neutral") return acc + 4;
+    return acc - 4;
+  }, 0);
+  const sourceBonus = report.sources.length * 3;
+  return Math.max(40, Math.min(100, base + toneBonus + sourceBonus));
+}
+
+function toneToColor(tone: TojeongScore) {
+  if (tone === "high") return "from-emerald-400 to-emerald-600";
+  if (tone === "mid") return "from-amber-400 to-cyan-500";
+  return "from-rose-400 to-rose-600";
+}
 
 export default function TojeongPage() {
-  const router = useRouter();
-  const { consumeChuru, churu } = useWallet();
+  const { consumeChuru, churu, isAdmin } = useWallet();
   const { profiles, activeProfile } = useProfiles();
 
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
   const [isLoading, setIsLoading] = useState(false);
+  const [report, setReport] = useState<ViewReport | null>(null);
+  const [openAll, setOpenAll] = useState(true);
   const [toastMsg, setToastMsg] = useState("");
   const [showToast, setShowToast] = useState(false);
 
-  const activeName = useMemo(() => {
-    if (activeProfile?.name) return activeProfile.name;
-    return profiles[0]?.name || "선택된 프로필";
-  }, [activeProfile, profiles]);
+  const toast = (message: string) => {
+    setToastMsg(message);
+    setShowToast(true);
+    window.setTimeout(() => setShowToast(false), 2200);
+  };
 
-  const handleCalculate = () => {
-    if (churu < 40) {
-      setToastMsg("토정비결은 40젤리가 필요합니다.");
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2500);
+  const yearOptions = useMemo(() => {
+    const now = new Date().getFullYear();
+    return [now - 1, now, now + 1];
+  }, []);
+
+  const profile = activeProfile ?? profiles[0] ?? null;
+  const profileName = profile?.name || "홍길동";
+
+  const run = async () => {
+    if (!profile) {
+      toast("프로필을 먼저 등록해 주세요.");
       return;
     }
 
-    consumeChuru(40);
+    if (!isAdmin && churu < 40) {
+      toast("토큰이 부족합니다. 충전 후 사용하세요.");
+      return;
+    }
+
+    const ok = consumeChuru(40);
+    if (!ok) {
+      toast("토큰 결제 실패. 다시 시도하세요.");
+      return;
+    }
+
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const birthTime = profile.birthTime || "12:00";
+      const birthDate = new Date(`${profile.birthdate}T${birthTime}`);
+      const birthPillar = await calculateSajuFromBirthdate(
+        profile.birthdate,
+        birthTime,
+        profile.calendarType,
+        profile.gender === "female" ? "F" : "M",
+        profile.isTimeUnknown,
+      );
+
+      const output = buildTojeongReport({
+        profileName: profile.name,
+        birthYear: birthDate.getFullYear(),
+        birthMonth: birthDate.getMonth() + 1,
+        birthDay: birthDate.getDate(),
+        birthBranchIndex: birthPillar.fourPillars?.day?.branchIndex ?? getDayPillarIndex(birthDate),
+        birthPillarIndex: birthPillar.fourPillars?.day?.ganjiIndex ?? getDayPillarIndex(birthDate),
+        yearPillarIndex: getDayPillarIndex(new Date(selectedYear, 0, 1)),
+        year: selectedYear,
+        birthDayOfYear: dayOfYear(birthDate),
+        isFemale: profile.gender === "female",
+      });
+
+      const scoreBands: ViewReport["scoreBands"] = [
+        {
+          label: "직업",
+          score: output.categories[0]?.score ?? 0,
+          tone: output.categories[0]?.tone === "positive" ? "high" : output.categories[0]?.tone === "neutral" ? "mid" : "low",
+          reason: output.categories[0]?.reason ?? "-",
+          action: output.categories[0]?.action ?? "-",
+        },
+        {
+          label: "재물",
+          score: output.categories[1]?.score ?? 0,
+          tone: output.categories[1]?.tone === "positive" ? "high" : output.categories[1]?.tone === "neutral" ? "mid" : "low",
+          reason: output.categories[1]?.reason ?? "-",
+          action: output.categories[1]?.action ?? "-",
+        },
+        {
+          label: "연애",
+          score: output.categories[2]?.score ?? 0,
+          tone: output.categories[2]?.tone === "positive" ? "high" : output.categories[2]?.tone === "neutral" ? "mid" : "low",
+          reason: output.categories[2]?.reason ?? "-",
+          action: output.categories[2]?.action ?? "-",
+        },
+      ];
+
+      setReport({
+        ...output,
+        trustScore: trustScore(output),
+        scoreBands,
+      });
+      saveAnalysisToHistory({
+        type: "TOJEONG",
+        title: `${profile.name} 토정비결`,
+        subtitle: `${selectedYear}년 연간 운세`,
+        profileId: profile.id,
+        profileName: profile.name,
+        resultUrl: "/tojeong",
+        resultPreview: `${output.mainGrade} ${output.mainScore}점`,
+        result: {
+          ...output,
+          trustScore: trustScore(output),
+        },
+      });
+      toast(`${selectedYear}년 토정비결이 계산되었습니다.`);
+    } catch (error) {
+      console.error(error);
+      toast("계산 중 오류가 발생했습니다.");
+    } finally {
       setIsLoading(false);
-    }, 800);
+    }
   };
 
+  const monthSummary = useMemo(() => {
+    if (!report) return null;
+    const avgMonthly = Math.round(report.monthly.reduce((acc, item) => acc + item.score, 0) / report.monthly.length);
+    return { avgMonthly, source: `${report.sources.length}개 근거` };
+  }, [report]);
+
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-200 relative overflow-hidden pb-40 font-sans">
+    <main className="min-h-screen bg-slate-950 text-slate-200 relative overflow-hidden pb-32 font-sans">
       <LuxuryToast message={toastMsg} isVisible={showToast} />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(168,85,247,0.12),transparent_45%),radial-gradient(circle_at_80%_10%,rgba(14,165,233,0.12),transparent_40%)] pointer-events-none" />
-
       <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
-        <div className="flex items-center justify-between mb-10">
-          <button
-            onClick={() => router.back()}
-            className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center"
-          >
+        <div className="flex items-center justify-between mb-8">
+          <Link href="/" className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 inline-flex items-center justify-center">
             <ArrowLeft className="w-5 h-5 text-slate-300" />
-          </button>
+          </Link>
           <JellyBalance />
         </div>
 
-        <section className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-8 md:p-12 space-y-7">
-          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-white/10 bg-slate-800/60 text-xs font-black uppercase tracking-[0.3em] text-amber-300">
-            <CalendarDays className="w-4 h-4" /> 연간 운세 (토정비결)
+        <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-8 md:p-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-slate-800/70 text-xs font-black uppercase tracking-[0.3em] text-amber-300">
+            <CalendarDays className="w-4 h-4" />
+            토정비결
           </div>
-          <h1 className="text-3xl md:text-4xl font-black italic tracking-tight text-white">{YEAR}년 토정비결 리포트</h1>
-          <p className="text-slate-300">
-            대상: <span className="text-white font-bold">{activeName}</span>. 월별 흐름과 강점·주의점을 정리해 드립니다.
+          <h1 className="text-3xl md:text-4xl font-black mt-3">연도별 운세 핵심 진단</h1>
+          <p className="text-slate-300 mt-2">
+            대상: <span className="text-white">{profileName}</span> / 사주 데이터를 기반으로 연도 흐름과 월별 포인트를 계산합니다.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {MONTH_REPORTS.map((item) => (
-              <div key={item.month} className="rounded-3xl border border-white/10 bg-slate-900/60 p-6">
-                <div className="text-sm font-black text-amber-300">{item.month}</div>
-                <div className="mt-2 text-lg font-bold text-white">{item.title}</div>
-                <p className="mt-2 text-sm text-slate-300">{item.description}</p>
-              </div>
+          <div className="mt-5 flex flex-wrap gap-3">
+            {yearOptions.map((year) => (
+              <button
+                key={year}
+                onClick={() => setSelectedYear(year)}
+                className={`px-4 py-3 rounded-2xl border text-sm font-black transition ${
+                  selectedYear === year
+                    ? "bg-amber-500 text-slate-900 border-amber-300"
+                    : "bg-white/5 text-slate-100 border-white/15"
+                }`}
+              >
+                {year}년
+              </button>
             ))}
+            <button
+              onClick={() => setOpenAll((v) => !v)}
+              className="ml-auto px-4 py-3 rounded-2xl border border-cyan-300/50 text-cyan-200 text-xs"
+            >
+              카드 {openAll ? "전체 접기" : "전체 펼치기"}
+            </button>
           </div>
 
           <button
-            onClick={handleCalculate}
+            onClick={run}
             disabled={isLoading}
-            className="mt-4 w-full py-5 rounded-2xl bg-amber-500 text-slate-900 font-black text-lg uppercase tracking-[0.2em] disabled:opacity-50 flex items-center justify-center gap-3"
+            className="mt-5 w-full py-4 rounded-2xl bg-amber-500 text-slate-900 font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2"
           >
             {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
-            {isLoading ? "리포트 생성 중..." : "40젤리로 연간 운세 받기"}
+            {isLoading ? "분석 중..." : "토정비결 계산"}
           </button>
         </section>
 
-        <section className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-          <div className="bg-slate-900/45 border border-white/10 rounded-2xl p-5">
-            <div className="flex items-center gap-2 text-cyan-300 font-black"><User className="w-4 h-4" /> 핵심 조언</div>
-            <p className="mt-3 text-slate-300">큰 판단은 감정 직전이 아니라 기록 기반으로 검토하세요.</p>
-          </div>
-          <div className="bg-slate-900/45 border border-white/10 rounded-2xl p-5">
-            <div className="flex items-center gap-2 text-cyan-300 font-black"><Users className="w-4 h-4" /> 관계운</div>
-            <p className="mt-3 text-slate-300">관계는 한 번에 급변하지 않습니다. 일주일 단위 피드백을 권장합니다.</p>
-          </div>
-          <div className="bg-slate-900/45 border border-white/10 rounded-2xl p-5">
-            <div className="flex items-center gap-2 text-cyan-300 font-black"><ChevronRight className="w-4 h-4" /> 다음 행동</div>
-            <p className="mt-3 text-slate-300">월 초 목표 점검표를 만들어 실행하면 성과가 더 또렷해집니다.</p>
-          </div>
-        </section>
+        {!profile && (
+          <section className="mt-8 rounded-3xl border border-amber-300/20 bg-amber-500/10 p-6 text-amber-100 text-sm">
+            현재 사용 가능한 프로필이 없습니다. 먼저 프로필을 등록해 주세요.
+            <div className="mt-3">
+              <Link href="/my-saju/add" className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 text-slate-900 font-black">
+                <Calendar className="w-4 h-4" /> 프로필 등록
+              </Link>
+            </div>
+          </section>
+        )}
+
+        {report && (
+          <>
+            <section className="mt-8 bg-slate-900/55 border border-white/10 rounded-[2rem] p-8">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="text-xs text-amber-300 font-black tracking-[0.2em]">신뢰도 점수</div>
+                  <h2 className="text-3xl mt-2 font-black">{report.trustScore} / 100</h2>
+                  <p className="text-sm text-slate-300 mt-1">{report.oneLineSummary}</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-black">{report.mainScore}</div>
+                  <div className="text-xs text-slate-400">기준등급 {report.mainGrade}</div>
+                  <div className="text-xs text-slate-400 mt-2">{monthSummary?.source}</div>
+                </div>
+              </div>
+
+              <div className="mt-4 h-2 bg-white/10 rounded-full overflow-hidden border border-white/10">
+                <div
+                  className="h-full bg-gradient-to-r from-amber-300 to-rose-400"
+                  style={{ width: `${report.mainScore}%` }}
+                />
+              </div>
+              <p className="text-xs text-slate-400 mt-2">월평균 점수: {monthSummary?.avgMonthly}점</p>
+            </section>
+
+            <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {report.scoreBands.map((item) => (
+                <details key={item.label} className="rounded-3xl border border-white/10 bg-slate-900/50" open={openAll}>
+                  <summary className="px-5 py-4 cursor-pointer font-black">{item.label}</summary>
+                  <div className="px-5 pb-5">
+                    <div className="flex items-center justify-between">
+                      <div className="text-2xl font-black">{item.score}</div>
+                      <span className="text-xs px-2 py-1 rounded-full bg-slate-800">{item.tone}</span>
+                    </div>
+                    <div className="mt-2 h-2 bg-white/10 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full bg-gradient-to-r ${toneToColor(item.tone)}`}
+                        style={{ width: `${item.score}%` }}
+                      />
+                    </div>
+                    <p className="mt-3 text-sm text-slate-100 leading-relaxed">{item.reason}</p>
+                    <p className="mt-2 text-xs text-slate-300">실행: {item.action}</p>
+                  </div>
+                </details>
+              ))}
+            </section>
+
+            <section className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <article className="rounded-3xl border border-white/10 bg-slate-900/45 p-6">
+                <div className="inline-flex items-center gap-2 text-emerald-300 text-sm font-black">
+                  <WalletCards className="w-4 h-4" /> 연간 주제
+                </div>
+                <p className="mt-2 text-sm text-slate-200">{report.theme}</p>
+                <p className="mt-2 text-slate-400">{getPillarNameKo(getDayPillarIndex(new Date(report.year, 0, 1)))} 중심 해석</p>
+              </article>
+              <article className="rounded-3xl border border-white/10 bg-slate-900/45 p-6">
+                <div className="inline-flex items-center gap-2 text-sky-300 text-sm font-black">
+                  <Briefcase className="w-4 h-4" /> 강점
+                </div>
+                <ul className="mt-2 text-sm text-slate-200 space-y-1">
+                  {report.strengths.map((item) => (
+                    <li key={item}>- {item}</li>
+                  ))}
+                </ul>
+              </article>
+              <article className="rounded-3xl border border-white/10 bg-slate-900/45 p-6">
+                <div className="inline-flex items-center gap-2 text-rose-300 text-sm font-black">
+                  <CheckCircle2 className="w-4 h-4" /> 주의점
+                </div>
+                <ul className="mt-2 text-sm text-slate-200 space-y-1">
+                  {report.cautions.map((item) => (
+                    <li key={item}>- {item}</li>
+                  ))}
+                </ul>
+              </article>
+            </section>
+
+            <section className="mt-8 rounded-[2rem] border border-white/10 bg-slate-900/55 p-8">
+              <h3 className="text-xl font-black">월별 핵심 액션 포인트</h3>
+              <div className="mt-4 grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {report.monthly.slice(0, 9).map((month) => (
+                  <article key={month.month} className="rounded-3xl border border-white/10 bg-slate-900/60 p-4">
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm font-black text-amber-300">{month.month}월 · {month.title}</div>
+                      <span className="text-xs px-2 py-1 rounded-full bg-white/10">{month.score}점</span>
+                    </div>
+                    <p className="mt-2 text-sm text-slate-300">{month.summary}</p>
+                    <ul className="mt-3 text-xs text-slate-400 space-y-1">
+                      {month.tips.map((tip) => (
+                        <li key={tip} className="flex items-start gap-2">
+                          <ChevronRight className="w-3 h-3 mt-0.5 text-amber-300" />
+                          <span>{tip}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="mt-8 rounded-3xl border border-white/10 bg-slate-900/55 p-6">
+              <details open={openAll}>
+                <summary className="font-black text-lg mb-3 flex items-center gap-2">
+                  <Lightbulb className="w-4 h-4 text-cyan-300" /> 실행 액션
+                </summary>
+                <ul className="mt-2 space-y-2 text-sm text-slate-200">
+                  {report.actionPlans.map((item) => (
+                    <li key={item}>- {item}</li>
+                  ))}
+                </ul>
+              </details>
+            </section>
+
+            <section className="mt-6 rounded-3xl border border-white/10 bg-slate-900/55 p-6">
+              <details open={openAll}>
+                <summary className="font-black text-lg mb-3">근거 로그</summary>
+                <ul className="space-y-2 text-sm text-slate-200">
+                  {report.sources.map((source) => (
+                    <li key={source.name} className="flex items-start gap-2">
+                      <ChevronRight className="w-4 h-4 mt-0.5 text-emerald-300" />
+                      <span>
+                        <span className="font-black">{source.name}</span> : {source.value}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </section>
+          </>
+        )}
       </div>
     </main>
   );

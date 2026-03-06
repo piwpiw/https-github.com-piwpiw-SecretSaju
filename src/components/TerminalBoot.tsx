@@ -46,7 +46,7 @@ export default function TerminalBoot({ onComplete }: { onComplete: () => void })
                             <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg mb-4">
                                 <span className="text-white text-2xl font-bold">SC</span>
                             </div>
-                            <h1 className="text-2xl font-bold text-white">Secret Saju Terminal</h1>
+                            <h1 className="text-2xl font-bold text-white">시크릿사주 터미널</h1>
                             <p className="text-sm text-slate-500 mt-1">운세 분석 부트스트랩</p>
                         </motion.div>
 

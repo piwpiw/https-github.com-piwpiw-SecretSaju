@@ -39,10 +39,11 @@ export default function CharacterProfilePage() {
 
                 {/* Selector */}
                 <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
-                    <label className="block text-sm font-semibold mb-2 text-cyan-400">
+                    <label htmlFor="character-profile-pillar" className="block text-sm font-semibold mb-2 text-cyan-400">
                         캐릭터 선택
                     </label>
                     <select
+                        id="character-profile-pillar"
                         value={selectedIndex}
                         onChange={(e) => setSelectedIndex(Number(e.target.value))}
                         className="w-full bg-slate-900/80 border border-cyan-500/30 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500"

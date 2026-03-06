@@ -46,12 +46,9 @@ async function main() {
     exec(`git push origin ${branch}`);
   }
 
+  exec('node scripts/deploy-policy.js --platform render --mode production');
   console.log('🚀 Render 배포 트리거 실행');
-  if (process.env.RENDER_DEPLOY_HOOK_URL || process.env.RENDER_DEPLOY_HOOK) {
-    exec('node scripts/render-deploy.js');
-  } else {
-    console.log('ℹ️ RENDER_DEPLOY_HOOK_URL이 없어도 main 브랜치 기준 autoDeploy가 설정되어 있으면 Render가 자동 배포합니다.');
-  }
+  exec('node scripts/render-deploy.js --mode production');
 
   console.log('✅ 완료');
   rl.close();

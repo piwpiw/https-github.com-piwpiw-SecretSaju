@@ -1,0 +1,89 @@
+# Admin Audit Improvement Execution Summary (ASCII)
+
+- generated: 2026-03-05T11:55:56.586Z
+- generatedFrom: `npm run improvements:pages` (refresh cycle)
+- productionUrl: https://https-github-com-piwpiw-secret-saju-6zaih7je2.vercel.app
+- total-pages: 63
+- total-items: 630
+- priority total: P1=180, P2=275, P3=175
+
+## Latest Execution Note (2026-03-05T11:55:56.586Z)
+- Completed: cycle 11 local revalidation
+- Audit command: `npm run audit:admin:full` against `http://127.0.0.1:3002`
+- Result: PASS (static 56/56, discovered 12/12, dynamic sample 5/5, failures 0)
+- Report: `logs/admin-full-site-audit.md`
+- Completed: cycle 10 refresh + production redeploy
+- Delivered: regenerated `/docs/page-improvements-admin-audit.md` with 63 pages, 10 items each
+- Verification: Admin guard changes from cycle 9 remain unchanged; full-admin route sweep not rerun in this cycle
+- Deployment: `https://https-github-com-piwpiw-secret-saju-6zaih7je2.vercel.app`
+- Completed: admin hardening cycle
+- Fix: `/admin/**` now protected by shared `src/app/admin/layout.tsx` using `getAuthenticatedUser` and admin-only allowlist
+- Improvement impact:
+  - `/admin` suite now blocked for non-admin sessions in one place
+  - non-admin login attempts redirect to `/login?next=/admin`
+  - repeatable audit (`npm run audit:admin:full`) currently PASS 73/73
+
+## Route list by page
+- /: P1=2 P2=6 P3=2
+- /about: P1=3 P2=4 P3=3
+- /admin: P1=4 P2=3 P3=3
+- /admin/advanced-scoring: P1=5 P2=3 P3=2
+- /admin/character-analysis: P1=5 P2=3 P3=2
+- /admin/character-profile: P1=5 P2=3 P3=2
+- /admin/compatibility: P1=5 P2=3 P3=2
+- /admin/test-control: P1=4 P2=4 P3=2
+- /analysis-history: P1=3 P2=4 P3=3
+- /analysis-history/[type]/[id]: P1=3 P2=5 P3=2
+- /astrology: P1=4 P2=3 P3=3
+- /auth/callback: P1=2 P2=5 P3=3
+- /blog: P1=3 P2=4 P3=3
+- /calendar: P1=3 P2=5 P3=2
+- /compatibility: P1=2 P2=6 P3=2
+- /consultation: P1=3 P2=4 P3=3
+- /custom/partnership: P1=3 P2=4 P3=3
+- /daily: P1=1 P2=7 P3=2
+- /dashboard: P1=1 P2=7 P3=2
+- /destiny: P1=3 P2=4 P3=3
+- /dreams: P1=4 P2=3 P3=3
+- /encyclopedia: P1=4 P2=3 P3=3
+- /faq: P1=3 P2=5 P3=2
+- /fortune: P1=2 P2=6 P3=2
+- /gift: P1=3 P2=3 P3=4
+- /healing: P1=1 P2=6 P3=3
+- /history: P1=2 P2=5 P3=3
+- /inquiry: P1=3 P2=3 P3=4
+- /legal: P1=3 P2=4 P3=3
+- /login: P1=3 P2=3 P3=4
+- /luck: P1=4 P2=3 P3=3
+- /more: P1=3 P2=4 P3=3
+- /my-saju/add: P1=3 P2=4 P3=3
+- /my-saju/list: P1=3 P2=3 P3=4
+- /mypage: P1=2 P2=6 P3=2
+- /naming: P1=2 P2=6 P3=2
+- /palmistry: P1=4 P2=2 P3=4
+- /payment/fail: P1=2 P2=6 P3=2
+- /payment/loading: P1=2 P2=7 P3=1
+- /payment/success: P1=1 P2=6 P3=3
+- /privacy: P1=3 P2=4 P3=3
+- /psychology: P1=3 P2=4 P3=3
+- /psychology/module: P1=3 P2=4 P3=3
+- /psychology/module/[id]: P1=3 P2=4 P3=3
+- /psychology/premium-report: P1=3 P2=4 P3=3
+- /refund: P1=3 P2=4 P3=3
+- /relationship: P1=3 P2=4 P3=3
+- /relationship/[id]: P1=1 P2=8 P3=1
+- /relationship/[id]/vs: P1=1 P2=7 P3=2
+- /result/[token]: P1=4 P2=2 P3=4
+- /saju: P1=2 P2=6 P3=2
+- /select-fortune: P1=4 P2=4 P3=2
+- /shinsal: P1=2 P2=5 P3=3
+- /shop: P1=3 P2=4 P3=3
+- /signup: P1=3 P2=3 P3=4
+- /story: P1=3 P2=4 P3=3
+- /story/[id]: P1=3 P2=2 P3=5
+- /support: P1=3 P2=4 P3=3
+- /tarot: P1=3 P2=4 P3=3
+- /terms: P1=3 P2=3 P3=4
+- /tojeong: P1=1 P2=6 P3=3
+- /wiki: P1=3 P2=4 P3=3
+- /wiki/[slug]: P1=2 P2=6 P3=2

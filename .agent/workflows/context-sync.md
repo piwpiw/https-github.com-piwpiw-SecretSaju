@@ -35,10 +35,10 @@ git log --oneline -20
 - 신규 파일 → `CONTEXT_ENGINE.md` §2 File Map에 추가
 - 삭제된 파일 → 해당 항목 제거
 
-## Step 4 — Error Catalog 정리
-- `CONTEXT_ENGINE.md` §8 Error Catalog 확인
-- 해결된 에러 → 해결책 업데이트
-- 새로 발견된 패턴 → 신규 항목 추가
+## Step 4 — Error Tracking 정리
+- `ERROR_LEDGER.md` 내 ❌ 미해결 항목 확인
+- 해결된 에러 → ✅로 변경
+- `docs/ERROR_CATALOG.md`에 코드 패턴 에러 반영
 
 ## Step 5 — Design System 업데이트
 // turbo

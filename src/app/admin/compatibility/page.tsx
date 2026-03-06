@@ -70,7 +70,7 @@ export default function CompatibilityAdminPage() {
                         💘 정밀 궁합 시스템 (Ver 2.0)
                     </h1>
                     <p className="text-slate-400">
-                        Enterprise Engine Integration Test
+                        궁합 엔진 통합 테스트
                     </p>
                 </div>
 
@@ -78,8 +78,12 @@ export default function CompatibilityAdminPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                     {/* Person A */}
                     <div className="bg-white/5 backdrop-blur-lg border border-pink-500/30 rounded-xl p-6">
-                        <h2 className="text-xl font-bold mb-4 text-pink-400">나 (Day Pillar)</h2>
+                        <label htmlFor="compatibility-person-a" className="block text-xl font-bold mb-4 text-pink-400">
+                            나 (Day Pillar)
+                        </label>
                         <select
+                            id="compatibility-person-a"
+                            aria-label="Select first partner for compatibility analysis"
                             value={indexA}
                             onChange={(e) => setIndexA(Number(e.target.value))}
                             className="w-full bg-slate-900/90 border border-pink-500/30 rounded-lg px-4 py-3 text-white font-mono mb-4"
@@ -99,8 +103,12 @@ export default function CompatibilityAdminPage() {
 
                     {/* Person B */}
                     <div className="bg-white/5 backdrop-blur-lg border border-cyan-500/30 rounded-xl p-6">
-                        <h2 className="text-xl font-bold mb-4 text-cyan-400">상대방 (Day Pillar)</h2>
+                        <label htmlFor="compatibility-person-b" className="block text-xl font-bold mb-4 text-cyan-400">
+                            상대방 (Day Pillar)
+                        </label>
                         <select
+                            id="compatibility-person-b"
+                            aria-label="Select second partner for compatibility analysis"
                             value={indexB}
                             onChange={(e) => setIndexB(Number(e.target.value))}
                             className="w-full bg-slate-900/90 border border-cyan-500/30 rounded-lg px-4 py-3 text-white font-mono mb-4"
@@ -128,7 +136,7 @@ export default function CompatibilityAdminPage() {
                 >
                     {/* Main Score */}
                     <div className="text-center mb-10">
-                        <div className="text-sm text-slate-400 mb-2 tracking-widest">COMPATIBILITY SCORE</div>
+                        <div className="text-sm text-slate-400 mb-2 tracking-widest">궁합 점수</div>
                         <div className="flex justify-center items-end gap-2 text-8xl font-black mb-4 bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent">
                             {result.score}
                             <span className="text-4xl text-slate-500 pb-4">/100</span>
@@ -139,7 +147,13 @@ export default function CompatibilityAdminPage() {
                                 result.grade === "low" ? "bg-red-500/20 border-red-500 text-red-300" :
                                     "bg-slate-500/20 border-slate-500 text-slate-300"
                             }`}>
-                            Grade {result.grade.toUpperCase()}
+                            {result.grade === "best"
+                                ? "최고"
+                                : result.grade === "good"
+                                    ? "양호"
+                                    : result.grade === "low"
+                                        ? "주의"
+                                        : "보통"}
                         </div>
 
                         <p className="mt-6 text-xl text-white font-medium">
@@ -150,33 +164,33 @@ export default function CompatibilityAdminPage() {
                     {/* Analysis Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                         <div className="bg-slate-900/50 rounded-xl p-4">
-                            <h3 className="text-sm text-slate-400 mb-2">🧪 Chemistry</h3>
+                            <h3 className="text-sm text-slate-400 mb-2">🧪 케미</h3>
                             <p className="text-xl font-bold text-yellow-400">{result.chemistry}</p>
                         </div>
                         <div className="bg-slate-900/50 rounded-xl p-4">
-                            <h3 className="text-sm text-slate-400 mb-2">⚡ Tension</h3>
-                            <p className="text-xl font-bold text-red-400">{result.tension || 'None'}</p>
+                            <h3 className="text-sm text-slate-400 mb-2">⚡ 긴장요소</h3>
+                            <p className="text-xl font-bold text-red-400">{result.tension || '없음'}</p>
                         </div>
                     </div>
 
                     {/* Details Table */}
                     <div className="border-t border-white/10 pt-8">
-                        <h3 className="text-lg font-bold mb-4 text-slate-300">💡 Scoring Details (Debug)</h3>
+                        <h3 className="text-lg font-bold mb-4 text-slate-300">💡 점수 상세 (디버그)</h3>
                         <div className="bg-slate-800/40 rounded-lg p-4 font-mono text-sm space-y-2">
                             <div className="flex justify-between">
-                                <span>Base Score</span>
+                                <span>기본 점수</span>
                                 <span>50</span>
                             </div>
                             <div className="flex justify-between text-yellow-300">
-                                <span>Element Balance</span>
+                                <span>오행 균형</span>
                                 <span>{result.details?.balanceScore ?? 0}</span>
                             </div>
                             <div className="flex justify-between text-pink-300">
-                                <span>Harmonies (Hap)</span>
+                                <span>화합 (합)</span>
                                 <span>{result.details?.harmonyScore ?? 0 > 0 ? result.details?.harmonyScore : 0}</span>
                             </div>
                             <div className="flex justify-between text-red-300">
-                                <span>Clashes (Chung)</span>
+                                <span>충돌 (충)</span>
                                 <span>{result.details?.harmonyScore ?? 0 < 0 ? result.details?.harmonyScore : 0}</span>
                             </div>
                         </div>

@@ -1,9 +1,10 @@
 ﻿'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { XCircle, ChevronLeft, AlertCircle } from 'lucide-react';
+import { trackPaymentFail } from '@/lib/analytics';
 
 function FailContent() {
   const searchParams = useSearchParams();
@@ -11,6 +12,13 @@ function FailContent() {
   const code = searchParams.get('code');
   const message = searchParams.get('message');
   const normalizedCode = (code || '').toUpperCase();
+
+  const normalizedMessage = message || '결제 중 문제가 발생해 취소되었거나 실패했습니다. 잠시 후 다시 시도해 주세요.';
+
+  useEffect(() => {
+    trackPaymentFail(null, normalizedCode || 'FAILED');
+  }, [normalizedCode]);
+
   const failureType = (() => {
     if (normalizedCode === 'USER_CANCEL' || normalizedCode === 'CANCELED') return 'cancel';
     if (normalizedCode === 'INVALID_PAYMENT_AMOUNT' || normalizedCode === 'AMOUNT_MISMATCH') return 'amount';
@@ -43,8 +51,8 @@ function FailContent() {
             <div className="flex items-start gap-3 text-left">
               <AlertCircle className="w-6 h-6 text-rose-400 shrink-0 mt-0.5" />
               <div>
-                <p className="text-rose-400 font-bold text-base sm:text-lg">실패 코드: {code || 'UNKNOWN'}</p>
-                <p className="text-rose-400/80 font-medium text-sm sm:text-base mt-2 leading-relaxed">{message || '결제 중 문제가 발생해 취소되었거나 실패했습니다. 잠시 후 다시 시도해 주세요.'}</p>
+                <p className="text-rose-400 font-bold text-base sm:text-lg">실패 코드: {normalizedCode || 'UNKNOWN'}</p>
+                <p className="text-rose-400/80 font-medium text-sm sm:text-base mt-2 leading-relaxed">{normalizedMessage}</p>
               </div>
             </div>
           </div>
@@ -64,7 +72,7 @@ function FailContent() {
             </button>
             <button
               onClick={() => router.push('/')}
-              className="py-4 sm:py-5 bg-primary text-white font-black text-base sm:text-lg rounded-2xl hover:scale-105 transition-all flex items-center justify-center gap-2 shadow-xl min-h-[48px] sm:col-span-2"
+              className="py-4 sm:py-5 bg-primary text-white font-black text-base sm:text-lg rounded-2xl hover:scale-105 transition-all flex items-center justify-center gap-2 shadow-lg min-h-[48px] sm:col-span-2"
             >
               <ChevronLeft className="w-5 h-5" />
               {failureType === 'cancel' ? '홈으로' : '홈으로 이동'}

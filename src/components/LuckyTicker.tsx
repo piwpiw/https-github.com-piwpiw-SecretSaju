@@ -22,9 +22,9 @@ export default function LuckyTicker() {
     }, []);
 
     return (
-        <div className="bg-slate-900/80 backdrop-blur-md border-t border-slate-800 py-1.5 overflow-hidden">
-            <div className="max-w-6xl mx-auto px-4 flex items-center gap-4">
-                <span className="text-[9px] font-black bg-indigo-500 text-white px-1.5 py-0.5 rounded tracking-widest uppercase shrink-0">Live</span>
+    <div className="bg-slate-900/80 backdrop-blur-md border-t border-slate-800 py-1.5 overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 flex items-center gap-4">
+                <span className="text-[9px] font-black bg-indigo-500 text-white px-1.5 py-0.5 rounded tracking-widest uppercase shrink-0">실시간</span>
                 <div className="relative h-4 flex-1">
                     <motion.div
                         key={index}
@@ -39,7 +39,7 @@ export default function LuckyTicker() {
                 </div>
                 <div className="flex items-center gap-1 opacity-40">
                     <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-[8px] font-black text-slate-500 uppercase">Realtime Sync</span>
+                    <span className="text-[8px] font-black text-slate-500 uppercase">실시간 동기화</span>
                 </div>
             </div>
         </div>

@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "startedAt": "2026-03-05T05:05:21.699Z",
+    "finishedAt": "2026-03-05T05:10:13.752Z",
+    "durationMs": 292053,
+    "baseUrl": "http://127.0.0.1:3002",
+    "email": "piwpiw@naver.com",
+    "runParallel": false,
+    "useCdp": false,
+    "cdpUrlUsed": ""
+  },
+  "checks": [
+    {
+      "command": "smoke-admin",
+      "args": [
+        "scripts\\smoke-admin-mode.mjs",
+        "--base-url",
+        "http://127.0.0.1:3002",
+        "--email",
+        "piwpiw@naver.com",
+        "--password",
+        "admin"
+      ],
+      "status": "failed",
+      "exitCode": 1,
+      "startedAt": "2026-03-05T05:05:22.185Z",
+      "endedAt": "2026-03-05T05:05:56.252Z",
+      "durationMs": 34067,
+      "error": "Exited with code 1"
+    },
+    {
+      "command": "smoke-home",
+      "args": [
+        "scripts\\mcp-home-smoke.mjs"
+      ],
+      "status": "failed",
+      "exitCode": 1,
+      "startedAt": "2026-03-05T05:05:56.252Z",
+      "endedAt": "2026-03-05T05:08:04.899Z",
+      "durationMs": 128647,
+      "error": "Exited with code 1"
+    },
+    {
+      "command": "smoke-browser",
+      "args": [
+        "scripts\\mcp-browser-smoke.mjs"
+      ],
+      "status": "failed",
+      "exitCode": 1,
+      "startedAt": "2026-03-05T05:08:04.899Z",
+      "endedAt": "2026-03-05T05:10:13.752Z",
+      "durationMs": 128853,
+      "error": "Exited with code 1"
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "passed": 0,
+    "failed": 3,
+    "status": "failed"
+  }
+}

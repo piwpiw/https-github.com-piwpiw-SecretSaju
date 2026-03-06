@@ -109,6 +109,7 @@ export default function SvgChart({
     );
 
     const shouldAnimate = mounted && inView;
+    const chartSummary = data.map((item) => `${item.label} ${item.value}`).join(", ");
 
     return (
         <div ref={ref} className={`flex flex-col items-center gap-2 ${className}`}>
@@ -129,6 +130,8 @@ export default function SvgChart({
                     height={size}
                     viewBox={`0 0 ${size} ${size}`}
                     className="overflow-visible drop-shadow-[0_0_20px_rgba(168,85,247,0.15)]"
+                    role="img"
+                    aria-label={title ? `${title}: ${chartSummary}` : chartSummary}
                 >
                     {/* ── 배경 그리드 링 ── */}
                     {steps.map((step, si) => {

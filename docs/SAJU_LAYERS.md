@@ -1,4 +1,4 @@
-# Secret Paws - Saju Layer System Architecture
+# Secret Saju - Saju Layer System Architecture
 
 **철학**: 정통 사주 명리학 기반 + Y2K 게임 감성
 

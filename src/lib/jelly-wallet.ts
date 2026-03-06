@@ -15,15 +15,31 @@ import { getUserFromCookie } from './kakao-auth';
 const WALLET_STORAGE_KEY = 'secret_paws_jelly_wallet';
 const UNLOCK_STORAGE_KEY = 'secret_paws_unlocks';
 const ADMIN_STORAGE_KEY = 'secret_paws_mock_admin';
+const ADMIN_EMAILS = ['piwpiw@naver.com'];
+const ADMIN_COOKIE_NAME = 'secret_paws_mock_admin';
+
+function hasCookieAdminFlag(): boolean {
+    if (typeof document === 'undefined') return false;
+    const cookiePair = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith(`${ADMIN_COOKIE_NAME}=`));
+    return cookiePair?.split('=')[1] === 'true';
+}
+
+function hasLocalStorageAdminFlag(): boolean {
+    if (typeof localStorage === 'undefined') return false;
+    return localStorage.getItem(ADMIN_STORAGE_KEY) === 'true';
+}
 
 /**
  * Check if current user is admin (mocked via localStorage)
  */
 export function isAdminUser(): boolean {
     if (typeof window === 'undefined') return false;
-    if (localStorage.getItem(ADMIN_STORAGE_KEY) === 'true') return true;
+    if (hasLocalStorageAdminFlag() || hasCookieAdminFlag()) return true;
     const user = getUserFromCookie();
-    return user?.id === 'admin-bypass-007';
+    const email = user?.email?.toLowerCase();
+    return user?.id === 'admin-bypass-007' || (email ? ADMIN_EMAILS.includes(email) : false);
 }
 
 /**

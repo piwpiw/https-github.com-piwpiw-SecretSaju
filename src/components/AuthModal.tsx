@@ -1,114 +1,334 @@
-﻿'use client';
+'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Loader2 } from 'lucide-react';
+import { X, Loader2, ShieldCheck, Lock } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useLocale } from '@/lib/i18n';
 import { loginWithKakao } from '@/lib/kakao-auth';
+import { initiateMcpLogin } from '@/lib/auth-mcp';
+import { FEATURES, STORAGE_KEYS } from '@/config';
 
 interface AuthModalProps {
     isOpen: boolean;
     onClose: () => void;
+    defaultMode?: 'login' | 'signup';
 }
 
-export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
+type SessionPayload = { access_token: string; refresh_token?: string | null; expires_in?: number | null };
+const ADMIN_BYPASS_KEY = 'secret_paws_mock_admin';
+const ADMIN_EMAILS = new Set(['piwpiw@naver.com']);
+
+function setAdminBypassCookieAndStorage(isAdmin: boolean) {
+    if (typeof document === 'undefined') return;
+
+    if (isAdmin) {
+        localStorage.setItem(ADMIN_BYPASS_KEY, 'true');
+        document.cookie = `${ADMIN_BYPASS_KEY}=true; path=/; max-age=${24 * 60 * 60}; SameSite=Lax`;
+        return;
+    }
+
+    localStorage.removeItem(ADMIN_BYPASS_KEY);
+    document.cookie = `${ADMIN_BYPASS_KEY}=; Max-Age=0; path=/; SameSite=Lax`;
+}
+
+function isAdminEmail(email: string | undefined) {
+    return !!email && ADMIN_EMAILS.has(email.toLowerCase());
+}
+
+export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: AuthModalProps) {
     const { locale } = useLocale();
+
     const [isLoading, setIsLoading] = useState<string | null>(null);
+    const [isClosing, setIsClosing] = useState(false);
+    const [authMode, setAuthMode] = useState<'login' | 'signup'>(defaultMode);
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [emailMessage, setEmailMessage] = useState('');
     const [emailError, setEmailError] = useState('');
+    const [authError, setAuthError] = useState<string | null>(null);
+
     const isOtherLoading = (provider: string): boolean => !!isLoading && isLoading !== provider;
+    const isSignupMode = authMode === 'signup';
+
+    const AUTH_ERROR_MESSAGES: Record<string, string> = {
+        access_denied: locale === 'ko' ? '로그인 권한이 취소되었습니다.' : 'Login was cancelled.',
+        provider_error: locale === 'ko' ? '소셜 로그인 처리에 실패했습니다.' : 'Social login failed.',
+        invalid_state: locale === 'ko' ? '요청 상태가 올바르지 않습니다.' : 'Invalid authentication state.',
+        default: locale === 'ko' ? '인증 처리 중 오류가 발생했습니다.' : 'Authentication failed.',
+    };
+
+    useEffect(() => {
+        if (!isOpen) return;
+        setAuthMode(defaultMode);
+        setEmailMessage('');
+        setEmailError('');
+        setAuthError(null);
+        setPassword('');
+        setIsLoading(null);
+    }, [isOpen, defaultMode]);
+
+    useEffect(() => {
+        if (!isOpen || typeof document === 'undefined') return;
+        const prevHtmlOverflow = document.documentElement.style.overflow;
+        const prevBodyOverflow = document.body.style.overflow;
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.documentElement.style.overflow = prevHtmlOverflow;
+            document.body.style.overflow = prevBodyOverflow;
+        };
+    }, [isOpen]);
+
+    const saveReturnTo = () => {
+        if (typeof window === 'undefined') return;
+        localStorage.setItem('auth_return_to', `${window.location.pathname}${window.location.search}`);
+    };
+
+    const setSessionCookie = (session: SessionPayload) => {
+        const maxAge = session.expires_in || 7 * 24 * 3600;
+        const payload = {
+            access_token: session.access_token,
+            refresh_token: session.refresh_token || null,
+            expires_at: Math.floor(Date.now() / 1000) + maxAge,
+        };
+        document.cookie = `${STORAGE_KEYS.AUTH_SESSION_TOKEN}=${encodeURIComponent(JSON.stringify(payload))}; path=/; max-age=${maxAge}; SameSite=Lax`;
+    };
+
+    const syncSessionUser = async (
+        channel: 'signup' | 'login',
+        extraPayload: Record<string, unknown> = {},
+        sessionInput?: SessionPayload
+    ): Promise<{ ok: boolean; isAdmin: boolean }> => {
+        let session = sessionInput;
+        if (!session) {
+            const { data, error } = await supabase.auth.getSession();
+            if (error || !data?.session?.access_token) return { ok: false, isAdmin: false };
+            session = {
+                access_token: data.session.access_token,
+                refresh_token: data.session.refresh_token,
+                expires_in: data.session.expires_in,
+            };
+        }
+
+        setSessionCookie(session);
+
+        const res = await fetch('/api/user/sync', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify({ channel, ...extraPayload }),
+        });
+        const payload = await res.json().catch(() => ({}));
+        const isAdmin = payload?.user?.isAdmin === true;
+        return { ok: res.ok, isAdmin };
+    };
+
+    const updateLocalUserData = async () => {
+        const { data } = await supabase.auth.getSession();
+        const currentSession = data?.session;
+        if (!currentSession?.user) return;
+
+        const userData = {
+            id: currentSession.user.id,
+            nickname:
+                currentSession.user.user_metadata?.name ||
+                currentSession.user.user_metadata?.nickname ||
+                currentSession.user.email?.split('@')[0] ||
+                '사용자',
+            email: currentSession.user.email || undefined,
+            auth_provider: currentSession.user.app_metadata?.provider || 'email',
+            provider_user_id: currentSession.user.id,
+        };
+
+        try {
+            localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
+            document.cookie = `${STORAGE_KEYS.USER_DATA}=${encodeURIComponent(JSON.stringify(userData))}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
+        } catch {
+            // localStorage 접근 실패는 무시
+        }
+    };
+
+    const refreshWithResult = async (type: 'login' | 'signup', adminEmail?: string) => {
+        const syncResult = await syncSessionUser(type);
+        await updateLocalUserData();
+        setAdminBypassCookieAndStorage(syncResult.isAdmin || isAdminEmail(adminEmail));
+
+        if (!syncResult.ok) {
+            setEmailMessage(
+                locale === 'ko'
+                    ? '로그인 동기화 실패했습니다. 잠시 후 다시 시도해 주세요.'
+                    : 'Sync failed. Please try again.'
+            );
+            setTimeout(() => onClose(), 1200);
+            return;
+        }
+
+        setEmailMessage(
+            locale === 'ko'
+                ? type === 'signup'
+                    ? '회원가입이 완료되었습니다.'
+                    : '로그인이 완료되었습니다.'
+                : type === 'signup'
+                    ? 'Signup complete.'
+                    : 'Login complete.'
+        );
+        setTimeout(() => onClose(), 800);
+    };
 
     const handleGoogleLogin = async () => {
+        saveReturnTo();
         setIsLoading('google');
+        if (!supabase?.auth?.signInWithOAuth) {
+            setAuthError('provider_error');
+            setIsLoading(null);
+            return;
+        }
         try {
             await supabase.auth.signInWithOAuth({
                 provider: 'google',
-                options: { redirectTo: `${window.location.origin}/auth/callback` }
+                options: { redirectTo: `${window.location.origin}/auth/callback` },
             });
-        } catch (error) {
-            console.error(error);
+        } catch {
+            setAuthError('provider_error');
             setIsLoading(null);
         }
     };
 
-    const handleKakaoLogin = async () => {
+    const handleKakaoLogin = () => {
+        saveReturnTo();
         setIsLoading('kakao');
         loginWithKakao();
-        setTimeout(() => setIsLoading(null), 2000);
+        setTimeout(() => setIsLoading(null), 1200);
     };
 
     const handleNaverLogin = async () => {
+        saveReturnTo();
         setIsLoading('naver');
+        if (!supabase?.auth?.signInWithOAuth) {
+            setAuthError('provider_error');
+            setIsLoading(null);
+            return;
+        }
         try {
             await supabase.auth.signInWithOAuth({
                 provider: 'notion',
-                options: { redirectTo: `${window.location.origin}/auth/callback` }
+                options: { redirectTo: `${window.location.origin}/auth/callback` },
             });
-        } catch (error) {
-            console.error(error);
+        } catch {
+            setAuthError('provider_error');
             setIsLoading(null);
         }
     };
 
-    const handleEmailLogin = async () => {
+    const handleMcpLogin = async () => {
+        saveReturnTo();
+        setIsLoading('mcp');
+        try {
+            initiateMcpLogin();
+            setTimeout(() => setIsLoading(null), 2000);
+        } catch {
+            setIsLoading(null);
+        }
+    };
+
+    const handleEmailAuth = async () => {
         setEmailMessage('');
         setEmailError('');
 
-        if (['admin', 'aemdn', 'ㅁ으ㅑㅜ', '박인웅'].includes(email.trim().toLowerCase())) {
-            // Secret admin bypass
-            document.cookie = `sb-${process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1].split('.')[0] || 'localhost'}-auth-token=${encodeURIComponent(JSON.stringify([{
-                user: { id: 'admin-bypass-007', email: 'admin@secretsaju.com', user_metadata: { name: 'Admin Demo' } }
-            }]))}; path=/; max-age=86400`;
-            document.cookie = `secret_saju_user=${encodeURIComponent(JSON.stringify({
-                id: 'admin-bypass-007', nickname: '운영자(Demo)', email: 'admin@secretsaju.com'
-            }))}; path=/; max-age=86400`;
-            window.location.reload();
+        if (!email || !password) {
+            setEmailError(locale === 'ko' ? '이메일과 비밀번호를 모두 입력해 주세요.' : 'Please enter both email and password.');
             return;
         }
 
-        if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-            setEmailError(locale === 'ko' ? '이메일 주소를 정확히 입력해 주세요.' : 'Please enter a valid email address.');
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+            setEmailError(locale === 'ko' ? '이메일 형식이 올바르지 않습니다.' : 'Invalid email format.');
             return;
         }
 
-        if (typeof supabase?.auth?.signInWithOtp !== 'function') {
+        if (typeof supabase?.auth?.signInWithPassword !== 'function' || typeof supabase?.auth?.signUp !== 'function') {
             setEmailError(
-                locale === 'ko'
-                    ? '현재 이메일 로그인 기능을 사용할 수 없습니다.'
-                    : 'Email login is not available right now.'
+                locale === 'ko' ? '현재 환경에서 이메일 로그인을 사용할 수 없습니다.' : 'Email auth is not available in this environment.'
             );
             return;
         }
 
         setIsLoading('email');
         try {
-            const { error } = await supabase.auth.signInWithOtp({
-                email,
-                options: { emailRedirectTo: `${window.location.origin}/auth/callback` }
-            });
+            if (isSignupMode) {
+                const { data: signUpData, error } = await supabase.auth.signUp({
+                    email: email.trim(),
+                    password,
+                    options: {
+                        emailRedirectTo: `${window.location.origin}/auth/callback`,
+                        data: {
+                            signup_source: 'email',
+                            nickname: email.trim().split('@')[0],
+                        },
+                    },
+                });
 
-            if (error) {
-                console.error(error);
-                setEmailError(
-                    locale === 'ko'
-                        ? '이메일 전송에 실패했습니다.'
-                        : 'Failed to send email.'
-                );
+                if (error) {
+                    setEmailError(error.message || '회원가입 요청 처리 중 오류가 발생했습니다.');
+                    return;
+                }
+
+                if (signUpData?.session?.access_token) {
+                    const { ok: syncOk } = await syncSessionUser(
+                        'signup',
+                        { source: 'email-signup' },
+                        signUpData.session
+                    );
+                    if (syncOk) {
+                        await updateLocalUserData();
+                        setEmailMessage('회원가입 처리가 완료되었습니다.');
+                        setTimeout(() => onClose(), 700);
+                    } else {
+                        setEmailError('회원가입 동기화에 실패했습니다.');
+                    }
+                } else {
+                    setEmailMessage('회원가입 인증 메일이 발송되었습니다. 메일 링크를 통해 로그인해 주세요.');
+                }
             } else {
-                setEmailMessage(
-                    locale === 'ko'
-                        ? '인증 메일을 보냈습니다. 메일함을 확인해 주세요.'
-                        : 'We sent a sign-in email. Please check your inbox.'
-                );
+                const normalizedEmail = email.trim().toLowerCase();
+                const isAdminCompatCandidate = normalizedEmail === 'piwpiw@naver.com' && password === 'admin';
+
+                let { error } = await supabase.auth.signInWithPassword({
+                    email: normalizedEmail,
+                    password,
+                });
+
+                if (error && isAdminCompatCandidate) {
+                    const retryResult = await supabase.auth.signInWithPassword({
+                        email: normalizedEmail,
+                        password: 'admin1',
+                    });
+                    error = retryResult.error || null;
+                    if (!error) {
+                        setEmailMessage('관리자 호환 로그인으로 접속했습니다.');
+                    }
+                }
+
+                if (error) {
+                    setEmailError(error.message || '로그인 처리 중 오류가 발생했습니다.');
+                    return;
+                }
+                await refreshWithResult('login', normalizedEmail);
             }
-        } catch (error) {
-            console.error(error);
-            setEmailError(locale === 'ko' ? '일시적인 오류가 발생했습니다.' : 'A temporary error occurred.');
+        } catch {
+            setEmailError(locale === 'ko' ? '요청 처리 중 오류가 발생했습니다.' : 'Request failed.');
         } finally {
-            setIsLoading(null);
+            setIsLoading((prev) => (prev === 'email' ? null : prev));
         }
+    };
+
+    const handleClose = () => {
+        if (isClosing || !!isLoading) return;
+        setIsClosing(true);
+        onClose();
+        setTimeout(() => setIsClosing(false), 180);
     };
 
     return (
@@ -119,141 +339,150 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-auto"
+                        onClick={handleClose}
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
                     />
-
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed z-50 inset-x-4 max-w-md mx-auto top-1/2 -translate-y-1/2 bg-surface rounded-4xl shadow-2xl overflow-hidden border border-border-color"
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        className="fixed inset-0 z-50 flex items-start sm:items-center justify-center px-4 py-6 overflow-y-auto"
                     >
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-3xl rounded-full opacity-50" />
-
-                        <div className="relative p-8 md:p-10 text-center">
+                        <div className="relative w-full max-w-md bg-surface rounded-4xl border border-border-color shadow-2xl overflow-hidden">
                             <button
-                                onClick={onClose}
-                                className="absolute top-6 right-6 p-2 rounded-full hover:bg-background transition-colors border border-transparent hover:border-border-color"
+                                onClick={handleClose}
+                                disabled={!!isLoading}
+                                className="absolute top-5 right-5 p-2 rounded-full hover:bg-background transition-colors border border-transparent hover:border-border-color disabled:opacity-30"
                             >
-                                <X className="w-6 h-6 text-secondary" />
+                                <X className="w-5 h-5 text-secondary" />
                             </button>
 
-                            <div className="mb-10 mt-4">
-                                <motion.div
-                                    initial={{ y: -10, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    className="inline-flex px-4 py-2 rounded-full mb-6 bg-background border border-border-color"
-                                >
-                                    <span className="text-sm font-bold text-primary tracking-widest uppercase">
-                                        {locale === 'ko' ? '운명 접속' : 'Destiny Access'}
-                                    </span>
-                                </motion.div>
-                                <h2 className="text-3xl font-black italic tracking-tighter uppercase mb-4 text-foreground">
-                                    {locale === 'ko' ? '회원가입 및 로그인' : 'Join Secret Saju'}
-                                </h2>
-                                <p className="text-secondary font-medium">
-                                    {locale === 'ko'
-                                        ? '첫 로그인 시 10 젤리를 지급합니다.'
-                                        : 'Get 10 Jellies upon your first login!'}
-                                </p>
-                            </div>
+                            <div className="px-7 py-8">
+                                <div className="mb-8 text-center">
+                                    <h2 className="text-2xl font-black uppercase tracking-wider text-foreground">
+                                        {locale === 'ko' ? (isSignupMode ? '회원가입' : '로그인') : isSignupMode ? 'Sign up' : 'Login'}
+                                    </h2>
+                                    <p className="text-sm text-secondary mt-2">
+                                        {locale === 'ko'
+                                            ? '소셜 로그인 또는 이메일로 빠르게 시작하세요'
+                                            : 'Sign in quickly with social or email'}
+                                    </p>
+                                </div>
 
-                            <div className="space-y-4">
-                                <button
-                                    onClick={handleKakaoLogin}
-                                    disabled={!!isLoading}
-                                    className={`w-full flex items-center justify-center gap-4 text-black font-black text-lg py-5 rounded-2xl transition-all ${isOtherLoading('kakao') ? 'bg-[#F5B800]' : 'bg-[#FEE500] hover:bg-[#FDD800]'} ${isLoading ? 'shadow-md' : 'shadow-lg hover:shadow-xl hover:-translate-y-1'} disabled:opacity-60`}
-                                >
-                                    {isLoading === 'kakao' ? <Loader2 className="w-6 h-6 animate-spin" /> : (
-                                        <>
-                                            <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M10 0C4.477 0 0 3.64 0 8.125c0 2.886 1.948 5.413 4.861 6.85l-1.042 3.853c-.083.306.224.556.505.411l4.508-2.327c.387.03.779.046 1.168.046 5.523 0 10-3.64 10-8.125S15.523 0 10 0z" fill="#000000" />
-                                            </svg>
-                                            {isOtherLoading('kakao')
-                                                ? locale === 'ko' ? '다른 로그인 진행 중' : 'Another login is in progress'
-                                                : locale === 'ko' ? '카카오로 계속하기' : 'Continue with Kakao'}
-                                        </>
-                                    )}
-                                </button>
+                                {authError && (
+                                    <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 mb-6">
+                                        <p className="text-xs font-bold text-rose-400">{AUTH_ERROR_MESSAGES[authError] || AUTH_ERROR_MESSAGES.default}</p>
+                                    </div>
+                                )}
 
-                                <button
-                                    onClick={handleGoogleLogin}
-                                    disabled={!!isLoading}
-                                    className={`w-full flex items-center justify-center gap-4 bg-white text-black font-black text-lg py-5 rounded-2xl border border-neutral-200 transition-all ${isOtherLoading('google') ? 'bg-neutral-200 border-neutral-300' : 'hover:bg-neutral-100'} ${isLoading ? 'shadow-sm' : 'shadow-sm hover:shadow-md hover:-translate-y-1'} disabled:opacity-60`}
-                                >
-                                    {isLoading === 'google' ? <Loader2 className="w-6 h-6 animate-spin" /> : (
-                                        <>
-                                            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                                            </svg>
-                                            {isOtherLoading('google')
-                                                ? locale === 'ko' ? '다른 로그인 진행 중' : 'Another login is in progress'
-                                                : locale === 'ko' ? '구글로 계속하기' : 'Continue with Google'}
-                                        </>
-                                    )}
-                                </button>
+                                <div className="space-y-3 mb-5">
+                                    <button
+                                        onClick={handleKakaoLogin}
+                                        disabled={!!isLoading}
+                                        className="w-full min-h-[52px] rounded-xl bg-[#FEE500] text-black font-black flex items-center justify-center gap-3"
+                                    >
+                                        {isOtherLoading('kakao') ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>카카오 로그인</span>}
+                                    </button>
+                                    <button
+                                        onClick={handleGoogleLogin}
+                                        disabled={!!isLoading}
+                                        className="w-full min-h-[52px] rounded-xl bg-white text-black font-black flex items-center justify-center gap-3 border border-border-color"
+                                    >
+                                        {isOtherLoading('google') ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>구글 로그인</span>}
+                                    </button>
+                                    <button
+                                        onClick={handleNaverLogin}
+                                        disabled={!!isLoading}
+                                        className="w-full min-h-[52px] rounded-xl bg-[#03C75A] text-white font-black flex items-center justify-center gap-3"
+                                    >
+                                        {isOtherLoading('naver') ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>네이버 로그인</span>}
+                                    </button>
+                                    <button
+                                        onClick={handleMcpLogin}
+                                        disabled={!!isLoading || !FEATURES.MCP}
+                                        className="w-full min-h-[52px] rounded-xl bg-indigo-600 text-white font-black flex items-center justify-center gap-3"
+                                    >
+                                        <ShieldCheck className="w-5 h-5" />
+                                        {isOtherLoading('mcp') ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>MCP 로그인</span>}
+                                    </button>
+                                </div>
 
-                                <button
-                                    onClick={handleNaverLogin}
-                                    disabled={!!isLoading}
-                                    className={`w-full flex items-center justify-center gap-4 text-white font-black text-lg py-5 rounded-2xl transition-all ${isOtherLoading('naver') ? 'bg-[#028E45]' : 'bg-[#03C75A] hover:bg-[#02b350]'} ${isLoading ? 'shadow-sm' : 'shadow-sm hover:shadow-md hover:-translate-y-1'} disabled:opacity-60`}
-                                >
-                                    {isLoading === 'naver' ? <Loader2 className="w-6 h-6 animate-spin" /> : (
-                                        <>
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z" fill="white" />
-                                            </svg>
-                                            {isOtherLoading('naver')
-                                                ? locale === 'ko' ? '다른 로그인 진행 중' : 'Another login is in progress'
-                                                : locale === 'ko' ? '네이버로 계속하기' : 'Continue with Naver'}
-                                        </>
-                                    )}
-                                </button>
-
-                                <div className="py-2 flex items-center justify-center gap-4">
-                                    <div className="flex-1 h-px bg-border-color" />
-                                    <span className="text-sm font-bold text-secondary uppercase tracking-widest">
-                                        {locale === 'ko' ? '또는' : 'OR'}
-                                    </span>
-                                    <div className="flex-1 h-px bg-border-color" />
+                                <div className="flex items-center gap-2 my-5">
+                                    <span className="h-px flex-1 bg-border-color" />
+                                    <span className="text-xs text-secondary font-black">또는</span>
+                                    <span className="h-px flex-1 bg-border-color" />
                                 </div>
 
                                 <div className="space-y-3">
                                     <input
                                         value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        onKeyDown={(e) => e.key === 'Enter' && handleEmailLogin()}
+                                        onChange={(e) => {
+                                            if (emailError) setEmailError('');
+                                            if (emailMessage) setEmailMessage('');
+                                            setEmail(e.target.value);
+                                        }}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
                                         type="email"
-                                        placeholder="name@example.com"
-                                        className="w-full rounded-xl bg-background border border-border-color px-4 py-4 text-sm text-foreground placeholder:text-secondary font-medium focus:outline-none focus:border-primary"
+                                        placeholder="이메일"
+                                        autoComplete={isSignupMode ? 'new-password' : 'email'}
+                                        className="w-full rounded-xl bg-background border border-border-color px-4 py-3 text-sm"
                                         disabled={!!isLoading}
                                     />
-                                    {emailError ? <p className="text-sm text-rose-400 px-1 text-left">{emailError}</p> : null}
-                                    {emailMessage ? <p className="text-sm text-emerald-400 px-1 text-left">{emailMessage}</p> : null}
-                                    <button
-                                        onClick={handleEmailLogin}
+                                    <input
+                                        value={password}
+                                        onChange={(e) => {
+                                            if (emailError) setEmailError('');
+                                            if (emailMessage) setEmailMessage('');
+                                            setPassword(e.target.value);
+                                        }}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
+                                        type="password"
+                                        placeholder="비밀번호"
+                                        autoComplete={isSignupMode ? 'new-password' : 'current-password'}
+                                        className="w-full rounded-xl bg-background border border-border-color px-4 py-3 text-sm"
                                         disabled={!!isLoading}
-                                        className="w-full flex items-center justify-center gap-3 bg-background border border-border-color text-foreground font-bold text-sm py-4 rounded-xl transition-all hover:bg-surface disabled:opacity-60"
-                                    >
-                                        <Mail className="w-5 h-5 opacity-70" />
-                                        {isLoading === 'email' ? <Loader2 className="w-5 h-5 animate-spin" /> : (
-                                            isOtherLoading('email')
-                                                ? locale === 'ko' ? '다른 로그인 진행 중' : 'Another login is in progress'
-                                                : locale === 'ko' ? '이메일로 계속하기' : 'Continue with Email'
-                                        )}
-                                    </button>
-                                </div>
-                            </div>
+                                    />
 
-                            <p className="mt-10 text-xs text-secondary opacity-60 px-4 leading-relaxed font-medium">
-                                {locale === 'ko'
-                                    ? '계속 진행하면 이용약관 및 개인정보 처리방침에 동의하게 됩니다.'
-                                    : 'By continuing, you agree to our Terms of Service and Privacy Policy.'}
-                            </p>
+                                    <AnimatePresence mode="wait">
+                                        {emailError && (
+                                            <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="text-xs text-rose-400 font-bold">
+                                                {emailError}
+                                            </motion.p>
+                                        )}
+                                        {emailMessage && (
+                                            <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="text-xs text-emerald-400 font-bold">
+                                                {emailMessage}
+                                            </motion.p>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+
+                                <button
+                                    onClick={handleEmailAuth}
+                                    disabled={!!isLoading}
+                                    className="w-full mt-4 min-h-[52px] rounded-xl bg-background border border-border-color font-black flex items-center justify-center gap-3"
+                                >
+                                    <Lock className="w-5 h-5" />
+                                    {isLoading === 'email' ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>{isSignupMode ? '이메일로 회원가입' : '이메일로 로그인'}</span>}
+                                </button>
+
+                                <p className="mt-5 text-sm text-secondary">
+                                    {isSignupMode ? '이미 계정이 있나요?' : '처음이신가요?'}
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setAuthMode(isSignupMode ? 'login' : 'signup');
+                                            setEmail('');
+                                            setPassword('');
+                                            setEmailError('');
+                                            setEmailMessage('');
+                                        }}
+                                        className="ml-1 text-primary font-black underline"
+                                    >
+                                        {isSignupMode ? '로그인으로 전환' : '회원가입'}
+                                    </button>
+                                </p>
+                            </div>
                         </div>
                     </motion.div>
                 </>

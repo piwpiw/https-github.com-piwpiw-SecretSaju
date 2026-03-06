@@ -1,73 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { STORAGE_KEYS } from '@/config';
 import { getSupabaseAdmin } from '@/lib/supabase';
-import { getKakaoUser } from '@/lib/kakao-auth';
+import { getAuthenticatedUser } from '@/lib/api-auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
+    const authResult = await getAuthenticatedUser(request);
+    if (authResult.error) return authResult.error;
+    if (!authResult.user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const supabase = getSupabaseAdmin();
+    if (!supabase) {
+        return NextResponse.json({ error: 'Database unavailable' }, { status: 503 });
+    }
+
     try {
-        // 1. Auth Check (via Kakao Token)
-        const accessToken = request.cookies.get(STORAGE_KEYS.KAKAO_TOKEN)?.value;
-        if (!accessToken && process.env.NEXT_PUBLIC_USE_MOCK_DATA !== 'true') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        // 2. Resolve Kakao User ID
-        const kakaoUser = await getKakaoUser(accessToken || '');
-        if (!kakaoUser) {
-            return NextResponse.json({ error: 'Invalid Session' }, { status: 401 });
-        }
-
-        const supabase = getSupabaseAdmin();
-        if (!supabase) {
-            return NextResponse.json({ error: 'Database unavailable' }, { status: 503 });
-        }
-
-        // 3. Get Wallet Balance via Join on Users table
-        // We know kakao_id, we need wallet.
-        // Query: Select balance from jelly_wallets where user_id in (select id from users where kakao_id = ?)
-
-        const { data: user, error: userError } = await supabase
-            .from('users')
-            .select('id, is_admin')
-            .eq('kakao_id', kakaoUser.id)
-            .single();
-
-        if (userError || !user) {
-            // User might need sync if not found
-            return NextResponse.json({ error: 'User not found in database', code: 'USER_NOT_SYNCED' }, { status: 404 });
-        }
-
         const { data: wallet, error: walletError } = await supabase
             .from('jelly_wallets')
             .select('balance')
-            .eq('user_id', user.id)
+            .eq('user_id', authResult.user.id)
             .single();
 
         if (walletError && walletError.code === 'PGRST116') {
-            // Wallet doesn't exist yet -> return 0 or create one?
-            // Ideally create one.
             const { data: newWallet, error: createError } = await supabase
                 .from('jelly_wallets')
-                .insert({ user_id: user.id, balance: 0 })
+                .insert({ user_id: authResult.user.id, balance: 0 })
                 .select('balance')
                 .single();
 
             if (createError) throw createError;
-            return NextResponse.json({ balance: newWallet.balance });
+            return NextResponse.json({ balance: newWallet.balance, isAdmin: authResult.user.isAdmin ?? false });
         }
 
         if (walletError) throw walletError;
 
         return NextResponse.json({
             balance: wallet.balance,
-            isAdmin: (user as any).is_admin
+            isAdmin: authResult.user.isAdmin ?? false,
         });
-
     } catch (error) {
         console.error('Wallet Balance API Error:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ balance: 0, isAdmin: false, degraded: true });
     }
 }
-

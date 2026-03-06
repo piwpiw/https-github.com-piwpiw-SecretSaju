@@ -1,5 +1,14 @@
 {
     "mcpServers": {
+        "browser-playwright": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@playwright/mcp@latest",
+                "--headless",
+                "--isolated"
+            ]
+        },
         "tosspayments-integration-guide": {
             "command": "npx",
             "args": [

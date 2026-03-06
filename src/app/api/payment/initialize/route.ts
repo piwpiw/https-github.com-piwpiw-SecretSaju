@@ -1,9 +1,11 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { APP_CONFIG } from '@/config';
 import { getAuthenticatedUser } from '@/lib/api-auth';
 import { insertNotionRow } from '@/lib/notion';
 import { buildErrorResponsePayload } from '@/lib/error-response';
+import { buildPaymentVerifySignature } from '@/lib/payment-verify';
 
 /**
  * POST /api/payment/initialize
@@ -22,7 +24,12 @@ export async function POST(req: NextRequest) {
       return createErrorResponse('PAYMENT_INVALID_CALLBACK_OVERRIDE', 'Callback override must be an object', 400);
     }
 
-    const resolveCallbackUrl = (target: 'success' | 'fail' | 'cancel', fallback: 'success' | 'fail' | 'cancel') => {
+    const resolveCallbackUrl = (
+      target: 'success' | 'fail' | 'cancel',
+      fallback: 'success' | 'fail' | 'cancel',
+      verifyToken: string,
+      verifySignature: string,
+    ) => {
       const baseUrl = APP_CONFIG.BASE_URL;
       if (!baseUrl) {
         return null;
@@ -30,8 +37,16 @@ export async function POST(req: NextRequest) {
 
       const fallbackUrl = `${baseUrl}/payment/${fallback}`;
       const raw = callbackOverride?.[target];
+
+      const buildUrl = (input: string) => {
+        const url = new URL(input, baseUrl);
+        url.searchParams.set('verifyToken', verifyToken);
+        url.searchParams.set('verifySignature', verifySignature);
+        return url.toString();
+      };
+
       if (!raw || typeof raw !== 'string') {
-        return fallbackUrl;
+        return buildUrl(fallbackUrl);
       }
 
       try {
@@ -52,7 +67,7 @@ export async function POST(req: NextRequest) {
           return null;
         }
 
-        return candidate.toString();
+        return buildUrl(candidate.toString());
       } catch {
         return null;
       }
@@ -62,6 +77,7 @@ export async function POST(req: NextRequest) {
       'taste': 'TRIAL',
       'smart': 'SMART',
       'pro': 'PRO',
+      'donation': 'DONATION',
     };
 
     const package_type = tierToPackage[tierId];
@@ -73,6 +89,7 @@ export async function POST(req: NextRequest) {
       TRIAL: { jellies: 1, bonus: 0, amount: 990, name: 'TRIAL - 1 Jelly' },
       SMART: { jellies: 3, bonus: 1, amount: 2900, name: 'SMART - 4 Jellies' },
       PRO: { jellies: 10, bonus: 3, amount: 9900, name: 'PRO - 13 Jellies' },
+      DONATION: { jellies: 50, bonus: 10, amount: 49000, name: 'DONATION - 60 Jellies' },
     };
 
     const selectedPackage = packages[package_type as keyof typeof packages];
@@ -85,7 +102,25 @@ export async function POST(req: NextRequest) {
       return authResult.error || createErrorResponse('PAYMENT_AUTH_REQUIRED', 'Unauthorized', 401);
     }
 
-    const orderId = `order_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const orderId = `order_${Date.now()}_${randomUUID().replace(/-/g, '')}`;
+    const verifyToken = randomUUID().replace(/-/g, '');
+    const verifySignature = buildPaymentVerifySignature(
+      orderId,
+      selectedPackage.amount,
+      verifyToken,
+    );
+
+    if (!verifySignature) {
+      await insertNotionRow({
+        category: 'ERROR',
+        title: 'Payment initialize failed: missing verification secret',
+        description: 'PAYMENT_VERIFY_SECRET is required for payment verification',
+        metadata: { userId: authResult.user.id, tierId },
+      });
+      return createErrorResponse('PAYMENT_CONFIG_MISSING', 'Payment verification config is missing', 500, {
+        reason: 'missing_verify_secret',
+      });
+    }
 
     const supabase = getSupabaseAdmin();
     const tossClientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
@@ -98,7 +133,9 @@ export async function POST(req: NextRequest) {
         description: 'Client key not configured',
         metadata: { userId: authResult.user.id, tierId },
       });
-      return createErrorResponse('PAYMENT_CONFIG_MISSING', 'Payment system not configured', 500, { reason: 'missing_toss_client_key' });
+      return createErrorResponse('PAYMENT_CONFIG_MISSING', 'Payment system not configured', 500, {
+        reason: 'missing_toss_client_key',
+      });
     }
 
     const { error: dbError } = await supabase.from('orders').insert({
@@ -108,7 +145,11 @@ export async function POST(req: NextRequest) {
       amount: selectedPackage.amount,
       jellies: selectedPackage.jellies + selectedPackage.bonus,
       status: 'pending',
-      metadata: { tierId },
+      metadata: {
+        tierId,
+        verifyToken,
+        verifySignature,
+      },
     });
 
     if (dbError) {
@@ -126,7 +167,10 @@ export async function POST(req: NextRequest) {
       }
 
       console.error('[Payment Init] DB error:', dbError);
-      return createErrorResponse('PAYMENT_ORDER_CREATE_FAILED', 'Failed to create order', 500, { orderId, error: dbError });
+      return createErrorResponse('PAYMENT_ORDER_CREATE_FAILED', 'Failed to create order', 500, {
+        orderId,
+        error: dbError,
+      });
     }
 
     const notionResult = await insertNotionRow({
@@ -150,12 +194,14 @@ export async function POST(req: NextRequest) {
       if (!missingBaseUrlResult.success) {
         console.warn('[Payment Init] Notion log failed:', missingBaseUrlResult.error);
       }
-      return createErrorResponse('PAYMENT_CALLBACK_URL_MISSING', 'Payment callback URL is not configured', 500, { orderId });
+      return createErrorResponse('PAYMENT_CALLBACK_URL_MISSING', 'Payment callback URL is not configured', 500, {
+        orderId,
+      });
     }
 
-    const successUrl = resolveCallbackUrl('success', 'success');
-    const failUrl = resolveCallbackUrl('fail', 'fail');
-    const cancelUrl = resolveCallbackUrl('cancel', 'fail');
+    const successUrl = resolveCallbackUrl('success', 'success', verifyToken, verifySignature);
+    const failUrl = resolveCallbackUrl('fail', 'fail', verifyToken, verifySignature);
+    const cancelUrl = resolveCallbackUrl('cancel', 'fail', verifyToken, verifySignature);
 
     if (!successUrl || !failUrl || !cancelUrl) {
       const invalidCallbackOverride = {
@@ -172,7 +218,10 @@ export async function POST(req: NextRequest) {
       if (!invalidResult.success) {
         console.warn('[Payment Init] Notion log failed:', invalidResult.error);
       }
-      return createErrorResponse('PAYMENT_CALLBACK_URL_INVALID', 'Payment callback URL is not allowed', 400, { orderId, invalidCallbackOverride });
+      return createErrorResponse('PAYMENT_CALLBACK_URL_INVALID', 'Payment callback URL is not allowed', 400, {
+        orderId,
+        invalidCallbackOverride,
+      });
     }
 
     return NextResponse.json({
@@ -181,10 +230,14 @@ export async function POST(req: NextRequest) {
       amount: selectedPackage.amount,
       orderName: selectedPackage.name,
       jellies: selectedPackage.jellies + selectedPackage.bonus,
+      packageType: package_type,
+      tierId,
       successUrl,
       failUrl,
       cancelUrl,
       customerName: customerName || '고객',
+      verifyToken,
+      verifySignature,
     });
   } catch (error) {
     console.error('Payment initialization error:', error);

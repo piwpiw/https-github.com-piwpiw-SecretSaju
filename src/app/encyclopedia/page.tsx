@@ -1,9 +1,13 @@
 ﻿"use client";
 
 import { useMemo, useState } from "react";
-import { Search, ArrowLeft } from "lucide-react";
+import { Search, ArrowLeft, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { getAllTenGodGuides } from "@/lib/terminology";
+import EncyclopediaIndex from "@/components/encyclopedia/EncyclopediaIndex";
+import AmbientSoundPortal from "@/components/ui/AmbientSoundPortal";
+import ReadingProgressBar from "@/components/ui/ReadingProgressBar";
 
 type TermCategory = "ALL" | "STEMS" | "BRANCHES" | "STARS" | "ENERGY";
 
@@ -30,6 +34,8 @@ const CATEGORIES: { id: TermCategory; label: string }[] = [
   { id: "STARS", label: "십성" },
   { id: "ENERGY", label: "신살/운성" },
 ];
+
+const INDEX_CHARS = ["ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
 
 export default function EncyclopediaPage() {
   const router = useRouter();
@@ -65,8 +71,33 @@ export default function EncyclopediaPage() {
     });
   }, [activeCategory, query, terms]);
 
+  const getInitial = (str: string) => {
+    const cho = [
+      'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+    ];
+    const code = str.charCodeAt(0) - 160224; // This is not standard. Standard is:
+    /*
+      const charCode = str.charCodeAt(0);
+      if (charCode < 44032 || charCode > 55203) return str[0];
+      return cho[Math.floor((charCode - 44032) / 588)];
+    */
+    const charCode = str.charCodeAt(0);
+    if (charCode < 44032 || charCode > 55203) return str[0];
+    return cho[Math.floor((charCode - 44032) / 588)];
+  };
+
+  const sortedFiltered = useMemo(() => {
+    return [...filtered].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+  }, [filtered]);
+
+  let lastInitial = "";
+
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 pb-24">
+    <main className="min-h-screen bg-slate-950 text-slate-100 pb-24 relative">
+      <ReadingProgressBar />
+      <AmbientSoundPortal />
+      <EncyclopediaIndex />
+
       <div className="max-w-4xl mx-auto px-6 py-12">
         <button onClick={() => router.back()} className="inline-flex items-center gap-2 text-slate-400 hover:text-white">
           <ArrowLeft className="w-4 h-4" />
@@ -101,19 +132,54 @@ export default function EncyclopediaPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {filtered.map((term) => (
-            <article key={term.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div className="text-xs text-slate-400">{term.category}</div>
-              <h2 className="text-lg font-bold mt-1">{term.name} <span className="text-slate-400 text-base">({term.hanja})</span></h2>
-              <p className="text-sm text-slate-300 mt-2">{term.desc}</p>
-              <div className="flex flex-wrap gap-2 mt-3">
-                {term.tags.map((tag) => (
-                  <span key={`${term.id}-${tag}`} className="text-xs text-indigo-300">{tag}</span>
-                ))}
-              </div>
-            </article>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <AnimatePresence mode="popLayout">
+            {sortedFiltered.length > 0 ? sortedFiltered.map((term) => {
+              const currentInitial = getInitial(term.name);
+              const showId = currentInitial !== lastInitial;
+              lastInitial = currentInitial;
+
+              return (
+                <motion.article
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  key={term.id}
+                  id={showId ? `index-${currentInitial}` : undefined}
+                  className="rounded-3xl border border-white/5 bg-white/5 p-6 hover:bg-white/10 transition-all hover:border-indigo-500/30 group relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
+                    <Sparkles className="w-5 h-5 text-indigo-400" />
+                  </div>
+                  <div className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">{term.category}</div>
+                  <h2 className="text-xl font-black mt-1 text-white group-hover:text-indigo-200 transition-colors flex items-center gap-2">
+                    <span className={query && term.name.includes(query) ? "text-indigo-300 underline underline-offset-4 decoration-indigo-500/50" : ""}>{term.name}</span>
+                    <span className="text-slate-500 text-sm font-bold">[{term.hanja}]</span>
+                  </h2>
+                  <p className="text-sm text-slate-400 mt-3 leading-relaxed">{term.desc}</p>
+                  <div className="flex flex-wrap gap-2 mt-5">
+                    {term.tags.map((tag) => (
+                      <span key={`${term.id}-${tag}`} className="text-[10px] font-black px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </motion.article>
+              );
+            }) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="col-span-full py-20 text-center"
+              >
+                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
+                  <Search className="w-6 h-6 text-slate-600" />
+                </div>
+                <p className="text-slate-500 font-black uppercase tracking-widest italic">결과가 없습니다</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </main>

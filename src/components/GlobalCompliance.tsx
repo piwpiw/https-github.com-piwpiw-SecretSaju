@@ -28,13 +28,13 @@ export function GlobalCompliance() {
                         <p className="text-[10px] text-zinc-600 font-medium">상호: (주)시크릿퍼블리싱 | 대표: 홍길동</p>
                         <p className="text-[10px] text-zinc-600">사업자등록번호: 123-45-67890 | 통신판매업: 2024-서울강남-1234</p>
                         <p className="text-[10px] text-zinc-600">주소: 서울특별시 강남구 테헤란로 123, 4층</p>
-                        <p className="text-[10px] text-zinc-600">고객센터: support@secretpaws.com</p>
+                        <p className="text-[10px] text-zinc-600">고객센터: support@secretsaju.com</p>
                     </div>
                 </div>
 
                 {/* Copyright */}
                 <div className="text-center opacity-30">
-                    <p className="text-[10px]">© 2024 Secret Paws. All Rights Reserved.</p>
+                    <p className="text-[10px]">© 2026 Secret Saju. All Rights Reserved.</p>
                 </div>
             </div>
         </footer>

@@ -1,8 +1,7 @@
-"use client";
+﻿"use client";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Smartphone, Download, QrCode, Sparkles } from "lucide-react";
-import { useEffect, useState } from "react";
 
 interface AppOnlyModalProps {
     isOpen: boolean;
@@ -41,13 +40,13 @@ export default function AppOnlyModal({ isOpen, onClose, title }: AppOnlyModalPro
 
                             <div>
                                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-[10px] font-black uppercase tracking-widest mb-3">
-                                    <Sparkles className="w-3 h-3" /> App Exclusive
+                                    <Sparkles className="w-3 h-3" /> 앱 전용
                                 </div>
                                 <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase mb-2">
-                                    [{title}]<br />스토어에서 만나요!
+                                    [{title}]<br />앱에서만 이용 가능
                                 </h3>
                                 <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                                    이 기능은 점신 앱 전용 프리미엄 서비스입니다.<br />앱스토어에서 다운로드 후 즉시 이용 가능합니다.
+                                    이 기능은 시크릿사주 앱 전용 프리미엄 서비스입니다.<br />앱스토어에서 다운로드 후 즉시 이용 가능합니다.
                                 </p>
                             </div>
 
@@ -55,15 +54,15 @@ export default function AppOnlyModal({ isOpen, onClose, title }: AppOnlyModalPro
                                 <div className="bg-white p-2 rounded-xl shadow-lg">
                                     <QrCode className="w-24 h-24 text-slate-900" />
                                 </div>
-                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Scan to Install</p>
+                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">설치 QR 코드</p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
                                 <button className="flex items-center justify-center gap-2 py-4 bg-white text-slate-900 rounded-2xl text-xs font-black transition-all hover:bg-slate-200">
-                                    <Download className="w-4 h-4" /> App Store
+                                    <Download className="w-4 h-4" /> 앱스토어
                                 </button>
                                 <button className="flex items-center justify-center gap-2 py-4 bg-slate-800 text-white rounded-2xl text-xs font-black transition-all hover:bg-slate-700">
-                                    <Download className="w-4 h-4" /> Play Store
+                                    <Download className="w-4 h-4" /> 플레이스토어
                                 </button>
                             </div>
                         </div>

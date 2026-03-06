@@ -1,41 +1,43 @@
-/**
- * Analytics Module — GA4 only
- * 
- * 이벤트 트래킹 통합 모듈.
- * GA4 gtag가 로드된 경우 실제 전송, 아닌 경우 dev 콘솔 로깅.
- * 
- * @team T10 Growth
- */
-
-export type AnalyticsEvent =
+﻿export type AnalyticsEvent =
   // Core flow
-  | "result_view"
-  | "share_click"
-  | "share_complete"
+  | 'result_view'
+  | 'share_click'
+  | 'share_complete'
+  | 'kakao_share_click'
+  | 'kakao_share_complete'
   // Payments & Monetization
-  | "payment_click"
-  | "payment_complete"
-  | "payment_fail"
-  | "shop_open"
-  | "jelly_purchase"
-  | "unlock_content"
+  | 'payment_click'
+  | 'payment_init'
+  | 'payment_complete'
+  | 'payment_fail'
+  | 'payment_verify_request'
+  | 'payment_verify_complete'
+  | 'payment_verify_error'
+  | 'shop_open'
+  | 'jelly_purchase'
+  | 'unlock_content'
   // Social & Viral
-  | "gift_click"
-  | "referral_click"
-  | "referral_complete"
+  | 'gift_click'
+  | 'referral_click'
+  | 'referral_complete'
+  | 'referral_code_copied'
   // Content
-  | "daily_fortune_view"
-  | "fortune_view"
-  | "compatibility_view"
-  | "dashboard_view"
-  | "wiki_view"
-  | "profile_add"
+  | 'daily_fortune_view'
+  | 'fortune_view'
+  | 'compatibility_view'
+  | 'dashboard_view'
+  | 'wiki_view'
+  | 'profile_add'
   // Auth
-  | "login_start"
-  | "login_complete"
-  | "logout"
+  | 'login_start'
+  | 'login_complete'
+  | 'logout'
   // Navigation
-  | "page_view";
+  | 'page_view'
+  | 'start_analysis'
+  | 'tarot_draw'
+  | 'daily_fortune_refresh';
+
 
 export type AnalyticsParams = Record<string, string | number | boolean>;
 
@@ -49,7 +51,9 @@ const analyticsEventCache = new Map<string, AnalyticsDedupeState>();
 function normalizeAnalyticsParams(params?: AnalyticsParams) {
   const normalized = params ?? {};
   const keys = Object.keys(normalized).sort();
-  return keys.map((key) => `${key}=${String((normalized as Record<string, string | number | boolean>)[key])}`).join('|');
+  return keys
+    .map((key) => `${key}=${String((normalized as Record<string, string | number | boolean>)[key])}`)
+    .join('|');
 }
 
 function shouldDeduplicateEvent(event: AnalyticsEvent, paramsKey: string, now: number) {
@@ -66,7 +70,7 @@ function shouldDeduplicateEvent(event: AnalyticsEvent, paramsKey: string, now: n
  * Core: Track a custom event
  */
 export function trackEvent(event: AnalyticsEvent, params?: AnalyticsParams) {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
   const now = Date.now();
   const paramsKey = normalizeAnalyticsParams(params);
   if (shouldDeduplicateEvent(event, paramsKey, now)) {
@@ -75,7 +79,6 @@ export function trackEvent(event: AnalyticsEvent, params?: AnalyticsParams) {
 
   const w = window as any;
 
-  // GA4 gtag
   if (w.gtag) {
     w.gtag('event', event, {
       ...params,
@@ -83,8 +86,8 @@ export function trackEvent(event: AnalyticsEvent, params?: AnalyticsParams) {
     });
   }
 
-  if (process.env.NODE_ENV === "development") {
-    console.debug("[Analytics]", event, params);
+  if (process.env.NODE_ENV === 'development') {
+    console.debug('[Analytics]', event, params);
   }
 }
 
@@ -92,7 +95,7 @@ export function trackEvent(event: AnalyticsEvent, params?: AnalyticsParams) {
  * Track page views
  */
 export function trackPageView(url: string) {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
 
   const w = window as any;
   if (w.gtag) {
@@ -101,18 +104,44 @@ export function trackPageView(url: string) {
     });
   }
 
-  if (process.env.NODE_ENV === "development") {
-    console.debug("[Analytics] PageView:", url);
+  if (process.env.NODE_ENV === 'development') {
+    console.debug('[Analytics] PageView:', url);
   }
 }
 
-// ─── Conversion Funnel Helpers ─────────────────────────────────────────────
+// Conversion helpers
 
-/** 사주 결과 확인 */
+/** 결과 페이지 조회 */
 export const trackResultView = (pillarCode: string) =>
   trackEvent('result_view', { pillar_code: pillarCode });
 
-/** 젤리 구매 완료 */
+/** 결제 클릭 */
+export const trackPaymentClick = (packageType: string, amount: number) =>
+  trackEvent('payment_click', { package_type: packageType, amount });
+
+/** 결제 초기화 */
+export const trackPaymentInit = (packageType: string, orderId: string, amount: number) =>
+  trackEvent('payment_init', { package_type: packageType, order_id: orderId, amount });
+
+/** 결제 확인 요청 */
+export const trackPaymentVerifyRequest = (orderId: string, amount: number, stage: string) =>
+  trackEvent('payment_verify_request', { order_id: orderId, amount, stage });
+
+/** 결제 완료 */
+export const trackPaymentComplete = (orderId: string, jellies: number) =>
+  trackEvent('payment_complete', { order_id: orderId, jellies_credited: jellies });
+
+/** 결제 실패 */
+export const trackPaymentFail = (orderId: string | null, reason: string) =>
+  trackEvent('payment_fail', { order_id: orderId ?? 'none', reason });
+
+export const trackPaymentVerifyComplete = (orderId: string, jellies: number) =>
+  trackEvent('payment_verify_complete', { order_id: orderId, jellies_credited: jellies });
+
+export const trackPaymentVerifyError = (orderId: string | null, reason: string) =>
+  trackEvent('payment_verify_error', { order_id: orderId ?? 'none', reason });
+
+/** 결제 획득 */
 export const trackJellyPurchase = (packageType: string, jellies: number, amount: number) =>
   trackEvent('jelly_purchase', { package_type: packageType, jellies, amount });
 
@@ -120,7 +149,7 @@ export const trackJellyPurchase = (packageType: string, jellies: number, amount:
 export const trackUnlock = (sectionId: string, jelliesSpent: number) =>
   trackEvent('unlock_content', { section_id: sectionId, jellies_spent: jelliesSpent });
 
-/** 카카오 로그인 완료 */
+/** 로그인 완료 */
 export const trackLoginComplete = () =>
   trackEvent('login_complete', { method: 'kakao' });
 
@@ -128,7 +157,24 @@ export const trackLoginComplete = () =>
 export const trackShareComplete = (method: 'kakao' | 'link' | 'clipboard') =>
   trackEvent('share_complete', { share_method: method });
 
+export const trackKakaoShareClick = (title: string) =>
+  trackEvent('kakao_share_click', { title });
+
+export const trackKakaoShareComplete = (method: 'kakao' | 'clipboard') =>
+  trackEvent('kakao_share_complete', { method });
+
 /** 프로필 추가 */
 export const trackProfileAdd = (relationship: string) =>
   trackEvent('profile_add', { relationship });
 
+/** 사주 분석 시작 */
+export const trackStartAnalysis = (mode: 'profile' | 'manual', jellyBalance: number) =>
+  trackEvent('start_analysis', { mode, jelly_balance: jellyBalance });
+
+/** 타로 카드 드로우 */
+export const trackTarotDraw = (deckSize: number) =>
+  trackEvent('tarot_draw', { deck_size: deckSize });
+
+/** 일일운세 새로고침 */
+export const trackDailyFortuneRefresh = (tab: string) =>
+  trackEvent('daily_fortune_refresh', { tab });

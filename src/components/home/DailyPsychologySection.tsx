@@ -40,11 +40,15 @@ export default function DailyPsychologySection() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {items.map((item) => {
                     const tags = Array.isArray(item.tags) ? item.tags : [];
+                    const safePath =
+                        typeof item.path === "string" && item.path.startsWith("/psychology/module/")
+                            ? item.path
+                            : `/psychology/module/${encodeURIComponent(item.id || "overview")}`;
 
                     return (
                         <Link
                             key={item.id}
-                            href={item.path}
+                            href={safePath}
                             className="group relative flex items-center justify-between p-6 sm:p-8 panel-shell hover:border-rose-500/35 transition-all hover:-translate-y-1 shadow-2xl overflow-hidden"
                         >
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-rose-500/8 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />

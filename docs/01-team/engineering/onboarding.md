@@ -59,7 +59,7 @@ Follow the **[QUICK_START.md](../../archive/QUICK_START.md)** guide:
 
 #### 4. Run Development Server
 ```bash
-npm run dev
+npm run dev:safe -- --port 3000 --auto-port
 ```
 
 **Expected Output**:

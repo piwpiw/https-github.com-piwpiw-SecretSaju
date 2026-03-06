@@ -1,8 +1,10 @@
+﻿import { timingSafeEqual } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { insertNotionRow } from '@/lib/notion';
 import { sendPaymentReceiptEmail } from '@/lib/mail';
 import { buildErrorResponsePayload } from '@/lib/error-response';
+import { buildPaymentVerifySignature } from '@/lib/payment-verify';
 
 const VERIFY_IDEMPOTENCY_COUNTER = new Map<string, number>();
 const WALLET_MISMATCH_COUNTER = new Map<string, number>();
@@ -10,6 +12,30 @@ const VERIFY_FAILURE_COUNTER = new Map<string, number>();
 const VERIFY_IDEMPOTENCY_LIMIT = 30;
 const WALLET_MISMATCH_WARNING_THRESHOLD = 3;
 const VERIFY_FAILURE_ALERT_THRESHOLD = 3;
+
+function parseMetadata(metadata: unknown) {
+  if (!metadata || typeof metadata !== 'object') return {} as Record<string, unknown>;
+  return metadata as Record<string, unknown>;
+}
+
+function verifyPaymentSignature(orderId: string, amount: number, token: string, signature: string) {
+  const secret = process.env.PAYMENT_VERIFY_SECRET || process.env.NEXT_PUBLIC_PAYMENT_VERIFY_SECRET || '';
+  if (!secret || !token || !signature) {
+    return false;
+  }
+
+  try {
+    const expected = buildPaymentVerifySignature(orderId, amount, token);
+    const expectedBuffer = Buffer.from(expected, 'utf8');
+    const signatureBuffer = Buffer.from(signature, 'utf8');
+    if (expectedBuffer.length !== signatureBuffer.length) {
+      return false;
+    }
+    return timingSafeEqual(expectedBuffer, signatureBuffer);
+  } catch {
+    return false;
+  }
+}
 
 async function recordVerifyFailure(orderId: string, reason: string, metadata: Record<string, unknown>) {
   const key = orderId || 'missing';
@@ -26,6 +52,58 @@ async function recordVerifyFailure(orderId: string, reason: string, metadata: Re
   return nextCount;
 }
 
+function parseTossPayload(payload: Record<string, unknown>) {
+  const status = String((payload as Record<string, string>).status || '').toUpperCase();
+  const orderId = String((payload as Record<string, unknown>).orderId || '');
+  const paymentKey = String((payload as Record<string, unknown>).paymentKey || '');
+  const amount = Number((payload as Record<string, unknown>).totalAmount ?? (payload as Record<string, unknown>).amount);
+
+  return {
+    status,
+    orderId,
+    paymentKey,
+    amount,
+  };
+}
+
+function mapVerifyBlockedState(
+  status: string,
+  orderId: string,
+  idempotentAttemptCount: number,
+  settledAmount: number,
+  settledPaymentKey?: string | null
+) {
+  if (status === 'completed') {
+    return NextResponse.json(
+      {
+        success: true,
+        jellies_credited: settledAmount,
+        payment_key: settledPaymentKey || '',
+        order_id: orderId,
+        idempotent_attempt_count: idempotentAttemptCount,
+        message: 'Already completed',
+        monitoring_event: 'payment_verify_idempotent_success',
+      },
+      { status: 200 },
+    );
+  }
+
+  return NextResponse.json(
+    {
+      error: 'PAYMENT_ORDER_NOT_PENDING',
+      error_code: 'PAYMENT_ORDER_NOT_PENDING',
+      message: `Order status is ${status}`,
+      code: 409,
+      details: {
+        order_id: orderId,
+        status,
+        idempotent_attempt_count: idempotentAttemptCount,
+      },
+    },
+    { status: 409 },
+  );
+}
+
 /**
  * POST /api/payment/verify
  * Verify Toss Payments result and credit jellies
@@ -35,115 +113,120 @@ export async function POST(req: NextRequest) {
     NextResponse.json(buildErrorResponsePayload(code, message, details), { status });
 
   try {
-    const { paymentKey: rawPaymentKey, orderId: rawOrderId, amount: rawAmount } = await req.json();
-
-    const paymentKey = String(rawPaymentKey || '');
-    const orderId = String(rawOrderId || '').trim();
-    const amount = Number(rawAmount);
+    const payload = await req.json();
+    const paymentKey = String(payload.paymentKey || '').trim();
+    const orderId = String(payload.orderId || '').trim();
+    const amount = Number(payload.amount);
+    const verifyToken = String(payload.verifyToken || '').trim();
+    const verifySignature = String(payload.verifySignature || '').trim();
 
     const idempotencyFingerprint = `verify:${orderId || 'missing'}`;
     const idempotentAttemptCount = (VERIFY_IDEMPOTENCY_COUNTER.get(idempotencyFingerprint) || 0) + 1;
     VERIFY_IDEMPOTENCY_COUNTER.set(idempotencyFingerprint, idempotentAttemptCount);
 
     if (idempotentAttemptCount > VERIFY_IDEMPOTENCY_LIMIT) {
-      const notionResult = await insertNotionRow({
+      await insertNotionRow({
         category: 'PAYMENT_EVENT',
         title: `Payment verify idempotency limit exceeded (${orderId || 'missing'})`,
         description: 'Verification request count exceeded allowed retries',
-        metadata: { orderId, paymentKey, idempotent_attempt_count: idempotentAttemptCount },
+        metadata: {
+          orderId,
+          paymentKey,
+          idempotent_attempt_count: idempotentAttemptCount,
+        },
       });
-      if (!notionResult.success) {
-        console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-      }
-      return createErrorResponse('PAYMENT_IDEMPOTENCY_LIMIT_EXCEEDED', 'Too many verification retries for same order', 429, { idempotent_attempt_count: idempotentAttemptCount });
+      return createErrorResponse(
+        'PAYMENT_IDEMPOTENCY_LIMIT_EXCEEDED',
+        'Too many verification retries for same order',
+        429,
+        { idempotent_attempt_count: idempotentAttemptCount },
+      );
     }
 
-    if (!paymentKey || !orderId || !amount) {
-      await recordVerifyFailure(orderId, 'missing_required_data', { paymentKey, amount });
+    if (!paymentKey || !orderId || !verifyToken || !verifySignature || !Number.isFinite(amount)) {
+      await recordVerifyFailure(orderId, 'missing_required_data', {
+        paymentKey,
+        amount,
+        verifyToken,
+      });
       return createErrorResponse('PAYMENT_VALIDATION_MISSING_DATA', 'Missing required payment data', 400);
     }
 
-    const normalizedOrderId = orderId;
-    const orderIdPattern = /^order_[a-zA-Z0-9]+_[a-z0-9]+$/;
-
-    if (!orderIdPattern.test(normalizedOrderId)) {
-      await recordVerifyFailure(normalizedOrderId, 'invalid_order_id', { paymentKey, amount });
-      const notionResult = await insertNotionRow({
-        category: 'PAYMENT_EVENT',
-        title: `Payment verify failed: invalid order id format (${normalizedOrderId})`,
-        description: 'Order ID format check failed during verification',
-        metadata: { orderId, paymentKey, amount },
-      });
-      if (!notionResult.success) {
-        console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-      }
-      return createErrorResponse('PAYMENT_INVALID_ORDER_ID', 'Invalid order ID format', 400);
+    if (amount <= 0) {
+      return createErrorResponse('PAYMENT_INVALID_AMOUNT', 'Invalid amount format', 400);
     }
 
-    const requestedAmount = Number(amount);
-    if (Number.isNaN(requestedAmount) || requestedAmount <= 0) {
-      return createErrorResponse('PAYMENT_INVALID_AMOUNT', 'Invalid amount format', 400);
+    const orderIdPattern = /^order_[a-zA-Z0-9]+_[a-z0-9]+$/;
+    if (!orderIdPattern.test(orderId)) {
+      await recordVerifyFailure(orderId, 'invalid_order_id', { paymentKey, amount });
+      return createErrorResponse('PAYMENT_INVALID_ORDER_ID', 'Invalid order ID format', 400);
     }
 
     const supabase = getSupabaseAdmin();
     const { data: order, error: orderFetchError } = await supabase
       .from('orders')
       .select('*')
-      .eq('order_id', normalizedOrderId)
+      .eq('order_id', orderId)
       .single();
 
     if (orderFetchError || !order || !order.user_id) {
-      await recordVerifyFailure(normalizedOrderId, 'order_not_found', { paymentKey, amount, error: orderFetchError });
-      const notionResult = await insertNotionRow({
-        category: 'PAYMENT_EVENT',
-        title: `Payment verify failed: order not found (${normalizedOrderId})`,
-        description: 'Order lookup failure during payment verification',
-        metadata: { orderId: normalizedOrderId, paymentKey, amount },
+      await recordVerifyFailure(orderId, 'order_not_found', {
+        paymentKey,
+        amount,
+        error: orderFetchError,
       });
-      if (!notionResult.success) {
-        console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-      }
       return createErrorResponse('PAYMENT_ORDER_NOT_FOUND', 'Order not found or invalid', 404);
     }
 
     const orderAmount = Number(order.amount);
     if (!orderAmount || Number.isNaN(orderAmount)) {
-      const notionResult = await insertNotionRow({
-        category: 'PAYMENT_EVENT',
-        title: `Payment verify failed: invalid order amount (${normalizedOrderId})`,
-        description: 'Stored order amount is invalid',
-        metadata: { orderId: normalizedOrderId, paymentKey, amount: order.amount },
-      });
-      if (!notionResult.success) {
-        console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-      }
       return createErrorResponse('PAYMENT_INVALID_ORDER_AMOUNT', 'Invalid order amount', 500);
     }
 
-    if (requestedAmount !== orderAmount) {
-      await recordVerifyFailure(normalizedOrderId, 'amount_mismatch', { paymentKey, requestedAmount, orderAmount });
-      const notionResult = await insertNotionRow({
-        category: 'ERROR',
-        title: `Payment verify blocked: amount mismatch (${normalizedOrderId})`,
-        description: 'Payment amount does not match order amount',
-        metadata: { orderId: normalizedOrderId, paymentKey, requestedAmount, orderAmount },
+    if (orderAmount !== amount) {
+      await recordVerifyFailure(orderId, 'amount_mismatch', {
+        paymentKey,
+        requestedAmount: amount,
+        orderAmount,
       });
-      if (!notionResult.success) {
-        console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-      }
       return createErrorResponse('PAYMENT_AMOUNT_MISMATCH', 'Amount mismatch', 400);
     }
 
-    const userId = order.user_id;
-    const tossSecretKey = process.env.TOSS_SECRET_KEY;
+    if (order.status && order.status !== 'pending') {
+      return mapVerifyBlockedState(
+        order.status,
+        orderId,
+        idempotentAttemptCount,
+        Number(order.jellies || 0),
+        order.payment_key
+      );
+    }
 
+    const meta = parseMetadata(order.metadata);
+    const storedVerifyToken = String(meta.verifyToken || '');
+    const storedVerifySignature = String(meta.verifySignature || '');
+
+    const isValidSignature =
+      verifyToken === storedVerifyToken &&
+      verifySignature === storedVerifySignature &&
+      verifyPaymentSignature(orderId, amount, verifyToken, verifySignature);
+
+    if (!isValidSignature) {
+      await recordVerifyFailure(orderId, 'invalid_verification_signature', {
+        paymentKey,
+        verifyToken,
+      });
+      return createErrorResponse('PAYMENT_VERIFICATION_SIGNATURE_INVALID', 'Invalid verification signature', 400);
+    }
+
+    const tossSecretKey = process.env.TOSS_SECRET_KEY;
     if (!tossSecretKey) {
       console.error('Toss Secret Key not configured');
       return createErrorResponse('PAYMENT_CONFIG_MISSING', 'Payment system not configured', 500);
     }
 
     const verifyUrl = 'https://api.tosspayments.com/v1/payments/confirm';
-    const authHeader = 'Basic ' + Buffer.from(tossSecretKey + ':').toString('base64');
+    const authHeader = 'Basic ' + Buffer.from(`${tossSecretKey}:`).toString('base64');
 
     const verifyResponse = await fetch(verifyUrl, {
       method: 'POST',
@@ -151,22 +234,16 @@ export async function POST(req: NextRequest) {
         Authorization: authHeader,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ paymentKey, orderId: normalizedOrderId, amount }),
+      body: JSON.stringify({ paymentKey, orderId, amount }),
     });
 
-    if (!verifyResponse.ok) {
-      const errorData = await verifyResponse.json();
-      await recordVerifyFailure(normalizedOrderId, 'toss_verification_failed', { paymentKey, amount, errorData });
-      const notionResult = await insertNotionRow({
-        category: 'PAYMENT_EVENT',
-        title: `Payment verify failed: Toss API (${normalizedOrderId})`,
-        description: 'Toss payment verify returned non-200',
-        metadata: { orderId: normalizedOrderId, paymentKey, amount, errorData },
+    const verifyData = (await verifyResponse.json().catch(() => null)) as Record<string, unknown> | null;
+    if (!verifyResponse.ok || !verifyData) {
+      await recordVerifyFailure(orderId, 'toss_verification_failed', {
+        paymentKey,
+        amount,
+        errorData: verifyData,
       });
-      if (!notionResult.success) {
-        console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-      }
-
       if (order.status === 'pending') {
         await supabase
           .from('orders')
@@ -174,45 +251,59 @@ export async function POST(req: NextRequest) {
             status: 'failed',
             updated_at: new Date().toISOString(),
           })
-          .eq('order_id', normalizedOrderId)
+          .eq('order_id', orderId)
           .eq('status', 'pending');
       }
-
-      return createErrorResponse(
-        'PAYMENT_TOSS_VERIFICATION_FAILED',
-        'Payment verification failed',
-        400,
-        errorData
-      );
+      return createErrorResponse('PAYMENT_TOSS_VERIFICATION_FAILED', 'Payment verification failed', 400, verifyData);
     }
 
-    await verifyResponse.json();
+    const { status, orderId: tossOrderId, paymentKey: tossPaymentKey, amount: tossAmount } = parseTossPayload(verifyData);
+    const normalizedTossAmount = Number(tossAmount);
 
-    if (order.status === 'completed') {
-      const notionResult = await insertNotionRow({
-        category: 'PAYMENT_EVENT',
-        title: `Payment verify duplicated request (${normalizedOrderId})`,
-        description: 'Order already completed, returning idempotent success',
-        metadata: {
-          orderId: normalizedOrderId,
-          paymentKey,
-          userId,
-          idempotent_attempt_count: idempotentAttemptCount,
-        },
+    if (tossOrderId !== orderId) {
+      await recordVerifyFailure(orderId, 'toss_order_id_mismatch', {
+        paymentKey,
+        expectedOrderId: orderId,
+        tossOrderId,
       });
-      if (!notionResult.success) {
-        console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-      }
+      return createErrorResponse('PAYMENT_TOSS_ORDER_MISMATCH', 'Payment order mismatch', 400);
+    }
 
-      return NextResponse.json({
-          success: true,
-          jellies_credited: order.jellies,
-          payment_key: paymentKey,
-          order_id: normalizedOrderId,
-          idempotent_attempt_count: idempotentAttemptCount,
-          message: 'Already processed',
-          monitoring_event: 'payment_verify_idempotent_success',
-        });
+    if (status !== 'DONE') {
+      await recordVerifyFailure(orderId, 'toss_status_not_done', {
+        paymentKey,
+        status,
+      });
+      if (order.status === 'pending') {
+        await supabase
+          .from('orders')
+          .update({
+            status: 'failed',
+            updated_at: new Date().toISOString(),
+          })
+          .eq('order_id', orderId)
+          .eq('status', 'pending');
+      }
+      return createErrorResponse('PAYMENT_TOSS_NOT_COMPLETED', `Payment status is ${status}`, 400, {
+        status,
+      });
+    }
+
+    if (!Number.isFinite(normalizedTossAmount) || normalizedTossAmount !== amount) {
+      await recordVerifyFailure(orderId, 'toss_amount_mismatch', {
+        paymentKey,
+        amount,
+        tossAmount: normalizedTossAmount,
+      });
+      return createErrorResponse('PAYMENT_TOSS_AMOUNT_MISMATCH', 'Toss amount mismatch', 400, {
+        expectedAmount: amount,
+        tossAmount: normalizedTossAmount,
+      });
+    }
+
+    if (!tossPaymentKey || !tossPaymentKey.length) {
+      await recordVerifyFailure(orderId, 'toss_missing_payment_key', { paymentKey, verifyData });
+      return createErrorResponse('PAYMENT_TOSS_PAYLOAD_INVALID', 'Toss payment key missing', 400, verifyData);
     }
 
     const { data: claimedOrder, error: updateError } = await supabase
@@ -222,65 +313,32 @@ export async function POST(req: NextRequest) {
         payment_key: paymentKey,
         updated_at: new Date().toISOString(),
       })
-      .eq('order_id', normalizedOrderId)
+      .eq('order_id', orderId)
       .eq('status', 'pending')
       .select('*')
       .single();
 
-      if (updateError && updateError.code !== 'PGRST116') {
-      const notionResult = await insertNotionRow({
-        category: 'PAYMENT_EVENT',
-        title: `Payment verify failed: cannot complete order (${normalizedOrderId})`,
-        description: 'Failed to update order status',
-        metadata: { orderId: normalizedOrderId, userId, error: updateError },
-      });
-      if (!notionResult.success) {
-        console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-      }
+    if (updateError && updateError.code !== 'PGRST116') {
       return createErrorResponse('PAYMENT_ORDER_UPDATE_FAILED', 'Failed to update order status', 500);
     }
 
     if (!claimedOrder) {
       const { data: freshOrder, error: statusCheckError } = await supabase
         .from('orders')
-        .select('status')
-        .eq('order_id', normalizedOrderId)
+        .select('status, payment_key, jellies, amount')
+        .eq('order_id', orderId)
         .single();
 
       if (statusCheckError) {
-        const notionResult = await insertNotionRow({
-          category: 'PAYMENT_EVENT',
-          title: `Payment verify failed: order state refresh failed (${normalizedOrderId})`,
-          description: 'Could not verify order status after claim attempt',
-          metadata: { orderId: normalizedOrderId, paymentKey, userId, error: statusCheckError },
-        });
-        if (!notionResult.success) {
-          console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-        }
         return createErrorResponse('PAYMENT_STATE_REFRESH_FAILED', 'Payment state conflict', 409);
       }
 
-    if (freshOrder?.status === 'completed') {
-        const notionResult = await insertNotionRow({
-          category: 'PAYMENT_EVENT',
-          title: `Payment verify duplicated request (${normalizedOrderId})`,
-          description: 'Order already completed, returning idempotent success',
-          metadata: {
-            orderId: normalizedOrderId,
-            paymentKey,
-            userId,
-            idempotent_attempt_count: idempotentAttemptCount,
-          },
-        });
-        if (!notionResult.success) {
-          console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-        }
-
+      if (freshOrder?.status === 'completed') {
         return NextResponse.json({
           success: true,
-          jellies_credited: order.jellies,
-          payment_key: paymentKey,
-          order_id: normalizedOrderId,
+          jellies_credited: Number(order.jellies),
+          payment_key: freshOrder.payment_key || paymentKey,
+          order_id: orderId,
           idempotent_attempt_count: idempotentAttemptCount,
           message: 'Already processed',
           monitoring_event: 'payment_verify_idempotent_success',
@@ -290,6 +348,7 @@ export async function POST(req: NextRequest) {
       return createErrorResponse('PAYMENT_ORDER_NOT_PENDING', 'Order is not in pending state', 409);
     }
 
+    const userId = order.user_id;
     const { error: txError } = await supabase
       .from('jelly_transactions')
       .insert({
@@ -300,20 +359,11 @@ export async function POST(req: NextRequest) {
         purpose: `Purchase: ${claimedOrder.package_type}`,
         metadata: {
           payment_key: paymentKey,
-          order_id: normalizedOrderId,
+          order_id: orderId,
         },
       });
 
     if (txError) {
-      const notionResult = await insertNotionRow({
-        category: 'PAYMENT_EVENT',
-        title: `Payment verify failed: cannot credit (${normalizedOrderId})`,
-        description: 'Jelly transaction insert failed',
-        metadata: { orderId: normalizedOrderId, userId, error: txError },
-      });
-      if (!notionResult.success) {
-        console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-      }
       return createErrorResponse('PAYMENT_CREDIT_FAILED', 'Failed to credit jellies', 500);
     }
 
@@ -330,18 +380,15 @@ export async function POST(req: NextRequest) {
         user_id: userId,
         reward_type: 'first_purchase',
         jellies: 1,
-        metadata: { order_id: normalizedOrderId },
+        metadata: { order_id: orderId },
       });
       if (rewardResult.error) {
-        const notionResult = await insertNotionRow({
+        await insertNotionRow({
           category: 'PAYMENT_EVENT',
-          title: `Payment verify reward log failed (${normalizedOrderId})`,
+          title: `Payment verify reward log failed (${orderId})`,
           description: 'First purchase reward insert failed',
-          metadata: { orderId: normalizedOrderId, userId, error: rewardResult.error },
+          metadata: { orderId, userId, error: rewardResult.error },
         });
-        if (!notionResult.success) {
-          console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-        }
       }
 
       const bonusResult = await supabase.from('jelly_transactions').insert({
@@ -351,15 +398,12 @@ export async function POST(req: NextRequest) {
         purpose: 'First purchase bonus',
       });
       if (bonusResult.error) {
-        const notionResult = await insertNotionRow({
+        await insertNotionRow({
           category: 'PAYMENT_EVENT',
-          title: `Payment verify bonus transaction failed (${normalizedOrderId})`,
+          title: `Payment verify bonus transaction failed (${orderId})`,
           description: 'First purchase bonus transaction failed',
-          metadata: { orderId: normalizedOrderId, userId, error: bonusResult.error },
+          metadata: { orderId, userId, error: bonusResult.error },
         });
-        if (!notionResult.success) {
-          console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-        }
       }
 
       totalJellies += 1;
@@ -372,34 +416,17 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (walletLookupError && walletLookupError.code !== 'PGRST116') {
-      const notionResult = await insertNotionRow({
-        category: 'PAYMENT_EVENT',
-        title: `Payment verify failed: wallet lookup failed (${normalizedOrderId})`,
-        description: 'Could not query existing wallet',
-        metadata: { orderId: normalizedOrderId, userId, error: walletLookupError },
-      });
-      if (!notionResult.success) {
-        console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-      }
       return createErrorResponse('PAYMENT_WALLET_LOOKUP_FAILED', 'Failed to load wallet', 500);
     }
 
     if (wallet) {
+      const expectedBalance = wallet.balance + totalJellies;
       const walletUpdate = await supabase
         .from('jelly_wallets')
-        .update({ balance: wallet.balance + totalJellies })
+        .update({ balance: expectedBalance })
         .eq('user_id', userId);
 
       if (walletUpdate.error) {
-        const notionResult = await insertNotionRow({
-          category: 'PAYMENT_EVENT',
-          title: `Payment verify failed: wallet update failed (${normalizedOrderId})`,
-          description: 'Could not update existing wallet balance',
-          metadata: { orderId: normalizedOrderId, userId, error: walletUpdate.error },
-        });
-        if (!notionResult.success) {
-          console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-        }
         return createErrorResponse('PAYMENT_WALLET_UPDATE_FAILED', 'Failed to update wallet', 500);
       }
 
@@ -410,44 +437,31 @@ export async function POST(req: NextRequest) {
         .single();
 
       if (refreshedWalletError) {
-        const notionResult = await insertNotionRow({
-          category: 'PAYMENT_EVENT',
-          title: `Payment verify failed: wallet post-update verification failed (${normalizedOrderId})`,
-          description: 'Could not verify wallet balance after credit',
-          metadata: { orderId: normalizedOrderId, userId, error: refreshedWalletError },
-        });
-        if (!notionResult.success) {
-          console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-        }
         return createErrorResponse('PAYMENT_WALLET_VERIFY_FAILED', 'Failed to verify updated wallet', 500);
       }
 
-      const expectedBalance = wallet.balance + totalJellies;
       if (refreshedWallet && refreshedWallet.balance !== expectedBalance) {
         const mismatchCount = (WALLET_MISMATCH_COUNTER.get(userId) || 0) + 1;
         WALLET_MISMATCH_COUNTER.set(userId, mismatchCount);
         const walletMismatchPayload = {
-          orderId: normalizedOrderId,
+          orderId,
           userId,
           expectedBalance,
           actualBalance: refreshedWallet.balance,
           wallet_mismatch_count: mismatchCount,
-          idempotentAttemptCount: idempotentAttemptCount ?? 0,
+          idempotentAttemptCount,
         };
-        const notionResult = await insertNotionRow({
+        await insertNotionRow({
           category: 'PAYMENT_EVENT',
-          title: `Payment verify wallet mismatch detected (${normalizedOrderId})`,
+          title: `Payment verify wallet mismatch detected (${orderId})`,
           description: 'Wallet balance mismatch detected after credit',
           metadata: walletMismatchPayload,
         });
-        if (!notionResult.success) {
-          console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-        }
 
         if (mismatchCount >= WALLET_MISMATCH_WARNING_THRESHOLD) {
           await insertNotionRow({
             category: 'ERROR',
-            title: `Wallet mismatch threshold exceeded (${normalizedOrderId})`,
+            title: `Wallet mismatch threshold exceeded (${orderId})`,
             description: 'Wallet balance divergence occurred repeatedly',
             metadata: { ...walletMismatchPayload },
           });
@@ -456,30 +470,14 @@ export async function POST(req: NextRequest) {
     } else {
       const walletInsert = await supabase
         .from('jelly_wallets')
-        .insert({ user_id: userId, balance: totalJellies });
+        .insert({
+          user_id: userId,
+          balance: totalJellies,
+        });
 
       if (walletInsert.error) {
-        const notionResult = await insertNotionRow({
-          category: 'PAYMENT_EVENT',
-          title: `Payment verify failed: wallet creation failed (${normalizedOrderId})`,
-          description: 'Could not create wallet balance',
-          metadata: { orderId: normalizedOrderId, userId, error: walletInsert.error },
-        });
-        if (!notionResult.success) {
-          console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-        }
         return createErrorResponse('PAYMENT_WALLET_CREATE_FAILED', 'Failed to initialize wallet', 500);
       }
-    }
-
-    const notionResult = await insertNotionRow({
-      category: 'PAYMENT_EVENT',
-      title: `Payment verified and credited (${normalizedOrderId})`,
-      description: 'Payment completed and jelly balance updated',
-      metadata: { orderId: normalizedOrderId, userId, paymentKey, totalJellies },
-    });
-    if (!notionResult.success) {
-      console.warn('[Payment Verify] Notion log failed:', notionResult.error);
     }
 
     const { data: buyer } = await supabase
@@ -489,22 +487,19 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (buyer?.email) {
-      const receiptResult = await sendPaymentReceiptEmail(
-        buyer.email,
-        normalizedOrderId,
-        claimedOrder.amount,
-        totalJellies
-      );
+      const receiptResult = await sendPaymentReceiptEmail(buyer.email, orderId, claimedOrder.amount, totalJellies);
       if (!receiptResult.success) {
-        const mailResult = await insertNotionRow({
+        await insertNotionRow({
           category: 'PAYMENT_EVENT',
-          title: `Payment verify receipt email failed (${normalizedOrderId})`,
+          title: `Payment verify receipt email failed (${orderId})`,
           description: 'Payment completed but receipt email failed',
-          metadata: { orderId: normalizedOrderId, userId, recipient: buyer.email, error: receiptResult.error },
+          metadata: {
+            orderId,
+            userId,
+            recipient: buyer.email,
+            error: receiptResult.error,
+          },
         });
-        if (!mailResult.success) {
-          console.warn('[Payment Verify] Notion log failed:', mailResult.error);
-        }
       }
     }
 
@@ -512,25 +507,12 @@ export async function POST(req: NextRequest) {
       success: true,
       jellies_credited: totalJellies,
       payment_key: paymentKey,
-      order_id: normalizedOrderId,
+      order_id: orderId,
       idempotent_attempt_count: idempotentAttemptCount,
       monitoring_event: 'payment_verify_success',
     });
   } catch (error) {
     console.error('Payment verification error:', error);
-    const notionResult = await insertNotionRow({
-      category: 'ERROR',
-      title: 'Payment verification exception',
-      description: 'Unhandled error during verify endpoint',
-      metadata: { error: String(error) },
-    });
-    if (!notionResult.success) {
-      console.warn('[Payment Verify] Notion log failed:', notionResult.error);
-    }
-    return createErrorResponse(
-      'PAYMENT_INTERNAL_ERROR',
-      'Internal server error',
-      500
-    );
+    return createErrorResponse('PAYMENT_INTERNAL_ERROR', 'Internal server error', 500, { error: String(error) });
   }
 }

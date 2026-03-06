@@ -1,9 +1,14 @@
 FROM node:20-alpine AS builder
 
 WORKDIR /app
+ENV NPM_CONFIG_OPTIONAL=false
+ENV NPM_CONFIG_PLATFORM=linux
+ENV NPM_CONFIG_ARCH=x64
+ENV npm_config_fund=false
+ENV npm_config_audit=false
 
 COPY package*.json ./
-RUN npm ci --no-optional
+RUN npm ci
 
 COPY . .
 RUN npm run build

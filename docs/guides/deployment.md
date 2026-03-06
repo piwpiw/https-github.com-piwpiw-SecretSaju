@@ -14,10 +14,22 @@
 개발 단계에서 배포 전 검증 시간을 줄이고, 반복 가능한 배포 절차를 만들기 위한 실행 가이드를 제공합니다.
 본 문서는 SOT의 확장 설명으로 사용합니다.
 
+## 배포 기준(필수)
+
+- 배포 플랫폼: **Render only**
+- 배포 실행은 `node scripts/deploy-policy.js`를 통과해야 함.
+- 렌더 훅(`RENDER_DEPLOY_HOOK_URL` 또는 `RENDER_DEPLOY_HOOK`)이 필수.
+- `.vercel` 연동이 남아 있으면 배포 전 차단 (`ALLOW_VERCEL_LINK=true`로 예외 허용).
+- 배포 전 `.vercel` 폴더를 삭제한다.
+- 요청 반영 후 배포 전에는 `npm run deploy:local` 또는 동등한 로컬 사전검증을 반드시 성공해야 한다.
+- 로컬 검증 실패는 배포 블록 처리한다.
+
 ## 로컬 기준 빠른 배포 검증
 
 ### 1. 기본 점검(권장)
 
+- `npm run dev:safe -- --port 3000 --auto-port`
+  - 포트 점유 정리 + preflight + dev server 실행
 - `npm run deploy:local`
   - 기본 동작: `preflight:local` + `pre-deploy --skip-build --skip-tests`
   - 목적: 배포 전 최소한의 안전성 확인
@@ -26,6 +38,10 @@
 
 - `npm run preflight:local` (기본)
   - `lint` + `tsc --noEmit` 병렬 실행
+- `npm run dev:safe:quick -- --port 3000`
+  - preflight 생략 재현 모드(긴급 디버깅 전용)
+- `npm run smoke:auth`
+  - 로그인 핵심 라우트 스모크(`/`, `/login`, `/signup`, `/auth/callback`)
 - `npm run preflight:local:serial`
   - 동일 항목을 직렬 실행 (재현/디버깅 목적)
 - `npm run preflight:local:parallel` (명시 실행 시)
@@ -63,23 +79,27 @@
 
 ## 표준 배포 흐름
 
-1. 로컬 확인
+1. 로컬 안정화
+   - `npm run dev:safe -- --port 3000 --auto-port`
+2. 로컬 확인
+   - `npm run smoke:auth` (인증/회원가입 UI 수정 시 필수)
    - `npm run deploy:local`
    - 실패 시 에러 로그 우선 확인 후 관련 스크립트 개별 실행
-2. Git Push / PR 상태 확인
+3. Git Push / PR 상태 확인
    - `main`은 운영(Production), `dev` 또는 PR은 Preview 기준
-3. 배포 실행
+4. 배포 실행
    - 운영: `npm run deploy` 또는 `npm run deploy:fast`
-   - 미리보기: `npm run deploy:preview`
-4. 배포 후 검증
+   - 미리보기: `npm run deploy:preview` (Preview도 Render 훅 기반으로만 실행)
+5. 배포 후 검증
    - `/api/saju/calculate`, `/api/payment/verify` 스모크 확인
    - 결제/웹훅 경로 및 주요 정책 페이지(terms/privacy/refund) 링크 확인
-5. 장애 대응
+6. 장애 대응
    - 이상 징후 발생 시 즉시 모니터링 및 롤백 프로세스 수행
 
 ## 체크리스트
 
 - [ ] `deploy:local` 성공
+- [ ] `smoke:auth` 성공 (인증/회원가입 수정 시)
 - [ ] `npm run verify:env` 통과(필요 시)
 - [ ] 핵심 API 스모크 통과
 - [ ] 결제/환불/웹훙 기본 동작 확인
@@ -111,11 +131,12 @@
 
 - `docs/01-team/engineering/deployment-guide.md` (SOT)
 - `docs/01-team/engineering/testing-guide.md`
+- `docs/01-team/engineering/local-dev-sop.md`
 - `docs/active-dispatch.md`
 
-**Last Updated**: 2026-03-02  
+**Last Updated**: 2026-03-05  
 **Owner**: DevOps + Engineering Lead  
-**Next Review**: 2026-03-08
+**Next Review**: 2026-03-12
 
 ## Release Approval Checklist Update
 - Approval step 1: build/test + core smoke + secret review logged

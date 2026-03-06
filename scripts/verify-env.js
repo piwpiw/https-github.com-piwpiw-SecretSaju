@@ -27,6 +27,14 @@ const requiredEnvVars = {
   // Toss Payments
   NEXT_PUBLIC_TOSS_CLIENT_KEY: 'Toss Payments Client Key',
   TOSS_SECRET_KEY: 'Toss Payments Secret Key',
+
+  // MCP (Magic Capsule Platform) OAuth
+  NEXT_PUBLIC_MCP_CLIENT_ID: 'MCP Client ID',
+  MCP_CLIENT_SECRET: 'MCP Client Secret',
+  NEXT_PUBLIC_MCP_AUTH_URL: 'MCP Auth URL',
+  MCP_TOKEN_URL: 'MCP Token URL',
+  MCP_USERINFO_URL: 'MCP UserInfo URL',
+  MCP_REDIRECT_URI: 'MCP Redirect URI',
 };
 
 const optionalEnvVars = {

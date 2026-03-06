@@ -24,11 +24,31 @@ export default function InquiryPage() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldError, setFieldError] = useState("");
+  const [touched, setTouched] = useState({
+    subject: false,
+    message: false,
+  });
+
+  const isSubjectValid = subject.trim().length > 0 && subject.trim().length <= 80;
+  const isMessageValid = message.trim().length >= 10;
+  const isEmailValid = email.length === 0 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isSubmitReady = isSubjectValid && isMessageValid && isEmailValid;
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!isSubmitReady) {
+      setFieldError("카테고리/제목/문의 내용을 다시 확인해 주세요.");
+      setTouched({
+        subject: true,
+        message: true,
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     setError("");
+    setFieldError("");
 
     try {
       const res = await fetch("/api/inquiry", {
@@ -67,7 +87,7 @@ export default function InquiryPage() {
             <h1 className="text-4xl font-black italic">문의하기</h1>
             <p className="text-slate-300">요청 성격에 맞는 항목을 고른 뒤 문의를 남겨 주세요.</p>
 
-            <div className="grid grid-cols-2 gap-3">
+            <fieldset className="grid grid-cols-2 gap-3" aria-describedby="category-help">
               <button type="button" onClick={() => setCategory("feedback")} className={`px-4 py-3 rounded-full border ${category === "feedback" ? "border-blue-300 bg-blue-500/20" : "border-white/10"}`}> 
                 <MessageSquare className="inline w-4 h-4 mr-2" /> 서비스 제안
               </button>
@@ -80,45 +100,84 @@ export default function InquiryPage() {
               <button type="button" onClick={() => setCategory("refund")} className={`px-4 py-3 rounded-full border ${category === "refund" ? "border-violet-300 bg-violet-500/20" : "border-white/10"}`}>
                 <RefreshCw className="inline w-4 h-4 mr-2" /> 환불/결제
               </button>
-            </div>
+            </fieldset>
+            <p id="category-help" className="text-xs text-slate-400 -mt-2">
+              원하는 상담 유형을 선택하면 담당 라우팅이 달라집니다.
+            </p>
 
             <div>
-              <label className="block text-sm text-slate-300 mb-2">제목</label>
+              <label className="block text-sm text-slate-300 mb-2" htmlFor="inquiry-subject">제목</label>
               <input
+                id="inquiry-subject"
+                maxLength={80}
+                aria-required="true"
+                aria-invalid={!isSubjectValid && touched.subject}
+                aria-describedby={!isSubjectValid && touched.subject ? "subject-feedback" : undefined}
                 value={subject}
-                onChange={(e) => setSubject(e.target.value)}
+                onChange={(e) => {
+                  setSubject(e.target.value);
+                  setTouched((prev) => ({ ...prev, subject: true }));
+                }}
                 className="w-full px-4 py-4 rounded-2xl bg-slate-950 border border-white/10"
                 required
               />
+              {!isSubjectValid && touched.subject ? (
+                <p id="subject-feedback" className="mt-2 text-xs text-rose-300">
+                  제목은 1~80자로 입력해 주세요.
+                </p>
+              ) : null}
             </div>
 
             <div>
-              <label className="block text-sm text-slate-300 mb-2">문의 내용</label>
+              <label className="block text-sm text-slate-300 mb-2" htmlFor="inquiry-message">문의 내용</label>
               <textarea
+                id="inquiry-message"
+                aria-required="true"
+                aria-invalid={!isMessageValid && touched.message}
+                aria-describedby={!isMessageValid && touched.message ? "message-feedback" : undefined}
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) => {
+                  setMessage(e.target.value);
+                  setTouched((prev) => ({ ...prev, message: true }));
+                }}
                 rows={6}
                 className="w-full px-4 py-4 rounded-2xl bg-slate-950 border border-white/10"
                 required
               />
+              {!isMessageValid && touched.message ? (
+                <p id="message-feedback" className="mt-2 text-xs text-rose-300">
+                  문의 내용은 최소 10자 이상 입력해 주세요.
+                </p>
+              ) : null}
+              <p className="text-xs text-slate-500 mt-2">현재 글자 수: {message.length}</p>
             </div>
 
             <div>
-              <label className="block text-sm text-slate-300 mb-2">이메일 (선택)</label>
+              <label className="block text-sm text-slate-300 mb-2" htmlFor="inquiry-email">이메일 (선택)</label>
               <input
+                id="inquiry-email"
+                type="email"
+                aria-invalid={email.length > 0 && !isEmailValid}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                type="email"
                 placeholder="답변 받을 이메일"
                 className="w-full px-4 py-4 rounded-2xl bg-slate-950 border border-white/10"
               />
+              {email.length > 0 && !isEmailValid ? (
+                <p className="mt-2 text-xs text-rose-300">
+                  올바른 이메일 형식을 입력해 주세요.
+                </p>
+              ) : null}
             </div>
 
+            {fieldError ? <div className="p-3 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-100 text-sm">{fieldError}</div> : null}
             {error ? <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-400/50 text-rose-100 text-sm">{error}</div> : null}
 
             <button
               type="submit"
               disabled={isSubmitting}
+              aria-busy={isSubmitting}
+              aria-label="문의 제출"
               className="w-full py-4 rounded-full bg-blue-500 text-white font-black uppercase tracking-[0.2em] disabled:opacity-60"
             >
               {isSubmitting ? "전송 중..." : "문의 보내기"}
