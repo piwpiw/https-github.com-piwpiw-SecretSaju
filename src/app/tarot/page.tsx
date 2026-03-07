@@ -8,19 +8,25 @@ import {
   RefreshCw,
   Save,
   Sparkles,
+  Mountain,
+  Eye,
+  ChevronRight,
+  Maximize2,
+  Volume2,
   Compass,
   Shield,
   Zap,
   LayoutGrid,
-  History,
+  History as HistoryIcon,
   Orbit,
   Star,
   Flame,
   Droplets,
   Wind,
-  Mountain
+  CheckCircle2,
+  Clock
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 import { saveAnalysisToHistory } from "@/lib/analysis-history";
 import { DrawnTarotCard, buildTarotDeckCards, pickCardsFromDeck, TarotSuit } from "@/data/tarotDeck";
 import AmbientSoundPortal from "@/components/ui/AmbientSoundPortal";
@@ -30,6 +36,108 @@ import JellyBalance from "@/components/shop/JellyBalance";
 import JellyShopModal from "@/components/shop/JellyShopModal";
 
 const SPREAD_POSITIONS = ["과거 (Past)", "현재 (Present)", "미래 (Future)"] as const;
+
+function MysticBackground() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+      <div className="absolute top-[20%] right-[10%] w-[20%] h-[20%] bg-blue-600/10 rounded-full blur-[80px]" />
+      <svg className="absolute inset-0 w-full h-full opacity-[0.03]">
+        <filter id="noise">
+          <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noise)" />
+      </svg>
+    </div>
+  );
+}
+const TAROT_3D_STYLES = `
+  .perspective-1000 { perspective: 1000px; }
+  .preserve-3d { transform-style: preserve-3d; }
+  .backface-hidden { backface-visibility: hidden; }
+  .rotate-y-180 { transform: rotateY(180deg); }
+  .animate-spin-slow { animation: spin 8s linear infinite; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+`;
+
+function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard, index: number, isRevealed: boolean, onReveal: () => void }) {
+  const effect = getSuitEffect(card.suit);
+  const Icon = effect.icon;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50, rotateY: 0 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.2, type: "spring", stiffness: 100 }}
+      className="perspective-1000 group cursor-pointer"
+      onClick={onReveal}
+    >
+      <motion.div
+        animate={{ rotateY: isRevealed ? 180 : 0 }}
+        transition={{ duration: 0.8, type: "spring", stiffness: 260, damping: 20 }}
+        className="relative w-full aspect-[2/3.2] preserve-3d transition-transform duration-500"
+      >
+        {/* Front: Card Back */}
+        <div className="absolute inset-0 backface-hidden z-10">
+          <div className="w-full h-full rounded-[2.5rem] bg-slate-900 border-4 border-indigo-500/20 flex flex-col items-center justify-center space-y-4 shadow-2xl overflow-hidden relative">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.1),transparent_70%)]" />
+            <div className="w-16 h-16 rounded-full border border-indigo-500/30 flex items-center justify-center animate-spin-slow">
+              <Orbit className="w-8 h-8 text-indigo-400 opacity-50" />
+            </div>
+            <div className="text-[10px] font-black uppercase tracking-[0.4em] text-indigo-300 opacity-60">Tap to Reveal</div>
+            <div className="absolute top-6 left-6 w-8 h-8 border-t-2 border-l-2 border-indigo-500/20 rounded-tl-xl" />
+            <div className="absolute bottom-6 right-6 w-8 h-8 border-b-2 border-r-2 border-indigo-500/20 rounded-br-xl" />
+          </div>
+        </div>
+
+        {/* Back: Card Face */}
+        <div className="absolute inset-0 backface-hidden rotate-y-180 z-0">
+          <article className={`w-full h-full rounded-[2.5rem] border-2 p-6 space-y-3 shadow-2xl transition-all ${effect.glow} bg-slate-950/90 backdrop-blur-md flex flex-col`}>
+            <div className={`absolute inset-0 bg-gradient-to-br ${effect.bg} opacity-20 rounded-[2.5rem]`} />
+
+            <div className="flex items-center justify-between relative z-10 mb-1">
+              <div className={`px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[8px] font-black uppercase tracking-widest ${effect.color}`}>
+                {card.position}
+              </div>
+              <Icon className={`w-4 h-4 ${effect.color} opacity-40`} />
+            </div>
+
+            <div className="relative z-10">
+              <h4 className="text-xl font-black text-white italic tracking-tight truncate">{card.name_kr}</h4>
+              <div className="flex items-center gap-2">
+                <span className={`text-[9px] font-black uppercase tracking-widest ${card.isReversed ? "text-rose-400" : "text-emerald-400"}`}>
+                  {card.isReversed ? "Reverse" : "Upright"}
+                </span>
+              </div>
+            </div>
+
+            <div className="relative flex-1 min-h-0">
+              <Image
+                src={card.imageUrl}
+                alt={card.name_kr}
+                fill
+                className={`object-cover rounded-2xl border border-white/5 bg-black/40 ${card.isReversed ? "rotate-180" : ""}`}
+                unoptimized
+              />
+            </div>
+
+            <p className="text-[11px] text-slate-300 leading-relaxed font-medium relative z-10 line-clamp-3">
+              {card.meaning}
+            </p>
+
+            <div className="pt-2 border-t border-white/5 flex items-center justify-between mt-auto">
+              <div className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">
+                {card.suit?.toUpperCase() ?? "MAJOR"}
+              </div>
+              <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+            </div>
+          </article>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 type SpreadCard = DrawnTarotCard & {
   position: (typeof SPREAD_POSITIONS)[number];
@@ -143,6 +251,8 @@ export default function TarotPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [showEvidence, setShowEvidence] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
+  const [revealedIndices, setRevealedIndices] = useState<number[]>([]);
+  const [showResults, setShowResults] = useState(false);
 
   const spreadCards: SpreadCard[] = useMemo(
     () =>
@@ -165,6 +275,8 @@ export default function TarotPage() {
     setIsDrawing(true);
     setStatus("운명의 파동을 조율하는 중...");
     setShowEvidence(false);
+    setRevealedIndices([]);
+    setShowResults(false);
 
     window.setTimeout(() => {
       const deck = buildTarotDeckCards();
@@ -173,7 +285,8 @@ export default function TarotPage() {
 
       setCards([...picked]);
       setIsDrawing(false);
-      setStatus("운명 전개 완료");
+      setStatus("운명의 신호가 감지되었습니다. 카드를 터치하여 확인하세요.");
+      setShowResults(true);
 
       saveAnalysisToHistory({
         type: "TAROT",
@@ -183,7 +296,15 @@ export default function TarotPage() {
         resultPreview: persistPayload.cards.map((card) => card.name).join(", "),
         result: persistPayload,
       });
-    }, 500);
+    }, 1200);
+  };
+
+  const handleReveal = (index: number) => {
+    if (revealedIndices.includes(index)) return;
+    setRevealedIndices((prev) => [...prev, index]);
+    if (revealedIndices.length === 2) {
+      setStatus("모든 운명이 드러났습니다. 심층 해석을 확인하세요.");
+    }
   };
 
   const saveCurrent = () => {
@@ -207,11 +328,11 @@ export default function TarotPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-40">
+    <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-40 selection:bg-indigo-500/30">
+      <style>{TAROT_3D_STYLES}</style>
       <ReadingProgressBar />
       <AmbientSoundPortal />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(99,102,241,0.2),transparent_40%),radial-gradient(circle_at_80%_40%,rgba(14,165,233,0.16),transparent_45%)]" />
-      <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-indigo-900/10 to-transparent pointer-events-none" />
+      <MysticBackground />
 
       <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
         <header className="flex items-center justify-between mb-12">
@@ -300,136 +421,132 @@ export default function TarotPage() {
           )}
         </section>
 
-        {cards.length > 0 ? (
+        {showResults && cards.length > 0 ? (
           <>
-            <div className="mt-12 flex items-center gap-4 justify-center">
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10" />
-              <div className="px-6 py-2 rounded-full border border-white/10 bg-white/5 text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] flex items-center gap-2 backdrop-blur-md">
-                <Sparkles className="w-3.5 h-3.5" /> Oracle Response
+            <div className="mt-16 flex items-center gap-4 justify-center">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-indigo-500/30" />
+              <div className="px-6 py-2 rounded-full border border-indigo-500/20 bg-indigo-500/5 text-[10px] font-black text-indigo-300 uppercase tracking-[0.4em] flex items-center gap-2 backdrop-blur-xl shadow-lg shadow-indigo-500/10">
+                <Eye className="w-3.5 h-3.5" /> Ritual Revelation
               </div>
-              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10" />
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-indigo-500/30" />
             </div>
-
-            <section className="mt-10 grid gap-5 md:grid-cols-3">
-              <ResultSummaryCard
-                title="🔮 The Essence"
-                icon={Star}
-                tone="border-indigo-400/20 bg-indigo-500/5 shadow-indigo-500/5"
-                body={`${spreadCards[1]?.name_kr ?? "현재 카드"}를 중심으로 보면, 지금의 당신은 상황을 피하기보다 의미를 읽고 방향을 다시 잡아야 하는 국면에 있습니다. 표면의 사건보다 내면의 선택 기준이 더 중요하게 작동합니다.`}
-              />
-              <ResultSummaryCard
-                title="📚 The Insight"
-                icon={LayoutGrid}
-                tone="border-cyan-400/20 bg-cyan-500/5 shadow-cyan-500/5"
-                body={`이번 스프레드는 역방향 비율 ${spreadPulse.reversedRate}, 메이저 카드 ${spreadPulse.majorCount}장으로 읽힙니다. 그래서 단순한 운의 등락보다, 흐름을 늦추고 재정렬해야 하는 신호가 함께 들어와 있다고 보는 편이 정확합니다.`}
-              />
-              <ResultSummaryCard
-                title="✨ The Action"
-                icon={Zap}
-                tone="border-emerald-400/20 bg-emerald-500/5 shadow-emerald-500/5"
-                body={`${spreadCards[2]?.position ?? "미래"} 카드가 말하는 핵심은 조급한 단정 대신 작은 실행입니다. 오늘은 결론을 서두르기보다, 마음을 흔드는 한 가지 이슈를 적고 우선순위를 다시 정리하는 행동이 가장 효과적입니다.`}
-              />
-            </section>
-
-            <section className="mt-8">
-              <details className="border border-white/10 rounded-2xl bg-slate-900/45" open={showEvidence}>
-                <summary
-                  onClick={(event) => {
-                    event.preventDefault();
-                    setShowEvidence((v) => !v);
-                  }}
-                  className="cursor-pointer px-4 py-3 text-sm"
-                >
-                  근거 ({spreadEvidence.length}) {showEvidence ? "접기" : "펼치기"}
-                </summary>
-                <div className="p-4 space-y-2">
-                  {spreadEvidence.map((entry) => (
-                    <div key={entry.title} className="rounded-xl border border-white/10 bg-slate-950/40 p-3">
-                      <div className="text-sm font-black text-slate-100">{entry.title}</div>
-                      <div className="text-xs text-slate-300 mt-1">분류: {entry.tone}</div>
-                      <div className="text-xs text-cyan-300 mt-1">{entry.signal}</div>
-                    </div>
-                  ))}
-                </div>
-              </details>
-            </section>
 
             <motion.section
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="mt-12 grid md:grid-cols-3 gap-8"
+              className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8"
             >
-              {spreadCards.map((card, index) => {
-                const effect = getSuitEffect(card.suit);
-                const Icon = effect.icon;
-                return (
-                  <motion.article
-                    key={`${card.code}-${index}`}
-                    className={`relative rounded-[2.5rem] border p-6 space-y-4 shadow-2xl transition-all ${effect.glow}`}
-                    whileHover={{ y: -8, scale: 1.02 }}
-                    transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                  >
-                    <div className={`absolute inset-0 bg-gradient-to-br ${effect.bg} opacity-20 rounded-[2.5rem]`} />
-
-                    <div className="flex items-center justify-between relative z-10">
-                      <div className={`px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-widest ${effect.color}`}>
-                        {card.position}
-                      </div>
-                      <Icon className={`w-5 h-5 ${effect.color} opacity-40`} />
-                    </div>
-
-                    <div className="relative z-10">
-                      <h4 className="text-2xl font-black text-white italic tracking-tight">{card.name_kr}</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className={`text-[10px] font-black uppercase tracking-widest ${card.isReversed ? "text-rose-400" : "text-emerald-400"}`}>
-                          {card.isReversed ? "Reversed (역방향)" : "Upright (정방향)"}
-                        </span>
-                        <div className={`w-1 h-1 rounded-full ${card.isReversed ? "bg-rose-400" : "bg-emerald-400"} animate-pulse`} />
-                      </div>
-                    </div>
-
-                    <div className="relative group">
-                      <div className={`absolute inset-0 bg-gradient-to-b from-transparent to-black/20 group-hover:opacity-0 transition-opacity rounded-2xl z-10`} />
-                      <Image
-                        src={card.imageUrl}
-                        alt={card.name_kr}
-                        width={320}
-                        height={500}
-                        className={`w-full h-auto rounded-2xl border border-white/5 bg-black/40 transition-transform duration-500 group-hover:scale-105 ${card.isReversed ? "rotate-180" : ""}`}
-                        unoptimized
-                      />
-                    </div>
-
-                    <p className="text-sm text-slate-300 leading-relaxed font-medium relative z-10 min-h-[5rem]">
-                      {card.meaning}
-                    </p>
-
-                    <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-                      <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-                        {getArcanaLabel(card.arcana)} / {card.suit?.toUpperCase() ?? "MAJOR"}
-                      </div>
-                      <AIIntelligenceBadge model="TAROT_AI_V1" isEnsemble={true} />
-                    </div>
-                  </motion.article>
-                );
-              })}
+              {spreadCards.map((card, index) => (
+                <TarotCardFlip
+                  key={`${card.code}-${index}`}
+                  card={card}
+                  index={index}
+                  isRevealed={revealedIndices.includes(index)}
+                  onReveal={() => handleReveal(index)}
+                />
+              ))}
             </motion.section>
 
-            <section className="mt-16 text-center space-y-4">
-              <Shield className="w-8 h-8 text-indigo-500/40 mx-auto" />
-              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.3em] leading-relaxed max-w-lg mx-auto">
-                이 결과는 당신의 현재 기운과 무의식의 정렬을 수치화한 것입니다.<br />
-                모든 해석은 조언으로 참고하시되, 최종적인 선택의 힘은 당신에게 있습니다.
-              </p>
-            </section>
+            <AnimatePresence>
+              {revealedIndices.length === 3 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-20 space-y-12"
+                >
+                  <div className="flex items-center gap-4 justify-center">
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent to-emerald-500/30" />
+                    <div className="px-6 py-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 text-[10px] font-black text-emerald-300 uppercase tracking-[0.4em] flex items-center gap-2 backdrop-blur-xl">
+                      <Sparkles className="w-3.5 h-3.5" /> Insight & Analysis
+                    </div>
+                    <div className="h-px flex-1 bg-gradient-to-l from-transparent to-emerald-500/30" />
+                  </div>
+
+                  <section className="grid gap-6 md:grid-cols-3">
+                    <ResultSummaryCard
+                      title="🔮 The Essence"
+                      icon={Star}
+                      tone="border-indigo-400/20 bg-indigo-500/5"
+                      body={`${spreadCards[1]?.name_kr}를 중심으로 보면, 지금의 당신은 상황을 피하기보다 의미를 읽고 방향을 다시 잡아야 하는 국면에 있습니다.`}
+                    />
+                    <ResultSummaryCard
+                      title="📚 The Insight"
+                      icon={LayoutGrid}
+                      tone="border-cyan-400/20 bg-cyan-500/5"
+                      body={`역방향 비율 ${spreadPulse.reversedRate}, 메이저 ${spreadPulse.majorCount}장의 배열은 흐름을 늦추고 재정렬하라는 신호입니다.`}
+                    />
+                    <ResultSummaryCard
+                      title="✨ The Action"
+                      icon={Zap}
+                      tone="border-emerald-400/20 bg-emerald-500/5"
+                      body={`${spreadCards[2]?.position} 카드는 조급한 단정 대신 오늘 한 가지 작은 실행에 집중할 것을 권합니다.`}
+                    />
+                  </section>
+
+                  <section className="grid md:grid-cols-2 gap-8 items-start">
+                    <div className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-8 space-y-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
+                          <HistoryIcon className="w-5 h-5 text-indigo-400" />
+                        </div>
+                        <h3 className="text-lg font-black italic tracking-tight text-white uppercase">Divine Grounds</h3>
+                      </div>
+
+                      <div className="space-y-4">
+                        {spreadEvidence.map((entry) => (
+                          <motion.div
+                            key={entry.title}
+                            whileHover={{ x: 5 }}
+                            className="group relative pl-6 py-2"
+                          >
+                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-indigo-500 opacity-40 group-hover:opacity-100 transition-opacity" />
+                            <div className="text-xs font-black text-slate-100 group-hover:text-indigo-300 transition-colors uppercase tracking-wider">{entry.title}</div>
+                            <div className="text-[10px] text-slate-400 mt-1 font-medium">{entry.signal}</div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="bg-indigo-600/5 border border-indigo-500/20 rounded-[2.5rem] p-8 space-y-6 relative overflow-hidden">
+                      <Shield className="absolute -bottom-8 -right-8 w-32 h-32 text-indigo-500/5" />
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
+                          <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                        </div>
+                        <h3 className="text-lg font-black italic tracking-tight text-white uppercase">Decision Support</h3>
+                      </div>
+                      <p className="text-sm text-slate-300 leading-relaxed font-medium">
+                        분석된 {spreadPulse.majorCount}개의 고차원 아르카나 신호는 당신의 운명이 중대한 전환점에 있음을 시사합니다. 조급함을 버리고 내면의 목소리에 귀를 기울일 때 가장 선명한 길을 찾을 수 있습니다.
+                      </p>
+                      <div className="pt-4 flex flex-col gap-3">
+                        <AIIntelligenceBadge model="TAROT_ENGINE_V2" isEnsemble={true} />
+                        <div className="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">Validated by High-Precision Oracle Logic</div>
+                      </div>
+                    </div>
+                  </section>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </>
         ) : (
-          <div className="mt-20 flex flex-col items-center justify-center space-y-6 opacity-30">
-            <LayoutGrid className="w-16 h-16 text-slate-600" />
-            <p className="text-xs font-black uppercase tracking-[0.4em] text-slate-500 italic text-center leading-relaxed">
-              Waiting for drawing...<br />신비로운 조언이 당신을 기다립니다.
-            </p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.4 }}
+            className="mt-40 flex flex-col items-center justify-center space-y-8"
+          >
+            <div className="relative">
+              <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-3xl animate-pulse" />
+              <LayoutGrid className="w-20 h-20 text-slate-400 relative z-10" />
+            </div>
+            <div className="text-center space-y-2">
+              <p className="text-sm font-black uppercase tracking-[0.5em] text-slate-300 italic">
+                Awaiting Ritual
+              </p>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">
+                신비로운 조언이 당신의 터치를 기다립니다
+              </p>
+            </div>
+          </motion.div>
         )}
       </div>
 

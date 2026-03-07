@@ -66,20 +66,20 @@ docs/00-overview/DEEP_HISTORY.md      ← 모든 결정의 "왜" 기록
 
 ## Last Checkpoint
 ```
-시각: 2026-03-08T01:10
+시각: 2026-03-08T02:00
 작업자: Claude (Claude Code CLI)
 완료:
-  - 루트 임시파일 29개 → _temp/ 로 이관 (tmp-*.mjs, *.log, inspect-*.mjs, __tmp_old_*)
-  - _temp/ .gitignore 등록
-  - scripts/zero-script-qa.mjs → qa-report.log 경로를 _temp/qa-report.log 로 수정
-  - CONTEXT_ENGINE.md Rule 5 추가 (임시파일 _temp/ 규칙)
-  - AI_BOOTSTRAP.md File Placement Rules 섹션 추가
-  - fortune-readers.ts 신규 파일 추가 (5종 리더 프로필, GPT/Claude/Gemini 모델 매핑)
-  - src/core/ai-routing.ts 리더×페르소나 결합 라우팅 구현
+  - 대형 문서 6개 Compact (총 ~96KB → ~12KB):
+      · docs/00-overview/fortune-reader-system-design-2026-03-07.md (18KB)
+      · docs/02-technical/core-engine/SAJU_VALIDATED_IMPLEMENTATION_BLUEPRINT.md (18KB)
+      · docs/02-technical/core-engine/SAJU_DEEP_RESEARCH_STANDARD.md (16KB)
+      · docs/02-technical/architecture/overview.md (15KB)
+      · docs/01-team/engineering/coding-standards.md (14KB)
+      · NEXT_ACTIONS.md — 완료 [x] 항목 아카이브
+  - AI_BOOTSTRAP.md 구버전 Resume Checkpoint 섹션 제거
 다음 작업:
-  - NEXT_ACTIONS.md P2 항목 확인 후 다음 우선순위 진행
-  - AINarrativeSection.tsx git 상태 확인 (D로 표시되나 파일 존재 — 의도 확인 필요)
-  - 30s/40s/50s persona-matrix 프롬프트 stub 완성 여부 확인
+  - P0-1: LLM API 키 환경변수 설정 (수동)
+  - AINarrativeSection.tsx git 상태 확인 (D로 표시되나 파일 존재)
 에러:
   - ERR-L001: rollup win32 여전히 유효 (ERROR_LEDGER 참조)
 ```
@@ -102,20 +102,3 @@ docs/00-overview/DEEP_HISTORY.md      ← 모든 결정의 "왜" 기록
   - 원인: `vercel.json` installCommand `--omit=optional` (npm bug #4828)
   - 대안: `npx tsc --noEmit` 타입 검사 (✅ 통과)
   - 해결: `ERROR_LEDGER.md ERR-L001` 참조
-## Resume Checkpoint
-```
-Time: 2026-03-06T09:55+09:00
-Agent: Codex
-Observed:
-  - `lint` and `npx tsc --noEmit` were already passing before reboot.
-  - The active blocker was local `next dev` instability on `/login`, not a production build failure.
-  - `tmp-dev-score.log` shows webpack cache rename failures (`EPERM`) followed by
-    `TypeError: __webpack_modules__[moduleId] is not a function` and `_next/static` 404s.
-Action taken:
-  - Updated `scripts/dev-safe.js` to remove `.next/cache/webpack` before starting dev by default.
-  - Added `--skip-cache-clean` and `--clean-full` flags for controlled recovery.
-Next:
-  - Start local dev with `npm run dev:safe` or `npm run dev:safe:quick`.
-  - Re-check `/login` after cache cleanup.
-  - Continue remaining P1/P2 work once dev runtime is stable.
-```
