@@ -15,6 +15,15 @@ import { parseCivilDate } from '@/lib/civil-date';
 import { useProfiles } from '@/components/ProfileProvider';
 import { useWallet } from '@/components/WalletProvider';
 
+function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
+    return (
+        <article className={`rounded-3xl border p-5 ${tone}`}>
+            <h3 className="text-sm font-black tracking-[0.18em] uppercase">{title}</h3>
+            <p className="mt-3 text-sm leading-7 text-slate-100">{body}</p>
+        </article>
+    );
+}
+
 export default function RelationshipDetailPage() {
     const router = useRouter();
     const params = useParams();
@@ -212,6 +221,24 @@ export default function RelationshipDetailPage() {
                         </div>
                     </div>
                 </motion.div>
+
+                <section className="grid gap-4 md:grid-cols-3 mb-12">
+                    <ResultSummaryCard
+                        title="💞 Who You Are"
+                        tone="border-cyan-400/30 bg-cyan-500/10"
+                        body={`${mainProfile.name}님과 ${targetProfile.name}님의 현재 궁합은 ${analysis.score}점입니다. 이 점수는 단순 호감보다 관계가 실제로 굴러가는 힘을 뜻하며, 지금은 ${analysis.message} 흐름으로 읽는 것이 가장 자연스럽습니다.`}
+                    />
+                    <ResultSummaryCard
+                        title="📚 Why It Happens"
+                        tone="border-purple-400/30 bg-purple-500/10"
+                        body={`${analysis.chemistry}${analysis.tension ? ` 동시에 ${analysis.tension}` : ""} 그래서 끌림과 긴장이 함께 작동하는 관계라면, 좋은 점만 보거나 문제만 확대해서 읽지 않는 균형이 중요합니다.`}
+                    />
+                    <ResultSummaryCard
+                        title="✨ What To Do"
+                        tone="border-amber-400/30 bg-amber-500/10"
+                        body={`${analysis.advice} 관계를 빠르게 결론내리기보다, 이번 주에는 감정 표현 방식 하나와 거리 조절 방식 하나를 먼저 맞춰보는 접근이 가장 실용적입니다.`}
+                    />
+                </section>
 
                 {/* VS Mode CTA */}
                 <Link href={`/relationship/${profileId}/vs`}>

@@ -7,12 +7,20 @@ const ADMIN_STORAGE_KEY = 'secret_paws_mock_admin';
 const ADMIN_BALANCE_PREVIEW = 999999999;
 const ADMIN_EMAILS = ['piwpiw@naver.com'];
 const ADMIN_COOKIE_NAME = 'secret_paws_mock_admin';
+const AUTH_SESSION_COOKIE_NAMES = ['sb-', 'auth-session'];
 
 function hasCookieAdminFlag(): boolean {
     if (typeof document === 'undefined') return false;
     return document.cookie
         .split('; ')
         .some((row) => row.startsWith(`${ADMIN_COOKIE_NAME}=`) && row.split('=')[1] === 'true');
+}
+
+function hasAuthSessionCookie(): boolean {
+    if (typeof document === 'undefined') return false;
+    return document.cookie
+        .split('; ')
+        .some((row) => AUTH_SESSION_COOKIE_NAMES.some((prefix) => row.startsWith(prefix)));
 }
 
 interface WalletContextType {
@@ -53,12 +61,16 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
         const cookieUser = getUserFromCookie();
         const email = cookieUser?.email?.toLowerCase();
+        const hasAuthenticatedUser = Boolean(cookieUser?.id || email || hasAuthSessionCookie());
         if (email && ADMIN_EMAILS.includes(email)) {
             setIsAdmin(true);
         }
 
         // Verify with DB
         const fetchBalance = async () => {
+            if (!hasAuthenticatedUser && mockAdmin !== 'true' && !cookieAdmin) {
+                return;
+            }
             try {
                 const res = await fetch('/api/wallet/balance');
                 if (res.ok) {

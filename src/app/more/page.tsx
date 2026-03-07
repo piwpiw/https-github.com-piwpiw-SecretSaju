@@ -115,6 +115,15 @@ const MORE_MENUS = [
         color: "text-pink-400",
         help: "의사결정 성향, 스트레스 패턴, 대인 관계 팁",
       },
+      {
+        icon: Crown,
+        title: "역술가 마켓",
+        desc: "해설가를 직접 고르고 비교하며, 프리미엄 리더를 해금할 수 있습니다.",
+        link: "/fortune-readers",
+        color: "text-yellow-300",
+        badge: "HOT",
+        help: "리더 비교, 즐겨찾기, 시그니처 멤버십",
+      },
     ],
   },
   {

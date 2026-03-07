@@ -72,6 +72,7 @@ type Props = {
   secretUnlocked?: boolean;
   onUnlockClick?: () => void;
   onInsufficientJelly?: () => void;
+  initialFocus?: InsightFocus;
 };
 
 type MetricCard = {
@@ -360,8 +361,11 @@ function ResultCard({
   secretUnlocked,
   onUnlockClick,
   onInsufficientJelly,
+  initialFocus = "base",
 }: Props) {
-  const [insightFocus, setInsightFocus] = useState<InsightFocus>("base");
+  const safeInitialFocus: InsightFocus =
+    initialFocus === "love" || initialFocus === "money" || initialFocus === "career" ? initialFocus : "base";
+  const [insightFocus, setInsightFocus] = useState<InsightFocus>(safeInitialFocus);
   const normalizedElementScores = toArray(elementScores, [20, 20, 20, 20, 20]);
   const normalizedElementCounts = toArray(elementCounts, [1, 1, 1, 1, 1]);
   const normalizedPercentages = toArray(elementBasicPercentages, [20, 20, 20, 20, 20]);

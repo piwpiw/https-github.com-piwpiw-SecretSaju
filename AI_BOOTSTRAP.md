@@ -42,6 +42,12 @@ ERROR_LEDGER.md                       ← 에러 이력 (ERR-L001 활성)
 docs/00-overview/DEEP_HISTORY.md      ← 모든 결정의 "왜" 기록
 ```
 
+## File Placement Rules (MUST FOLLOW)
+- 임시 디버그 스크립트 → `_temp/` (gitignored). 루트에 절대 생성 금지.
+- 로그 파일 → `_temp/`. 예: `node scripts/foo.mjs > _temp/foo.log`
+- QA 리포트 → `_temp/qa-report.log` (자동 생성됨)
+- 일반 스크립트 → `scripts/`
+
 ## Current State (2026-03-06)
 - Wave 1-10: ✅ 완료 (엔진, Auth, 경제, UI, 감각 레이어)
 - Wave 11 (MPPS): ✅ 실구현 완료
@@ -60,20 +66,22 @@ docs/00-overview/DEEP_HISTORY.md      ← 모든 결정의 "왜" 기록
 
 ## Last Checkpoint
 ```
-시각: 2026-03-06T00:35
-작업자: Claude
+시각: 2026-03-08T01:10
+작업자: Claude (Claude Code CLI)
 완료:
-  - Wave 11.6 P0 전체 구현 (/api/persona LLM 체인, TransitTicker 만세력, ProfileWallet DB)
-  - 테스트 40개 작성 (saju-engine/ai-routing/payment-flow)
-  - MASTER_PRD v6.0, 문서 7개 단절점 연동 수정
-  - ERR-L001 (rollup win32) ERROR_LEDGER 등재
-  - DEEP_HISTORY.md Wave 11.6 이력 추가
+  - 루트 임시파일 29개 → _temp/ 로 이관 (tmp-*.mjs, *.log, inspect-*.mjs, __tmp_old_*)
+  - _temp/ .gitignore 등록
+  - scripts/zero-script-qa.mjs → qa-report.log 경로를 _temp/qa-report.log 로 수정
+  - CONTEXT_ENGINE.md Rule 5 추가 (임시파일 _temp/ 규칙)
+  - AI_BOOTSTRAP.md File Placement Rules 섹션 추가
+  - fortune-readers.ts 신규 파일 추가 (5종 리더 프로필, GPT/Claude/Gemini 모델 매핑)
+  - src/core/ai-routing.ts 리더×페르소나 결합 라우팅 구현
 다음 작업:
-  - API 키 설정 후 LLM 실연동 테스트
-  - ERR-L001 해결 후 vitest 실행
-  - P2: PWA manifest, GA4, Content DB, Mock 정리
+  - NEXT_ACTIONS.md P2 항목 확인 후 다음 우선순위 진행
+  - AINarrativeSection.tsx git 상태 확인 (D로 표시되나 파일 존재 — 의도 확인 필요)
+  - 30s/40s/50s persona-matrix 프롬프트 stub 완성 여부 확인
 에러:
-  - ERR-L001: rollup win32 네이티브 모듈 미설치 (ERROR_LEDGER 참조)
+  - ERR-L001: rollup win32 여전히 유효 (ERROR_LEDGER 참조)
 ```
 
 ## Rules (절대)

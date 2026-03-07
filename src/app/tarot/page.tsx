@@ -36,6 +36,15 @@ type PersistPayload = {
   pulse: { reversedRate: string; majorCount: number; reversedCount: number; flowTone: string };
 };
 
+function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
+  return (
+    <article className={`rounded-3xl border p-5 ${tone}`}>
+      <h3 className="text-sm font-black tracking-[0.18em] uppercase">{title}</h3>
+      <p className="mt-3 text-sm leading-7 text-slate-100">{body}</p>
+    </article>
+  );
+}
+
 function getArcanaLabel(arcana: string) {
   return arcana === "major" ? "메이저" : "마이너";
 }
@@ -235,6 +244,24 @@ export default function TarotPage() {
 
         {cards.length > 0 ? (
           <>
+            <section className="mt-8 grid gap-4 md:grid-cols-3">
+              <ResultSummaryCard
+                title="🔮 Who You Are"
+                tone="border-indigo-400/30 bg-indigo-500/10"
+                body={`${spreadCards[1]?.name_kr ?? "현재 카드"}를 중심으로 보면, 지금의 당신은 상황을 피하기보다 의미를 읽고 방향을 다시 잡아야 하는 국면에 있습니다. 표면의 사건보다 내면의 선택 기준이 더 중요하게 작동합니다.`}
+              />
+              <ResultSummaryCard
+                title="📚 Why It Happens"
+                tone="border-cyan-400/30 bg-cyan-500/10"
+                body={`이번 스프레드는 역방향 비율 ${spreadPulse.reversedRate}, 메이저 카드 ${spreadPulse.majorCount}장으로 읽힙니다. 그래서 단순한 운의 등락보다, 흐름을 늦추고 재정렬해야 하는 신호가 함께 들어와 있다고 보는 편이 정확합니다.`}
+              />
+              <ResultSummaryCard
+                title="✨ What To Do"
+                tone="border-emerald-400/30 bg-emerald-500/10"
+                body={`${spreadCards[2]?.position ?? "미래"} 카드가 말하는 핵심은 조급한 단정 대신 작은 실행입니다. 오늘은 결론을 서두르기보다, 마음을 흔드는 한 가지 이슈를 적고 우선순위를 다시 정리하는 행동이 가장 효과적입니다.`}
+              />
+            </section>
+
             <section className="mt-8">
               <details className="border border-white/10 rounded-2xl bg-slate-900/45" open={showEvidence}>
                 <summary
@@ -300,4 +327,3 @@ export default function TarotPage() {
     </main>
   );
 }
-

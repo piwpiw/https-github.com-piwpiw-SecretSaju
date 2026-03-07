@@ -48,6 +48,15 @@ function toneToColor(tone: TojeongScore) {
   return "from-rose-400 to-rose-600";
 }
 
+function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
+  return (
+    <div className={`rounded-3xl border p-5 ${tone}`}>
+      <p className="text-xs font-black uppercase tracking-[0.2em] text-white/80">{title}</p>
+      <p className="mt-2 text-sm leading-relaxed text-slate-100">{body}</p>
+    </div>
+  );
+}
+
 export default function TojeongPage() {
   const { consumeChuru, churu, isAdmin } = useWallet();
   const { profiles, activeProfile } = useProfiles();
@@ -263,6 +272,24 @@ export default function TojeongPage() {
                 />
               </div>
               <p className="text-xs text-slate-400 mt-2">월평균 점수: {monthSummary?.avgMonthly}점</p>
+            </section>
+
+            <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <ResultSummaryCard
+                title="🧭 Who You Are"
+                body={`${selectedYear}년의 ${profileName}님 흐름은 ${report.mainGrade} 등급, ${report.mainScore}점으로 요약되며 "${report.theme}"가 올해의 중심 주제입니다.`}
+                tone="bg-cyan-500/10 border-cyan-300/20"
+              />
+              <ResultSummaryCard
+                title="📚 Why It Happens"
+                body={`${report.oneLineSummary} ${report.sources.length}개의 근거가 현재 해석을 지지하고, 월평균 ${monthSummary?.avgMonthly ?? 0}점 리듬이 연간 흐름을 만듭니다.`}
+                tone="bg-amber-500/10 border-amber-300/20"
+              />
+              <ResultSummaryCard
+                title="✨ What To Do"
+                body={`${report.actionPlans[0] ?? "올해는 강한 달에 집중하고 약한 달은 보수적으로 운영하는 편이 좋습니다."}`}
+                tone="bg-emerald-500/10 border-emerald-300/20"
+              />
             </section>
 
             <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">

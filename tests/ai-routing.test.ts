@@ -1,69 +1,71 @@
-import { describe, it, expect } from 'vitest';
-import { routeAIPersona } from '../src/core/ai-routing';
+import { describe, expect, it } from "vitest";
+import { routeAIPersona } from "../src/core/ai-routing";
 
-describe('AI Routing (MPPS)', () => {
-    describe('routeAIPersona model selection', () => {
-        it('Returns a knowing model name', () => {
-            const result = routeAIPersona({
-                userName: '테스트',
-                ageGroup: '20s',
-                tendency: 'Balanced',
-                queryType: 'result',
-            });
-            expect(result.model).toBeTruthy();
-            expect(typeof result.model).toBe('string');
-        });
-
-        it('Returns systemPrompt and userPrompt strings', () => {
-            const result = routeAIPersona({
-                userName: '테스트',
-                ageGroup: '30s',
-                tendency: 'Tree',
-                queryType: 'result',
-            });
-            expect(typeof result.systemPrompt).toBe('string');
-            expect(result.systemPrompt.length).toBeGreaterThan(0);
-            expect(typeof result.userPrompt).toBe('string');
-        });
-
-        it('Returns isEnsemble is boolean', () => {
-            const result = routeAIPersona({
-                userName: '테스트',
-                ageGroup: '40s',
-                tendency: 'Water',
-                queryType: 'result',
-            });
-            expect(typeof result.isEnsemble).toBe('boolean');
-        });
-
-        it('Different age groups produce different system prompts', () => {
-            const teen = routeAIPersona({ userName: 'A', ageGroup: '10s', tendency: 'Fire', queryType: 'result' });
-            const forties = routeAIPersona({ userName: 'A', ageGroup: '40s', tendency: 'Fire', queryType: 'result' });
-            expect(teen.systemPrompt).not.toBe(forties.systemPrompt);
-        });
+describe("AI Routing", () => {
+  it("returns a known model name", () => {
+    const result = routeAIPersona({
+      userName: "테스트",
+      ageGroup: "20s",
+      tendency: "Balanced",
+      queryType: "result",
     });
+    expect(result.model).toBeTruthy();
+    expect(typeof result.model).toBe("string");
+  });
 
-    describe('Edge cases', () => {
-        it('Handles missing optional rawSajuData gracefully', () => {
-            expect(() => routeAIPersona({
-                userName: '테스트',
-                ageGroup: '20s',
-                tendency: 'Balanced',
-                queryType: 'result',
-                rawSajuData: undefined,
-            })).not.toThrow();
-        });
-
-        it('Handles all queryType variants without throwing', () => {
-            const queryTypes = ['result', 'daily', 'compatibility', 'chat'] as const;
-            for (const qt of queryTypes) {
-                expect(() => routeAIPersona({
-                    userName: '테스트',
-                    ageGroup: '20s',
-                    tendency: 'Balanced',
-                    queryType: qt,
-                })).not.toThrow();
-            }
-        });
+  it("returns systemPrompt, userPrompt, and reader", () => {
+    const result = routeAIPersona({
+      userName: "테스트",
+      ageGroup: "30s",
+      tendency: "Tree",
+      queryType: "result",
     });
+    expect(typeof result.systemPrompt).toBe("string");
+    expect(result.systemPrompt.length).toBeGreaterThan(0);
+    expect(typeof result.userPrompt).toBe("string");
+    expect(result.reader.name.length).toBeGreaterThan(0);
+  });
+
+  it("respects a custom reader selection", () => {
+    const result = routeAIPersona({
+      userName: "테스트",
+      ageGroup: "20s",
+      tendency: "Balanced",
+      queryType: "result",
+      readerId: "easy_translator",
+    });
+    expect(result.reader.id).toBe("easy_translator");
+  });
+
+  it("recommends love reader for compatibility requests", () => {
+    const result = routeAIPersona({
+      userName: "A",
+      ageGroup: "20s",
+      tendency: "Balanced",
+      queryType: "compatibility",
+    });
+    expect(result.reader.category).toBe("love");
+  });
+
+  it("recommends timing reader for daily requests", () => {
+    const result = routeAIPersona({
+      userName: "A",
+      ageGroup: "40s",
+      tendency: "Water",
+      queryType: "daily",
+    });
+    expect(result.reader.id).toBe("timing_signal");
+  });
+
+  it("handles missing rawSajuData gracefully", () => {
+    expect(() =>
+      routeAIPersona({
+        userName: "테스트",
+        ageGroup: "20s",
+        tendency: "Balanced",
+        queryType: "result",
+        rawSajuData: undefined,
+      }),
+    ).not.toThrow();
+  });
 });

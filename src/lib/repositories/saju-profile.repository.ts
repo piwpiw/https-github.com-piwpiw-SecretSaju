@@ -18,6 +18,12 @@ type LocalStoredProfile = {
     updatedAt?: string | number;
 };
 
+const LOCAL_USER_ID = 'local-user';
+
+function looksLikeUuid(value: string): boolean {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
 /**
  * Repository: Abstracts data access for Saju Profiles
  * Handles: localStorage fallback ??Supabase migration
@@ -47,9 +53,10 @@ export class SajuProfileRepository {
         // 1. Try Supabase first
         const supabase = getSupabaseClient();
         const localProfiles = this.findByUserIdLocal(userId);
+        const canQuerySupabase = looksLikeUuid(userId);
 
         // Check if configured (not null)
-        if (supabase) {
+        if (supabase && canQuerySupabase) {
             try {
                 const { data, error } = await supabase
                     .from('saju_profiles')
@@ -80,8 +87,9 @@ export class SajuProfileRepository {
      */
     static async create(req: CreateSajuProfileRequest, userId: string): Promise<SajuProfile> {
         const supabase = getSupabaseClient();
+        const canWriteSupabase = looksLikeUuid(userId);
 
-        if (supabase) {
+        if (supabase && canWriteSupabase) {
             try {
                 const { data, error } = await supabase
                     .from('saju_profiles')
@@ -141,7 +149,7 @@ export class SajuProfileRepository {
     // LOCAL STORAGE FALLBACKS (Private)
     // ============================================
 
-    private static findByUserIdLocal(userId: string = 'local-user'): SajuProfile[] {
+    private static findByUserIdLocal(userId: string = LOCAL_USER_ID): SajuProfile[] {
         if (typeof window === 'undefined') return [];
 
         try {
@@ -149,7 +157,7 @@ export class SajuProfileRepository {
             // Map raw params (any) to SajuProfile domain
             const mapped = rawParams.map((p: any) => ({
                 id: p.id,
-                userId: p.userId || 'local-user', // Storage may not track user ID in legacy format
+                userId: p.userId || LOCAL_USER_ID, // Storage may not track user ID in legacy format
                 name: p.name,
                 relationship: p.relationship, // Might need normalization
                 birthdate: parseCivilDate(p.birthdate) ?? new Date(1990, 0, 1, 12, 0, 0, 0),
@@ -167,18 +175,18 @@ export class SajuProfileRepository {
             }));
 
             // Legacy local data may not have userId, so treat missing as local-user.
-            return mapped.filter((p) => (p.userId || 'local-user') === userId);
+            return mapped.filter((p) => (p.userId || LOCAL_USER_ID) === userId);
         } catch {
             return [];
         }
     }
 
     private static createLocal(req: CreateSajuProfileRequest): SajuProfile {
-        const profiles = this.findByUserIdLocal('local-user');
+        const profiles = this.findByUserIdLocal(LOCAL_USER_ID);
 
         // Create new domain object
         const newProfile: SajuProfile = {
-            ...SajuProfileMapper.fromRequest(req, 'local-user'),
+            ...SajuProfileMapper.fromRequest(req, LOCAL_USER_ID),
             id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `id-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -193,7 +201,7 @@ export class SajuProfileRepository {
     }
 
     private static deleteLocal(id: string): void {
-        const profiles = this.findByUserIdLocal('local-user');
+        const profiles = this.findByUserIdLocal(LOCAL_USER_ID);
         const updated = profiles.filter(p => p.id !== id);
         writeProfileStoragePayload(updated.map((profile) => this.serializeLocalProfile(profile)));
     }

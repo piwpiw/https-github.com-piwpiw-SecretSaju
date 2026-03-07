@@ -369,3 +369,17 @@
 5. `/tojeong`
 
 Last Updated: 2026-03-07
+## Implementation Status Update (2026-03-07)
+
+- Implemented `3-step summary cards` on:
+  - `/saju`
+  - `/fortune`
+  - `/compatibility`
+  - `/daily`
+  - `/tojeong`
+  - `/tarot`
+  - `/psychology`
+  - `/relationship/[id]`
+  - `/relationship/[id]/vs`
+- Pending direct result-surface alignment:
+  - none

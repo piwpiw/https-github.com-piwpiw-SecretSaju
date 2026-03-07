@@ -23,6 +23,7 @@ import LoveScoreCounter from "@/components/compatibility/LoveScoreCounter";
 import RelationshipRadar from "@/components/compatibility/RelationshipRadar";
 import { cn } from "@/lib/utils";
 import { parseCivilDate } from "@/lib/civil-date";
+import AINarrativeSection from "@/components/result/AINarrativeSection";
 
 const RELATIONSHIP_PRESETS: { labelKey: string; value: ProfileRelationshipType; icon: string }[] = [
   { labelKey: "common.relation.lover", value: "lover", icon: "💕" },
@@ -40,6 +41,15 @@ const GRADE_CONFIG = {
   caution: { icon: "⚠️", label: "주의", color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20 shadow-orange-950/20" },
   low: { icon: "❗", label: "부족", color: "text-rose-400", bg: "bg-rose-500/10 border-rose-500/20 shadow-rose-950/20" },
 };
+
+function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
+  return (
+    <div className={`rounded-3xl border p-5 ${tone}`}>
+      <p className="text-xs font-black uppercase tracking-[0.2em] text-white/80">{title}</p>
+      <p className="mt-2 text-sm leading-relaxed text-slate-100">{body}</p>
+    </div>
+  );
+}
 
 function CompatibilityContent() {
   const router = useRouter();
@@ -316,6 +326,40 @@ function CompatibilityContent() {
                   <p className="text-lg font-bold text-slate-400 italic leading-relaxed">{result.chemistry}</p>
                 </div>
               </div>
+
+              <section className="grid gap-4 md:grid-cols-3">
+                <ResultSummaryCard
+                  title="💞 Who You Are"
+                  body={`${selectedPersonA?.name}님과 ${selectedPersonB?.name}님의 관계는 ${result.message}로 요약되며, 전체적으로 ${gradeInfo.label} 등급 흐름입니다.`}
+                  tone="bg-cyan-500/10 border-cyan-300/20"
+                />
+                <ResultSummaryCard
+                  title="📚 Why It Happens"
+                  body={`궁합 점수 ${result.score}%와 "${result.chemistry}"라는 핵심 문장이 현재 두 사람의 강한 결합 포인트를 설명합니다.`}
+                  tone="bg-amber-500/10 border-amber-300/20"
+                />
+                <ResultSummaryCard
+                  title="✨ What To Do"
+                  body={`${result.advice} 지금은 상대를 바꾸려 하기보다, 잘 맞는 리듬을 반복해서 쌓는 방식이 가장 효과적입니다.`}
+                  tone="bg-emerald-500/10 border-emerald-300/20"
+                />
+              </section>
+
+              <AINarrativeSection
+                persona="compatibility_love"
+                model="CLAUDE-3.5"
+                userName={`${selectedPersonA?.name ?? "A"} & ${selectedPersonB?.name ?? "B"}`}
+                ageGroup="20s"
+                tendency="Balanced"
+                rawSajuData={{
+                  result,
+                  personA: selectedPersonA?.name,
+                  personB: selectedPersonB?.name,
+                  relationType: selectedRelationType,
+                }}
+                queryType="compatibility"
+                categoryFocus="love"
+              />
 
               {/* Detailed Analysis */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

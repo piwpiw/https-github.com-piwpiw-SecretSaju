@@ -2,6 +2,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Search, Languages, ArrowRight, Zap } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
+function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
+    return (
+        <article className={`rounded-3xl border p-5 ${tone}`}>
+            <h3 className="text-sm font-black tracking-[0.18em] uppercase">{title}</h3>
+            <p className="mt-3 text-sm leading-7 text-slate-100">{body}</p>
+        </article>
+    );
+}
+
 export default function AIDreamParser() {
     const [text, setText] = useState('');
     const [isScanning, setIsScanning] = useState(false);
@@ -53,18 +62,42 @@ export default function AIDreamParser() {
             </button>
 
             {keywords.length > 0 && (
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="grid grid-cols-2 sm:grid-cols-4 gap-3"
-                >
-                    {keywords.map((kw, i) => (
-                        <div key={kw} className="px-4 py-3 rounded-2xl bg-white/5 border border-white/5 flex flex-col items-center justify-center group hover:bg-white/10 transition-colors">
-                            <Sparkles className="w-3.5 h-3.5 text-indigo-400 mb-2 opacity-50 group-hover:opacity-100" />
-                            <span className="text-[11px] font-black text-white">{kw}</span>
-                        </div>
-                    ))}
-                </motion.div>
+                <>
+                    <motion.section
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="grid gap-4 md:grid-cols-3"
+                    >
+                        <ResultSummaryCard
+                            title="🌙 Who You Are"
+                            tone="border-indigo-400/30 bg-indigo-500/10"
+                            body="지금의 꿈은 단순한 이미지 재생보다, 마음이 놓치고 있던 감정 신호를 다시 수면 위로 올리는 단계에 가깝습니다. 그래서 꿈의 강도보다 반복되는 장면과 정서가 더 중요합니다."
+                        />
+                        <ResultSummaryCard
+                            title="📚 Why It Happens"
+                            tone="border-cyan-400/30 bg-cyan-500/10"
+                            body={`이번 해석에서는 ${keywords.slice(0, 3).join(", ")} 신호가 먼저 잡혔습니다. 즉, 무의식은 현재의 긴장, 회복, 관계 정리 중 어느 축이 더 급한지를 상징으로 보여주고 있다고 읽을 수 있습니다.`}
+                        />
+                        <ResultSummaryCard
+                            title="✨ What To Do"
+                            tone="border-emerald-400/30 bg-emerald-500/10"
+                            body="오늘은 꿈에서 가장 선명했던 장면 하나와 그때 든 감정 하나만 기록해 두세요. 꿈을 바로 해석하려 하기보다, 반복 신호를 남기면 다음 해석의 정확도와 실전성이 훨씬 올라갑니다."
+                        />
+                    </motion.section>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+                    >
+                        {keywords.map((kw) => (
+                            <div key={kw} className="px-4 py-3 rounded-2xl bg-white/5 border border-white/5 flex flex-col items-center justify-center group hover:bg-white/10 transition-colors">
+                                <Sparkles className="w-3.5 h-3.5 text-indigo-400 mb-2 opacity-50 group-hover:opacity-100" />
+                                <span className="text-[11px] font-black text-white">{kw}</span>
+                            </div>
+                        ))}
+                    </motion.div>
+                </>
             )}
         </div>
     );

@@ -13,7 +13,7 @@ const FATE_MODULES = [
     icon: UserRound,
     label: "인생 총운",
     desc: "12종 운세를 통한 일생 흐름을 읽어드립니다.",
-    href: "/astrology",
+    href: "/saju?focus=total",
   },
   {
     icon: Star,
@@ -31,19 +31,19 @@ const FATE_MODULES = [
     icon: Flame,
     label: "성격 분석",
     desc: "타고난 성향과 잠재력을 분석합니다.",
-    href: "/saju",
+    href: "/saju?focus=personality",
   },
   {
     icon: Sparkles,
     label: "금전운",
     desc: "재물운의 흐름과 시기를 예측합니다.",
-    href: "/astrology",
+    href: "/saju?focus=money",
   },
   {
     icon: Heart,
     label: "애정운",
     desc: "연애운의 변화와 인연의 시기 분석 리포트.",
-    href: "/saju",
+    href: "/saju?focus=love",
   },
 ];
 

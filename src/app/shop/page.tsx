@@ -1,5 +1,6 @@
-﻿'use client';
+'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 import PremiumTierCard from '@/components/shop/PremiumTierCard';
@@ -63,6 +64,38 @@ export default function ShopPage() {
           </div>
         </ScrollReveal>
 
+        <ScrollReveal direction="up" delay={0.28}>
+          <section className="mt-16 rounded-[2rem] border border-white/10 bg-white/[0.04] p-8">
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.28em] text-fuchsia-200">Signature Reader Membership</p>
+                <h2 className="mt-3 text-3xl font-black text-white">시그니처 리더 멤버십</h2>
+                <p className="mt-4 text-sm leading-7 text-slate-200">
+                  단건 해금보다 더 깊은 해설을 원하면 시그니처 리더 멤버십이 맞습니다.
+                  30일 동안 시그니처 마스터를 열고, 롱폼 브리핑과 통합 조언형 결과를 바로 확인할 수 있습니다.
+                </p>
+                <p className="mt-3 text-xs font-bold uppercase tracking-[0.18em] text-amber-200">
+                  추천 진입가: 5 젤리 / 30일 활성
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/fortune-readers"
+                  className="inline-flex items-center justify-center rounded-2xl bg-fuchsia-600 px-5 py-3 text-sm font-black text-white"
+                >
+                  역술가 마켓 보기
+                </Link>
+                <Link
+                  href="/saju"
+                  className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-black text-slate-100"
+                >
+                  결과 화면에서 사용
+                </Link>
+              </div>
+            </div>
+          </section>
+        </ScrollReveal>
+
         <section className="mt-24 text-center">
           <div className="inline-flex flex-col items-center">
             <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.5em] mb-4">
@@ -79,5 +112,3 @@ export default function ShopPage() {
     </main>
   );
 }
-
-

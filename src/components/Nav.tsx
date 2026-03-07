@@ -24,6 +24,23 @@ export function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const { profiles, activeProfile, setActiveProfileById } = useProfiles();
+  const [logged, setLogged] = useState(false);
+
+  useEffect(() => {
+    // Only check on client-side
+    const checkAuth = async () => {
+      const { isLoggedIn } = await import("@/lib/kakao-auth");
+      setLogged(isLoggedIn());
+    };
+    checkAuth();
+  }, [pathname]);
+
+  const handleLogout = async () => {
+    const { clearUserSession } = await import("@/lib/kakao-auth");
+    clearUserSession();
+    setLogged(false);
+    router.push("/");
+  };
 
   const LINKS = [
     { href: "/", label: t("nav.home") || "홈", icon: Compass },
@@ -33,12 +50,9 @@ export function Nav() {
     { href: "/support", label: t("nav.support") || "후원", icon: Heart },
     { href: "/more", label: t("nav.more") || "더보기", icon: Shield },
   ];
-  const AUTH_LINKS = [
-    { href: "/signup", label: "회원가입" },
-    { href: "/login", label: "로그인" },
-  ];
-  const themeLabel = theme === "dark" ? "\uB2E4\uD06C \uBAA8\uB4DC" : "\uB77C\uC774\uD2B8 \uBAA8\uB4DC";
-  const themeToggleNextLabel = theme === "dark" ? "\uB77C\uC774\uD2B8 \uBAA8\uB4DC\uB85C \uc804\ud658" : "\uB2E4\uD06C \uBAA8\uB4DC\uB85C \uc804\ud658";
+
+  const themeLabel = theme === "dark" ? "다크 모드" : "라이트 모드";
+  const themeToggleNextLabel = theme === "dark" ? "라이트 모드로 전환" : "다크 모드로 전환";
 
   useEffect(() => {
     try {
@@ -104,20 +118,39 @@ export function Nav() {
           {/* Right Side Tools */}
           <div className="flex items-center gap-3">
             <div className="hidden md:flex items-center gap-2 border-r border-white/5 pr-3 mr-1">
-              {AUTH_LINKS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-[11px] font-black tracking-tight transition-colors",
-                    pathname === item.href
-                      ? "bg-indigo-500/20 text-indigo-200 border border-indigo-400/30"
-                      : "text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
-                  )}
+              {logged ? (
+                <button
+                  onClick={handleLogout}
+                  className="px-3 py-1.5 rounded-lg text-[11px] font-black tracking-tight transition-colors text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
                 >
-                  {item.label}
-                </Link>
-              ))}
+                  로그아웃
+                </button>
+              ) : (
+                <>
+                  <Link
+                    href="/signup"
+                    className={cn(
+                      "px-3 py-1.5 rounded-lg text-[11px] font-black tracking-tight transition-colors",
+                      pathname === "/signup"
+                        ? "bg-indigo-500/20 text-indigo-200 border border-indigo-400/30"
+                        : "text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
+                    )}
+                  >
+                    회원가입
+                  </Link>
+                  <Link
+                    href="/login"
+                    className={cn(
+                      "px-3 py-1.5 rounded-lg text-[11px] font-black tracking-tight transition-colors",
+                      pathname === "/login"
+                        ? "bg-indigo-500/20 text-indigo-200 border border-indigo-400/30"
+                        : "text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
+                    )}
+                  >
+                    로그인
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Weather & Active Profile Widget (Desktop) */}
@@ -222,16 +255,34 @@ export function Nav() {
             >
               <div className="p-6 space-y-2">
                 <div className="grid grid-cols-2 gap-2 mb-2">
-                  {AUTH_LINKS.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileOpen(false)}
-                      className="flex items-center justify-center px-4 py-3 rounded-xl text-[11px] font-black bg-indigo-500/20 text-indigo-100 border border-indigo-400/30"
+                  {logged ? (
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setMobileOpen(false);
+                      }}
+                      className="col-span-2 flex items-center justify-center px-4 py-3 rounded-xl text-[11px] font-black bg-white/5 text-slate-300 border border-white/10"
                     >
-                      {item.label}
-                    </Link>
-                  ))}
+                      로그아웃
+                    </button>
+                  ) : (
+                    <>
+                      <Link
+                        href="/signup"
+                        onClick={() => setMobileOpen(false)}
+                        className="flex items-center justify-center px-4 py-3 rounded-xl text-[11px] font-black bg-indigo-500/20 text-indigo-100 border border-indigo-400/30"
+                      >
+                        회원가입
+                      </Link>
+                      <Link
+                        href="/login"
+                        onClick={() => setMobileOpen(false)}
+                        className="flex items-center justify-center px-4 py-3 rounded-xl text-[11px] font-black bg-indigo-500/20 text-indigo-100 border border-indigo-400/30"
+                      >
+                        로그인
+                      </Link>
+                    </>
+                  )}
                 </div>
                 {LINKS.map(({ href, label, icon: Icon }) => {
                   const isActive = pathname === href;
@@ -258,10 +309,3 @@ export function Nav() {
     </>
   );
 }
-
-
-
-
-
-
-

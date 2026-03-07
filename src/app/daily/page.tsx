@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getDayPillar, getHourPillar } from "@/core/calendar/ganji";
+import AINarrativeSection from "@/components/result/AINarrativeSection";
 
 type Locale = "ko" | "en";
 
@@ -72,6 +73,15 @@ function ScoreRing({ score }: { score: number }) {
         </motion.p>
         <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">점</p>
       </div>
+    </div>
+  );
+}
+
+function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
+  return (
+    <div className={`rounded-2xl border p-4 ${tone}`}>
+      <p className="text-xs font-black uppercase tracking-[0.2em] text-white/80">{title}</p>
+      <p className="mt-2 text-sm leading-relaxed text-slate-100">{body}</p>
     </div>
   );
 }
@@ -258,6 +268,35 @@ export default function DailyFortunePage() {
                   </div>
                 )}
               </div>
+
+              <section className="grid gap-3 md:grid-cols-3">
+                <ResultSummaryCard
+                  title="☀️ Who You Are"
+                  body={`오늘 흐름은 ${fortune.pillarName ?? "기본 운세"} 축을 중심으로 읽히며, 전체 에너지는 ${scoreVal}점 수준입니다.`}
+                  tone="bg-cyan-500/10 border-cyan-300/20"
+                />
+                <ResultSummaryCard
+                  title="📚 Why It Happens"
+                  body={`${fortune.message ?? "운세 메시지"}${fortune.element ? ` 오행상으로는 ${fortune.element} 기운이 오늘의 핵심 축입니다.` : ""}`}
+                  tone="bg-amber-500/10 border-amber-300/20"
+                />
+                <ResultSummaryCard
+                  title="✨ What To Do"
+                  body={`${fortune.caution ? `${fortune.caution} ` : ""}오늘은 무리하게 벌리기보다, 잘 되는 시간대에 핵심 한두 가지를 선명하게 처리하는 편이 좋습니다.`}
+                  tone="bg-emerald-500/10 border-emerald-300/20"
+                />
+              </section>
+
+              <AINarrativeSection
+                persona="daily_timing"
+                model="GEMINI-1.5"
+                userName="오늘의 사용자"
+                ageGroup="20s"
+                tendency="Balanced"
+                rawSajuData={fortune}
+                queryType="daily"
+                categoryFocus="base"
+              />
 
               {/* Caution */}
               {fortune.caution && (

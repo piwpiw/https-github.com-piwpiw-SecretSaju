@@ -4,7 +4,8 @@ import * as path from 'path';
 
 const APP_DIR = path.join(process.cwd(), 'src', 'app');
 const BACKLOG_FILE = path.join(process.cwd(), 'docs', '00-overview', 'execution-backlog-ko.md');
-const LOG_FILE = path.join(process.cwd(), 'qa-report.log');
+const LOG_FILE = path.join(process.cwd(), '_temp', 'qa-report.log');
+fs.mkdirSync(path.join(process.cwd(), '_temp'), { recursive: true });
 
 function collectPageRoutes() {
   const routes = [];
@@ -113,5 +114,5 @@ if (lintPassed && tscPassed && !routeCheck.missingInBacklog.length && !routeChec
 if (routeCheck.missingInBacklog.length || routeCheck.extraInBacklog.length) {
   console.log('Route contract mismatch: update docs/00-overview/execution-backlog-ko.md');
 }
-console.log('[ZORO QA] failed. check qa-report.log for details');
+console.log('[ZORO QA] failed. check _temp/qa-report.log for details');
 process.exit(1);

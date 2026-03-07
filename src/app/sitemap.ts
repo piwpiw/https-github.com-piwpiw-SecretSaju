@@ -1,32 +1,45 @@
 import { MetadataRoute } from 'next';
-import { APP_CONFIG } from '@/config';
+import { APP_CONFIG } from '@/config/env';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:3000';
-    const now = new Date();
+    const baseUrl = APP_CONFIG.BASE_URL || 'https://secret-saju.vercel.app';
 
     return [
-        // Core — High Priority
-        { url: baseUrl, lastModified: now, changeFrequency: 'daily', priority: 1 },
-        { url: `${baseUrl}/fortune`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
-        { url: `${baseUrl}/compatibility`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
-        { url: `${baseUrl}/dashboard`, lastModified: now, changeFrequency: 'daily', priority: 0.85 },
-
-        // Content
-        { url: `${baseUrl}/wiki`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-        { url: `${baseUrl}/relationship`, lastModified: now, changeFrequency: 'weekly', priority: 0.75 },
-        { url: `${baseUrl}/my-saju`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
-        { url: `${baseUrl}/select-fortune`, lastModified: now, changeFrequency: 'weekly', priority: 0.65 },
-
-        // User
-        { url: `${baseUrl}/mypage`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
-        { url: `${baseUrl}/gift`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
-        { url: `${baseUrl}/inquiry`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
-
-        // Legal
-        { url: `${baseUrl}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
-        { url: `${baseUrl}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
-        { url: `${baseUrl}/refund`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+        {
+            url: `${baseUrl}/`,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
+            priority: 1,
+        },
+        {
+            url: `${baseUrl}/saju`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.8,
+        },
+        {
+            url: `${baseUrl}/destiny`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.8,
+        },
+        {
+            url: `${baseUrl}/calendar`,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
+            priority: 0.7,
+        },
+        {
+            url: `${baseUrl}/tarot`,
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.6,
+        },
+        {
+            url: `${baseUrl}/support`,
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.5,
+        },
     ];
 }
-

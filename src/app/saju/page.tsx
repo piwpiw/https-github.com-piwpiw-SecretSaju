@@ -61,7 +61,21 @@ function SajuPageContent() {
   useEffect(() => {
     const saved = getProfiles();
     const profileIdFromQuery = searchParams?.get("profileId") || "";
+    const focus = searchParams?.get("focus");
+
     setProfiles(saved);
+
+    if (focus) {
+      const focusLabels: Record<string, string> = {
+        money: "금전운",
+        love: "애정운",
+        personality: "성격 분석",
+        total: "인생 총운"
+      };
+      if (focusLabels[focus]) {
+        setNotice(`${focusLabels[focus]} 집중 분석 모드가 활성화되었습니다. 분석을 시작해 주세요.`);
+      }
+    }
 
     if (saved.length > 0) {
       const found = saved.find((item) => item.id === profileIdFromQuery);
@@ -385,6 +399,7 @@ function SajuPageContent() {
               secretUnlocked={isAdmin}
               onUnlockClick={() => setShopOpen(true)}
               onInsufficientJelly={() => setShopOpen(true)}
+              initialFocus={searchParams?.get("focus") as any}
             />
             <AdvancedInterpretationPanel
               result={result}

@@ -19,6 +19,7 @@ import { getProfiles } from "@/lib/storage";
 import SvgChart from "@/components/ui/SvgChart";
 import KakaoShareButton from "@/components/share/KakaoShareButton";
 import { parseCivilDate } from "@/lib/civil-date";
+import AINarrativeSection from "@/components/result/AINarrativeSection";
 
 type ScoreMetric = {
   label: string; score: number;
@@ -74,6 +75,15 @@ function MonthBar({ score, month, peak }: { score: number; month: number; peak: 
         </span>
       </div>
       <span className="text-[10px] font-black text-slate-600">{month}월</span>
+    </div>
+  );
+}
+
+function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
+  return (
+    <div className={`rounded-2xl border p-4 ${tone}`}>
+      <p className="text-xs font-black uppercase tracking-[0.2em] text-white/80">{title}</p>
+      <p className="mt-2 text-sm leading-relaxed text-white">{body}</p>
     </div>
   );
 }
@@ -256,6 +266,35 @@ function FortuneContent() {
                 <div className="h-0.5 bg-gradient-to-r from-indigo-500/50 to-transparent w-24 mb-5 rounded-full" />
                 <p className="text-slate-300 leading-relaxed text-sm">{result.detail}</p>
               </div>
+
+              <section className="grid gap-3 md:grid-cols-3">
+                <ResultSummaryCard
+                  title="🧭 Who You Are"
+                  body={`당신의 ${year}년은 ${result.pillarName} 리듬이 전면에 서며, ${result.summary} 쪽으로 읽히는 해입니다.`}
+                  tone="bg-cyan-500/10 border-cyan-300/20"
+                />
+                <ResultSummaryCard
+                  title="📚 Why It Happens"
+                  body={`총운 ${result.scores.total}점을 중심으로 ${result.scores.love}점의 관계 흐름과 ${result.scores.money}점의 재물 흐름이 올해 분위기를 함께 만들고 있습니다.`}
+                  tone="bg-amber-500/10 border-amber-300/20"
+                />
+                <ResultSummaryCard
+                  title="✨ What To Do"
+                  body={`${peakMonth + 1}월 전후의 상승 구간을 핵심 타이밍으로 보고, 점수가 낮은 영역은 과속보다 조정과 보완 중심으로 움직이는 편이 좋습니다.`}
+                  tone="bg-emerald-500/10 border-emerald-300/20"
+                />
+              </section>
+
+              <AINarrativeSection
+                persona="fortune_balanced"
+                model="GPT-4O"
+                userName={profileName}
+                ageGroup="20s"
+                tendency="Balanced"
+                rawSajuData={result}
+                queryType="result"
+                categoryFocus="base"
+              />
 
               {/* Score bars */}
               <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-8">

@@ -1,6 +1,12 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(ls:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "browser-playwright"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

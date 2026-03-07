@@ -40,6 +40,7 @@ This is the **Central Nervous System** of the SecretSaju project. It maps logica
 2. **Prop Drilling Prevention**: Use repositories (`src/lib/repositories/`) for data persistence.
 3. **Atomic Independence**: Components in `src/components/ui/` must be pure and free of side-effects.
 4. **Viral Consistency**: All result-oriented pages must include `ShareCard` and `KeywordChips`.
+5. **Temp File Rule**: All temporary debug scripts, log files, and one-off investigation files MUST be created inside `_temp/` (gitignored). NEVER create `tmp-*.mjs`, `*.log`, or throwaway `.ts/.js` files in the project root.
 
 ---
 

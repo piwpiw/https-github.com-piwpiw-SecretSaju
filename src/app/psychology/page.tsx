@@ -12,6 +12,15 @@ type Style = {
   suggestion: string;
 };
 
+function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
+  return (
+    <article className={`rounded-3xl border p-5 ${tone}`}>
+      <h3 className="text-sm font-black tracking-[0.18em] uppercase">{title}</h3>
+      <p className="mt-3 text-sm leading-7 text-slate-100">{body}</p>
+    </article>
+  );
+}
+
 const QUESTIONS = [
   { question: "문제가 생기면 바로 해결하려고 하나요?", key: "a" },
   { question: "사람의 감정보다 사실을 더 먼저 보나요?", key: "b" },
@@ -115,6 +124,23 @@ export default function PsychologyPage() {
             <h2 className="text-3xl font-black mt-1">{result.title}</h2>
             <p className="text-slate-300">점수: {result.score}/100</p>
             <p className="text-slate-200">{result.line}</p>
+            <div className="grid gap-4 md:grid-cols-3">
+              <ResultSummaryCard
+                title="🧠 Who You Are"
+                tone="border-indigo-400/30 bg-indigo-500/10"
+                body={`현재 응답 기준으로 당신은 ${result.title} 성향에 가깝습니다. 숫자 ${result.score}점은 단순 우열이 아니라, 판단 방식이 얼마나 빠르고 직접적인지 보여주는 지표로 읽는 편이 맞습니다.`}
+              />
+              <ResultSummaryCard
+                title="📚 Why It Happens"
+                tone="border-cyan-400/30 bg-cyan-500/10"
+                body={`${result.line} 이 결과는 문제를 처리할 때 감정, 사실, 속도 중 어디에 먼저 반응하는지가 반영된 것입니다. 그래서 같은 상황에서도 당신은 남과 다른 순서로 결정을 내리게 됩니다.`}
+              />
+              <ResultSummaryCard
+                title="✨ What To Do"
+                tone="border-emerald-400/30 bg-emerald-500/10"
+                body={`${result.suggestion} 오늘은 판단을 내리기 전에 기준을 짧게 문장으로 남기면, 성향의 장점은 살리고 과잉 반응은 줄일 수 있습니다.`}
+              />
+            </div>
             <div className="mt-2">
               <p className="text-sm text-slate-500 uppercase tracking-widest mb-2">권장 루틴</p>
               <div className="text-sm text-slate-200 bg-black/40 border border-white/10 rounded-xl p-4">조언: {result.suggestion}</div>

@@ -11,7 +11,6 @@ import type { Database } from '@/types/database';
 import { isMockMode } from '@/lib/use-mock';
 
 // Singletons to avoid multiple client instances in production
-let supabaseClient: any = null;
 let supabaseAdmin: any = null;
 let fallbackPublicClient: any = null;
 
@@ -41,7 +40,7 @@ export function getSupabaseClient() {
         return createMockSupabase();
     }
 
-    if (supabaseClient) return supabaseClient;
+    if (fallbackPublicClient) return fallbackPublicClient;
 
     if (!DATABASE_CONFIG.isConfigured) {
         if (typeof window !== 'undefined') {
@@ -50,8 +49,8 @@ export function getSupabaseClient() {
         return null;
     }
 
-    supabaseClient = createClient(DATABASE_CONFIG.URL, DATABASE_CONFIG.ANON_KEY);
-    return supabaseClient;
+    fallbackPublicClient = createClient(DATABASE_CONFIG.URL, DATABASE_CONFIG.ANON_KEY);
+    return fallbackPublicClient;
 }
 
 /**
