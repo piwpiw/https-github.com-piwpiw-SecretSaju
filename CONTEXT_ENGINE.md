@@ -51,10 +51,13 @@ This is the **Central Nervous System** of the SecretSaju project. It maps logica
 - **Key Documentation**:
   - `AI_BOOTSTRAP.md`: 압축 컨텍스트 — AI 온보딩 진입점
   - `NEXT_ACTIONS.md`: **진짜 해야 할 작업 목록** (P0/P1/P2, 유일한 SSOT)
-  - `ERROR_LEDGER.md`: 에러 이력 & 할루시네이션 방지 (↔ `docs/ERROR_CATALOG.md` 연동)
-  - `docs/ARCHITECTURE.md`: High-level system design.
+  - `ERROR_LEDGER.md`: 에러 이력 & 할루시네이션 방지 (↔ `docs/02-technical/ERROR_CATALOG.md` 연동)
+  - `docs/02-technical/architecture/ARCHITECTURE.md`: High-level system design.
   - `docs/00-overview/DEEP_HISTORY.md`: Perpetual implementation log.
-  - `docs/ERROR_CATALOG.md`: Structured error patterns (코드 레벨 에러).
+  - `docs/02-technical/ERROR_CATALOG.md`: Structured error patterns (코드 레벨 에러).
+  - `docs/00-overview/MASTER_PRD.md`: 전체 제품 요구사항 (PRD).
+  - `docs/01-team/operations/`: 운영 가이드, 장애 대응 템플릿, 리뷰 체크리스트.
+  - `docs/archive/ai-logs/`: AI 작업 이력 (참고용, 수정 금지).
 
 ---
 

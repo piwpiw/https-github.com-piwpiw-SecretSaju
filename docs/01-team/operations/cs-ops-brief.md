@@ -20,9 +20,9 @@
 4. 재발 조건이면 72시간 롤백 기준 체크 후 알림 채널 강화
 
 ## Ops Templates
-- Payment incident: `docs/operations/incident-payment-template.md`
-- Login incident: `docs/operations/incident-login-template.md`
-- Auth provider incident: `docs/operations/incident-auth-template.md`
-- 24h review: `docs/operations/review-24h.md`
-- 72h review: `docs/operations/review-72h.md`
-- Monthly link health: `docs/operations/link-health-checklist.md`
+- Payment incident: `docs/01-team/operations/incident-payment-template.md`
+- Login incident: `docs/01-team/operations/incident-login-template.md`
+- Auth provider incident: `docs/01-team/operations/incident-auth-template.md`
+- 24h review: `docs/01-team/operations/review-24h.md`
+- 72h review: `docs/01-team/operations/review-72h.md`
+- Monthly link health: `docs/01-team/operations/link-health-checklist.md`
