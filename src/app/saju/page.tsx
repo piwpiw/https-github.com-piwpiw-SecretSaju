@@ -380,6 +380,9 @@ function SajuPageContent() {
               version={result.version}
               integrity={result.integrity}
               isTimeUnknown={result.isTimeUnknown}
+              canonicalFeatures={result.canonicalFeatures}
+              evidence={result.evidence}
+              secretUnlocked={isAdmin}
               onUnlockClick={() => setShopOpen(true)}
               onInsufficientJelly={() => setShopOpen(true)}
             />

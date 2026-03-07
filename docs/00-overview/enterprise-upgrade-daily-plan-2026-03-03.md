@@ -4,6 +4,10 @@
 - 구현된 프로젝트를 문서 SOT 기준으로 재정렬하고, 엔터프라이즈급 운영으로 올리기 위한 당일 실행 계획을 정의한다.
 - 배포 이슈 재발(무한 반복, 헬스체크 의존 실패) 방지를 위해 배포/검증 단계를 분리 운영한다.
 
+## 운영 메모
+- 본 문서는 대량 체크리스트 원본이다.
+- 2026-03-07부터 실제 active set은 `docs/00-overview/active-top10-backlog-2026-03-07.md`를 우선 사용한다.
+
 ## 기준 문서 (SOT)
 - `docs/MASTER_PRD.md`
 - `docs/00-overview/execution-backlog-ko.md`

@@ -17,7 +17,7 @@ function PaymentLoadingContent() {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState(0);
   const [isTimeout, setIsTimeout] = useState(false);
-  const orderId = searchParams.get('orderId') ?? 'UNKNOWN_ORDER';
+  const orderId = searchParams?.get('orderId') ?? 'UNKNOWN_ORDER';
 
   useEffect(() => {
     const interval = setInterval(() => {

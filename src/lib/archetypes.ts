@@ -9,16 +9,19 @@ export type AnimalArchetype = {
   age_context: Record<AgeGroup, { hook: string; secret_preview: string }>;
 };
 
-const DEFAULT_STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"] as const;
-const DEFAULT_BRANCHES = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"] as const;
+const DEFAULT_STEMS = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"] as const;
+const DEFAULT_BRANCHES = ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"] as const;
 
-const FALLBACK_NAMES = Array.from({ length: 60 }, (_, index) => `${DEFAULT_STEMS[index % 10]}${DEFAULT_BRANCHES[index % 12]}형`);
+const FALLBACK_NAMES = Array.from(
+  { length: 60 },
+  (_, index) => `${DEFAULT_STEMS[index % 10]}${DEFAULT_BRANCHES[index % 12]} 사주`,
+);
 
 const FALLBACK_LABEL = {
-  mask: "사주 기반 기본 성향 해석을 제공합니다.",
-  hook: "주요 성향을 요약해 핵심 방향성을 먼저 제시합니다.",
-  secret_preview: "프리미엄 해석은 결제 후 잠금이 해제됩니다.",
-  hashtags: ["#사주기본", "#요약해석"],
+  mask: "🧭 사주의 기본 구조를 먼저 읽고, 강점과 보완 포인트를 실전형으로 정리합니다.",
+  hook: "✨ 핵심 기질, 관계 패턴, 실행 리듬을 먼저 짚고 어떤 흐름에서 빛나는지 전문적으로 안내합니다.",
+  secret_preview: "🔐 프리미엄 해제 후에는 용신 전략, 십성 포지션, 시기별 행동 가이드까지 더 깊게 확인할 수 있습니다.",
+  hashtags: ["#사주기본", "#정밀해석"],
 };
 
 type AnimalsData = { archetypes: AnimalArchetype[] };
@@ -30,7 +33,7 @@ function getFallbackArchetype(code: string, index: number): AnimalArchetype {
   const name = FALLBACK_NAMES[index % FALLBACK_NAMES.length] || FALLBACK_NAMES[0];
   return {
     code,
-    animal_name: `${name}`,
+    animal_name: name,
     base_traits: {
       mask: FALLBACK_LABEL.mask,
       hashtags: FALLBACK_LABEL.hashtags,
@@ -48,13 +51,10 @@ function normalizeCode(code: string | undefined): string {
 }
 
 function normalizeAgeGroup(ageGroup: AgeGroup | undefined): AgeGroup {
-  if (ageGroup === "10s" || ageGroup === "30s" || ageGroup === "20s") return ageGroup;
+  if (ageGroup === "10s" || ageGroup === "20s" || ageGroup === "30s") return ageGroup;
   return "20s";
 }
 
-/**
- * Keep 60-step fallback mapping aligned with saju pillar indexes when code is missing.
- */
 const PILLAR_CODES = [
   "GAP_JA", "EUL_CHUK", "BYEONG_IN", "JEONG_MYO", "MU_JIN", "GI_SA", "GYEONG_O", "SIN_MI", "IM_SIN", "GYE_YU",
   "GAP_SUL", "EUL_HAE", "BYEONG_JA", "JEONG_CHUK", "MU_IN", "GI_MYO", "GYEONG_JIN", "SIN_SA", "IM_O", "GYE_MI",
@@ -71,7 +71,7 @@ function getCodeFallbackIndex(code: string): number {
 
 export function getArchetypeByCode(
   code: string,
-  ageGroup: AgeGroup
+  ageGroup: AgeGroup,
 ): AnimalArchetype & { displayHook: string; displaySecretPreview: string } {
   const safeCode = normalizeCode(code);
   const safeAgeGroup = normalizeAgeGroup(ageGroup);

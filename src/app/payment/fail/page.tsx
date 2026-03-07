@@ -9,8 +9,8 @@ import { trackPaymentFail } from '@/lib/analytics';
 function FailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const code = searchParams.get('code');
-  const message = searchParams.get('message');
+  const code = searchParams?.get('code');
+  const message = searchParams?.get('message');
   const normalizedCode = (code || '').toUpperCase();
 
   const normalizedMessage = message || '결제 중 문제가 발생해 취소되었거나 실패했습니다. 잠시 후 다시 시도해 주세요.';

@@ -15,7 +15,9 @@
 
 ## Critical File Map
 ```
-src/lib/saju.ts                       ← 만세력 엔진 (60갑자 계산)
+src/lib/saju.ts                       ← 만세력 엔진 (60갑자 계산 + Lineage/Canonical 통합)
+src/core/api/saju-lineage.ts          ← 사주 학파(Lineage) 프로필 엔진
+src/core/api/saju-canonical.ts        ← 명리학적 근거(Evidence) 정규화
 src/core/calendar/ganji.ts            ← GanJi 타입 + getDayPillar/getHourPillar
 src/core/api/saju-engine.ts           ← 고정밀 사주 API
 src/core/myeongni/                    ← 명리학 모듈 (대운/격국/신살/십성/12운성)

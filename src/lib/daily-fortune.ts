@@ -3,6 +3,7 @@ import { SajuProfile } from "./storage";
 import { calculateHighPrecisionSaju } from "../core/api/saju-engine";
 import { Element } from "../core/myeongni/elements";
 import { getTenGodSummary } from "./terminology";
+import { parseCivilDate } from "./civil-date";
 
 export interface HourlyFlowPoint {
   slot: string;
@@ -158,8 +159,9 @@ export async function generateDailyFortune(profile: SajuProfile, locale: "ko" | 
   const todayBranch = todayPillar.branch;
   const todayElement = STEM_ELEMENTS[todayStem];
 
+  const birthDate = parseCivilDate(profile.birthdate) ?? new Date(1990, 0, 1, 12, 0, 0, 0);
   const saju = await calculateHighPrecisionSaju({
-    birthDate: new Date(profile.birthdate),
+    birthDate,
     birthTime: profile.birthTime || "12:00",
     gender: profile.gender === "male" ? "M" : "F",
     calendarType: profile.calendarType,

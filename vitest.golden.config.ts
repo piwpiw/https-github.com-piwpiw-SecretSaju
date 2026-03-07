@@ -10,12 +10,7 @@ export default defineConfig({
         maxWorkers: 2,
         setupFiles: ['./vitest.setup.ts'],
         include: [
-            'tests/**/*.test.ts',
-            'tests/**/*.test.tsx',
-            'src/__tests__/unit/**/*.test.ts',
-            'src/__tests__/unit/**/*.test.tsx',
-            'src/__tests__/validation/**/*.test.ts',
-            'src/__tests__/validation/**/*.test.tsx',
+            'src/__tests__/validation/golden.test.ts',
         ],
         exclude: [
             'node_modules/**',
@@ -26,14 +21,9 @@ export default defineConfig({
             'logs/**',
             'coverage/**',
             'dist/**',
-            'src/__tests__/validation/golden.test.ts',
         ],
         alias: {
             '@': path.resolve(__dirname, './src'),
-        },
-        coverage: {
-            provider: 'v8',
-            reporter: ['text', 'json', 'html'],
         },
     },
 });

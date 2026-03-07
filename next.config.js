@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
+const shouldUseStandalone =
+  process.env.NEXT_FORCE_STANDALONE === "1" || process.platform !== "win32";
+
 const nextConfig = {
   reactStrictMode: true,
-  output: "standalone",
+  ...(shouldUseStandalone ? { output: "standalone" } : {}),
   pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
   images: {
     formats: ["image/avif", "image/webp"],

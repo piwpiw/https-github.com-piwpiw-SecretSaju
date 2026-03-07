@@ -18,10 +18,14 @@ import { calculateHighPrecisionSaju } from '@/core/api/saju-engine';
 import { getDayPillar, getHourPillar, getMonthPillar, getYearPillar } from '@/core/calendar/ganji';
 import { analyzeElements } from '@/core/myeongni/elements';
 import { KOREA_LOCATIONS } from '@/core/astronomy/true-solar-time';
+import { parseCivilDate, parseCivilTimeParts } from '@/lib/civil-date';
 
 // ===== HIGH-PRECISION ENGINE EXPORTS =====
 export { SajuEngine, calculateHighPrecisionSaju } from '@/core/api/saju-engine';
 export type { HighPrecisionSajuResult, SajuCalculationInput } from '@/core/api/saju-engine';
+export { LINEAGE_PROFILES, resolveLineageProfile } from '@/core/api/saju-lineage';
+export type { LineageProfile, LineageProfileId } from '@/core/api/saju-lineage';
+export type { CanonicalSajuFeatures, EvidenceEntry } from '@/core/api/saju-canonical';
 
 export { KOREA_LOCATIONS } from '@/core/astronomy/true-solar-time';
 export type { Location } from '@/core/astronomy/true-solar-time';
@@ -179,8 +183,16 @@ export type SajuResult = {
     calendarType: "solar" | "lunar";
     timeUnknownFallbackUsed: boolean;
     usedLocation: string;
+    lineageProfileId?: string;
+    birthInstantUtc?: string;
+    historicalUtcOffsetMinutes?: number;
+    historicalDstOffsetMinutes?: number;
+    officialCalendarYear?: number | null;
+    myeongriCalendarYear?: number;
   };
   isTimeUnknown?: boolean;
+  evidence?: any[];
+  canonicalFeatures?: any;
 };
 
 type NormalizedBirthTime = {
@@ -270,7 +282,8 @@ export async function calculateSaju(
   gender: "M" | "F" = "M",
   birthTime: string = "12:00",
   calendarType: 'solar' | 'lunar' = 'solar',
-  isTimeUnknown: boolean = false
+  isTimeUnknown: boolean = false,
+  lineageProfileId?: string
 ): Promise<SajuResult> {
   const warnings: string[] = [];
   const safeGender: "M" | "F" = gender === "F" ? "F" : "M";
@@ -308,6 +321,7 @@ export async function calculateSaju(
         gender: safeGender,
         calendarType: safeCalendarType,
         isTimeUnknown: safeTimeUnknown,
+        lineageProfileId,
       }),
       HIGH_PRECISION_TIMEOUT_MS,
       `고도화 사주 엔진 타임아웃(${HIGH_PRECISION_TIMEOUT_MS}ms)`
@@ -445,6 +459,12 @@ export async function calculateSaju(
         calendarType: safeCalendarType,
         timeUnknownFallbackUsed: safeTimeUnknown,
         usedLocation,
+        lineageProfileId: hpResult?.meta?.inputs?.lineageProfileId,
+        birthInstantUtc: hpResult?.meta?.diagnostics?.birthInstantUtc,
+        historicalUtcOffsetMinutes: hpResult?.meta?.diagnostics?.historicalUtcOffsetMinutes,
+        historicalDstOffsetMinutes: hpResult?.meta?.diagnostics?.historicalDstOffsetMinutes,
+        officialCalendarYear: hpResult?.meta?.diagnostics?.officialCalendarYear,
+        myeongriCalendarYear: hpResult?.meta?.diagnostics?.myeongriCalendarYear,
       },
       fourPillars,
       daewun: hpResult?.daewun,
@@ -454,6 +474,8 @@ export async function calculateSaju(
       sinsal: hpResult?.sinsal,
       sipsong: hpResult?.sipsong,
       sibiwoonseong: hpResult?.sibiwoonseong,
+      evidence: hpResult?.evidence,
+      canonicalFeatures: hpResult?.canonicalFeatures,
       version: hpResult?.version ?? "saju-engine@fallback",
       integrity: hpResult?.integrity ?? `hash-${Date.now()}`,
       isTimeUnknown: isTimeUnknown,
@@ -480,6 +502,9 @@ export async function calculateSaju(
         calendarType: safeCalendarType,
         timeUnknownFallbackUsed: safeTimeUnknown,
         usedLocation: `${KOREA_LOCATIONS.SEOUL.latitude}, ${KOREA_LOCATIONS.SEOUL.longitude}`,
+        lineageProfileId,
+        officialCalendarYear: undefined,
+        myeongriCalendarYear: undefined,
       },
       fourPillars: emergencyPillars,
       version: "saju-engine@emergency-fallback",
@@ -493,17 +518,13 @@ export async function calculateSajuFromBirthdate(
   birthTime: string = "12:00",
   calendarType: 'solar' | 'lunar' = 'solar',
   gender: "M" | "F" = "M",
-  isTimeUnknown: boolean = false
+  isTimeUnknown: boolean = false,
+  lineageProfileId?: string
 ): Promise<SajuResult> {
-  const isValidBirthdate = /^\d{4}-\d{2}-\d{2}$/.test(birthdateStr);
-  const [year, month, day] = isValidBirthdate ? birthdateStr.split('-').map(Number) : [1990, 1, 1];
-  const [hour, minute] = birthTime.split(':').map(Number);
-  const fallbackHour = Number.isFinite(hour) ? hour : 12;
-  const fallbackMinute = Number.isFinite(minute) ? minute : 0;
-  const candidateDate = new Date(year, (month || 1) - 1, day || 1, fallbackHour, fallbackMinute);
-  const birthDate = Number.isNaN(candidateDate.getTime())
-    ? new Date(1990, 0, 1, fallbackHour, fallbackMinute)
-    : candidateDate;
+  const parsedTime = parseCivilTimeParts(birthTime);
+  const fallbackTime = parsedTime ?? { hour: 12, minute: 0, second: 0 };
+  const birthDate = parseCivilDate(birthdateStr, { fallbackTime })
+    ?? new Date(1990, 0, 1, fallbackTime.hour, fallbackTime.minute, 0, 0);
 
-  return await calculateSaju(birthDate, gender, birthTime, calendarType, isTimeUnknown);
+  return await calculateSaju(birthDate, gender, birthTime, calendarType, isTimeUnknown, lineageProfileId);
 }

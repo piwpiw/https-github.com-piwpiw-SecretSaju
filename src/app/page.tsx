@@ -622,6 +622,9 @@ export default function HomePage() {
               version={sajuData.version}
               integrity={sajuData.integrity}
               isTimeUnknown={sajuData.isTimeUnknown}
+              analysisMeta={sajuData.analysisMeta}
+              canonicalFeatures={sajuData.canonicalFeatures}
+              evidence={sajuData.evidence}
               onUnlockClick={handleUnlockClick}
               onInsufficientJelly={handleUnlockClick}
             />

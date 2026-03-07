@@ -38,11 +38,11 @@ function SuccessContent() {
   const verifiedRef = useRef(false);
 
   useEffect(() => {
-    const paymentKey = searchParams.get('paymentKey');
-    const orderId = searchParams.get('orderId');
-    const amount = searchParams.get('amount');
-    const verifyToken = searchParams.get('verifyToken');
-    const verifySignature = searchParams.get('verifySignature');
+    const paymentKey = searchParams?.get('paymentKey') ?? null;
+    const orderId = searchParams?.get('orderId') ?? null;
+    const amount = searchParams?.get('amount') ?? null;
+    const verifyToken = searchParams?.get('verifyToken') ?? null;
+    const verifySignature = searchParams?.get('verifySignature') ?? null;
 
     const verifyPayment = async () => {
       if (verifiedRef.current) return;
@@ -52,7 +52,7 @@ function SuccessContent() {
         setStatus('error');
         setIsMissingParams(true);
         setMessage('결제 파라미터가 손상되어 결제 결과를 확인할 수 없습니다. 결제 페이지로 돌아가 재결제해주세요.');
-        trackPaymentFail(orderId, 'MISSING_REQUIRED_PARAMS');
+        trackPaymentFail(orderId || 'UNKNOWN_ORDER', 'MISSING_REQUIRED_PARAMS');
         return;
       }
 

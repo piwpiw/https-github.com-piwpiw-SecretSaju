@@ -10,6 +10,7 @@ import Link from 'next/link';
 import JellyBalance from '@/components/shop/JellyBalance';
 import JellyShopModal from '@/components/shop/JellyShopModal';
 import { isUnlocked, unlockContent, hasSufficientBalance } from '@/lib/jelly-wallet';
+import { parseCivilDate } from '@/lib/civil-date';
 
 import { useProfiles } from '@/components/ProfileProvider';
 import { useWallet } from '@/components/WalletProvider';
@@ -55,14 +56,16 @@ export default function RelationshipDetailPage() {
         setLoading(true);
 
         try {
+            const mainBirthDate = parseCivilDate(main.birthdate) ?? new Date(1990, 0, 1, 12, 0, 0, 0);
+            const targetBirthDate = parseCivilDate(target.birthdate) ?? new Date(1990, 0, 1, 12, 0, 0, 0);
             const mainSaju = await calculateHighPrecisionSaju({
-                birthDate: new Date(main.birthdate),
+                birthDate: mainBirthDate,
                 birthTime: main.birthTime || '12:00',
                 gender: main.gender === 'male' ? 'M' : 'F',
                 calendarType: main.calendarType
             });
             const targetSaju = await calculateHighPrecisionSaju({
-                birthDate: new Date(target.birthdate),
+                birthDate: targetBirthDate,
                 birthTime: target.birthTime || '12:00',
                 gender: target.gender === 'male' ? 'M' : 'F',
                 calendarType: target.calendarType

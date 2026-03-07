@@ -96,6 +96,20 @@ This document serves as the **cumulative, perpetual record** of all engineering 
 
 ---
 
+## 2026-03-07 | Wave 12: The Academic & Canonical Truth
+**배경**: 기존 사주 엔진은 높은 정밀도를 자랑했으나, 명리학은 '고법(고전)'과 '신법(현대)' 등 다양한 학파(Lineage)가 존재함. 고급화(High-end)를 위해선 단순히 결과를 뱉는 것을 넘어 "우리는 어떤 학파적 관점으로, 어떤 고전 문헌적 근거(Evidence)를 바탕으로 해석했는가"를 보여줄 필요성이 대두.
+- **성취**: `saju-lineage.ts`와 `saju-canonical.ts`를 코어 엔진에 통합하여 학파별 프로파일링과 사주 정규화 기능 추가.
+- **의미**: "근거 없는 점"이 아닌, 논리적이고 학문적 깊이가 있는 **프리미엄 해석 플랫폼**으로서의 신뢰성 확보. 사용자와 모델 모두에게 명리학적 추론의 투명성(Evidence-based truth)을 제공.
+
+---
+
+## 2026-03-07 | Wave 12: The Academic & Canonical Truth
+**배경**: 기존 사주 엔진은 높은 정밀도를 자랑했으나, 명리학은 '고법(고전)'과 '신법(현대)' 등 다양한 학파(Lineage)가 존재함. 고급화(High-end)를 위해선 단순히 결과를 뱉는 것을 넘어 "우리는 어떤 학파적 관점으로, 어떤 고전 문헌적 근거(Evidence)를 바탕으로 해석했는가"를 보여줄 필요성이 대두.
+- **성취**: `saju-lineage.ts`와 `saju-canonical.ts`를 코어 엔진에 통합하여 학파별 프로파일링과 사주 정규화 기능 추가.
+- **의미**: "근거 없는 점"이 아닌, 논리적이고 학문적 깊이가 있는 **프리미엄 해석 플랫폼**으로서의 신뢰성 확보. 사용자와 LLM 모두에게 명리학적 추론의 투명성(Evidence-based truth)을 제공.
+
+---
+
 ## 2026-03-06 | Wave 11.6: Deep Integration Audit & P0/P1 Implementation
 
 **諛곌꼍**: Wave 11.5 Context Efficiency ?쒖뒪?쒖씠 湲곗〈 臾몄꽌?ㅺ낵 ?좉린?곸쑝濡??곕룞?섎뒗吏 ??寃??+ NEXT_ACTIONS.md 湲곕컲 ?ㅼ젣 援ы쁽 李⑹닔.

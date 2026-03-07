@@ -13,6 +13,8 @@ SOT: 테스트 운영 기준은 이 문서가 단일 기준이다.
 ## Base Gates
 - `npm run preflight:local` (기본: 병렬)
 - `npm run test`
+- `vitest.config.ts` / `vitest.logic.config.ts` / `vitest.golden.config.ts`
+  - 로컬 OOM 방지를 위해 `maxWorkers: 2`로 제한
 - `npm run build`
 
 ## Command Policy
@@ -20,6 +22,20 @@ SOT: 테스트 운영 기준은 이 문서가 단일 기준이다.
   - 병렬 게이트: `lint` + `tsc --noEmit`
 - `npm run preflight:local:serial`
   - 직렬 재현용 게이트
+- `npx vitest run --config vitest.logic.config.ts`
+  - 순수 로직 테스트 전용 빠른 게이트
+- `npm run test:logic`
+  - `tests/*.test.ts`만 실행
+- `npm run test:engine`
+  - 사주 엔진 핵심 검증 게이트
+- `npm run test:golden`
+  - 골든 데이터셋 회귀 검증(현재 별도 추적 대상)
+- `npm run test:local`
+  - `preflight + test` 통합 빠른 게이트
+- `npm run test:engine:local`
+  - `preflight + engine test + build`
+- `npm run test:release`
+  - `preflight + test + build`
 - `npm run pre-deploy -- --parallel-checks`
   - pre-deploy의 병렬 실행 확인
 - `npm run dev:safe -- --port 3000 --auto-port`
@@ -28,6 +44,78 @@ SOT: 테스트 운영 기준은 이 문서가 단일 기준이다.
   - preflight를 생략한 긴급 재현용 실행
 - `npm run smoke:auth`
   - 로그인 핵심 라우트(`/`, `/login`, `/signup`, `/auth/callback`) 스모크
+- `npm run smoke:fast`
+  - 관리자/브라우저 핵심 플로우 병렬 스모크
+- `npm run smoke:full`
+  - home/admin/browser 전체 브라우저 스모크 + 로그 리포트 생성
+
+## Current Inventory (2026-03-07)
+- Static gate
+  - `npm run preflight:local`
+  - `npm run lint`
+  - `npx tsc --noEmit`
+- Fast logic tests
+  - `vitest.logic.config.ts`
+  - 대상: `tests/saju-engine.test.ts`, `tests/ai-routing.test.ts`, `tests/payment-flow.test.ts`, `tests/auth-wallet.test.ts`
+- Engine validation tests
+  - `src/__tests__/unit/astronomy.test.ts`
+  - `src/__tests__/validation/candidate-engines.test.ts`
+  - `src/__tests__/validation/civil-date.test.ts`
+  - `src/__tests__/validation/lunar-solar.test.ts`
+  - `src/__tests__/validation/interactions.test.ts`
+  - `src/__tests__/validation/saju-engine-metadata.test.ts`
+  - `src/__tests__/validation/golden.test.ts`
+- Browser/route smoke
+  - `npm run smoke:auth`
+  - `npm run smoke:fast`
+  - `npm run smoke:full`
+  - `npm run qa`
+- Build gate
+  - `npm run build`
+
+## Known Issues (Fact-based)
+1. `golden.test.ts` is intentionally separated from the default `npm test` gate.
+   - 목적: 일상 개발 게이트를 빠르고 안정적으로 유지
+   - 운영 원칙: 엔진/학파/경계값 변경 시에만 별도 실행
+2. `src/__tests__/data/golden-dataset.ts`는 현재 10건만 포함한다.
+   - 현재 회귀는 통과하지만, 표준화 수준의 엔진 검증 세트로 보기에는 표본이 너무 작다.
+   - 경계 케이스와 학파 분기 케이스를 계속 확장해야 한다.
+
+## Recommended Local Strategy
+
+### Tier 1: Fast feedback (< 15s)
+Use for most code edits.
+
+1. `npm run preflight:local`
+2. `npx vitest run --config vitest.logic.config.ts`
+
+### Tier 2: Engine-safe gate (~ 10-20s)
+Use for calendar, saju, premium interpretation, API response-shape changes.
+
+1. `npm run preflight:local`
+2. `npm run test:engine`
+3. `npm run build`
+
+### Tier 3: Release gate
+Use before deploy or after cross-cutting changes.
+
+1. `npm run dev:safe -- --port 3000 --auto-port`
+2. `npm run smoke:auth`
+3. 영향 범위가 넓으면 `npm run smoke:fast`
+4. 최종 `npm run build`
+
+### Tier 4: Research / regression gate
+Use for engine correctness work only.
+
+1. `npm run test:golden`
+2. 실패 시 데이터셋/학파 정책/엔진 로직을 분리 분석한다.
+
+## Operational Rule
+- 일상 개발 기본 게이트는 `preflight + logic vitest`로 고정한다.
+- 기본 통합 게이트는 `npm run test:local` 또는 `npm run test:release`를 사용한다.
+- `npm test`는 범위를 고정한 뒤 기본 테스트 묶음으로 사용한다.
+- `golden.test.ts`는 일상 게이트가 아니라 엔진 회귀 게이트로 분리한다.
+- 브라우저 smoke는 로그인/결제/결과 페이지처럼 UI와 API가 같이 엮이는 변경에서만 추가한다.
 
 ## Incident Root Causes (2026-03)
 1. 포트 충돌: 기존 `next dev` 프로세스가 남아 `EADDRINUSE`를 반복 유발
@@ -44,10 +132,12 @@ SOT: 테스트 운영 기준은 이 문서가 단일 기준이다.
 
 ## Test Layers
 1. Static quality: lint + type-check
-2. Unit/integration: `vitest`
-3. Build validation: `next build`
-4. Route-level acceptance: `docs/00-overview/execution-backlog-ko.md`
-5. User-level acceptance: `docs/USER_VERIFICATION.md`
+2. Fast logic tests: `vitest.logic.config.ts`
+3. Engine validation tests: `src/__tests__/validation/*`
+4. Build validation: `next build`
+5. Route/browser acceptance: smoke scripts
+6. Route-level acceptance: `docs/00-overview/execution-backlog-ko.md`
+7. User-level acceptance: `docs/USER_VERIFICATION.md`
 
 ## Failure Handling
 - 실패 시 재현 명령, 실패 구간, 원인 가설을 기록한다.
@@ -57,6 +147,7 @@ SOT: 테스트 운영 기준은 이 문서가 단일 기준이다.
 ## Update Rules
 - 테스트 게이트 변경 시 `package.json` 스크립트와 본 문서를 동시에 갱신한다.
 - 라우트 계약 변경 시 `execution-backlog-ko.md`와 정합성을 확인한다.
+- `npm test`의 신뢰도에 영향이 가는 include/exclude 변경 시 `vitest.config.ts`, `vitest.logic.config.ts`, `scripts/pre-deploy.js`를 함께 갱신한다.
 
 ## References
 - `docs/00-overview/document-governance.md`
@@ -66,6 +157,6 @@ SOT: 테스트 운영 기준은 이 문서가 단일 기준이다.
 - `docs/01-team/engineering/local-dev-sop.md`
 
 ---
-**Last Updated**: 2026-03-05  
+**Last Updated**: 2026-03-07  
 **Owner**: QA Lead + Engineering Lead  
-**Next Review**: 2026-03-12
+**Next Review**: 2026-03-14

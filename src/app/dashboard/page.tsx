@@ -15,6 +15,7 @@ import SvgChart from '@/components/ui/SvgChart';
 
 import { useProfiles } from '@/components/ProfileProvider';
 import { useWallet } from '@/components/WalletProvider';
+import { parseCivilDate } from '@/lib/civil-date';
 
 interface RelationshipData {
     profile: any;
@@ -25,7 +26,7 @@ interface RelationshipData {
 function DashboardContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const profileId = searchParams.get('profileId');
+    const profileId = searchParams?.get('profileId');
     const { t, locale } = useLocale();
     const { profiles } = useProfiles();
     const { isAdmin } = useWallet();
@@ -54,8 +55,10 @@ function DashboardContent() {
 
         try {
             const relationshipData: RelationshipData[] = await Promise.all(others.map(async (profile) => {
+                const mainBirthDate = parseCivilDate(main.birthdate) ?? new Date(1990, 0, 1, 12, 0, 0, 0);
+                const profileBirthDate = parseCivilDate(profile.birthdate) ?? new Date(1990, 0, 1, 12, 0, 0, 0);
                 const mainSaju = await calculateHighPrecisionSaju({
-                    birthDate: new Date(main.birthdate),
+                    birthDate: mainBirthDate,
                     birthTime: main.birthTime || '12:00',
                     gender: main.gender === 'male' ? 'M' : 'F',
                     calendarType: main.calendarType,
@@ -63,7 +66,7 @@ function DashboardContent() {
                 });
 
                 const otherSaju = await calculateHighPrecisionSaju({
-                    birthDate: new Date(profile.birthdate),
+                    birthDate: profileBirthDate,
                     birthTime: profile.birthTime || '12:00',
                     gender: profile.gender === 'male' ? 'M' : 'F',
                     calendarType: profile.calendarType,

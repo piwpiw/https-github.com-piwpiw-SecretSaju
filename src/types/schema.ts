@@ -9,6 +9,8 @@
  * ==============================================================================
  */
 
+import { formatCivilDate, formatClockTime, parseCivilDate } from '@/lib/civil-date';
+
 // ============================================
 // ENUMS & CONSTANTS
 // ============================================
@@ -180,12 +182,13 @@ export class SajuProfileMapper {
      * Database DTO → Domain Entity
      */
     static toDomain(dto: SajuProfileDTO): SajuProfile {
+        const birthdate = parseCivilDate(dto.birthdate) ?? new Date(1990, 0, 1, 12, 0, 0, 0);
         return {
             id: dto.id,
             userId: dto.user_id,
             name: dto.name,
             relationship: dto.relationship as RelationshipType,
-            birthdate: new Date(dto.birthdate),
+            birthdate,
             birthTime: dto.birth_time ? new Date(`1970-01-01T${dto.birth_time}`) : null,
             isTimeUnknown: dto.is_time_unknown,
             calendarType: dto.calendar_type as CalendarType,
@@ -200,21 +203,13 @@ export class SajuProfileMapper {
      * Domain Entity → API Response
      */
     static toResponse(profile: SajuProfile): SajuProfileResponse {
-        // Format birthTime to HH:mm if exists
-        let birthTimeStr: string | null = null;
-        if (profile.birthTime) {
-            const hours = profile.birthTime.getHours().toString().padStart(2, '0');
-            const minutes = profile.birthTime.getMinutes().toString().padStart(2, '0');
-            birthTimeStr = `${hours}:${minutes}`;
-        }
-
         return {
             id: profile.id,
             userId: profile.userId,
             name: profile.name,
             relationship: profile.relationship,
-            birthdate: profile.birthdate.toISOString().split('T')[0],
-            birthTime: birthTimeStr,
+            birthdate: formatCivilDate(profile.birthdate) ?? '1990-01-01',
+            birthTime: formatClockTime(profile.birthTime),
             isTimeUnknown: profile.isTimeUnknown,
             calendarType: profile.calendarType,
             isLeapMonth: profile.isLeapMonth,
@@ -241,7 +236,7 @@ export class SajuProfileMapper {
             userId,
             name: req.name,
             relationship: req.relationship,
-            birthdate: new Date(req.birthdate),
+            birthdate: parseCivilDate(req.birthdate) ?? new Date(1990, 0, 1, 12, 0, 0, 0),
             birthTime: birthTimeDate,
             isTimeUnknown: req.isTimeUnknown || false,
             calendarType: req.calendarType,

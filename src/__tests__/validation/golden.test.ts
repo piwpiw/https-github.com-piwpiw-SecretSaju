@@ -11,7 +11,8 @@ describe('Saju Engine Golden Dataset Validation', () => {
                 location: testCase.input.location,
                 gender: testCase.input.gender,
                 calendarType: testCase.input.calendarType || 'solar',
-                isTimeUnknown: testCase.input.isTimeUnknown || false
+                isTimeUnknown: testCase.input.isTimeUnknown || false,
+                lineageProfileId: testCase.input.lineageProfileId,
             };
 
             const result = await SajuEngine.calculate(input);

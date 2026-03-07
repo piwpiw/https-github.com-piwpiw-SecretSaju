@@ -22,6 +22,7 @@ import LuxuryToast from "@/components/ui/LuxuryToast";
 import LoveScoreCounter from "@/components/compatibility/LoveScoreCounter";
 import RelationshipRadar from "@/components/compatibility/RelationshipRadar";
 import { cn } from "@/lib/utils";
+import { parseCivilDate } from "@/lib/civil-date";
 
 const RELATIONSHIP_PRESETS: { labelKey: string; value: ProfileRelationshipType; icon: string }[] = [
   { labelKey: "common.relation.lover", value: "lover", icon: "💕" },
@@ -61,7 +62,7 @@ function CompatibilityContent() {
 
   // Initial targeting from active profile or params
   useEffect(() => {
-    const queryProfileId = searchParams.get("profileId");
+    const queryProfileId = searchParams?.get("profileId");
     if (queryProfileId) {
       setPersonAId(queryProfileId);
     } else if (activeProfile) {
@@ -113,11 +114,7 @@ function CompatibilityContent() {
     setLoading(true);
     consumeChuru(30);
 
-    const parseBirth = (dateStr: string) => {
-      const parts = dateStr.split("T")[0].split("-");
-      const [year, month, day] = parts.map(Number);
-      return new Date(year, month - 1, day);
-    };
+    const parseBirth = (dateStr: string) => parseCivilDate(dateStr) ?? new Date(1990, 0, 1, 12, 0, 0, 0);
 
     setTimeout(async () => {
       try {

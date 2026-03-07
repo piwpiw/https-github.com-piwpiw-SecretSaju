@@ -7,8 +7,9 @@ This is the **Central Nervous System** of the SecretSaju project. It maps logica
 ## 🗺️ 1. Logical Feature Map
 
 ### 🌌 1.1 Cosmic Calculation Engine (The Heart)
-- **Primary Logic**: `src/lib/astrologyEngine.ts`, `src/lib/tojeongEngine.ts`, `src/lib/saju.ts`
+- **Primary Logic**: `src/lib/astrologyEngine.ts`, `src/lib/tojeongEngine.ts`, `src/lib/saju.ts` (統合)
 - **Core API**: `src/core/api/saju-engine.ts`
+- **Lineage & Canonical**: `src/core/api/saju-lineage.ts` (학파 프로필), `src/core/api/saju-canonical.ts` (정규화/근거)
 - **Astronomy/Time**: `src/core/astronomy/true-solar-time.ts`, `src/core/calendar/ganji.ts`
 - **Myeongni Modules**: `src/core/myeongni/` (elements, daewun, gyeokguk, sinsal, sipsong)
 - **Relationship/Tarot**: `src/data/tarotDeck.ts`, `src/lib/relationship.ts`

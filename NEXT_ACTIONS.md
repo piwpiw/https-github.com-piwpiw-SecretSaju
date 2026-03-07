@@ -68,6 +68,11 @@
 - [x] `/api/daily-fortune` 완전 구현 (만세력 연동 + Supabase DB 캐시 + 폴백)
 - **검증**: ✅ 완료
 
+### P1-6. Wave 12: 학파(Lineage) 및 근거(Evidence) 기반 신뢰도 시각화
+- [x] `/api/persona/route.ts`에 `evidence`와 `canonicalFeatures` 컨텍스트 주입 로직 고도화
+- [x] `AINarrativeSection.tsx` 또는 `ResultCard.tsx`에 "분석 학파 및 근거" 인장(Seal) UI 구현
+- **검증**: 결과 화면에서 학파적 관점 및 명리학적 근거가 시각적으로 프리미엄하게 노출되는지 확인
+
 ---
 
 ## 🟢 Priority 2 — 품질/운영 (안정화 후)

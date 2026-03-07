@@ -1,12 +1,45 @@
 import { getSupabaseClient } from '@/lib/supabase';
 import { SajuProfile, SajuProfileDTO, SajuProfileMapper, CreateSajuProfileRequest } from '@/types/schema';
 import { readProfileStoragePayload, writeProfileStoragePayload } from '@/lib/profile-storage';
+import { formatCivilDate, formatClockTime, parseCivilDate } from '@/lib/civil-date';
+
+type LocalStoredProfile = {
+    id: string;
+    userId?: string;
+    name: string;
+    relationship: string;
+    birthdate: string;
+    birthTime: string | null;
+    isTimeUnknown: boolean;
+    calendarType: string;
+    isLeapMonth?: boolean;
+    gender: string;
+    createdAt?: string | number;
+    updatedAt?: string | number;
+};
 
 /**
  * Repository: Abstracts data access for Saju Profiles
  * Handles: localStorage fallback ??Supabase migration
  */
 export class SajuProfileRepository {
+    private static serializeLocalProfile(profile: SajuProfile): LocalStoredProfile {
+        return {
+            id: profile.id,
+            userId: profile.userId,
+            name: profile.name,
+            relationship: profile.relationship,
+            birthdate: formatCivilDate(profile.birthdate) ?? '1990-01-01',
+            birthTime: formatClockTime(profile.birthTime),
+            isTimeUnknown: profile.isTimeUnknown,
+            calendarType: profile.calendarType,
+            isLeapMonth: profile.isLeapMonth || false,
+            gender: profile.gender,
+            createdAt: profile.createdAt.toISOString(),
+            updatedAt: profile.updatedAt.toISOString(),
+        };
+    }
+
     /**
      * Get all profiles for a user
      */
@@ -119,7 +152,7 @@ export class SajuProfileRepository {
                 userId: p.userId || 'local-user', // Storage may not track user ID in legacy format
                 name: p.name,
                 relationship: p.relationship, // Might need normalization
-                birthdate: new Date(p.birthdate),
+                birthdate: parseCivilDate(p.birthdate) ?? new Date(1990, 0, 1, 12, 0, 0, 0),
                 birthTime: p.birthTime ? (
                     typeof p.birthTime === 'string' && p.birthTime.includes(':') && !p.birthTime.includes('T')
                         ? new Date(`1970-01-01T${p.birthTime}`)
@@ -154,7 +187,7 @@ export class SajuProfileRepository {
         // Save back to storage (adapting to storage format if needed, or simply saving domain object)
         // We will save Domain object structure now for consistency
         const updated = [...profiles, newProfile];
-        writeProfileStoragePayload(updated);
+        writeProfileStoragePayload(updated.map((profile) => this.serializeLocalProfile(profile)));
 
         return newProfile;
     }
@@ -162,7 +195,7 @@ export class SajuProfileRepository {
     private static deleteLocal(id: string): void {
         const profiles = this.findByUserIdLocal('local-user');
         const updated = profiles.filter(p => p.id !== id);
-        writeProfileStoragePayload(updated);
+        writeProfileStoragePayload(updated.map((profile) => this.serializeLocalProfile(profile)));
     }
 }
 

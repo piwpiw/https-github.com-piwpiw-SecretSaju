@@ -48,6 +48,97 @@ export default function CompatibilityAdminPage() {
             sibiwoonseong: {} as any,
             gangyak: {} as any,
             yongshin: {} as any,
+            interactions: [],
+            evidence: [],
+            canonicalFeatures: {
+                chartCore: {
+                    version: "1.0.0",
+                    model: "MOCK_MODEL",
+                    calendarType: "solar",
+                    isLeapMonth: false,
+                    fourPillars: {
+                        year: ganji.fullName,
+                        month: ganji.fullName,
+                        day: ganji.fullName,
+                        hour: ganji.fullName,
+                    },
+                    dayMaster: ganji.stem,
+                    lineageProfile: {
+                        id: "mock",
+                        name: "Mock",
+                        description: "Compatibility admin mock chart",
+                        yearBoundaryPolicy: "lichun",
+                        dayBoundaryPolicy: "civil",
+                        hourPillarSource: "civil",
+                        hourBranchPolicy: "civil",
+                        yajasiPolicy: "disabled",
+                    },
+                    calendarBoundaries: {
+                        officialYearBoundary: "lunar_new_year",
+                        myeongriYearBoundary: "lichun",
+                        officialCalendarYear: 1990,
+                        myeongriCalendarYear: 1990,
+                    },
+                },
+                timeContext: {
+                    civilBirthTime: new Date().toISOString(),
+                    birthInstantUtc: new Date().toISOString(),
+                    trueSolarTime: new Date().toISOString(),
+                    trueSolarOffsetMinutes: 0,
+                    historicalUtcOffsetMinutes: 540,
+                    historicalDstOffsetMinutes: 0,
+                    location: { latitude: 37.5665, longitude: 126.9780 },
+                    timeUnknownFallbackUsed: false,
+                },
+                hiddenStems: [],
+                elementScores: {
+                    weighted: { 목: 10, 화: 10, 토: 10, 금: 10, 수: 10 },
+                    counts: { 목: 1, 화: 1, 토: 1, 금: 1, 수: 1 },
+                    basicPercentages: { 목: 20, 화: 20, 토: 20, 금: 20, 수: 20 },
+                    dominant: [stemEl],
+                    lacking: [],
+                    excessive: [],
+                },
+                tenGodsSurface: [],
+                tenGodsHidden: [],
+                interactions: [],
+                transitInteractions: [],
+                strengthProfile: {
+                    total: 30,
+                    level: "중화",
+                    description: "Mock strength profile",
+                    confidence: 0.5,
+                    climateBalance: {
+                        temperature: "Balanced",
+                        humidity: "Balanced",
+                        score: 60,
+                    },
+                    heuristic: {
+                        id: "mock-strength",
+                        note: "Mock heuristic",
+                        thresholds: [">=60 strong", "40-59 balanced", "<40 weak"],
+                    },
+                    components: [
+                        { key: "deukryeong", label: "득령", value: 10, max: 30, normalizedPercent: 33, hint: "Mock" },
+                        { key: "deukji", label: "득지", value: 10, max: 30, normalizedPercent: 33, hint: "Mock" },
+                        { key: "deukse", label: "득세", value: 10, max: 40, normalizedPercent: 25, hint: "Mock" },
+                    ],
+                },
+                strength: null,
+                structure: null,
+                structureCandidates: [],
+                yongshin: null,
+                yongshinCandidates: [],
+                luckCycles: {
+                    daewun: null,
+                    currentUn: null,
+                },
+                auxiliarySignals: {
+                    sinsal: [],
+                    sibiwoonseong: null,
+                },
+                evidence: [],
+            },
             daewun: {} as any,
             currentUn: {} as any,
             version: "1.0.0",
@@ -175,7 +266,7 @@ export default function CompatibilityAdminPage() {
 
                     {/* Details Table */}
                     <div className="border-t border-white/10 pt-8">
-                        <h3 className="text-lg font-bold mb-4 text-slate-300">💡 점수 상세 (디버그)</h3>
+                        <h3 className="text-lg font-bold mb-4 text-slate-300">💡 점수 상세 분석</h3>
                         <div className="bg-slate-800/40 rounded-lg p-4 font-mono text-sm space-y-2">
                             <div className="flex justify-between">
                                 <span>기본 점수</span>

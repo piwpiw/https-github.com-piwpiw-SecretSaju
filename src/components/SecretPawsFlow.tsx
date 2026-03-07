@@ -43,6 +43,8 @@ type ResultState = {
   sipsong?: any;
   sibiwoonseong?: any;
   gyeokguk?: any;
+  canonicalFeatures?: any;
+  evidence?: any[];
 };
 
 const FALLBACK_RESULT: ResultState = {
@@ -132,6 +134,8 @@ export function SecretPawsFlow() {
         sipsong: saju.sipsong,
         sibiwoonseong: saju.sibiwoonseong,
         gyeokguk: saju.gyeokguk,
+        canonicalFeatures: saju.canonicalFeatures,
+        evidence: saju.evidence,
       } as ResultState);
     } catch (err) {
       setError("결과 계산 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
@@ -205,6 +209,8 @@ export function SecretPawsFlow() {
               gyeokguk={result.gyeokguk}
               version={result.version}
               integrity={result.integrity}
+              canonicalFeatures={result.canonicalFeatures}
+              evidence={result.evidence}
               secretUnlocked={unlockedLv3}
               onUnlockClick={() => setShopOpen(true)}
               onInsufficientJelly={() => setShopOpen(true)}

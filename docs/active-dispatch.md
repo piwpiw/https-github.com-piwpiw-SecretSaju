@@ -1,7 +1,22 @@
 ﻿# Active Dispatch Log
 
-- Updated: 2026-03-03
-- Status: EXECUTION IN PROGRESS (잔여 항목 정리·스윕 진행)
+- Updated: 2026-03-07
+- Status: EXECUTION IN PROGRESS (active top-10 backlog 기준으로 재정렬)
+
+## Dispatch Wave 21 (Backlog Compression, 2026-03-07)
+- Status: In Progress
+- Source:
+  - `docs/00-overview/enterprise-upgrade-daily-plan-2026-03-03.md`
+  - `docs/00-overview/execution-backlog-ko.md`
+  - 현재 코드/테스트 상태
+- Scope:
+  - [x] active backlog를 실제 개발 기준 Top 10으로 압축. (`docs/00-overview/active-top10-backlog-2026-03-07.md`, 2026-03-07)
+  - [x] `src/app/admin/compatibility/page.tsx`의 잔여 디버그 문구 제거. (`src/app/admin/compatibility/page.tsx`, 2026-03-07)
+  - [ ] `/`, `/saju`, `/fortune` 결과 흐름 실브라우저 smoke
+  - [ ] `/shop`, `/payment/*`, `/login`, `/signup`, `/auth/callback` 핵심 funnel smoke
+- Notes:
+  - 로컬 smoke 자동화는 현재 셸 정책상 백그라운드 서버 기동 제한이 있어 보류 중
+  - 대량 반복 체크리스트는 더 이상 active set으로 쓰지 않고 Top 10 문서를 기준으로 진행
 
 ## Dispatch Wave 1 (Immediate, Parallel)
 

@@ -10,6 +10,7 @@ import LuxuryToast from "@/components/ui/LuxuryToast";
 import { saveAnalysisToHistory } from "@/lib/analysis-history";
 import { calculateSajuFromBirthdate, getDayPillarIndex, getPillarNameKo } from "@/lib/saju";
 import { buildTojeongReport, TojeongReport } from "@/lib/tojeongEngine";
+import { parseCivilDate } from "@/lib/civil-date";
 
 type TojeongScore = "high" | "mid" | "low";
 
@@ -92,7 +93,10 @@ export default function TojeongPage() {
     setIsLoading(true);
     try {
       const birthTime = profile.birthTime || "12:00";
-      const birthDate = new Date(`${profile.birthdate}T${birthTime}`);
+      const birthDate = parseCivilDate(profile.birthdate, {
+        time: birthTime,
+        fallbackTime: { hour: 12, minute: 0, second: 0 },
+      }) ?? new Date(1990, 0, 1, 12, 0, 0, 0);
       const birthPillar = await calculateSajuFromBirthdate(
         profile.birthdate,
         birthTime,

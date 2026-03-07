@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { type ReactNode, useState } from "react";
 import { AgeGroup } from "@/lib/archetypes";
+import type { CanonicalSajuFeatures, EvidenceEntry } from "@/core/api/saju-canonical";
 import KeywordChips from "@/components/result/KeywordChips";
 import InteractiveInsightLab from "@/components/result/InteractiveInsightLab";
 import ShareCard from "@/components/result/ShareCard";
@@ -11,6 +12,7 @@ import SvgChart from "@/components/ui/SvgChart";
 import AmbientSoundPortal from "@/components/ui/AmbientSoundPortal";
 import ReadingProgressBar from "@/components/ui/ReadingProgressBar";
 import AIIntelligenceBadge from "@/components/ui/AIIntelligenceBadge";
+import AINarrativeSection from "@/components/result/AINarrativeSection";
 import { CalendarDays, Lock, Target, TrendingUp, Orbit, Crown, Flame, Gem, ChevronRight } from "lucide-react";
 
 type Archetype = {
@@ -35,6 +37,8 @@ type Props = {
     calendarType: "solar" | "lunar";
     timeUnknownFallbackUsed: boolean;
     usedLocation: string;
+    officialCalendarYear?: number | null;
+    myeongriCalendarYear?: number;
   };
   pillarNameKo: string;
   ageGroup: AgeGroup;
@@ -63,6 +67,8 @@ type Props = {
   version?: string;
   integrity?: string;
   isTimeUnknown?: boolean;
+  canonicalFeatures?: CanonicalSajuFeatures;
+  evidence?: EvidenceEntry[];
   secretUnlocked?: boolean;
   onUnlockClick?: () => void;
   onInsufficientJelly?: () => void;
@@ -217,6 +223,45 @@ const getElementGlow = (element?: string) => {
   return "from-sky-500/25 to-indigo-900/20 border-sky-300/25";
 };
 
+const getSpecialPatternLabel = (pattern?: string) => {
+  if (pattern === "jonggyeok") return "종격 신호";
+  if (pattern === "jeonwanggyeok") return "전왕격 신호";
+  if (pattern === "hwagyeok") return "화격 신호";
+  return "일반격";
+};
+
+const buildDetailedHook = ({
+  hook,
+  topElement,
+  lowElement,
+  strongestTenGod,
+}: {
+  hook: string;
+  topElement: string;
+  lowElement: string;
+  strongestTenGod: string;
+}) =>
+  `🧭 ${hook} 🌟 현재 흐름에서는 ${topElement} 기운이 전면에 나와 성향과 실행 방식을 끌고 가고, ${strongestTenGod} 축이 반복 패턴을 만듭니다. ` +
+  `🪄 반대로 ${lowElement} 기운은 의식적으로 보완할수록 관계, 돈, 일의 균형이 더 안정적으로 잡힙니다.`;
+
+const buildDetailedPremiumPreview = ({
+  preview,
+  focus,
+}: {
+  preview: string;
+  focus: InsightFocus;
+}) => {
+  const focusCopy =
+    focus === "love"
+      ? "💞 연애에서는 감정 리듬, 표현 방식, 반복 충돌 포인트까지"
+      : focus === "money"
+        ? "💰 재물에서는 소비 누수, 축적 타이밍, 위험 구간까지"
+        : focus === "career"
+          ? "💼 커리어에서는 역할 적성, 성과 방식, 확장 시점까지"
+          : "📘 전체 운에서는 용신 전략, 십성 포지션, 실행 타이밍까지";
+  return `${preview} ${focusCopy} 근거 중심으로 더 자세히 이어집니다.`;
+};
+
 const SIPSONG_LABELS = [
   "비견",
   "겁재",
@@ -273,6 +318,8 @@ function ResultCard({
   version,
   integrity,
   isTimeUnknown,
+  canonicalFeatures,
+  evidence,
   secretUnlocked,
   onUnlockClick,
   onInsufficientJelly,
@@ -303,11 +350,11 @@ function ResultCard({
 
   const pillarCards: PillarView[] = fourPillars
     ? [
-        parsePillar("year", fourPillars.year),
-        parsePillar("month", fourPillars.month),
-        parsePillar("day", fourPillars.day),
-        parsePillar("hour", fourPillars.hour),
-      ]
+      parsePillar("year", fourPillars.year),
+      parsePillar("month", fourPillars.month),
+      parsePillar("day", fourPillars.day),
+      parsePillar("hour", fourPillars.hour),
+    ]
     : [];
 
   const metricRows = ELEMENTS.map((metric, index) => ({
@@ -335,11 +382,22 @@ function ResultCard({
     { key: "hour", label: "시주", value: sibiwoonseong?.hour || "-" },
   ];
 
-  const gangyakBreakdown = [
-    { label: "득령", value: Number(gangyak?.deukryeong || 0), hint: "월지에서 받는 계절 기운" },
-    { label: "득지", value: Number(gangyak?.deukji || 0), hint: "지지에서 받는 뿌리 힘" },
-    { label: "득세", value: Number(gangyak?.deukse || 0), hint: "주변 천간의 보조 에너지" },
-  ];
+  const gangyakBreakdown = canonicalFeatures?.strengthProfile?.components?.map((item) => ({
+    label: item.label,
+    value: item.value,
+    hint: item.hint,
+  })) || [
+      { label: "득령", value: Number(gangyak?.deukryeong || 0), hint: "월지에서 받는 계절 기운" },
+      { label: "득지", value: Number(gangyak?.deukji || 0), hint: "지지에서 받는 뿌리 힘" },
+      { label: "득세", value: Number(gangyak?.deukse || 0), hint: "주변 천간의 보조 에너지" },
+    ];
+  const strengthProfile = canonicalFeatures?.strengthProfile;
+  const boundaryInfo = canonicalFeatures?.chartCore.calendarBoundaries;
+  const lineagePolicy = canonicalFeatures?.chartCore.lineageProfile;
+  const structureCandidates = canonicalFeatures?.structureCandidates?.slice(0, 3) || [];
+  const yongshinCandidates = canonicalFeatures?.yongshinCandidates?.slice(0, 4) || [];
+  const transitInteractions = canonicalFeatures?.transitInteractions?.slice(0, 6) || [];
+  const currentUn = canonicalFeatures?.luckCycles?.currentUn;
 
   const premiumBulletsByFocus: Record<InsightFocus, string[]> = {
     base: [
@@ -365,15 +423,25 @@ function ResultCard({
   };
 
   const premiumBullets = premiumBulletsByFocus[insightFocus];
+  const detailedHook = buildDetailedHook({
+    hook: safeArchetypeHook,
+    topElement: metricRows[topElementIndex].label,
+    lowElement: metricRows[lowestElementIndex].label,
+    strongestTenGod: strongestTenGod.label,
+  });
+  const detailedPremiumPreview = buildDetailedPremiumPreview({
+    preview: safeSecretPreview,
+    focus: insightFocus,
+  });
 
   const premiumReportCopyByFocus: Record<InsightFocus, string> = {
     base:
       analysisMeta?.source === "high-precision"
-        ? "고정밀 해석 + 실전 조언 + PDF 리포트 확장이 제공됩니다."
-        : "현재는 기본 해석만 제공됩니다. 프리미엄 해제로 확장 리포트를 열 수 있습니다.",
-    love: "연애·썸·재회 관점으로 감정선과 관계 패턴을 더 깊게 풉니다.",
-    money: "재물 흐름, 소비 위험, 축적 포인트를 돈 관점으로 더 구체화합니다.",
-    career: "직업 적성, 성과 방식, 일의 리듬을 커리어 관점으로 더 세밀하게 풉니다.",
+        ? "📘 고정밀 만세력 기반 해석에 실전 조언, 근거 로그, 확장 PDF 리포트가 함께 제공됩니다."
+        : "📘 현재는 핵심 요약만 열려 있습니다. 프리미엄 해제로 세부 근거와 전문 해석이 확장됩니다.",
+    love: "💞 연애·썸·재회 관점에서 감정선, 관계 속도, 반복되는 충돌 패턴을 더 깊게 풉니다.",
+    money: "💰 재물 관점에서 수입 흐름, 소비 누수, 축적 포인트와 리스크 구간을 더 구체화합니다.",
+    career: "💼 커리어 관점에서 역할 적성, 성과 방식, 압박 대응, 확장 타이밍을 더 세밀하게 풉니다.",
   };
 
   const reportCards: MetricCard[] = [
@@ -498,6 +566,40 @@ function ResultCard({
           </div>
         </div>
 
+        {(boundaryInfo || evidence?.length) ? (
+          <section className="grid gap-4 lg:grid-cols-2">
+            {boundaryInfo ? (
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-200">Calendar Boundary Snapshot</p>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                  <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-slate-100">
+                    공식 연도 {boundaryInfo.officialCalendarYear ?? "-"}년
+                  </span>
+                  <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-slate-100">
+                    명리 연도 {boundaryInfo.myeongriCalendarYear}년
+                  </span>
+                  <span className="rounded-full border border-indigo-300/25 bg-indigo-400/10 px-3 py-1 text-indigo-100">
+                    기준 {boundaryInfo.myeongriYearBoundary}
+                  </span>
+                  {lineagePolicy?.hourBranchPolicy ? (
+                    <span className="rounded-full border border-cyan-300/25 bg-cyan-400/10 px-3 py-1 text-cyan-100">
+                      시지 {lineagePolicy.hourBranchPolicy}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+            {evidence?.length ? (
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-fuchsia-200">Evidence Trace</p>
+                <p className="mt-3 text-sm text-slate-300">
+                  근거 로그 {evidence.length}건이 연결되어 있으며, 프리미엄 해설은 이 근거 구조를 기준으로 확장됩니다.
+                </p>
+              </div>
+            ) : null}
+          </section>
+        ) : null}
+
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -507,13 +609,29 @@ function ResultCard({
             <span className="text-2xl">✨</span>
             <h3 className="text-xl md:text-2xl font-black text-indigo-200">시크릿 핵심 해석</h3>
           </div>
-          <p className="text-lg md:text-2xl font-black text-white leading-snug">“{safeArchetypeHook}”</p>
+          <p className="text-lg md:text-2xl font-black text-white leading-snug">“{detailedHook}”</p>
           <div className="mt-4">
             <KeywordChips tags={archetype.base_traits.hashtags || []} />
           </div>
-          <p className="mt-4 text-sm md:text-base text-slate-200">
-            가장 강한 오행은 <strong className="text-white">{metricRows[topElementIndex].label}</strong>, 가장 약한 오행은 <strong className="text-white">{metricRows[lowestElementIndex].label}</strong>입니다.
+          <p className="mt-4 text-sm md:text-base text-slate-200 leading-relaxed">
+            🌈 가장 강한 오행은 <strong className="text-white">{metricRows[topElementIndex].label}</strong>, 가장 약한 오행은 <strong className="text-white">{metricRows[lowestElementIndex].label}</strong>입니다.
+            그래서 기본 성향은 강한 축으로 빠르게 드러나고, 장기 안정감은 부족한 축을 어떻게 보완하느냐에 따라 달라집니다.
           </p>
+
+          {secretUnlocked && (
+            <div className="mt-6 border-t border-indigo-500/20 pt-6">
+              <AINarrativeSection
+                persona={`${ageGroup}_balanced`}
+                model="GPT-4O"
+                userName={safePersonName}
+                ageGroup={ageGroupToKo(ageGroup)}
+                tendency="Balanced"
+                rawSajuData={fourPillars}
+                lineageProfileId={canonicalFeatures?.chartCore?.lineageProfile?.id}
+                evidence={evidence}
+              />
+            </div>
+          )}
         </motion.div>
 
         <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7 space-y-5">
@@ -650,6 +768,16 @@ function ResultCard({
               ))}
             </div>
             <p className="mt-4 text-sm text-slate-300">{cleanText(gangyak?.description, "사주의 중심 에너지를 기반으로 강약 균형을 계산했습니다.")}</p>
+            {strengthProfile ? (
+              <div className="mt-4 rounded-2xl border border-cyan-300/15 bg-cyan-400/10 p-4">
+                <p className="text-[11px] font-black uppercase tracking-[0.22em] text-cyan-200">Strength Evidence</p>
+                <p className="mt-2 text-sm text-slate-200">
+                  기후 균형 {strengthProfile.climateBalance.temperature} / {strengthProfile.climateBalance.humidity} ·
+                  균형 점수 {strengthProfile.climateBalance.score} · 신뢰도 {Math.round(strengthProfile.confidence * 100)}%
+                </p>
+                <p className="mt-2 text-xs text-slate-400">{strengthProfile.heuristic.note}</p>
+              </div>
+            ) : null}
           </div>
 
           <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7">
@@ -661,20 +789,42 @@ function ResultCard({
               <div className={`rounded-2xl border bg-gradient-to-br p-4 ${getElementGlow(yongshin?.primary?.element)}`}>
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-200">Primary Yongshin</p>
                 <p className="mt-2 text-2xl font-black text-white">{cleanText(yongshin?.primary?.element, "분석 중")}</p>
-                <p className="mt-2 text-sm text-slate-200">{cleanText(yongshin?.primary?.reason, "사주의 균형을 바로잡는 핵심 오행입니다.")}</p>
+                  <p className="mt-2 text-sm text-slate-200">{cleanText(yongshin?.primary?.reason, "🧭 사주의 중심 균형을 바로잡는 핵심 오행으로, 방향 설정과 의사결정의 기준점이 됩니다.")}</p>
               </div>
               <div className={`rounded-2xl border bg-gradient-to-br p-4 ${getElementGlow(yongshin?.secondary?.element)}`}>
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-sky-200">Secondary Support</p>
                 <p className="mt-2 text-xl font-black text-white">{cleanText(yongshin?.secondary?.element, "분석 중")}</p>
-                <p className="mt-2 text-sm text-slate-300">{cleanText(yongshin?.secondary?.reason, "용신을 도와주는 보조 오행입니다.")}</p>
+                <p className="mt-2 text-sm text-slate-300">{cleanText(yongshin?.secondary?.reason, "🌿 용신이 실제로 작동하도록 받쳐 주는 보조 오행으로, 회복력과 지속성을 높입니다.")}</p>
               </div>
               <div className={`rounded-2xl border bg-gradient-to-br p-4 ${getElementGlow(yongshin?.unfavorable?.element)}`}>
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-rose-200">Watch Out</p>
                 <p className="mt-2 text-xl font-black text-white">{cleanText(yongshin?.unfavorable?.element, "분석 중")}</p>
-                <p className="mt-2 text-sm text-slate-300">{cleanText(yongshin?.unfavorable?.reason, "과도할 때 균형을 깨뜨릴 수 있는 오행입니다.")}</p>
+                <p className="mt-2 text-sm text-slate-300">{cleanText(yongshin?.unfavorable?.reason, "⚠️ 과도해질수록 균형을 흔들 수 있는 오행으로, 욕심이나 과속이 붙는 순간 특히 주의가 필요합니다.")}</p>
               </div>
             </div>
             <p className="mt-4 text-xs text-slate-500">산출 기준: {cleanText(yongshin?.source, "억부")} 우선</p>
+            {yongshinCandidates.length ? (
+              <div className="mt-4 grid gap-2">
+                {yongshinCandidates.map((candidate) => (
+                  <div key={candidate.id} className="rounded-2xl border border-white/10 bg-black/20 p-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-sm font-black text-white">
+                        {candidate.element} · {candidate.role}
+                      </p>
+                      <span className="rounded-full border border-white/10 px-2 py-1 text-[11px] text-slate-300">
+                        {candidate.method} · {Math.round(candidate.confidence * 100)}%
+                      </span>
+                    </div>
+                    {candidate.conflictFlags?.length ? (
+                      <p className="mt-2 text-[11px] text-amber-200">
+                        플래그: {candidate.conflictFlags.join(", ")}
+                      </p>
+                    ) : null}
+                    <p className="mt-2 text-xs text-slate-400">{cleanText(candidate.summary, "용신 후보 근거를 정리 중입니다.")}</p>
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
         </section>
 
@@ -752,9 +902,40 @@ function ResultCard({
             </div>
           ) : null}
 
+          {structureCandidates.length ? (
+            <div className="grid gap-2 md:grid-cols-3">
+              {structureCandidates.map((candidate) => (
+                <div key={candidate.id} className="rounded-xl border border-white/10 bg-black/20 p-4">
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-fuchsia-200">{candidate.phase} candidate</p>
+                  <p className="mt-2 text-sm font-semibold text-white">{cleanText(candidate.name, "격국 후보")}</p>
+                  <p className="mt-1 text-xs text-slate-300">
+                    {candidate.supportingBranch} 지장간 {candidate.supportingStem} · {candidate.protrusion ? "투출" : "미투출"} · {Math.round(candidate.confidence * 100)}%
+                  </p>
+                  <p className="mt-1 text-[11px] text-fuchsia-100">
+                    {candidate.candidateClass === "special" ? `특수격 ${getSpecialPatternLabel(candidate.specialPattern)}` : "일반격"} · 파격 위험 {candidate.breakRisk}
+                  </p>
+                  <p className="mt-2 text-xs text-slate-400">{cleanText(candidate.summary, "격국 후보 근거를 정리 중입니다.")}</p>
+                </div>
+              ))}
+            </div>
+          ) : null}
+
           {daewun?.pillars?.length ? (
             <div className="rounded-xl border border-indigo-300/20 bg-black/20 p-4 space-y-3">
               <p className="text-sm font-bold text-indigo-100 inline-flex items-center gap-2">📈 대운 기술 타임라인</p>
+              {currentUn ? (
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-slate-100">
+                    세운 {cleanText(currentUn.saewun?.pillar?.fullName, "-")}
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-slate-100">
+                    월운 {cleanText(currentUn.wolun?.pillar?.fullName, "-")}
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-slate-100">
+                    일운 {cleanText(currentUn.ilun?.pillar?.fullName, "-")}
+                  </span>
+                </div>
+              ) : null}
               <div className="grid gap-2">
                 {daewun.pillars.slice(0, 6).map((phase: any, index: number) => (
                   <div key={`${phase?.order}-${phase?.startAge}`} className="rounded-lg bg-gradient-to-r from-indigo-500/10 to-slate-900/20 border border-white/10 p-3">
@@ -769,6 +950,24 @@ function ResultCard({
                     </div>
                     <div className="text-slate-100 text-sm mt-1 font-semibold">{cleanText(phase?.pillar?.fullName, "대운")}</div>
                     <div className="text-slate-400 text-xs mt-1">코드: {cleanText(phase?.pillar?.code, "N/A")}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {transitInteractions.length ? (
+            <div className="rounded-xl border border-cyan-300/20 bg-cyan-500/5 p-4 space-y-3">
+              <p className="text-sm font-bold text-cyan-100 inline-flex items-center gap-2">🛰️ 현재 운세 상호작용</p>
+              <div className="grid gap-2">
+                {transitInteractions.map((event) => (
+                  <div key={event.id} className="rounded-lg border border-white/10 bg-black/20 p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">{event.scope}</span>
+                      <span className="text-[11px] text-slate-400">{Math.round(event.strength * 100)}%</span>
+                    </div>
+                    <p className="mt-2 text-sm font-semibold text-white">{cleanText(event.description, "운세 상호작용을 계산했습니다.")}</p>
+                    <p className="mt-1 text-xs text-slate-400">{event.actors.join(" · ")}</p>
                   </div>
                 ))}
               </div>
@@ -796,14 +995,14 @@ function ResultCard({
             <Lock className="w-5 h-5 text-rose-300" />
             <h3 className="text-xl md:text-2xl font-black text-white">프리미엄 잠금 해제</h3>
           </div>
-          <p className="text-base text-slate-200">{safeSecretPreview}</p>
+          <p className="text-base text-slate-200 leading-relaxed">{detailedPremiumPreview}</p>
           <p className="text-sm text-slate-400 mt-2">{premiumReportCopy}</p>
           <div className="mt-5 rounded-[2rem] border border-white/10 bg-black/20 overflow-hidden relative">
             {!secretUnlocked ? (
               <>
                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6 bg-slate-950/55 backdrop-blur-md">
                   <p className="text-xs font-black uppercase tracking-[0.3em] text-rose-200">Premium Deep Dive Locked</p>
-                  <p className="mt-3 text-lg font-black text-white">십성 직업 코드, 연애 패턴, 돈 흐름, 올해 실행 타이밍이 이어집니다.</p>
+                  <p className="mt-3 text-lg font-black text-white">🔓 십성 직업 코드, 연애 패턴, 돈 흐름, 올해 실행 타이밍이 근거와 함께 이어집니다.</p>
                   <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
                     <button
                       type="button"
@@ -828,7 +1027,7 @@ function ResultCard({
                     <div key={bullet} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                       <p className="text-sm font-bold text-white">{bullet}</p>
                       <p className="mt-2 text-sm text-slate-300">
-                        실제 리포트에서는 근거가 되는 오행, 십성, 운세 흐름과 연결해 문장형 조언까지 제공합니다.
+                        📚 실제 리포트에서는 오행, 십성, 운세 흐름을 연결해 왜 이런 해석이 나오는지까지 문장형으로 자세히 제공합니다.
                       </p>
                     </div>
                   ))}

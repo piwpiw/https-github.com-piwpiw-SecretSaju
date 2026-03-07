@@ -43,6 +43,7 @@ export interface JasiHandlingResult {
     dayCalculationDate: Date;
     /** 시주 계산에 사용된 날짜 */
     hourCalculationDate: Date;
+    hourStemStemIndexUsed: number;
 }
 
 /**
@@ -71,6 +72,7 @@ export function handleJasiLogic(
             originalDate: date,
             dayCalculationDate: date,
             hourCalculationDate: date,
+            hourStemStemIndexUsed: dayPillar.stemIndex,
         };
     }
 
@@ -90,6 +92,7 @@ export function handleJasiLogic(
             originalDate: date,
             dayCalculationDate: date,
             hourCalculationDate: date,
+            hourStemStemIndexUsed: dayPillar.stemIndex,
         };
     }
 
@@ -133,6 +136,7 @@ export function handleJasiLogic(
             originalDate: date,
             dayCalculationDate: date,
             hourCalculationDate: nextDay,
+            hourStemStemIndexUsed: nextDayPillar.stemIndex,
         };
     }
 
@@ -153,6 +157,7 @@ export function handleJasiLogic(
             originalDate: date,
             dayCalculationDate: date,
             hourCalculationDate: date,
+            hourStemStemIndexUsed: dayPillar.stemIndex,
         };
     }
 
@@ -167,6 +172,7 @@ export function handleJasiLogic(
         originalDate: date,
         dayCalculationDate: date,
         hourCalculationDate: date,
+        hourStemStemIndexUsed: dayPillar.stemIndex,
     };
 }
 

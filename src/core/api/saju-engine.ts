@@ -14,20 +14,31 @@ import {
     Location,
     KOREA_LOCATIONS,
 } from '../astronomy/true-solar-time';
+import {
+    buildKoreaWallClockDate,
+    getKoreaCivilOffsetsFromWallClock,
+    koreaWallClockToUTC,
+} from '../astronomy/timezone';
+import { isBeforeLichun } from '../astronomy/solar-terms';
 import { getYearPillar, getMonthPillar, getDayPillar, getHourPillar, FourPillars, GanJi } from '../calendar/ganji';
+import { handleJasiLogic } from '../calendar/yajasi';
+import { solarToLunar } from '../calendar/lunar-solar';
 import { SCORING_MODEL, analyzeElements, type ElementAnalysisResult } from '../myeongni/elements';
-
-
 export type { ElementAnalysisResult }; // Re-export for consumers
 import { analyzeSinsal, type Sinsal } from '../myeongni/sinsal';
 import { analyzeSipsong, type SipsongResult } from '../myeongni/sipsong';
 import { determineGyeokguk, type GyeokgukInfo } from '../myeongni/gyeokguk';
 import { analyzeSibiwoonseongAll, type SibiwoonseongAnalysis } from '../myeongni/sibiwoonseong';
+import { analyzeTransitInteractions, analyzeVisibleInteractions, type InteractionEvent } from '../myeongni/interactions';
 import { calculateDaewun, getCurrentUnInfo, type DaewunInfo, type CurrentUnInfo } from '../myeongni/daewun';
 import { calculateGangYak, type GangYakScore } from '../../lib/advancedScoring';
 import { calculateYongshin, type YongshinAnalysis } from '../myeongni/yongshin';
+import { evaluateGyeokgukCandidates } from '../myeongni/gyeokguk-candidates';
+import { evaluateYongshinCandidates } from '../myeongni/yongshin-candidates';
+import { buildCanonicalSajuFeatures, type CanonicalSajuFeatures, type EvidenceEntry } from './saju-canonical';
+import { resolveLineageProfile, type LineageProfile } from './saju-lineage';
 
-const ENGINE_VERSION = "saju-engine@1.2.0";
+const ENGINE_VERSION = "saju-engine@1.4.0";
 
 export interface SajuCalculationInput {
     birthDate: Date;       // Javascript Date object
@@ -36,7 +47,8 @@ export interface SajuCalculationInput {
     isTimeUnknown?: boolean;
     location?: Location;   // Default: Seoul
     calendarType?: 'solar' | 'lunar'; // Default: solar
-    isLeapMonth?: boolean;           // Added
+    isLeapMonth?: boolean;
+    lineageProfileId?: string;
 }
 
 export interface HighPrecisionSajuResult {
@@ -56,6 +68,9 @@ export interface HighPrecisionSajuResult {
     sibiwoonseong: SibiwoonseongAnalysis;
     gangyak: GangYakScore;
     yongshin: YongshinAnalysis;
+    interactions: InteractionEvent[];
+    evidence: EvidenceEntry[];
+    canonicalFeatures: CanonicalSajuFeatures;
 
     // Fortune context
     daewun: DaewunInfo;
@@ -72,6 +87,7 @@ export interface SajuEngineMeta {
         calendarType: 'solar' | 'lunar';
         isLeapMonth: boolean;
         usedLocation: Location;
+        lineageProfileId: string;
     };
     diagnostics: {
         warnings: string[];
@@ -80,7 +96,14 @@ export interface SajuEngineMeta {
         trueSolarOffsetMinutes: number;
         equationOfTimeMinutes: number;
         longitudeOffsetMinutes: number;
+        historicalUtcOffsetMinutes: number;
+        historicalDstOffsetMinutes: number;
+        birthInstantUtc: string;
+        officialCalendarYear: number | null;
+        myeongriCalendarYear: number;
     };
+    lineage: LineageProfile;
+    evidence: EvidenceEntry[];
 }
 
 export class SajuEngine {
@@ -95,9 +118,11 @@ export class SajuEngine {
             isTimeUnknown = false,
             location = KOREA_LOCATIONS.SEOUL,
             calendarType = 'solar',
-            isLeapMonth = false
+            isLeapMonth = false,
+            lineageProfileId,
         } = input;
         const resolvedLocation = { ...location };
+        const lineageProfile = resolveLineageProfile(lineageProfileId);
 
         if (!(birthDate instanceof Date) || Number.isNaN(birthDate.getTime())) {
             throw new Error('[saju-engine] Invalid birthDate');
@@ -189,6 +214,27 @@ export class SajuEngine {
             }
         }
 
+        const civilBirthWallClock = buildKoreaWallClockDate({
+            year: baseDateKST.getFullYear(),
+            month: baseDateKST.getMonth() + 1,
+            day: baseDateKST.getDate(),
+            hour: baseDateKST.getHours(),
+            minute: baseDateKST.getMinutes(),
+            second: baseDateKST.getSeconds(),
+        });
+        const civilOffsets = getKoreaCivilOffsetsFromWallClock(civilBirthWallClock);
+        const birthInstantUtc = koreaWallClockToUTC(civilBirthWallClock);
+        let officialCalendarYear: number | null = null;
+        try {
+            officialCalendarYear = solarToLunar(baseDateKST).year;
+        } catch (error) {
+            warnings.push('Official lunar calendar year could not be derived from the runtime Chinese calendar support.');
+            qualityPenalty.push(6);
+        }
+        const myeongriCalendarYear = isBeforeLichun(baseDateKST)
+            ? baseDateKST.getFullYear() - 1
+            : baseDateKST.getFullYear();
+
         // 3. True Solar Time (Astronomical Precision)
         const solarDetails = calculateTrueSolarTimeWithDetails(baseDateKST, resolvedLocation);
         const trueSolarTime = solarDetails.trueSolarTime;
@@ -197,15 +243,44 @@ export class SajuEngine {
         if (trueSolarAdjusted) {
             warnings.push(`True solar time applied (${solarDetails.totalOffset.toFixed(1)}m).`);
         }
+        if (isTimeUnknown && lineageProfile.hourPillarSource === 'true-solar') {
+            warnings.push('Time is unknown, so hour pillar used civil fallback instead of true solar time.');
+        }
 
         // 4. Calculate Four Pillars
         const yearPillar = getYearPillar(baseDateKST);
         const monthPillar = getMonthPillar(baseDateKST, yearPillar.stemIndex);
-        const dayPillar = getDayPillar(baseDateKST);
-        // If birth time is unknown (conventionally entered as 00:00), use civil time
-        // to avoid artificial day/hour drift caused by true-solar correction.
-        const hourBaseTime = isTimeUnknown ? baseDateKST : trueSolarTime;
-        const hourPillar = getHourPillar(hourBaseTime, dayPillar.stemIndex);
+        const strictYajasi = lineageProfile.yajasiPolicy === 'strict';
+        const hourStemBaseTime = isTimeUnknown || lineageProfile.hourPillarSource === 'civil'
+            ? baseDateKST
+            : trueSolarTime;
+        const hourBranchBaseTime = isTimeUnknown || lineageProfile.hourBranchPolicy === 'civil'
+            ? baseDateKST
+            : hourStemBaseTime;
+        const dayBaseTime = isTimeUnknown || lineageProfile.dayBoundaryPolicy === 'civil'
+            ? baseDateKST
+            : hourStemBaseTime;
+        const dayJasiResult = handleJasiLogic(dayBaseTime, strictYajasi);
+        const hourJasiResult = handleJasiLogic(hourStemBaseTime, strictYajasi);
+        const dayPillar = isTimeUnknown ? getDayPillar(baseDateKST) : dayJasiResult.dayPillar;
+        const hourPillar = isTimeUnknown
+            ? getHourPillar(baseDateKST, dayPillar.stemIndex)
+            : getHourPillar(hourBranchBaseTime, hourJasiResult.hourStemStemIndexUsed);
+
+        if (
+            !isTimeUnknown
+            && lineageProfile.dayBoundaryPolicy !== 'hour-source'
+            && dayBaseTime.toDateString() !== hourStemBaseTime.toDateString()
+        ) {
+            warnings.push('Day pillar used the civil-day boundary while hour pillar used a shifted hour source.');
+        }
+        if (
+            !isTimeUnknown
+            && lineageProfile.hourBranchPolicy !== 'hour-source'
+            && hourBranchBaseTime.getHours() !== hourStemBaseTime.getHours()
+        ) {
+            warnings.push('Hour branch used the civil-time bucket while hour stem followed a shifted hour-source policy.');
+        }
 
         const fourPillars: FourPillars = {
             year: yearPillar,
@@ -222,12 +297,57 @@ export class SajuEngine {
         const sibiwoonseong = analyzeSibiwoonseongAll(fourPillars);
         const gangyak = calculateGangYak(fourPillars);
         const yongshin = calculateYongshin(elements, gangyak);
+        const interactions = analyzeVisibleInteractions(fourPillars);
+        const structureCandidates = evaluateGyeokgukCandidates(fourPillars);
+        const yongshinCandidates = evaluateYongshinCandidates(elements, gangyak, yongshin);
 
         // 6. Daewun/Saewun
         const daewun = calculateDaewun(baseDateKST, fourPillars, gender);
         const currentUn = getCurrentUnInfo(baseDateKST, fourPillars, gender);
+        const transitInteractions = analyzeTransitInteractions(fourPillars, {
+            daewun: currentUn.daewun?.pillar ?? null,
+            saewun: currentUn.saewun?.pillar ?? null,
+            wolun: currentUn.wolun?.pillar ?? null,
+            ilun: currentUn.ilun?.pillar ?? null,
+        });
 
         const qualityScore = Math.max(0, 100 - Math.min(60, qualityPenalty.reduce((a, b) => a + b, 0)));
+        const canonicalFeatures = buildCanonicalSajuFeatures({
+            version: ENGINE_VERSION,
+            model: SCORING_MODEL,
+            calendarType,
+            isLeapMonth,
+            fourPillars,
+            civilBirthTime: baseDateKST,
+            birthInstantUtc,
+            trueSolarTime,
+            trueSolarOffsetMinutes: solarDetails.totalOffset,
+            historicalUtcOffsetMinutes: civilOffsets.standardOffsetMinutes,
+            historicalDstOffsetMinutes: civilOffsets.dstOffsetMinutes,
+            location: resolvedLocation,
+            timeUnknownFallbackUsed: !!isTimeUnknown,
+            lineageProfile,
+            officialCalendarYear,
+            myeongriCalendarYear,
+            elements,
+            sipsong,
+            interactions,
+            transitInteractions,
+            gangyak,
+            gyeokguk,
+            structureCandidates,
+            yongshin,
+            yongshinCandidates,
+            daewun,
+            currentUn,
+            sinsal,
+            sibiwoonseong,
+            warnings,
+            qualityScore,
+            lunarConverted,
+            trueSolarAdjusted,
+        });
+        const evidence = canonicalFeatures.evidence;
 
         // 7. Result Assembly & Integrity Verification
         const resultPayload: Omit<HighPrecisionSajuResult, 'integrity'> = {
@@ -243,6 +363,9 @@ export class SajuEngine {
             sibiwoonseong,
             gangyak,
             yongshin,
+            interactions,
+            evidence,
+            canonicalFeatures,
             daewun,
             currentUn,
             meta: {
@@ -253,7 +376,8 @@ export class SajuEngine {
                     timeUnknownFallbackUsed: !!isTimeUnknown,
                     calendarType,
                     isLeapMonth,
-                    usedLocation: resolvedLocation
+                    usedLocation: resolvedLocation,
+                    lineageProfileId: lineageProfile.id,
                 },
                 diagnostics: {
                     warnings,
@@ -262,7 +386,14 @@ export class SajuEngine {
                     trueSolarOffsetMinutes: Number(solarDetails.totalOffset.toFixed(2)),
                     equationOfTimeMinutes: Number(solarDetails.eot.toFixed(2)),
                     longitudeOffsetMinutes: Number(solarDetails.longitudeOffset.toFixed(2)),
-                }
+                    historicalUtcOffsetMinutes: civilOffsets.standardOffsetMinutes,
+                    historicalDstOffsetMinutes: civilOffsets.dstOffsetMinutes,
+                    birthInstantUtc: birthInstantUtc.toISOString(),
+                    officialCalendarYear,
+                    myeongriCalendarYear,
+                },
+                lineage: lineageProfile,
+                evidence,
             },
         };
 
@@ -270,9 +401,9 @@ export class SajuEngine {
         const canonical = JSON.stringify(resultPayload);
         let integrity = `hash-${Date.now()}`;
         try {
-            if (typeof window !== 'undefined' && window.crypto && window.crypto.subtle) {
+            if (globalThis.crypto?.subtle) {
                 const msgBuffer = new TextEncoder().encode(canonical);
-                const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
+                const hashBuffer = await globalThis.crypto.subtle.digest('SHA-256', msgBuffer);
                 const hashArray = Array.from(new Uint8Array(hashBuffer));
                 integrity = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
             }

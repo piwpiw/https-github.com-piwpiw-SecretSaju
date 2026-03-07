@@ -18,6 +18,7 @@ import { useLocale } from "@/lib/i18n";
 import { getProfiles } from "@/lib/storage";
 import SvgChart from "@/components/ui/SvgChart";
 import KakaoShareButton from "@/components/share/KakaoShareButton";
+import { parseCivilDate } from "@/lib/civil-date";
 
 type ScoreMetric = {
   label: string; score: number;
@@ -98,7 +99,7 @@ function FortuneContent() {
     setProfileId(id);
     const p = getProfiles().find((x) => x.id === id);
     if (p) {
-      const d = new Date(p.birthdate);
+      const d = parseCivilDate(p.birthdate) ?? new Date(1990, 0, 1, 12, 0, 0, 0);
       setYearInput(String(d.getFullYear()));
       setMonth(String(d.getMonth() + 1));
       setDay(String(d.getDate()));

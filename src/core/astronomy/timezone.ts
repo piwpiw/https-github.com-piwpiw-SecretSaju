@@ -242,3 +242,76 @@ export const WORLD_TIMEZONES = {
 export function getKoreaSummerTimeHistory(): readonly SummerTimeRecord[] {
     return KOREA_SUMMER_TIME_HISTORY;
 }
+
+export interface WallClockParts {
+    year: number;
+    month: number;
+    day: number;
+    hour: number;
+    minute: number;
+    second?: number;
+}
+
+function getUtcWallClockParts(date: Date): WallClockParts {
+    return {
+        year: date.getUTCFullYear(),
+        month: date.getUTCMonth() + 1,
+        day: date.getUTCDate(),
+        hour: date.getUTCHours(),
+        minute: date.getUTCMinutes(),
+        second: date.getUTCSeconds(),
+    };
+}
+
+function buildUtcWallClockDate(parts: WallClockParts): Date {
+    return new Date(Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second ?? 0, 0));
+}
+
+function isKoreaSummerTimeFromParts(parts: WallClockParts): boolean {
+    const record = KOREA_SUMMER_TIME_HISTORY.find((item) => item.year === parts.year);
+    if (!record) return false;
+
+    const [startMonth, startDay, startHour, startMinute] = parseMMDDHHmm(record.start);
+    const [endMonth, endDay, endHour, endMinute] = parseMMDDHHmm(record.end);
+
+    const current = (((parts.month * 100) + parts.day) * 100 + parts.hour) * 100 + parts.minute;
+    const start = (((startMonth * 100) + startDay) * 100 + startHour) * 100 + startMinute;
+    const end = (((endMonth * 100) + endDay) * 100 + endHour) * 100 + endMinute;
+
+    return current >= start && current < end;
+}
+
+function getKoreaStandardOffsetMinutesFromParts(parts: WallClockParts): number {
+    const { year, month, day } = parts;
+
+    if (year > 1954 && year < 1961) return 8.5 * 60;
+    if (year === 1954 && (month > 3 || (month === 3 && day >= 21))) return 8.5 * 60;
+    if (year === 1961 && (month < 8 || (month === 8 && day <= 10))) return 8.5 * 60;
+
+    if (year > 1908 && year < 1911) return 8.5 * 60;
+    if (year === 1908 && (month > 4 || (month === 4 && day >= 1))) return 8.5 * 60;
+    if (year === 1911) return 8.5 * 60;
+
+    return 9 * 60;
+}
+
+export function buildKoreaWallClockDate(parts: WallClockParts): Date {
+    return buildUtcWallClockDate(parts);
+}
+
+export function getKoreaCivilOffsetsFromWallClock(date: Date): { standardOffsetMinutes: number; dstOffsetMinutes: number; totalOffsetMinutes: number } {
+    const parts = getUtcWallClockParts(date);
+    const standardOffsetMinutes = getKoreaStandardOffsetMinutesFromParts(parts);
+    const dstOffsetMinutes = isKoreaSummerTimeFromParts(parts) ? 60 : 0;
+    return {
+        standardOffsetMinutes,
+        dstOffsetMinutes,
+        totalOffsetMinutes: standardOffsetMinutes + dstOffsetMinutes,
+    };
+}
+
+export function koreaWallClockToUTC(date: Date): Date {
+    const parts = getUtcWallClockParts(date);
+    const { totalOffsetMinutes } = getKoreaCivilOffsetsFromWallClock(date);
+    return new Date(Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second ?? 0, 0) - totalOffsetMinutes * 60 * 1000);
+}

@@ -3,7 +3,7 @@
  */
 
 import { getAnnualSolarTerms } from '../astronomy/solar-terms';
-import { getGanJiFromIndex, type GanJi, type FourPillars } from '../calendar/ganji';
+import { getDayPillar, getGanJiFromIndex, getMonthPillar, getYearPillar, type GanJi, type FourPillars } from '../calendar/ganji';
 
 export interface DaewunInfo {
     startAge: number;
@@ -22,9 +22,22 @@ export interface SaewunInfo {
     age: number;
 }
 
+export interface WolunInfo {
+    year: number;
+    month: number;
+    pillar: GanJi;
+}
+
+export interface IlunInfo {
+    date: string;
+    pillar: GanJi;
+}
+
 export interface CurrentUnInfo {
     daewun: DaewunInfo['pillars'][0] | null;
     saewun: SaewunInfo;
+    wolun: WolunInfo;
+    ilun: IlunInfo;
     currentAge: number;
 }
 
@@ -140,16 +153,47 @@ export function getSaewunInfo(birthDate: Date, targetYear: number): SaewunInfo {
     return { year: targetYear, pillar, age };
 }
 
+export function calculateWolun(date: Date): GanJi {
+    const yearPillar = getYearPillar(date);
+    return getMonthPillar(date, yearPillar.stemIndex);
+}
+
+export function getWolunInfo(date: Date): WolunInfo {
+    return {
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        pillar: calculateWolun(date),
+    };
+}
+
+export function calculateIlun(date: Date): GanJi {
+    return getDayPillar(date);
+}
+
+export function getIlunInfo(date: Date): IlunInfo {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return {
+        date: `${yyyy}-${mm}-${dd}`,
+        pillar: calculateIlun(date),
+    };
+}
+
 export function getCurrentUnInfo(birthDate: Date, pillars: FourPillars, gender: 'M' | 'F'): CurrentUnInfo {
     const now = new Date();
     const currentAge = now.getFullYear() - birthDate.getFullYear();
     const daewun = calculateDaewun(birthDate, pillars, gender);
     const currentDaewun = getDaewunAtAge(daewun, currentAge);
     const saewun = getSaewunInfo(birthDate, now.getFullYear());
+    const wolun = getWolunInfo(now);
+    const ilun = getIlunInfo(now);
 
     return {
         daewun: currentDaewun,
         saewun,
+        wolun,
+        ilun,
         currentAge
     };
 }

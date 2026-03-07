@@ -12,6 +12,7 @@ import { analyzeRelationship, RelationshipAnalysis } from "@/lib/compatibility";
 import { TEN_GOD_GROUPS, getTenGodGuide } from "@/lib/terminology";
 import { saveAnalysisToHistory } from "@/lib/analysis-history";
 import KakaoShareButton from "@/components/share/KakaoShareButton";
+import { parseCivilDate } from "@/lib/civil-date";
 
 type Winner = "A" | "B" | "Draw";
 
@@ -150,15 +151,17 @@ export default function VSModePage() {
           return;
         }
 
+        const mainBirthDate = parseCivilDate(main.birthdate) ?? new Date(1990, 0, 1, 12, 0, 0, 0);
+        const targetBirthDate = parseCivilDate(target.birthdate) ?? new Date(1990, 0, 1, 12, 0, 0, 0);
         const resA = await calculateHighPrecisionSaju({
-          birthDate: new Date(main.birthdate),
+          birthDate: mainBirthDate,
           birthTime: main.birthTime || "12:00",
           gender: main.gender === "male" ? "M" : "F",
           calendarType: main.calendarType,
         });
 
         const resB = await calculateHighPrecisionSaju({
-          birthDate: new Date(target.birthdate),
+          birthDate: targetBirthDate,
           birthTime: target.birthTime || "12:00",
           gender: target.gender === "male" ? "M" : "F",
           calendarType: target.calendarType,

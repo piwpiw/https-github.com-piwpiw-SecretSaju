@@ -128,7 +128,7 @@ async function main() {
   }
 
   const runnable = [];
-  if (!skipTests) runnable.push({ key: 'tests', label: 'tests', command: 'npm test -- --run' });
+  if (!skipTests) runnable.push({ key: 'tests', label: 'tests', command: 'npm run test' });
   if (!skipBuild) runnable.push({ key: 'build', label: 'build', command: 'npm run build' });
 
   if (parallelChecks && runnable.length > 1) {
@@ -137,7 +137,7 @@ async function main() {
       results[entry.key] = entry.ok;
     });
   } else {
-    if (!skipTests) results.tests = runStep('npm test -- --run', 'tests');
+    if (!skipTests) results.tests = runStep('npm run test', 'tests');
     if (!skipBuild) results.build = runStep('npm run build', 'build');
   }
 

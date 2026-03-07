@@ -10,17 +10,21 @@ import type { SipsongResult } from '@/core/myeongni/sipsong';
 import type { GyeokgukInfo } from '@/core/myeongni/gyeokguk';
 import type { SibiwoonseongAnalysis } from '@/core/myeongni/sibiwoonseong';
 import type { DaewunInfo, CurrentUnInfo } from '@/core/myeongni/daewun';
+import type { InteractionEvent } from '@/core/myeongni/interactions';
+import type { CanonicalSajuFeatures, EvidenceEntry } from '@/core/api/saju-canonical';
+import type { SajuEngineMeta } from '@/core/api/saju-engine';
 
 // ============================================
 // Saju Calculation API
 // ============================================
 
 export interface SajuCalculateRequest {
-    birthDate: string; // ISO 8601 format
+    birthDate: string; // YYYY-MM-DD civil date
     birthTime: string; // "HH:mm"
     gender: 'M' | 'F';
     isTimeUnknown?: boolean;
     calendarType?: 'solar' | 'lunar';
+    lineageProfileId?: string;
     location?: {
         latitude: number;
         longitude: number;
@@ -39,10 +43,14 @@ export interface SajuCalculateResponse {
     sipsong: SipsongResult;
     gyeokguk: GyeokgukInfo;
     sibiwoonseong: SibiwoonseongAnalysis;
+    interactions: InteractionEvent[];
+    evidence: EvidenceEntry[];
+    canonicalFeatures: CanonicalSajuFeatures;
 
     // Fortune context
     daewun: DaewunInfo;
     currentUn: CurrentUnInfo;
+    meta?: SajuEngineMeta;
 }
 
 // ============================================

@@ -10,6 +10,7 @@ export default defineConfig({
     test: {
         environment: 'node',
         globals: true,
+        maxWorkers: 2,
         include: [
             'tests/saju-engine.test.ts',
             'tests/ai-routing.test.ts',

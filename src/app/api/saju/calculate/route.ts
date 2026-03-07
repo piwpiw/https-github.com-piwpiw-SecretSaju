@@ -2,6 +2,7 @@
 import { getAuthenticatedUser } from '@/lib/api-auth';
 import { calculateHighPrecisionSaju, SajuCalculationInput } from '@/core/api/saju-engine';
 import { formatErrorResponse, ValidationError, SajuCalculationError, ErrorMessages } from '@/lib/errors';
+import { getCurrentCivilDateInTimeZone, isFutureCivilDate, parseCivilDate } from '@/lib/civil-date';
 import type { SajuCalculateRequest, SajuCalculateResponse } from '@/types/api';
 
 /**
@@ -21,16 +22,19 @@ export async function POST(request: NextRequest) {
             throw new ValidationError(ErrorMessages.INVALID_BIRTH_DATE);
         }
 
-        const { birthDate, birthTime, gender, isTimeUnknown, calendarType, location } = body as SajuCalculateRequest;
+        const { birthDate, birthTime, gender, isTimeUnknown, calendarType, lineageProfileId, location } = body as SajuCalculateRequest;
 
         // 3. Validate date
-        const birthDateTime = new Date(birthDate);
-        if (isNaN(birthDateTime.getTime())) {
+        const birthDateTime = parseCivilDate(birthDate, {
+            fallbackTime: { hour: 12, minute: 0, second: 0 },
+        });
+        if (!birthDateTime) {
             throw new ValidationError(ErrorMessages.INVALID_BIRTH_DATE);
         }
 
-        // Check if date is in the future
-        if (birthDateTime > new Date()) {
+        // Check if date is in the future using the entered civil date.
+        const referenceToday = getCurrentCivilDateInTimeZone(location?.timezone || 'Asia/Seoul');
+        if (isFutureCivilDate(birthDateTime, referenceToday)) {
             throw new ValidationError(ErrorMessages.FUTURE_DATE);
         }
 
@@ -51,6 +55,7 @@ export async function POST(request: NextRequest) {
             gender: gender,
             isTimeUnknown: !!isTimeUnknown,
             calendarType: calendarType || 'solar',
+            lineageProfileId,
             ...(location && { location }),
         };
 
@@ -99,6 +104,7 @@ function isValidCalculateRequest(data: unknown): data is SajuCalculateRequest {
         typeof req.birthDate === 'string' &&
         typeof req.birthTime === 'string' &&
         (req.gender === 'M' || req.gender === 'F') &&
+        (!req.lineageProfileId || typeof req.lineageProfileId === 'string') &&
         (!req.calendarType || req.calendarType === 'solar' || req.calendarType === 'lunar')
     );
 }
