@@ -262,6 +262,43 @@ const buildDetailedPremiumPreview = ({
   return `${preview} ${focusCopy} 근거 중심으로 더 자세히 이어집니다.`;
 };
 
+const buildIdentitySummary = ({
+  strongestElement,
+  strongestTenGod,
+}: {
+  strongestElement: string;
+  strongestTenGod: string;
+}) => `🧭 당신은 ${strongestElement} 기운을 중심으로 움직이며, ${strongestTenGod} 방식으로 강점을 드러내는 타입에 가깝습니다.`;
+
+const buildReasonSummary = ({
+  strongestElement,
+  weakestElement,
+  gangyakLevel,
+}: {
+  strongestElement: string;
+  weakestElement: string;
+  gangyakLevel: string;
+}) => `📚 이유는 ${strongestElement} 축이 전면에 서 있고 ${weakestElement} 축은 상대적으로 약해 균형이 한쪽으로 기울기 쉽기 때문입니다. 현재 강약 상태는 ${gangyakLevel} 쪽으로 읽힙니다.`;
+
+const buildActionSummary = ({
+  focus,
+  primaryElement,
+}: {
+  focus: InsightFocus;
+  primaryElement?: string;
+}) => {
+  if (focus === "love") {
+    return `💞 지금은 감정 표현을 서두르기보다, ${primaryElement ?? "핵심"} 기운이 편안하게 드러나는 관계 리듬을 먼저 만드는 편이 좋습니다.`;
+  }
+  if (focus === "money") {
+    return `💰 지금은 크게 벌리는 선택보다, ${primaryElement ?? "핵심"} 기운을 살려 새는 흐름을 막고 남기는 구조를 만드는 편이 유리합니다.`;
+  }
+  if (focus === "career") {
+    return `💼 지금은 무작정 확장하기보다, ${primaryElement ?? "핵심"} 기운이 가장 잘 발휘되는 역할과 포지션을 선명하게 잡는 편이 성과로 이어집니다.`;
+  }
+  return `✨ 지금은 ${primaryElement ?? "핵심"} 기운을 기준으로 잘하는 일에 힘을 모으고, 부족한 축은 천천히 보완하는 방식이 가장 안정적입니다.`;
+};
+
 const SIPSONG_LABELS = [
   "비견",
   "겁재",
@@ -433,6 +470,19 @@ function ResultCard({
     preview: safeSecretPreview,
     focus: insightFocus,
   });
+  const identitySummary = buildIdentitySummary({
+    strongestElement: metricRows[topElementIndex].label,
+    strongestTenGod: strongestTenGod.label,
+  });
+  const reasonSummary = buildReasonSummary({
+    strongestElement: metricRows[topElementIndex].label,
+    weakestElement: metricRows[lowestElementIndex].label,
+    gangyakLevel: cleanText(gangyak?.level, "중화"),
+  });
+  const actionSummary = buildActionSummary({
+    focus: insightFocus,
+    primaryElement: cleanText(yongshin?.primary?.element, "용신"),
+  });
 
   const premiumReportCopyByFocus: Record<InsightFocus, string> = {
     base:
@@ -477,27 +527,56 @@ function ResultCard({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <header className="text-center relative py-6 md:py-8 overflow-hidden rounded-3xl border border-indigo-400/25 bg-gradient-to-b from-indigo-500/15 via-slate-900/60 to-slate-950/60">
-          <div className="absolute -top-24 -left-24 w-72 h-72 bg-indigo-500/20 blur-3xl rounded-full" />
-          <div className="absolute -bottom-28 -right-24 w-72 h-72 bg-fuchsia-500/20 blur-3xl rounded-full" />
-          <div className="relative z-10 px-4">
-            <p className="inline-flex px-4 py-2 rounded-full text-xs font-black text-indigo-100 bg-indigo-500/20 border border-indigo-300/30 tracking-[0.2em]">
-              📜 공식 사주 분석 리포트
+        <header className="text-center relative py-12 md:py-16 overflow-hidden rounded-3xl border border-indigo-400/25 bg-gradient-to-b from-indigo-900/40 via-slate-900/80 to-slate-950">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-500/20 via-transparent to-transparent pointer-events-none" />
+
+          <div className="relative z-10 px-4 flex flex-col items-center">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="w-32 h-32 md:w-40 md:h-40 bg-gradient-to-br from-indigo-500/20 to-fuchsia-500/20 rounded-full border border-white/20 flex items-center justify-center shadow-[0_0_60px_rgba(99,102,241,0.4)] mb-6 relative"
+            >
+              <span className="text-6xl md:text-7xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                {pillarCards.find(p => p.key === 'day')?.branchEmoji || "✨"}
+              </span>
+              <div className="absolute -bottom-3 -right-3 w-12 h-12 bg-slate-800 rounded-full border-2 border-indigo-400 flex items-center justify-center text-xl">
+                {pillarCards.find(p => p.key === 'day')?.stemEmoji || "🌟"}
+              </div>
+            </motion.div>
+
+            <p className="inline-flex px-4 py-2 rounded-full text-xs font-black text-indigo-100 bg-indigo-500/30 border border-indigo-300/40 tracking-[0.2em] shadow-lg">
+              🔮 시크릿 사주 프리미엄 리포트
             </p>
-            <p className="text-base md:text-lg text-slate-200 mt-4 font-semibold">
-              {safePersonName}님의 사주
+
+            <p className="text-lg md:text-xl text-slate-300 mt-6 font-semibold">
+              {safePersonName}님의 타고난 본캐는
             </p>
-            <h1 className="text-5xl md:text-6xl font-black mt-3 bg-gradient-to-r from-white via-indigo-100 to-fuchsia-200 bg-clip-text text-transparent">
-              {safeArchetypeName}
+
+            <h1 className="text-4xl md:text-6xl font-black mt-2 bg-gradient-to-r from-emerald-200 via-indigo-200 to-fuchsia-200 bg-clip-text text-transparent drop-shadow-lg">
+              {metricRows[topElementIndex].label.replace(/\(.*\)/, '')} 품은 {pillarCards.find(p => p.key === 'day')?.branchAnimalKo || "동물"}
             </h1>
-            <div className="flex items-center justify-center gap-2 mt-4 text-sm md:text-base font-bold text-indigo-100 flex-wrap">
-              <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15">{pillarNameKo}</span>
-              <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15">{ageGroupToKo(ageGroup)} 기준</span>
-              {isTimeUnknown ? <span className="px-3 py-1 rounded-full bg-amber-400/15 border border-amber-300/25 text-amber-200">⏰ 시간 미입력 보정 적용</span> : null}
+
+            <p className="text-xl md:text-2xl text-indigo-200 font-bold mt-4">
+              &ldquo;{safeArchetypeName}&rdquo;
+            </p>
+
+            <div className="flex items-center justify-center gap-2 mt-8 text-sm md:text-base font-bold text-indigo-100 flex-wrap">
+              <span className="px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+                {pillarNameKo}
+              </span>
+              <span className="px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+                {ageGroupToKo(ageGroup)} 맞춤
+              </span>
+              {isTimeUnknown ? (
+                <span className="px-4 py-2 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-200 backdrop-blur-md">
+                  ⏰ 태어난 시간 미입력
+                </span>
+              ) : null}
             </div>
-            <div className="mt-5 flex justify-center">
+
+            <div className="mt-8 flex justify-center">
               <AIIntelligenceBadge
-                model={analysisMeta?.source === "high-precision" ? "고정밀 AI 모델" : "앙상블 AI 모델"}
+                model={analysisMeta?.source === "high-precision" ? "고정밀 사주 AI" : "앙상블 분석 AI"}
                 isEnsemble={true}
               />
             </div>
@@ -507,35 +586,57 @@ function ResultCard({
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="rounded-3xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/15 via-slate-900/60 to-indigo-900/40 p-5 md:p-7"
+          className="rounded-3xl border border-white/10 bg-black/40 p-5 md:p-8 backdrop-blur-xl relative overflow-hidden"
         >
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-2xl">🧭</span>
-            <h3 className="text-xl md:text-2xl font-black text-emerald-200 inline-flex items-center gap-2">
-              만세력 기반 기본 풀이
-              <InfoTip title="만세력" description="태어난 연·월·일·시를 간지(干支)로 변환해 사주의 기본 구조를 계산하는 기준표입니다." />
-            </h3>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-3xl rounded-full mix-blend-screen pointer-events-none" />
+
+          <div className="flex items-center gap-3 mb-6 relative z-10">
+            <span className="text-3xl">🧩</span>
+            <div>
+              <h3 className="text-xl md:text-2xl font-black text-white">타고난 인생의 네 기둥</h3>
+              <p className="text-sm text-slate-400 mt-1">내가 가진 4장의 카드를 확인하세요</p>
+            </div>
           </div>
-          <p className="text-sm md:text-base text-emerald-50/90 leading-relaxed">
-            전통 명리 구조인 년·월·일·시의 간지(干支)를 기준으로 기본 성향과 흐름을 먼저 제시하고, 그 아래에 시크릿 사주의 확장 해석을 제공합니다.
-          </p>
-          <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 relative z-10">
             {pillarCards.map((pillar) => (
-              <div key={pillar.key} className="rounded-2xl border border-white/15 bg-black/25 p-4 hover:bg-black/35 transition-colors">
-                <p className="text-xs md:text-sm text-emerald-100 font-bold tracking-wide">{pillar.labelKo} {pillar.labelHanja}</p>
-                <p className="text-lg md:text-xl font-black text-white mt-1">{pillar.stemKo}({pillar.stemHanja}) {pillar.branchKo}({pillar.branchHanja})</p>
-                <p className="text-sm text-emerald-100 mt-2">{pillar.stemEmoji} {pillar.stemElement}</p>
-                <p className="text-sm text-emerald-100">{pillar.branchEmoji} 상징 동물: {pillar.branchAnimalKo}</p>
+              <div
+                key={pillar.key}
+                className={`rounded-2xl border p-4 transition-all duration-300 ${pillar.key === 'day'
+                  ? 'bg-gradient-to-br from-indigo-500/20 to-fuchsia-500/10 border-indigo-400/40 shadow-[0_0_20px_rgba(99,102,241,0.2)]'
+                  : 'bg-white/5 border-white/10 hover:bg-white/10'
+                  }`}
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <p className={`text-xs font-black tracking-widest ${pillar.key === 'day' ? 'text-indigo-300' : 'text-slate-400'}`}>
+                    {pillar.labelKo}
+                  </p>
+                  {pillar.key === 'day' && (
+                    <span className="text-[10px] bg-indigo-500 text-white px-2 py-0.5 rounded-full font-bold">본캐</span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-3 my-3">
+                  <div className="text-4xl">{pillar.branchEmoji}</div>
+                  <div>
+                    <p className="text-xl font-black text-white">{pillar.stemKo}{pillar.branchKo}</p>
+                    <p className="text-[10px] text-slate-400">{pillar.stemHanja}{pillar.branchHanja}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-1 mt-3 pt-3 border-t border-white/10">
+                  <p className="text-xs text-slate-300 flex items-center justify-between">
+                    <span>기운</span>
+                    <span className="font-bold text-white">{pillar.stemEmoji} {pillar.stemElement.replace(/\(.*\)/, '')}</span>
+                  </p>
+                  <p className="text-xs text-slate-300 flex items-center justify-between">
+                    <span>동물</span>
+                    <span className="font-bold text-white">{pillar.branchAnimalKo}</span>
+                  </p>
+                </div>
               </div>
             ))}
           </div>
-          <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-100">
-            <span>🔢</span>
-            <span className="font-bold">육십갑자 조합 60개 기준</span>
-          </div>
-          <p className="mt-4 text-xs md:text-sm text-emerald-100/80">
-            참고: 사주에서는 십이지를 동물 상징으로 널리 표기하며, 토정비결은 연·월·일과 육십갑자 기반으로 월별 신수를 풀이하는 전통 형식을 따릅니다.
-          </p>
         </motion.div>
 
         <div className="grid lg:grid-cols-4 gap-4">
@@ -629,202 +730,259 @@ function ResultCard({
                 rawSajuData={fourPillars}
                 lineageProfileId={canonicalFeatures?.chartCore?.lineageProfile?.id}
                 evidence={evidence}
+                queryType="result"
+                categoryFocus={insightFocus}
               />
             </div>
           )}
         </motion.div>
 
-        <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7 space-y-5">
+        <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7 space-y-4">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">🎨</span>
-            <h3 className="text-xl md:text-2xl font-black text-white inline-flex items-center gap-2">
-              오행 히트맵 분석
-              <InfoTip title="오행" description="목·화·토·금·수 5개 기운의 강약 균형을 점수로 시각화한 지표입니다." />
-            </h3>
+            <span className="text-2xl">🪄</span>
+            <h3 className="text-xl md:text-2xl font-black text-white">한눈에 보는 결과 요약</h3>
           </div>
-          <p className="text-sm md:text-base text-slate-300">색이 진할수록 해당 오행의 영향력이 강합니다. 한눈에 강점과 보완점을 확인하세요.</p>
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="rounded-2xl border border-cyan-300/20 bg-cyan-500/10 p-4">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-200">Who You Are</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-100">{identitySummary}</p>
+            </div>
+            <div className="rounded-2xl border border-amber-300/20 bg-amber-500/10 p-4">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-amber-200">Why It Happens</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-100">{reasonSummary}</p>
+            </div>
+            <div className="rounded-2xl border border-emerald-300/20 bg-emerald-500/10 p-4">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-200">What To Do</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-100">{actionSummary}</p>
+            </div>
+          </div>
+        </section>
 
-          <div className="grid md:grid-cols-2 xl:grid-cols-5 gap-3">
+        <section className="rounded-3xl border border-white/10 bg-black/30 p-5 md:p-8 space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center text-2xl shadow-lg shadow-indigo-500/20">
+              📊
+            </div>
+            <div>
+              <h3 className="text-xl md:text-2xl font-black text-white">나를 채우는 5가지 원소</h3>
+              <p className="text-sm text-slate-400 mt-1">어떤 기운이 가장 강할까요? 직관적으로 확인하세요.</p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-1 lg:grid-cols-5 gap-4">
             {metricRows.map((item) => {
-              const alpha = Math.max(0.15, item.score / 100);
+              const isDominant = item.label === metricRows[topElementIndex].label;
+              const isWeakest = item.label === metricRows[lowestElementIndex].label;
+
               return (
                 <motion.div
                   key={item.key}
-                  whileHover={{ y: -4, scale: 1.01 }}
-                  className="rounded-2xl border border-white/15 p-4"
-                  style={{
-                    background: `linear-gradient(145deg, rgba(${item.glow}, ${alpha}) 0%, rgba(15,23,42,0.72) 100%)`,
-                    boxShadow: `0 14px 38px rgba(${item.glow}, 0.22)`,
-                  }}
+                  whileHover={{ y: -5 }}
+                  className={`rounded-2xl border p-5 relative overflow-hidden transition-all duration-300 ${isDominant
+                    ? 'bg-gradient-to-br border-white/30 from-white/10 to-transparent'
+                    : 'bg-black/40 border-white/10'
+                    }`}
+                  style={isDominant ? { boxShadow: `0 10px 30px rgba(${item.glow}, 0.15)` } : {}}
                 >
-                  <div className="flex items-center justify-between">
-                    <p className="text-base font-black text-white">{item.emoji} {item.label}</p>
-                    <p className="text-sm font-bold text-white/90">{item.score}점</p>
+                  {isDominant && (
+                    <div className="absolute top-0 right-0 bg-indigo-500 text-white text-[10px] font-black px-3 py-1 rounded-bl-xl tracking-wider uppercase">
+                      강점 기운
+                    </div>
+                  )}
+                  {isWeakest && (
+                    <div className="absolute top-0 right-0 bg-rose-500 text-white text-[10px] font-black px-3 py-1 rounded-bl-xl tracking-wider uppercase">
+                      보완 필요
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-3 mb-3 mt-2">
+                    <span className="text-4xl drop-shadow-md">{item.emoji}</span>
+                    <div>
+                      <h4 className="font-black text-lg text-white tracking-wide">{item.label.replace(/\(.*\)/, '')}</h4>
+                      <p className="text-xs text-slate-400">{item.meaning.split('·')[0]}</p>
+                    </div>
                   </div>
-                  <p className="text-xs text-white/80 mt-1">{item.meaning}</p>
-                  <div className="mt-3 h-2.5 rounded-full bg-black/30 border border-white/20 overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${item.score}%` }}
-                      transition={{ duration: 0.8 }}
-                      className={`h-full ${item.bar}`}
-                    />
+
+                  <div className="mt-6 flex flex-col gap-2">
+                    <div className="flex justify-between items-end mb-1">
+                      <span className="text-xs font-bold text-slate-300 uppercase">에너지 레벨</span>
+                      <span className="text-sm font-black text-white">{Math.min(10, Math.ceil(item.score / 10))}/10</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-black/50 border border-white/10 overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${item.score}%` }}
+                        transition={{ duration: 1, ease: 'easeOut' }}
+                        className={`h-full ${item.bar} shadow-[0_0_10px_rgba(255,255,255,0.5)]`}
+                      />
+                    </div>
                   </div>
-                  <p className="mt-2 text-[11px] text-white/80">빈도 {item.count} / 비율 {item.percent}%</p>
                 </motion.div>
               );
             })}
           </div>
+
+          <div className="mt-4 p-4 rounded-xl bg-white/5 border border-white/10 text-sm text-slate-300 text-center">
+            {metricRows[topElementIndex].label.replace(/\(.*\)/, '')} 기운이 강해 <strong>{metricRows[topElementIndex].meaning}</strong> 성향이 두드러지며,
+            {metricRows[lowestElementIndex].label.replace(/\(.*\)/, '')} 기운을 보완하면 더욱 완벽한 밸런스를 갖출 수 있습니다.
+          </div>
         </section>
 
         <section className="grid xl:grid-cols-[1.1fr_0.9fr] gap-5">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7">
-            <div className="flex items-center gap-3 mb-4">
+          <div className="rounded-3xl border border-white/10 bg-black/30 p-5 md:p-8 flex flex-col items-center">
+            <div className="flex items-center self-start gap-3 mb-6">
               <span className="text-2xl">🕸️</span>
-              <h3 className="text-xl md:text-2xl font-black text-white">오행 분포 레이더</h3>
+              <h3 className="text-xl md:text-2xl font-black text-white">나의 밸런스 모양</h3>
             </div>
-            <div className="flex justify-center">
+            <div className="flex-1 w-full max-w-sm flex justify-center items-center opacity-90 drop-shadow-xl">
               <SvgChart
                 title="Five Elements Radar"
                 accentColor="#818cf8"
-                data={metricRows.map((item) => ({ label: item.label, value: item.score }))}
+                data={metricRows.map((item) => ({ label: item.label.replace(/\(.*\)/, ''), value: item.score }))}
               />
             </div>
-            <p className="mt-4 text-sm text-slate-300">
-              핵심 축은 <strong className="text-white">{metricRows[topElementIndex].label}</strong>이며,
-              보강 우선순위는 <strong className="text-white">{metricRows[lowestElementIndex].label}</strong>입니다.
+            <p className="mt-6 text-sm text-slate-300 text-center bg-white/5 p-4 rounded-2xl border border-white/10 w-full">
+              모양이 둥글수록 밸런스가 좋고, 뾰족할수록 특정 분야에 재능이 강합니다.
             </p>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-2xl">🧮</span>
-              <h3 className="text-xl md:text-2xl font-black text-white">십성 분포 분석</h3>
+          <div className="rounded-3xl border border-white/10 bg-black/30 p-5 md:p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-fuchsia-500/20 border border-fuchsia-500/30 flex items-center justify-center text-xl shadow-lg">
+                🎭
+              </div>
+              <h3 className="text-xl md:text-2xl font-black text-white">행동 패턴 분석</h3>
             </div>
+
             {tenGodSummary.length > 0 ? (
-              <div className="space-y-3">
-                {tenGodSummary.map((item) => (
-                  <div key={item.label}>
-                    <div className="flex items-center justify-between text-sm font-bold text-slate-200">
-                      <span>{item.label}</span>
-                      <span>{item.value}%</span>
-                    </div>
-                    <div className="mt-1 h-2.5 rounded-full overflow-hidden border border-white/10 bg-black/25">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${item.value}%` }}
-                        transition={{ duration: 0.8 }}
-                        className="h-full bg-gradient-to-r from-fuchsia-400 via-indigo-400 to-cyan-300"
-                      />
-                    </div>
-                  </div>
-                ))}
-                <div className="rounded-2xl border border-fuchsia-300/20 bg-fuchsia-500/10 p-4">
-                  <p className="text-xs font-black tracking-[0.2em] text-fuchsia-200 uppercase">Dominant Ten God</p>
-                  <p className="mt-2 text-xl font-black text-white">{strongestTenGod.label}</p>
-                  <p className="mt-2 text-sm text-slate-300">
-                    현재 사주에서 가장 자주 보이는 작동 방식입니다. 실전 해석에서는 이 축을 중심으로 성향, 직업 적성, 인간관계를 읽습니다.
+              <div className="space-y-5">
+                <div className="rounded-2xl border border-fuchsia-300/30 bg-gradient-to-br from-fuchsia-500/10 to-transparent p-5 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/10 blur-2xl rounded-full" />
+                  <p className="text-xs font-black tracking-widest text-fuchsia-300 uppercase relative z-10">가장 두드러진 특징</p>
+                  <p className="mt-1 text-2xl font-black text-white drop-shadow-md relative z-10">{strongestTenGod.label}</p>
+                  <p className="mt-2 text-sm text-slate-300 relative z-10">
+                    지금 가장 자주 사용하는 무기입니다. 이 특성을 살릴 때 일이 가장 잘 풀립니다.
                   </p>
+                </div>
+
+                <div className="space-y-4 px-2">
+                  <p className="text-xs font-black text-slate-400">전체 능력치 분포</p>
+                  {tenGodSummary.map((item) => (
+                    <div key={item.label} className="group">
+                      <div className="flex items-center justify-between text-sm font-bold text-slate-200 mb-2">
+                        <span>{item.label}</span>
+                        <span className="text-fuchsia-200">{item.value}%</span>
+                      </div>
+                      <div className="h-1.5 rounded-full overflow-hidden bg-white/10">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${item.value}%` }}
+                          transition={{ duration: 1, ease: 'easeOut' }}
+                          className="h-full bg-gradient-to-r from-fuchsia-400 to-indigo-400 group-hover:opacity-80 transition-opacity"
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-slate-400">십성 데이터는 정밀 엔진 결과가 있을 때 함께 표시됩니다.</p>
+              <div className="h-full flex items-center justify-center p-8 bg-white/5 rounded-2xl border border-white/10">
+                <p className="text-sm text-slate-400 text-center">
+                  데이터를 불러오는 중입니다.<br />잠시만 기다려주세요.
+                </p>
+              </div>
             )}
           </div>
         </section>
 
         <section className="grid xl:grid-cols-[1fr_1fr] gap-5">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7">
-            <div className="flex items-center gap-3 mb-4">
-              <Flame className="w-5 h-5 text-amber-300" />
-              <h3 className="text-xl md:text-2xl font-black text-white">신강·신약 밸런스</h3>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm text-slate-400">일간 에너지 지수</p>
-                <p className="mt-2 text-4xl font-black text-white">{Math.round(Number(gangyak?.total || 0))}</p>
-              </div>
-              <div className={`rounded-full border px-4 py-2 text-sm font-black ${getGangyakTone(gangyak?.level)}`}>
-                {gangyak?.level || "중화"}
-              </div>
-            </div>
-            <div className="mt-4 h-3 rounded-full overflow-hidden border border-white/10 bg-black/25">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.max(0, Math.min(100, Math.round(Number(gangyak?.total || 0))))}%` }}
-                transition={{ duration: 0.9 }}
-                className="h-full bg-gradient-to-r from-cyan-300 via-emerald-300 to-rose-300"
-              />
-            </div>
-            <div className="mt-5 space-y-3">
-              {gangyakBreakdown.map((item) => (
-                <div key={item.label} className="rounded-2xl border border-white/10 bg-black/20 p-3">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-bold text-white">{item.label}</p>
-                    <p className="text-sm font-black text-indigo-200">{item.value}</p>
-                  </div>
-                  <p className="mt-1 text-xs text-slate-400">{item.hint}</p>
+          <div className="rounded-3xl border border-white/10 bg-black/30 p-5 md:p-8 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center shadow-lg">
+                  <Flame className="w-5 h-5 text-amber-300" />
                 </div>
-              ))}
-            </div>
-            <p className="mt-4 text-sm text-slate-300">{cleanText(gangyak?.description, "사주의 중심 에너지를 기반으로 강약 균형을 계산했습니다.")}</p>
-            {strengthProfile ? (
-              <div className="mt-4 rounded-2xl border border-cyan-300/15 bg-cyan-400/10 p-4">
-                <p className="text-[11px] font-black uppercase tracking-[0.22em] text-cyan-200">Strength Evidence</p>
-                <p className="mt-2 text-sm text-slate-200">
-                  기후 균형 {strengthProfile.climateBalance.temperature} / {strengthProfile.climateBalance.humidity} ·
-                  균형 점수 {strengthProfile.climateBalance.score} · 신뢰도 {Math.round(strengthProfile.confidence * 100)}%
-                </p>
-                <p className="mt-2 text-xs text-slate-400">{strengthProfile.heuristic.note}</p>
+                <h3 className="text-xl md:text-2xl font-black text-white">나의 멘탈 게이지</h3>
               </div>
-            ) : null}
+
+              <div className="flex items-center justify-between gap-4 mb-4">
+                <div>
+                  <p className="text-2xl font-black text-white drop-shadow-md">
+                    {Math.round(Number(gangyak?.total || 0))}
+                    <span className="text-sm text-slate-400 font-normal ml-1">/ 100</span>
+                  </p>
+                </div>
+                <div className={`rounded-full border px-4 py-2 text-sm font-black ${getGangyakTone(gangyak?.level)}`}>
+                  {gangyak?.level || "중화"}
+                </div>
+              </div>
+
+              <div className="h-3 rounded-full overflow-hidden border border-white/10 bg-black/50 shadow-inner">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.max(0, Math.min(100, Math.round(Number(gangyak?.total || 0))))}%` }}
+                  transition={{ duration: 1.2, ease: "easeOut" }}
+                  className="h-full bg-gradient-to-r from-amber-200 via-amber-400 to-rose-400"
+                />
+              </div>
+
+              <p className="mt-5 text-sm text-slate-300 leading-relaxed bg-white/5 p-4 rounded-2xl border border-white/10">
+                에너지가 높은 분파는 주도적이고 뚝심이 있으며,
+                에너지가 부드러운 분파는 주변 환경에 유연하게 적응하고 흡수력이 좋습니다.
+              </p>
+            </div>
+
+            <div className="mt-6 flex justify-between px-2 text-center text-xs text-slate-400 gap-2">
+              <div className="flex-1 rounded-xl bg-black/40 p-3 shadow-inner">
+                <p>멘탈력</p>
+                <p className="font-bold text-white mt-1 text-sm">{Math.round(Number(gangyak?.deukryeong || 0))}</p>
+              </div>
+              <div className="flex-1 rounded-xl bg-black/40 p-3 shadow-inner">
+                <p>실행력</p>
+                <p className="font-bold text-white mt-1 text-sm">{Math.round(Number(gangyak?.deukji || 0))}</p>
+              </div>
+              <div className="flex-1 rounded-xl bg-black/40 p-3 shadow-inner">
+                <p>주변운</p>
+                <p className="font-bold text-white mt-1 text-sm">{Math.round(Number(gangyak?.deukse || 0))}</p>
+              </div>
+            </div>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7">
-            <div className="flex items-center gap-3 mb-4">
-              <Crown className="w-5 h-5 text-emerald-300" />
-              <h3 className="text-xl md:text-2xl font-black text-white">용신·희신 전략</h3>
+          <div className="rounded-3xl border border-white/10 bg-black/30 p-5 md:p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shadow-lg">
+                <Crown className="w-5 h-5 text-emerald-300" />
+              </div>
+              <h3 className="text-xl md:text-2xl font-black text-white">행운을 부르는 기운</h3>
             </div>
+
             <div className="grid gap-3">
-              <div className={`rounded-2xl border bg-gradient-to-br p-4 ${getElementGlow(yongshin?.primary?.element)}`}>
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-200">Primary Yongshin</p>
-                <p className="mt-2 text-2xl font-black text-white">{cleanText(yongshin?.primary?.element, "분석 중")}</p>
-                  <p className="mt-2 text-sm text-slate-200">{cleanText(yongshin?.primary?.reason, "🧭 사주의 중심 균형을 바로잡는 핵심 오행으로, 방향 설정과 의사결정의 기준점이 됩니다.")}</p>
+              <div className={`rounded-2xl border p-4 transition-all duration-300 ${getElementGlow(yongshin?.primary?.element)} hover:scale-[1.02] cursor-default`}>
+                <div className="flex justify-between items-center mb-2">
+                  <p className="text-xs font-black uppercase tracking-widest text-emerald-200">나침반 기운</p>
+                  <span className="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">1순위</span>
+                </div>
+                <div className="flex items-end gap-3">
+                  <p className="text-3xl font-black text-white drop-shadow-md">{cleanText(yongshin?.primary?.element?.replace(/\(.*\)/, ''), "분석 중")}</p>
+                </div>
+                <p className="mt-3 text-sm text-slate-200">나의 중심을 잡아주고 운을 트이게 하는 핵심 열쇠입니다.</p>
               </div>
-              <div className={`rounded-2xl border bg-gradient-to-br p-4 ${getElementGlow(yongshin?.secondary?.element)}`}>
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-sky-200">Secondary Support</p>
-                <p className="mt-2 text-xl font-black text-white">{cleanText(yongshin?.secondary?.element, "분석 중")}</p>
-                <p className="mt-2 text-sm text-slate-300">{cleanText(yongshin?.secondary?.reason, "🌿 용신이 실제로 작동하도록 받쳐 주는 보조 오행으로, 회복력과 지속성을 높입니다.")}</p>
-              </div>
-              <div className={`rounded-2xl border bg-gradient-to-br p-4 ${getElementGlow(yongshin?.unfavorable?.element)}`}>
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-rose-200">Watch Out</p>
-                <p className="mt-2 text-xl font-black text-white">{cleanText(yongshin?.unfavorable?.element, "분석 중")}</p>
-                <p className="mt-2 text-sm text-slate-300">{cleanText(yongshin?.unfavorable?.reason, "⚠️ 과도해질수록 균형을 흔들 수 있는 오행으로, 욕심이나 과속이 붙는 순간 특히 주의가 필요합니다.")}</p>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className={`rounded-2xl border p-4 flex flex-col justify-between ${getElementGlow(yongshin?.secondary?.element)}`}>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-sky-200 mb-1">보조 기운</p>
+                  <p className="text-lg font-black text-white mb-2">{cleanText(yongshin?.secondary?.element?.replace(/\(.*\)/, ''), "-")}</p>
+                  <p className="text-[11px] text-slate-300 leading-tight">옆에서 나침반을 돕고 안정감을 시너지로 냅니다.</p>
+                </div>
+
+                <div className={`rounded-2xl border p-4 flex flex-col justify-between ${getElementGlow(yongshin?.unfavorable?.element)} relative overflow-hidden`}>
+                  <div className="absolute -right-4 -bottom-4 text-6xl opacity-10">⚠️</div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-rose-300 mb-1 relative z-10">주의 에너지</p>
+                  <p className="text-lg font-black text-white mb-2 relative z-10">{cleanText(yongshin?.unfavorable?.element?.replace(/\(.*\)/, ''), "-")}</p>
+                  <p className="text-[11px] text-slate-300 leading-tight relative z-10">지나치게 집착하면 오히려 독이 되기 쉬운 속성입니다.</p>
+                </div>
               </div>
             </div>
-            <p className="mt-4 text-xs text-slate-500">산출 기준: {cleanText(yongshin?.source, "억부")} 우선</p>
-            {yongshinCandidates.length ? (
-              <div className="mt-4 grid gap-2">
-                {yongshinCandidates.map((candidate) => (
-                  <div key={candidate.id} className="rounded-2xl border border-white/10 bg-black/20 p-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-sm font-black text-white">
-                        {candidate.element} · {candidate.role}
-                      </p>
-                      <span className="rounded-full border border-white/10 px-2 py-1 text-[11px] text-slate-300">
-                        {candidate.method} · {Math.round(candidate.confidence * 100)}%
-                      </span>
-                    </div>
-                    {candidate.conflictFlags?.length ? (
-                      <p className="mt-2 text-[11px] text-amber-200">
-                        플래그: {candidate.conflictFlags.join(", ")}
-                      </p>
-                    ) : null}
-                    <p className="mt-2 text-xs text-slate-400">{cleanText(candidate.summary, "용신 후보 근거를 정리 중입니다.")}</p>
-                  </div>
-                ))}
-              </div>
-            ) : null}
           </div>
         </section>
 
