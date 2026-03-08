@@ -20,7 +20,7 @@ export default function LoginPage() {
             >
                 <p className="text-[11px] font-black tracking-[0.18em] text-indigo-200 mb-2">시크릿사주</p>
                 <h1 className="text-3xl font-black leading-tight">로그인</h1>
-                <p className="mt-2 text-sm text-slate-300">카카오·구글·네이버·이메일로 빠르게 로그인하세요.</p>
+                <p className="mt-2 text-sm text-slate-300">카카오·구글·이메일로 빠르게 로그인하세요. 네이버 로그인은 준비 중입니다.</p>
 
                 <section aria-labelledby="login-page-guide" className="mt-6 rounded-2xl border border-white/10 bg-black/25 p-4">
                     <h2 id="login-page-guide" className="text-xs font-black tracking-widest text-indigo-300 uppercase">

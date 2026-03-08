@@ -329,6 +329,43 @@ export default function MyPage() {
         </motion.div>
 
         {/* ── Footer brand ────────────────────────────── */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.34 }}
+          className="mb-8"
+        >
+          <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-500 mb-4">Account Standards</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Link
+              href="/billing"
+              className="flex items-center gap-4 p-5 rounded-[2rem] bg-white/[0.03] border border-white/8 hover:border-white/15 hover:bg-white/[0.05] transition-all"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 flex-shrink-0">
+                <ShoppingBag className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-black text-white text-sm">결제 및 구독 관리</p>
+                <p className="text-[11px] text-slate-500 mt-0.5">결제, 환불, 멤버십 문의 경로를 확인합니다.</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
+            </Link>
+            <Link
+              href="/account/delete"
+              className="flex items-center gap-4 p-5 rounded-[2rem] bg-white/[0.03] border border-white/8 hover:border-rose-500/30 hover:bg-rose-500/[0.04] transition-all"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 flex items-center justify-center shadow-lg shadow-rose-500/20 flex-shrink-0">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-black text-white text-sm">회원 탈퇴 요청</p>
+                <p className="text-[11px] text-slate-500 mt-0.5">삭제 전 안내와 요청 절차를 확인합니다.</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
+            </Link>
+          </div>
+        </motion.section>
+
         <div className="flex items-center justify-center gap-2 pt-4 border-t border-white/5">
           <Orbit className="w-3 h-3 text-indigo-500/50" />
           <p className="text-[10px] uppercase tracking-[0.35em] text-slate-600 font-black">Secret Saju</p>

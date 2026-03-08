@@ -206,21 +206,13 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
 
     const handleNaverLogin = async () => {
         saveReturnTo();
-        setIsLoading('naver');
-        if (!supabase?.auth?.signInWithOAuth) {
-            setAuthError('provider_error');
-            setIsLoading(null);
-            return;
-        }
-        try {
-            await supabase.auth.signInWithOAuth({
-                provider: 'notion',
-                options: { redirectTo: `${window.location.origin}/auth/callback` },
-            });
-        } catch {
-            setAuthError('provider_error');
-            setIsLoading(null);
-        }
+        setAuthError('provider_error');
+        setEmailMessage(
+            locale === 'ko'
+                ? '네이버 로그인은 현재 준비 중입니다. 카카오, 구글, 이메일 로그인을 이용해 주세요.'
+                : 'Naver login is not available yet. Please use Kakao, Google, or email login.'
+        );
+        setIsLoading(null);
     };
 
     const handleMcpLogin = async () => {
@@ -395,7 +387,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
                                         disabled={!!isLoading}
                                         className="w-full min-h-[52px] rounded-xl bg-[#03C75A] text-white font-black flex items-center justify-center gap-3"
                                     >
-                                        {isOtherLoading('naver') ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>네이버 로그인</span>}
+                                        {isOtherLoading('naver') ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>네이버 로그인 (준비 중)</span>}
                                     </button>
                                     <button
                                         onClick={handleMcpLogin}
