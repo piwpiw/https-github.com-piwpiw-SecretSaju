@@ -5,13 +5,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Gift, Send, Mail, ArrowLeft, ShieldCheck } from "lucide-react";
 import { useLocale } from "@/lib/i18n";
 import { useRouter } from "next/navigation";
+import AuthRequiredNotice from "@/components/AuthRequiredNotice";
 import { useWallet } from "@/components/WalletProvider";
 import JellyBalance from "@/components/shop/JellyBalance";
 import JellyShopModal from "@/components/shop/JellyShopModal";
+import { useAuthStatus } from "@/lib/auth-status";
 
 export default function GiftPage() {
   const { t, locale } = useLocale();
   const router = useRouter();
+  const { isAuthenticated } = useAuthStatus();
   const { consumeChuru, churu, isAdmin } = useWallet();
   const [isShopModalOpen, setIsShopModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", birthDate: "", email: "" });
@@ -26,6 +29,11 @@ export default function GiftPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError("");
+
+    if (!isAuthenticated && !isAdmin) {
+      setSubmitError(locale === 'ko' ? '선물 발송과 젤리 차감은 로그인 후에만 진행됩니다.' : 'Please log in before sending a gift.');
+      return;
+    }
 
     if (!isAdmin && churu < 3) {
       setIsShopModalOpen(true);
@@ -119,6 +127,17 @@ export default function GiftPage() {
       >
         <div className="absolute top-0 right-0 w-64 h-64 bg-pink-500/10 blur-3xl rounded-full opacity-50" />
 
+        {!isAuthenticated && !isAdmin ? (
+          <div className="relative z-10 mb-10">
+            <AuthRequiredNotice
+              compact
+              nextPath="/gift"
+              title="선물 발송은 로그인 후 사용할 수 있습니다."
+              detail="결제, 젤리 차감, 발송 기록을 안전하게 관리하려면 로그인 세션이 필요합니다."
+            />
+          </div>
+        ) : null}
+
         <AnimatePresence mode="wait">
           {!success ? (
             <motion.form
@@ -192,7 +211,7 @@ export default function GiftPage() {
               <div className="space-y-2">
                 <button
                   type="submit"
-                  disabled={isSubmitting || !isReady}
+                  disabled={isSubmitting || !isReady || (!isAuthenticated && !isAdmin)}
                   aria-busy={isSubmitting}
                   className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black text-3xl py-10 rounded-4xl flex items-center justify-center gap-6 hover:scale-[1.02] active:scale-[0.98] shadow-2xl shadow-pink-500/30 transition-all disabled:opacity-30 tracking-widest uppercase mt-4"
                 >

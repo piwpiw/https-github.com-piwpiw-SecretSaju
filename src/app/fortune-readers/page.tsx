@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Crown, Lock, Sparkles, Star, Wand2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import AuthRequiredNotice from "@/components/AuthRequiredNotice";
 import {
   getFavoriteReaderIds,
   getFortuneReaderProfiles,
@@ -12,6 +13,7 @@ import {
   toggleFavoriteReader,
   type ReaderQueryType,
 } from "@/lib/fortune-readers";
+import { useAuthStatus } from "@/lib/auth-status";
 import { getReaderExperimentVariant, reorderReadersForExperiment } from "@/lib/reader-experiments";
 import { getReaderMembership } from "@/lib/reader-membership";
 
@@ -19,6 +21,7 @@ const QUERY_TYPES: ReaderQueryType[] = ["result", "compatibility", "daily", "cha
 
 export default function FortuneReadersPage() {
   const router = useRouter();
+  const { isAuthenticated } = useAuthStatus();
   const [queryType, setQueryType] = useState<ReaderQueryType>("result");
   const [favoriteIds, setFavoriteIds] = useState<ReturnType<typeof getFavoriteReaderIds>>([]);
   const [unlockedIds, setUnlockedIds] = useState<ReturnType<typeof getUnlockedReaderIds>>([]);
@@ -54,6 +57,17 @@ export default function FortuneReadersPage() {
             <div>{membershipActive ? "시그니처 멤버십 활성" : "시그니처 멤버십 비활성"}</div>
           </div>
         </header>
+
+        {!isAuthenticated ? (
+          <div className="mb-8">
+            <AuthRequiredNotice
+              compact
+              nextPath="/fortune-readers"
+              title="게스트 모드에서는 탐색만 가능합니다."
+              detail="리더 해금, 멤버십, 즐겨찾기와 비교 저장은 로그인 후 서버 기준으로 안전하게 동작합니다."
+            />
+          </div>
+        ) : null}
 
         <section className="mb-8 rounded-3xl border border-white/10 bg-white/[0.03] p-5">
           <div className="flex flex-wrap gap-2">

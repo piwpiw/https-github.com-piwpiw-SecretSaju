@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Calendar, Clock, User as UserIcon, Heart, ArrowLeft, Loader2 } from "lucide-react";
+import AuthRequiredNotice from "@/components/AuthRequiredNotice";
 import { SajuProfileRepository } from "@/lib/repositories/saju-profile.repository";
 import { hasSufficientBalance, consumeJelly } from "@/lib/jelly-wallet";
 import { triggerBalanceUpdate } from "@/components/shop/JellyBalance";
 import JellyShopModal from "@/components/shop/JellyShopModal";
+import { useAuthStatus } from "@/lib/auth-status";
 import { getUserFromCookie } from "@/lib/kakao-auth";
 import { CalendarType, Gender, RelationshipType, CreateSajuProfileRequest } from "@/types/schema";
 import { getSupabaseClient } from "@/lib/supabase";
@@ -24,6 +26,7 @@ const RELATIONSHIP_OPTIONS: { value: RelationshipType; label: string }[] = [
 
 export default function AddSajuPage() {
   const router = useRouter();
+  const { isAuthenticated } = useAuthStatus();
   const { refreshProfiles } = useProfiles();
   const [name, setName] = useState("");
   const [relationship, setRelationship] = useState<RelationshipType>("self");
@@ -132,6 +135,17 @@ export default function AddSajuPage() {
         </header>
 
         {formError && <p className="text-rose-400 text-sm mb-4" role="alert">{formError}</p>}
+
+        {!isAuthenticated ? (
+          <div className="mb-4">
+            <AuthRequiredNotice
+              compact
+              nextPath="/my-saju/add"
+              title="게스트 모드에서는 프로필이 이 브라우저에만 저장됩니다."
+              detail="로그인하면 사주 프로필을 서버에 저장하고 기기 간 동기화를 사용할 수 있습니다."
+            />
+          </div>
+        ) : null}
 
         <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-white/10 bg-white/5 p-6" aria-label="사주 프로필 등록 폼">
           <div>
