@@ -196,14 +196,17 @@ export function getTarotDeckRows(options: DeckFilterOptions = {}): TarotDeckCard
   return deck.sort((a, b) => a.sequence - b.sequence);
 }
 
-export function buildTarotDeckCards(): TarotDeckCardWithImage[] {
+export type TarotTheme = "standard" | "svg_fallback";
+export const DEFAULT_TAROT_THEME: TarotTheme = "standard";
+
+export function buildTarotDeckCards(theme: TarotTheme = DEFAULT_TAROT_THEME): TarotDeckCardWithImage[] {
   return getTarotDeckRows().map((card) => ({
     ...card,
-    imageUrl: card.image_key ? makeCardSvgImage(card) : "",
+    imageUrl: card.image_key ? resolveTarotImageUrl(card, theme) : "",
   }));
 }
 
-export function pickCardsFromDeck(cards: TarotDeckCard[], count: number) {
+export function pickCardsFromDeck(cards: TarotDeckCard[], count: number, theme: TarotTheme = DEFAULT_TAROT_THEME) {
   const deck = [...cards];
   const selected: DrawnTarotCard[] = [];
 
@@ -213,7 +216,7 @@ export function pickCardsFromDeck(cards: TarotDeckCard[], count: number) {
     deck.splice(idx, 1);
     selected.push({
       ...chosen,
-      imageUrl: resolveTarotImageUrl(chosen),
+      imageUrl: resolveTarotImageUrl(chosen, theme),
       isReversed: Math.random() < 0.35,
     });
   }
@@ -221,6 +224,11 @@ export function pickCardsFromDeck(cards: TarotDeckCard[], count: number) {
   return selected;
 }
 
-export function resolveTarotImageUrl(card: TarotDeckCard): string {
-  return makeCardSvgImage(card);
+export function resolveTarotImageUrl(card: TarotDeckCard, theme: TarotTheme = DEFAULT_TAROT_THEME): string {
+  if (theme === "svg_fallback") {
+    return makeCardSvgImage(card);
+  }
+  // Standard and other themes use static files in the public directory
+  // e.g. /tarot-decks/standard/MA00.png
+  return `/tarot-decks/${theme}/${card.code}.png`;
 }

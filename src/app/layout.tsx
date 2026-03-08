@@ -7,6 +7,7 @@ import { WalletProvider } from '@/components/WalletProvider';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { LocaleProvider } from '@/lib/i18n';
 import { ProfileProvider } from '@/components/ProfileProvider';
+import SystemIssueBanner from '@/components/SystemIssueBanner';
 import LuckyTicker from '@/components/LuckyTicker';
 import LuckySecretModal from '@/components/home/LuckySecretModal';
 import RouteChangeTracker from '@/components/analytics/RouteChangeTracker';
@@ -74,6 +75,7 @@ export default function RootLayout({
                 <LuckySecretModal />
                 <LuckyTicker />
                 <Nav />
+                <SystemIssueBanner />
                 <a
                   href="#main-content"
                   className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:bg-black/90 focus:text-white focus:px-3 focus:py-2 focus:rounded"

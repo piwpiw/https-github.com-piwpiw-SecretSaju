@@ -112,14 +112,24 @@ function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard
               </div>
             </div>
 
-            <div className="relative flex-1 min-h-0">
-              <Image
-                src={card.imageUrl}
-                alt={card.name_kr}
-                fill
-                className={`object-cover rounded-2xl border border-white/5 bg-black/40 ${card.isReversed ? "rotate-180" : ""}`}
-                unoptimized
-              />
+            <div className="relative flex-1 min-h-[200px] mt-2 mb-2 rounded-xl overflow-hidden border border-slate-700/50 bg-slate-950">
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <p className="text-[10px] text-slate-600 font-mono text-center opacity-50">
+                  Image Pending<br />{card.code}
+                </p>
+              </div>
+              {card.imageUrl ? (
+                <Image
+                  src={card.imageUrl}
+                  alt={card.name_kr}
+                  fill
+                  className={`object-cover z-10 transition-opacity duration-300 ${card.isReversed ? "rotate-180" : ""}`}
+                  unoptimized
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.opacity = '0';
+                  }}
+                />
+              ) : null}
             </div>
 
             <p className="text-[11px] text-slate-300 leading-relaxed font-medium relative z-10 line-clamp-3">
