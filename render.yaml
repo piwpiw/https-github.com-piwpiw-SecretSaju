@@ -35,7 +35,7 @@
     dockerfilePath: Dockerfile
     autoDeploy: true
     plan: starter
-    startCommand: node scripts/background-worker.js
+    startCommand: node scripts/ops/background-worker.js
     # Optional: attach shared Environment Group.
     # envVarGroups:
     #   - secret-saju-common
@@ -52,7 +52,7 @@ jobs:
     env: docker
     schedule: "*/15 * * * *"
     dockerfilePath: Dockerfile
-    startCommand: node scripts/cron-campaign-sync.js
+    startCommand: node scripts/ops/cron-campaign-sync.js
     # Optional: attach shared Environment Group.
     # envVarGroups:
     #   - secret-saju-common

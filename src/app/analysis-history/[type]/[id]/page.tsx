@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { AlertCircle, ArrowLeft, Calendar, ChevronRight, Loader2, RefreshCw } from "lucide-react";
 import { AnalysisHistoryLog } from "@/types/history";
-import { getAnalysisHistoryById, getAnalysisTypeInfo } from "@/lib/analysis-history";
+import { getAnalysisHistoryById, getAnalysisTypeInfo } from "@/lib/app/analysis-history";
 
 function formatDate(timestamp: number) {
   const d = new Date(timestamp);

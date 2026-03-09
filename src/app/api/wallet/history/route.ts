@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseAdmin } from '@/lib/supabase';
-import { getAuthenticatedUser } from '@/lib/api-auth';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
 
 export async function GET(request: NextRequest) {
     const authResult = await getAuthenticatedUser(request);

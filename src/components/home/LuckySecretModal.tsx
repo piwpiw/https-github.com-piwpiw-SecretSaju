@@ -1,6 +1,6 @@
 "use client";
 
-import { useProfiles } from "../ProfileProvider";
+import { useProfiles } from "@/components/profile/ProfileProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkles, Zap, Star, Shield } from "lucide-react";
 import { useEffect, useState } from "react";

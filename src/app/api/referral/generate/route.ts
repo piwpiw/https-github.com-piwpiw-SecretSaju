@@ -7,9 +7,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { APP_CONFIG } from '@/config';
-import { getAuthenticatedUser } from '@/lib/api-auth';
-import { getSupabaseAdmin } from '@/lib/supabase';
-import { generateReferralCode, REFERRAL_REWARDS } from '@/lib/referrals';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
+import { generateReferralCode, REFERRAL_REWARDS } from '@/lib/referral/referrals';
 
 function buildReferralUrl(referralCode: string) {
     const baseUrl = APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://secretsaju.example.com';

@@ -4,13 +4,13 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowLeft, Calendar, CalendarDays, Loader2, Sparkles, WalletCards, Briefcase, CheckCircle2, ChevronRight, Lightbulb } from "lucide-react";
 import JellyBalance from "@/components/shop/JellyBalance";
-import { useWallet } from "@/components/WalletProvider";
-import { useProfiles } from "@/components/ProfileProvider";
+import { useWallet } from "@/components/payment/WalletProvider";
+import { useProfiles } from "@/components/profile/ProfileProvider";
 import LuxuryToast from "@/components/ui/LuxuryToast";
-import { saveAnalysisToHistory } from "@/lib/analysis-history";
+import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
 import { calculateSajuFromBirthdate, getDayPillarIndex, getPillarNameKo } from "@/lib/saju";
-import { buildTojeongReport, TojeongReport } from "@/lib/tojeongEngine";
-import { parseCivilDate } from "@/lib/civil-date";
+import { buildTojeongReport, TojeongReport } from "@/lib/saju/tojeongEngine";
+import { parseCivilDate } from "@/lib/saju/civil-date";
 
 type TojeongScore = "high" | "mid" | "low";
 

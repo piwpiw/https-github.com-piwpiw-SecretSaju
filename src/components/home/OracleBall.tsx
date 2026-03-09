@@ -3,7 +3,7 @@
 import { motion, useAnimation, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { Sparkles, Zap, HelpCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/app/utils";
 
 interface OracleBallProps {
     title?: string;

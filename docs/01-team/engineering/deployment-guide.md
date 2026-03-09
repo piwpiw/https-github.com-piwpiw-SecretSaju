@@ -83,7 +83,7 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - 명령 변경 시 `package.json`과 본 문서를 동일 PR에서 갱신한다.
 - CI 정책 변경 시 `.github/workflows/deploy.yml`과 본 문서/상세 가이드를 함께 갱신한다.
 - 관련 명령 변경은 `docs/guides/deployment.md`와 동기화한다.
-- 배포 실행은 반드시 `node scripts/deploy-policy.js` 통과 전제에서 진행한다.
+- 배포 실행은 반드시 `node scripts/deploy/deploy-policy.js` 통과 전제에서 진행한다.
 
 ## 체크포인트
 - [ ] `deploy:local` 성공
@@ -91,7 +91,7 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - [ ] 핵심 API 스모크(`/api/saju/calculate`, `/api/payment/verify`)
 - [ ] 결제/환불/웹훅 기본 경로 확인
 - [ ] 정책 페이지(terms/privacy/refund) 링크 확인
-- [ ] 장애 시 `docs/active-dispatch.md` 기록 + 커뮤니케이션
+- [ ] 장애 시 `docs/archive/decision-history/active-dispatch.md` 기록 + 커뮤니케이션
 
 ## 관련 문서
 - `docs/01-team/engineering/testing-guide.md`

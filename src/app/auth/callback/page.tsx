@@ -2,22 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/integrations/supabase';
 import { STORAGE_KEYS } from '@/config';
+import { buildAuthCallbackMessage } from '@/lib/auth/auth-callback-message';
 import { Loader2, X } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const MCP_ERRORS: Record<string, string> = {
-    missing_required_params: '인증 정보를 찾을 수 없습니다.',
-    missing_oauth_artifacts: '인증 세션이 만료되었습니다.',
-    invalid_oauth_state: '보안 검증(state)에 실패했습니다.',
-    expired_oauth_state: '인증 요청 시간이 만료되었습니다.',
-    token_exchange_failed: '토큰 발급에 실패했습니다.',
-    missing_provider_user_id: '사용자 계정 번호를 가져오지 못했습니다.',
-    user_sync_failed: '사용자 정보 동기화 중 오류가 발생했습니다.',
-    missing_oauth_profile: '프로필 정보 획득이 거부되었습니다.',
-    oauth_callback_error: '비정상적인 응답을 감지했습니다.',
-};
 
 function setServerLikeAuthCookie(accessToken: string, refreshToken: string | undefined, maxAge = 7 * 24 * 3600) {
     const payload = {
@@ -32,7 +21,7 @@ function setServerLikeAuthCookie(accessToken: string, refreshToken: string | und
 
 export default function AuthCallback() {
     const router = useRouter();
-    const [message, setMessage] = useState('인증 창을 닫기 위해 연결 중...');
+    const [message, setMessage] = useState('로그인 결과를 확인하고 있습니다...');
     const [isError, setIsError] = useState(false);
 
     useEffect(() => {
@@ -42,15 +31,15 @@ export default function AuthCallback() {
             const provider = searchParams.get('provider');
 
             if (errorParam) {
-                const reqId = searchParams.get('request_id');
-                const detail = searchParams.get('provider_error_description');
-                let userMsg = '인증 중 오류가 발생했습니다.';
-                if (provider === 'mcp') {
-                    userMsg = MCP_ERRORS[errorParam] || 'MCP 인증 처리 중 문제가 발생했습니다.';
-                    if (detail) userMsg += ` (${detail})`;
-                }
-                if (reqId) userMsg += ` [Req: ${reqId}]`;
-                setMessage(userMsg);
+                setMessage(
+                    buildAuthCallbackMessage({
+                        error: errorParam,
+                        provider,
+                        providerError: searchParams.get('provider_error'),
+                        providerErrorDescription: searchParams.get('provider_error_description'),
+                        requestId: searchParams.get('request_id'),
+                    })
+                );
                 setIsError(true);
                 setTimeout(() => router.push('/'), 4000);
                 return;
@@ -70,7 +59,7 @@ export default function AuthCallback() {
 
             if (error || !session?.user) {
                 console.error('Auth error:', error);
-                setMessage('인증 중 오류가 발생했습니다.');
+                setMessage('로그인 처리 중 문제가 발생했습니다.');
                 setTimeout(() => router.push('/'), 2000);
                 return;
             }
@@ -103,13 +92,13 @@ export default function AuthCallback() {
                 if (!syncRes.ok) {
                     console.error('User sync failed:', syncData);
                 } else if (syncData?.user?.isAdmin) {
-                    setMessage('인증이 완료되었습니다. 관리자 계정으로 로그인했습니다.');
+                    setMessage('로그인이 완료되었습니다. 관리자 계정으로 이동합니다.');
                 } else {
-                    setMessage('인증이 완료되었습니다.');
+                    setMessage('로그인이 완료되었습니다.');
                 }
             } catch (syncError) {
                 console.error('Sync error:', syncError);
-                setMessage('인증이 완료되었습니다. 사용자 동기화를 재시도해 주세요.');
+                setMessage('로그인은 완료되었지만 사용자 정보 동기화가 지연되고 있습니다.');
             }
 
             const returnTo = localStorage.getItem('auth_return_to') || '/dashboard';
@@ -140,7 +129,7 @@ export default function AuthCallback() {
                 </div>
 
                 <h1 className={`text-2xl font-black ${isError ? 'text-rose-400' : 'text-foreground'} uppercase tracking-widest mb-4`}>
-                    {isError ? 'Authentication Failed' : 'Authenticating'}
+                    {isError ? '로그인 실패' : '로그인 확인 중'}
                 </h1>
 
                 <p className={`text-lg ${isError ? 'text-secondary opacity-80' : 'text-secondary'} font-bold`}>{message}</p>

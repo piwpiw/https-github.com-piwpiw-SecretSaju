@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { trackKakaoShareClick, trackKakaoShareComplete, trackShareComplete } from '@/lib/analytics';
+import { trackKakaoShareClick, trackKakaoShareComplete, trackShareComplete } from '@/lib/app/analytics';
 
 interface KakaoShareOptions {
   title: string;

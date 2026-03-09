@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { PILLAR_CODES, getPillarNameKo } from "@/lib/saju";
 import {
     calculateGangYak,
-} from "@/lib/advancedScoring";
+} from "@/lib/saju/advancedScoring";
 import { FourPillars, Stem, Branch } from "@/core/calendar/ganji";
 import animalsData from "@/data/animals.json";
 

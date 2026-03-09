@@ -56,15 +56,15 @@ SOT: 테스트 운영 기준은 이 문서가 단일 기준이다.
   - `npx tsc --noEmit`
 - Fast logic tests
   - `vitest.logic.config.ts`
-  - 대상: `tests/saju-engine.test.ts`, `tests/ai-routing.test.ts`, `tests/payment-flow.test.ts`, `tests/auth-wallet.test.ts`
+  - 대상: `tests/logic/saju-engine.test.ts`, `tests/logic/ai-routing.test.ts`, `tests/logic/payment-flow.test.ts`, `tests/logic/auth-wallet.test.ts`
 - Engine validation tests
-  - `src/__tests__/unit/astronomy.test.ts`
-  - `src/__tests__/validation/candidate-engines.test.ts`
-  - `src/__tests__/validation/civil-date.test.ts`
-  - `src/__tests__/validation/lunar-solar.test.ts`
-  - `src/__tests__/validation/interactions.test.ts`
-  - `src/__tests__/validation/saju-engine-metadata.test.ts`
-  - `src/__tests__/validation/golden.test.ts`
+  - `tests/validation/engine/astronomy.test.ts`
+  - `tests/validation/candidate-engines.test.ts`
+  - `tests/validation/civil-date.test.ts`
+  - `tests/validation/lunar-solar.test.ts`
+  - `tests/validation/interactions.test.ts`
+  - `tests/validation/saju-engine-metadata.test.ts`
+  - `tests/validation/golden.test.ts`
 - Browser/route smoke
   - `npm run smoke:auth`
   - `npm run smoke:fast`
@@ -77,7 +77,7 @@ SOT: 테스트 운영 기준은 이 문서가 단일 기준이다.
 1. `golden.test.ts` is intentionally separated from the default `npm test` gate.
    - 목적: 일상 개발 게이트를 빠르고 안정적으로 유지
    - 운영 원칙: 엔진/학파/경계값 변경 시에만 별도 실행
-2. `src/__tests__/data/golden-dataset.ts`는 현재 10건만 포함한다.
+2. `tests/fixtures/golden-dataset.ts`는 현재 10건만 포함한다.
    - 현재 회귀는 통과하지만, 표준화 수준의 엔진 검증 세트로 보기에는 표본이 너무 작다.
    - 경계 케이스와 학파 분기 케이스를 계속 확장해야 한다.
 
@@ -133,26 +133,26 @@ Use for engine correctness work only.
 ## Test Layers
 1. Static quality: lint + type-check
 2. Fast logic tests: `vitest.logic.config.ts`
-3. Engine validation tests: `src/__tests__/validation/*`
+3. Engine validation tests: `tests/validation/*`
 4. Build validation: `next build`
 5. Route/browser acceptance: smoke scripts
 6. Route-level acceptance: `docs/00-overview/execution-backlog-ko.md`
-7. User-level acceptance: `docs/USER_VERIFICATION.md`
+7. User-level acceptance: `docs/01-team/qa/USER_VERIFICATION.md`
 
 ## Failure Handling
 - 실패 시 재현 명령, 실패 구간, 원인 가설을 기록한다.
-- 릴리즈 블로커는 `docs/active-dispatch.md`에 즉시 등록한다.
+- 릴리즈 블로커는 `docs/archive/decision-history/active-dispatch.md`에 즉시 등록한다.
 - 재발 방지를 위해 최소 1개 회귀 케이스를 추가한다.
 
 ## Update Rules
 - 테스트 게이트 변경 시 `package.json` 스크립트와 본 문서를 동시에 갱신한다.
 - 라우트 계약 변경 시 `execution-backlog-ko.md`와 정합성을 확인한다.
-- `npm test`의 신뢰도에 영향이 가는 include/exclude 변경 시 `vitest.config.ts`, `vitest.logic.config.ts`, `scripts/pre-deploy.js`를 함께 갱신한다.
+- `npm test`의 신뢰도에 영향이 가는 include/exclude 변경 시 `vitest.config.ts`, `vitest.logic.config.ts`, `scripts/deploy/pre-deploy.js`를 함께 갱신한다.
 
 ## References
 - `docs/00-overview/document-governance.md`
 - `docs/00-overview/execution-backlog-ko.md`
-- `docs/USER_VERIFICATION.md`
+- `docs/01-team/qa/USER_VERIFICATION.md`
 - `docs/01-team/engineering/deployment-guide.md`
 - `docs/01-team/engineering/local-dev-sop.md`
 

@@ -1,5 +1,5 @@
 # Fortune Reader System Design (압축 요약)
-> 상세 원문은 docs/archive/ai-logs/ 참조. 이 파일은 AI 작업용 요약본.
+> 상세 원문은 docs/archive/decision-history/ 참조. 이 파일은 AI 작업용 요약본.
 
 ## 목적
 결과 시스템 2축 고도화:
@@ -16,7 +16,7 @@
 
 | 항목 | 상태 |
 |------|------|
-| `src/lib/fortune-readers.ts` — 5개 리더 프로필 | ✅ 완료 |
+| `src/lib/reader/fortune-readers.ts` — 5개 리더 프로필 | ✅ 완료 |
 | `AINarrativeSection.tsx` — 리더 선택 UI | ✅ 완료 |
 | `/api/persona` dual narrative 응답 shape | ✅ 완료 |
 | `ai-routing.ts` — reader-aware routing | ✅ 완료 |

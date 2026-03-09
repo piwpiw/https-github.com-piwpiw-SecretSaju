@@ -3,16 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Calendar, Clock, User as UserIcon, Heart, ArrowLeft, Loader2 } from "lucide-react";
-import AuthRequiredNotice from "@/components/AuthRequiredNotice";
-import { SajuProfileRepository } from "@/lib/repositories/saju-profile.repository";
-import { hasSufficientBalance, consumeJelly } from "@/lib/jelly-wallet";
+import AuthRequiredNotice from "@/components/auth/AuthRequiredNotice";
+import { SajuProfileRepository } from "@/lib/saju/repositories/saju-profile.repository";
+import { hasSufficientBalance, consumeJelly } from "@/lib/payment/jelly-wallet";
 import { triggerBalanceUpdate } from "@/components/shop/JellyBalance";
 import JellyShopModal from "@/components/shop/JellyShopModal";
-import { useAuthStatus } from "@/lib/auth-status";
-import { getUserFromCookie } from "@/lib/kakao-auth";
+import { useAuthStatus } from "@/lib/auth/auth-status";
+import { getUserFromCookie } from "@/lib/auth/kakao-auth";
 import { CalendarType, Gender, RelationshipType, CreateSajuProfileRequest } from "@/types/schema";
-import { getSupabaseClient } from "@/lib/supabase";
-import { useProfiles } from "@/components/ProfileProvider";
+import { getSupabaseClient } from "@/lib/integrations/supabase";
+import { useProfiles } from "@/components/profile/ProfileProvider";
 
 const RELATIONSHIP_OPTIONS: { value: RelationshipType; label: string }[] = [
   { value: "self", label: "본인" },

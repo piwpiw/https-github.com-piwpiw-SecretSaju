@@ -15,9 +15,9 @@
 - `docs/00-overview/roadmap.md`
 - `docs/01-team/engineering/deployment-guide.md`
 - `docs/01-team/engineering/testing-guide.md`
-- `docs/ERROR_CATALOG.md`
-- `docs/USER_VERIFICATION.md`
-- `docs/active-dispatch.md`
+- `docs/02-technical/ERROR_CATALOG.md`
+- `docs/01-team/qa/USER_VERIFICATION.md`
+- `docs/archive/decision-history/active-dispatch.md`
 
 ## 현재 진단 요약
 - 배포 체인: `deploy:fast`가 트리거 성공 기준으로 분리되어 무한 반복 리스크를 줄임(헬스체크는 별도 실행).
@@ -469,7 +469,7 @@
 
 ## 자동 유지관리 루프
 - 코드 변경 시 해당 도메인의 SOT 1개만 수정한다.
-- 상태 변경은 반드시 `docs/active-dispatch.md`에 Wave 단위로 기록한다.
+- 상태 변경은 반드시 `docs/archive/decision-history/active-dispatch.md`에 Wave 단위로 기록한다.
 - 배포 기준/명령이 바뀌면 `package.json` + `deployment-guide.md`를 같은 변경셋으로 묶는다.
 - 테스트 게이트 변경 시 `testing-guide.md`와 route contract 문서를 함께 갱신한다.
 - 매일 종료 시 KPI/장애/미해결 항목을 다음날 D1 계획으로 자동 이월한다.

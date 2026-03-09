@@ -7,9 +7,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getAuthenticatedUser } from '@/lib/api-auth';
-import { getSupabaseAdmin } from '@/lib/supabase';
-import { REFERRAL_REWARDS } from '@/lib/referrals';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
+import { REFERRAL_REWARDS } from '@/lib/referral/referrals';
 
 const normalizeReferralCode = (value: string) => value.trim().toUpperCase();
 

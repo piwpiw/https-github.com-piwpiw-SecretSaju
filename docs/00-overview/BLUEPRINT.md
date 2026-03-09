@@ -9,7 +9,7 @@
 
 | 단계 | 이름 | 주요 포인트 | 수정·개선 포인트 |
 |------|------|-------------|------------------|
-| **1** | **기반 정리** | 디렉터리·네이밍·env·타입 일원화 | `src/lib/validation.ts`, `.env.example` 검증 |
+| **1** | **기반 정리** | 디렉터리·네이밍·env·타입 일원화 | `src/lib/app/validation.ts`, `.env.example` 검증 |
 | **2** | **예외처리** | 입력/API/런타임 예외 일괄 처리 | `ERROR_CATALOG.md` 기준 한 줄씩 체크 |
 | **3** | **유효성 검사** | 생년월일·API 파라미터·경계값 | min/max 날짜, code/ageGroup 화이트리스트 |
 | **4** | **에러 UX** | 사용자 노출 메시지·복구 CTA | 토스트/인라인 메시지, "다시 시도" |
@@ -78,17 +78,17 @@
 
 | 경로 | 용도 |
 |------|------|
-| `src/lib/validation.ts` | 생년월일 유효성, ageGroup 화이트리스트 |
+| `src/lib/app/validation.ts` | 생년월일 유효성, ageGroup 화이트리스트 |
 | `src/app/admin/page.tsx` | 관리자 전체 검증 체크리스트 |
 | `src/app/error.tsx` | 에러 바운더리 |
 | `src/app/not-found.tsx` | 404 페이지 |
-| `docs/ERROR_CATALOG.md` | 예상 오류 한 줄 체크 |
-| `docs/USER_VERIFICATION.md` | 사용자 E2E 체크리스트 |
+| `docs/02-technical/ERROR_CATALOG.md` | 예상 오류 한 줄 체크 |
+| `docs/01-team/qa/USER_VERIFICATION.md` | 사용자 E2E 체크리스트 |
 
 ## 2026-03-03 운영 체크포인트
 
 - **홈페이지 고도화 반영**: `src/app/page.tsx` 상단 검색 오버레이에 다중 키워드 매칭, 후보 하이라이트, 키보드 탐색(↑/↓/Enter/Escape), 에러 피드백을 반영해 기존 기능 진입 시간을 줄였습니다.
-- **잔여 작업 추적 강화**: `docs/active-dispatch.md`의 `Wave30-10` 진행률(현재 `10/20` 진입)과 `docs/residual-issue-queue-summary.md` 핵심 잔여량을 동시에 모니터링합니다.
+- **잔여 작업 추적 강화**: `docs/archive/decision-history/active-dispatch.md`의 `Wave30-10` 진행률과 `_temp/reports/ux-loop/residual-issue-queue-summary.md` 핵심 잔여량을 동시에 모니터링합니다.
 - **신규 기능 후보(다음 검토)**: 검색 미스 보완 후보 제시 강화, 홈 검색 로그 수집, 빠른 이동 메뉴 동기화.
 
 ---
@@ -96,7 +96,7 @@
 ## 문서 참조
 
 - **PRD:** [MASTER_PRD.md](./MASTER_PRD.md) — 요구사항, 스키마, API, Phase, 검증·Content DB·AI
-- **에러:** [ERROR_CATALOG.md](./ERROR_CATALOG.md) — 예상 오류 및 한 줄 체크
-- **사용자 검증:** [USER_VERIFICATION.md](./USER_VERIFICATION.md) — E2E 시나리오
-- **Cursor:** [CURSOR_GUIDELINE.md](./archive/CURSOR_GUIDELINE.md) — 구조 유지·수정 시 참고
+- **에러:** [ERROR_CATALOG.md](../02-technical/ERROR_CATALOG.md) — 예상 오류 및 한 줄 체크
+- **사용자 검증:** [USER_VERIFICATION.md](../01-team/qa/USER_VERIFICATION.md) — E2E 시나리오
+- **Cursor:** [CURSOR_GUIDELINE.md](../archive/legacy/CURSOR_GUIDELINE.md) — 구조 유지·수정 시 참고
 

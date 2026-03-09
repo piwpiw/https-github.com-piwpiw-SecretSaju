@@ -11,9 +11,9 @@ import {
   Sparkles,
   Star,
 } from "lucide-react";
-import { buildAstrologyReport } from "@/lib/astrologyEngine";
-import { saveAnalysisToHistory } from "@/lib/analysis-history";
-import type { AstrologyReport } from "@/lib/astrologyEngine";
+import { buildAstrologyReport } from "@/lib/saju/astrologyEngine";
+import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
+import type { AstrologyReport } from "@/lib/saju/astrologyEngine";
 
 function formatDate(value: Date) {
   return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, "0")}-${String(

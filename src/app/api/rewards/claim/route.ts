@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseAdmin } from '@/lib/supabase';
-import { SIGNUP_REWARDS } from '@/lib/referrals';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
+import { SIGNUP_REWARDS } from '@/lib/referral/referrals';
 
 type RewardType = 'signup' | 'first_saju' | 'profile_save' | 'referral_success' | 'first_purchase' | 'review';
 

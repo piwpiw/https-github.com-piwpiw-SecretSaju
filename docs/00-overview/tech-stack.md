@@ -114,7 +114,7 @@ inquiries       # Customer inquiries
 - **Session**: HTTP-only cookies
 - **Expiry**: 7 days (configurable)
 
-**Implementation**: `src/lib/kakao-auth.ts`
+**Implementation**: `src/lib/auth/kakao-auth.ts`
 
 ---
 

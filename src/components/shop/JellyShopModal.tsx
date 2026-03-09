@@ -3,13 +3,13 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, TrendingUp, CreditCard, Wallet, Building2, Smartphone } from 'lucide-react';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import { PRICING_TIERS, getPerUnitPrice } from '@/lib/jelly-wallet';
+import { PRICING_TIERS, getPerUnitPrice } from '@/lib/payment/jelly-wallet';
 import type { PricingTier } from '@/types/jelly';
 import {
   trackPaymentClick,
   trackPaymentFail,
   trackPaymentInit,
-} from '@/lib/analytics';
+} from '@/lib/app/analytics';
 
 interface JellyShopModalProps {
   isOpen: boolean;

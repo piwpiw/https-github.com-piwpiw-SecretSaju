@@ -2,8 +2,8 @@
 
 import React, { useMemo } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { SajuProfile } from '@/lib/storage';
-import { RelationshipAnalysis } from '@/lib/compatibility';
+import { SajuProfile } from '@/lib/app/storage';
+import { RelationshipAnalysis } from '@/lib/saju/compatibility';
 
 interface RelationshipData {
     profile: SajuProfile;

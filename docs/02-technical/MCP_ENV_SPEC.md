@@ -25,7 +25,7 @@ This document details the required environment variables for the Magic Capsule P
 
 ## 🐛 3. Error Codes (McpCallbackErrorCode)
 
-Refer to `src/lib/auth-mcp.ts` for current enum.
+Refer to `src/lib/auth/auth-mcp.ts` for current enum.
 
 - `missing_required_params`: Code or state missing from URL.
 - `invalid_oauth_state`: State mismatch or malformed.

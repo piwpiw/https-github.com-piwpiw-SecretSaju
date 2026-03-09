@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getSupabaseAdmin } from '@/lib/supabase';
-import { DinnerQueenAdapter } from '@/lib/crawlers/DinnerQueenAdapter';
-import { RevuAdapter } from '@/lib/crawlers/RevuAdapter';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
+import { DinnerQueenAdapter } from '@/lib/integrations/crawlers/DinnerQueenAdapter';
+import { RevuAdapter } from '@/lib/integrations/crawlers/RevuAdapter';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;

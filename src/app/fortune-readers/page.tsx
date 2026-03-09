@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Crown, Lock, Sparkles, Star, Wand2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import AuthRequiredNotice from "@/components/AuthRequiredNotice";
+import AuthRequiredNotice from "@/components/auth/AuthRequiredNotice";
 import {
   getFavoriteReaderIds,
   getFortuneReaderProfiles,
@@ -12,10 +12,10 @@ import {
   getUnlockedReaderIds,
   toggleFavoriteReader,
   type ReaderQueryType,
-} from "@/lib/fortune-readers";
-import { useAuthStatus } from "@/lib/auth-status";
-import { getReaderExperimentVariant, reorderReadersForExperiment } from "@/lib/reader-experiments";
-import { getReaderMembership } from "@/lib/reader-membership";
+} from "@/lib/reader/fortune-readers";
+import { useAuthStatus } from "@/lib/auth/auth-status";
+import { getReaderExperimentVariant, reorderReadersForExperiment } from "@/lib/reader/reader-experiments";
+import { getReaderMembership } from "@/lib/reader/reader-membership";
 
 const QUERY_TYPES: ReaderQueryType[] = ["result", "compatibility", "daily", "chat"];
 

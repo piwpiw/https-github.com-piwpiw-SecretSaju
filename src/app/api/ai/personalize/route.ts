@@ -1,11 +1,11 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
-import { generatePersonalizedFortune } from '@/lib/ai';
-import { getAuthenticatedUser } from '@/lib/api-auth';
-import { getArchetypeByCode } from '@/lib/archetypes';
-import { deductJelly } from '@/lib/wallet-server';
-import { getSupabaseAdmin } from '@/lib/supabase';
-import { buildCacheKey } from '@/lib/cache';
-import { isMockMode } from '@/lib/use-mock';
+import { generatePersonalizedFortune } from '@/lib/integrations/ai';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
+import { getArchetypeByCode } from '@/lib/saju/archetypes';
+import { deductJelly } from '@/lib/payment/wallet-server';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
+import { buildCacheKey } from '@/lib/app/cache';
+import { isMockMode } from '@/lib/app/use-mock';
 
 export const dynamic = 'force-dynamic';
 

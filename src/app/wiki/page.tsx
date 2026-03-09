@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Book, ChevronRight, ArrowLeft, Terminal, Cpu, Layout, Activity, Code, Globe, Shield, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useLocale } from '@/lib/i18n';
+import { useLocale } from '@/lib/app/i18n';
 
 interface DocLink {
     titleKo: string;

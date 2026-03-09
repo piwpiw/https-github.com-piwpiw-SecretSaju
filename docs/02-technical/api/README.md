@@ -358,7 +358,7 @@ curl http://localhost:3000/api/saju/calculate \
 ## 📚 Related Documentation
 
 - [API Type Definitions](../../../src/types/api.ts)
-- [Error Handling](../../../src/lib/errors.ts)
+- [Error Handling](../../../src/lib/contracts/errors.ts)
 - [Authentication Flow](../integrations/kakao-login.md)
 - [Payment Integration](../integrations/toss-payments.md)
 

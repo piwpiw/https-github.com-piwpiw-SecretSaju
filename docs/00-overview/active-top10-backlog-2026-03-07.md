@@ -5,7 +5,7 @@
 기준 문서:
 - `docs/00-overview/execution-backlog-ko.md`
 - `docs/00-overview/enterprise-upgrade-daily-plan-2026-03-03.md`
-- `docs/active-dispatch.md`
+- `docs/archive/decision-history/active-dispatch.md`
 - 현재 코드 상태 (`lint`, `test`, `build` 통과 기준)
 
 판정 원칙:

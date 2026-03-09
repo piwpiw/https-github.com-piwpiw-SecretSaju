@@ -5,10 +5,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, CheckCircle2, ChevronRight, Edit3, Heart, Loader2, RefreshCw, Sparkles, WalletCards } from "lucide-react";
 import JellyBalance from "@/components/shop/JellyBalance";
-import { useWallet } from "@/components/WalletProvider";
-import { useProfiles } from "@/components/ProfileProvider";
+import { useWallet } from "@/components/payment/WalletProvider";
+import { useProfiles } from "@/components/profile/ProfileProvider";
 import LuxuryToast from "@/components/ui/LuxuryToast";
-import { saveAnalysisToHistory } from "@/lib/analysis-history";
+import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
 
 export const dynamic = "force-dynamic";
 

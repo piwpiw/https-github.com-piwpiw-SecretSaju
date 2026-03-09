@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { ENV, MCP_CONFIG } from '@/config'
 import { STORAGE_KEYS } from '@/config/constants'
-import { getSupabaseAdmin, getSupabaseClient } from '@/lib/supabase'
-import { sendWelcomeEmail } from '@/lib/mail'
+import { getSupabaseAdmin, getSupabaseClient } from '@/lib/integrations/supabase'
+import { sendWelcomeEmail } from '@/lib/integrations/mail'
 import {
   exchangeMcpCodeForToken,
   getMcpArtifactsFromCookieHeader,
   getMcpUserProfile,
   refreshMcpToken,
-} from '@/lib/auth-mcp'
+} from '@/lib/auth/auth-mcp'
 
-import { insertNotionRow } from '@/lib/notion'
+import { insertNotionRow } from '@/lib/integrations/notion'
 
 function decodeJwtPayloadSub(jwt: string): string | null {
   try {
@@ -121,26 +121,62 @@ export async function GET(req: NextRequest) {
   }
 
   if (!MCP_CONFIG.isConfigured || !code || !state || !artifacts) {
-    return redirectWithError(req, 'oauth_callback_error', requestId)
+    return redirectWithError(req, 'oauth_callback_error', requestId, {
+      provider_error: 'missing_required_params',
+      provider_error_description: 'Missing OAuth code, state, or PKCE artifacts',
+    })
+  }
+
+  if (!MCP_STATE_REGEX.test(state) || !MCP_STATE_REGEX.test(artifacts.state)) {
+    return redirectWithError(req, 'invalid_oauth_state', requestId, {
+      provider_error: 'invalid_oauth_state',
+      provider_error_description: 'OAuth state format invalid',
+    })
+  }
+
+  if (!MCP_CODE_VERIFIER_REGEX.test(artifacts.codeVerifier)) {
+    console.error('[mcp-callback] invalid PKCE code_verifier', { requestId })
+    return redirectWithError(req, 'oauth_callback_error', requestId, {
+      provider_error: 'invalid_pkce_code_verifier',
+      provider_error_description: 'Invalid PKCE code_verifier',
+    })
   }
 
   if (artifacts.state !== state) {
-    return redirectWithError(req, 'invalid_oauth_state', requestId)
+    return redirectWithError(req, 'invalid_oauth_state', requestId, {
+      provider_error: 'invalid_oauth_state',
+      provider_error_description: 'OAuth state mismatch',
+    })
   }
 
   if (mcpProcessedStates.has(state)) {
-    return redirectWithError(req, 'oauth_callback_error', requestId)
+    return redirectWithError(req, 'oauth_callback_error', requestId, {
+      provider_error: 'duplicate_state',
+      provider_error_description: 'OAuth state already processed',
+    })
+  }
+
+  if (mcpProcessedVerifiers.has(artifacts.codeVerifier)) {
+    return redirectWithError(req, 'oauth_callback_error', requestId, {
+      provider_error: 'duplicate_code_verifier',
+      provider_error_description: 'PKCE code_verifier already processed',
+    })
   }
 
   mcpProcessedStates.add(state)
+  mcpProcessedVerifiers.add(artifacts.codeVerifier)
   setTimeout(() => mcpProcessedStates.delete(state), 10 * 60 * 1000)
+  setTimeout(() => mcpProcessedVerifiers.delete(artifacts.codeVerifier), 10 * 60 * 1000)
 
   try {
     const authClient = getSupabaseAdmin() || getSupabaseClient()
     let tokenResponse = await exchangeMcpCodeForToken(code, artifacts.codeVerifier)
 
     if (!tokenResponse?.access_token) {
-      return redirectWithError(req, 'token_exchange_failed', requestId)
+      return redirectWithError(req, 'token_exchange_failed', requestId, {
+        provider_error: 'token_exchange_failed',
+        provider_error_description: 'Failed to exchange authorization code',
+      })
     }
 
     let profile = await getMcpUserProfile(tokenResponse.access_token)
@@ -156,10 +192,16 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    if (!profile) return redirectWithError(req, 'missing_oauth_profile', requestId)
+    if (!profile) return redirectWithError(req, 'missing_oauth_profile', requestId, {
+      provider_error: 'missing_oauth_profile',
+      provider_error_description: 'Could not fetch user profile from provider',
+    })
 
     const providerUserId = resolveMcpProviderUserId({ profile, tokenPayloadProviderId })
-    if (!providerUserId) return redirectWithError(req, 'missing_provider_user_id', requestId)
+    if (!providerUserId) return redirectWithError(req, 'missing_provider_user_id', requestId, {
+      provider_error: 'missing_provider_user_id',
+      provider_error_description: 'Provider user ID could not be resolved',
+    })
 
     const userUpsertPayload = {
       auth_provider: 'mcp',
@@ -235,7 +277,12 @@ export async function GET(req: NextRequest) {
     return response
 
   } catch (error) {
+    mcpProcessedStates.delete(state)
+    mcpProcessedVerifiers.delete(artifacts.codeVerifier)
     console.error('[mcp-callback] Failed', error)
-    return redirectWithError(req, 'oauth_callback_error', requestId)
+    return redirectWithError(req, 'oauth_callback_error', requestId, {
+      provider_error: 'oauth_callback_error',
+      provider_error_description: error instanceof Error ? error.message : 'Unknown OAuth callback error',
+    })
   }
 }

@@ -1,4 +1,4 @@
-import type { GangYakScore } from '../../lib/advancedScoring';
+import type { GangYakScore } from '@/lib/saju/advancedScoring';
 import type { Element, ElementAnalysisResult } from './elements';
 import type { YongshinAnalysis } from './yongshin';
 

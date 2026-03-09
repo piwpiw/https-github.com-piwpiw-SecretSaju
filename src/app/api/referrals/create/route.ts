@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseAdmin } from '@/lib/supabase';
-import { generateReferralCode, REFERRAL_REWARDS } from '@/lib/referrals';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
+import { generateReferralCode, REFERRAL_REWARDS } from '@/lib/referral/referrals';
 
 /**
  * POST /api/referrals/create

@@ -178,7 +178,7 @@ CREATE TABLE campaigns (
 - [x] **API 예외:** recommendations/daily-fortune/payment/verify try/catch, ageGroup 화이트리스트(`normalizeAgeGroup`)
 - [x] **에러 UX:** error.tsx, not-found.tsx, 추천 빈 배열 시 "추천 준비 중"
 - [x] **관리자 검증:** `/admin` — DACRE·API·추천·결제 스텁·잘못된 code 400 일괄 체크
-- [x] **문서:** [docs/ERROR_CATALOG.md](./ERROR_CATALOG.md) (예상 오류 한 줄 체크), [docs/BLUEPRINT.md](./BLUEPRINT.md) (10단계), [docs/USER_VERIFICATION.md](./USER_VERIFICATION.md) (사용자 E2E)
+- [x] **문서:** [docs/02-technical/ERROR_CATALOG.md](../02-technical/ERROR_CATALOG.md) (예상 오류 한 줄 체크), [docs/BLUEPRINT.md](./BLUEPRINT.md) (10단계), [docs/01-team/qa/USER_VERIFICATION.md](../01-team/qa/USER_VERIFICATION.md) (사용자 E2E)
 
 ### ⬜ Content DB · AI (9–10단계, BLUEPRINT)
 
@@ -278,11 +278,11 @@ SecretSaju/
 ### 검증
 
 - **관리자 모드:** `/admin` — DACRE 고정 생년, 추천(GAP_JA), API 3종, 잘못된 code 400 자동 체크. [BLUEPRINT.md](./BLUEPRINT.md) 참고.
-- **사용자 모드:** [USER_VERIFICATION.md](./USER_VERIFICATION.md) — E2E 5대 시나리오 체크리스트.
+- **사용자 모드:** [USER_VERIFICATION.md](../01-team/qa/USER_VERIFICATION.md) — E2E 5대 시나리오 체크리스트.
 
 ### 예외·에러
 
-- **한 줄 체크:** [ERROR_CATALOG.md](./ERROR_CATALOG.md) — E1~E30 예상 오류 및 처리 위치. PR·검증 시 참고.
+- **한 줄 체크:** [ERROR_CATALOG.md](../02-technical/ERROR_CATALOG.md) — E1~E30 예상 오류 및 처리 위치. PR·검증 시 참고.
 - **구현:** `lib/validation.ts`, BirthInputForm 인라인 에러, SecretPawsFlow try/catch, API try/catch, error.tsx, not-found.tsx.
 
 ### Content DB · AI (9–10단계)

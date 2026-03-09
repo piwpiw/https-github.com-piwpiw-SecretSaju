@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Copy, Gift, Sparkles, Users } from 'lucide-react';
-import { trackEvent } from '@/lib/analytics';
+import { trackEvent } from '@/lib/app/analytics';
 
 interface ReferralCardProps {
   className?: string;

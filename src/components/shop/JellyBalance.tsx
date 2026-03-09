@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Candy, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { getBalance } from '@/lib/jelly-wallet';
+import { getBalance } from '@/lib/payment/jelly-wallet';
 
 interface JellyBalanceProps {
     onClick?: () => void;

@@ -40,7 +40,7 @@ const content = isLoading ? <Spinner /> : <Content />;
 
 ```typescript
 // cn() 유틸리티 사용 (clsx + tailwind-merge)
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/app/utils';
 <button className={cn("base", variant === 'primary' && "bg-purple-600")} />
 
 // Mobile-first responsive: w-full md:w-1/2 lg:w-1/3

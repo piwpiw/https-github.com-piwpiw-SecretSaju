@@ -8,7 +8,7 @@
  */
 
 import { Element, ElementAnalysisResult } from './elements';
-import { GangYakScore } from '../../lib/advancedScoring';
+import { GangYakScore } from '@/lib/saju/advancedScoring';
 
 export type YongshinRole = '용신' | '희신' | '기신' | '구신' | '한신';
 

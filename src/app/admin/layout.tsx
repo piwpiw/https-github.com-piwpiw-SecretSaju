@@ -1,7 +1,7 @@
 import { headers, cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
-import { getAuthenticatedUser } from '@/lib/api-auth';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
 
 export const dynamic = 'force-dynamic';
 

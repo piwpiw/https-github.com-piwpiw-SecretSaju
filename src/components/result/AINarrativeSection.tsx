@@ -15,8 +15,8 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import JellyShopModal from "@/components/shop/JellyShopModal";
-import { useWallet } from "@/components/WalletProvider";
-import { saveAnalysisToHistory } from "@/lib/analysis-history";
+import { useWallet } from "@/components/payment/WalletProvider";
+import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
 import {
   getFavoriteReaderIds,
   getFortuneReaderProfiles,
@@ -30,9 +30,9 @@ import {
   type FortuneReaderProfile,
   type ReaderId,
   type ReaderQueryType,
-} from "@/lib/fortune-readers";
-import { activateReaderMembership, getReaderMembership } from "@/lib/reader-membership";
-import { getReaderExperimentVariant, reorderReadersForExperiment } from "@/lib/reader-experiments";
+} from "@/lib/reader/fortune-readers";
+import { activateReaderMembership, getReaderMembership } from "@/lib/reader/reader-membership";
+import { getReaderExperimentVariant, reorderReadersForExperiment } from "@/lib/reader/reader-experiments";
 
 type DualNarrative = {
   easy: string;

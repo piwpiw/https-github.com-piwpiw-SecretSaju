@@ -1,8 +1,8 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
-import { getAuthenticatedUser } from '@/lib/api-auth';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
 import { calculateHighPrecisionSaju, SajuCalculationInput } from '@/core/api/saju-engine';
-import { formatErrorResponse, ValidationError, SajuCalculationError, ErrorMessages } from '@/lib/errors';
-import { getCurrentCivilDateInTimeZone, isFutureCivilDate, parseCivilDate } from '@/lib/civil-date';
+import { formatErrorResponse, ValidationError, SajuCalculationError, ErrorMessages } from '@/lib/contracts/errors';
+import { getCurrentCivilDateInTimeZone, isFutureCivilDate, parseCivilDate } from '@/lib/saju/civil-date';
 import type { SajuCalculateRequest, SajuCalculateResponse } from '@/types/api';
 
 /**

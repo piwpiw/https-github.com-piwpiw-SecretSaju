@@ -12,21 +12,16 @@ export default defineConfig({
         include: [
             'tests/**/*.test.ts',
             'tests/**/*.test.tsx',
-            'src/__tests__/unit/**/*.test.ts',
-            'src/__tests__/unit/**/*.test.tsx',
-            'src/__tests__/validation/**/*.test.ts',
-            'src/__tests__/validation/**/*.test.tsx',
         ],
         exclude: [
             'node_modules/**',
             'docs/**',
             'scripts/**',
             '.next/**',
-            'tmp/**',
-            'logs/**',
+            '_temp/**',
             'coverage/**',
             'dist/**',
-            'src/__tests__/validation/golden.test.ts',
+            'tests/validation/golden.test.ts',
         ],
         alias: {
             '@': path.resolve(__dirname, './src'),

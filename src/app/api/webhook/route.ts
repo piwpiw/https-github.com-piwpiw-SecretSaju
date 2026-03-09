@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { getSupabaseAdmin } from '@/lib/supabase';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
 
 function getStripe() {
   const key = process.env.STRIPE_SECRET_KEY;

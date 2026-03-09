@@ -1,10 +1,10 @@
 ﻿import { timingSafeEqual } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseAdmin } from '@/lib/supabase';
-import { insertNotionRow } from '@/lib/notion';
-import { sendPaymentReceiptEmail } from '@/lib/mail';
-import { buildErrorResponsePayload } from '@/lib/error-response';
-import { buildPaymentVerifySignature } from '@/lib/payment-verify';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
+import { insertNotionRow } from '@/lib/integrations/notion';
+import { sendPaymentReceiptEmail } from '@/lib/integrations/mail';
+import { buildErrorResponsePayload } from '@/lib/contracts/error-response';
+import { buildPaymentVerifySignature } from '@/lib/payment/payment-verify';
 
 const VERIFY_IDEMPOTENCY_COUNTER = new Map<string, number>();
 const WALLET_MISMATCH_COUNTER = new Map<string, number>();
@@ -306,11 +306,22 @@ export async function POST(req: NextRequest) {
       return createErrorResponse('PAYMENT_TOSS_PAYLOAD_INVALID', 'Toss payment key missing', 400, verifyData);
     }
 
+    if (tossPaymentKey !== paymentKey) {
+      await recordVerifyFailure(orderId, 'toss_payment_key_mismatch', {
+        paymentKey,
+        tossPaymentKey,
+      });
+      return createErrorResponse('PAYMENT_TOSS_PAYMENT_KEY_MISMATCH', 'Toss payment key mismatch', 400, {
+        paymentKey,
+        tossPaymentKey,
+      });
+    }
+
     const { data: claimedOrder, error: updateError } = await supabase
       .from('orders')
       .update({
         status: 'completed',
-        payment_key: paymentKey,
+        payment_key: tossPaymentKey,
         updated_at: new Date().toISOString(),
       })
       .eq('order_id', orderId)
@@ -337,7 +348,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({
           success: true,
           jellies_credited: Number(order.jellies),
-          payment_key: freshOrder.payment_key || paymentKey,
+          payment_key: freshOrder.payment_key || tossPaymentKey,
           order_id: orderId,
           idempotent_attempt_count: idempotentAttemptCount,
           message: 'Already processed',
@@ -359,6 +370,7 @@ export async function POST(req: NextRequest) {
         purpose: `Purchase: ${claimedOrder.package_type}`,
         metadata: {
           payment_key: paymentKey,
+          toss_payment_key: tossPaymentKey,
           order_id: orderId,
         },
       });
@@ -506,7 +518,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       jellies_credited: totalJellies,
-      payment_key: paymentKey,
+      payment_key: tossPaymentKey,
       order_id: orderId,
       idempotent_attempt_count: idempotentAttemptCount,
       monitoring_event: 'payment_verify_success',

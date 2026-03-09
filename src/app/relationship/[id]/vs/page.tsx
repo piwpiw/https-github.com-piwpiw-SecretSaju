@@ -6,13 +6,13 @@ import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Loader2, Zap, Heart, Shield } from "lucide-react";
 import Link from "next/link";
 import RadarChart from "@/components/charts/RadarChart";
-import { getProfiles, SajuProfile } from "@/lib/storage";
+import { getProfiles, SajuProfile } from "@/lib/app/storage";
 import { calculateHighPrecisionSaju, HighPrecisionSajuResult } from "@/core/api/saju-engine";
-import { analyzeRelationship, RelationshipAnalysis } from "@/lib/compatibility";
-import { TEN_GOD_GROUPS, getTenGodGuide } from "@/lib/terminology";
-import { saveAnalysisToHistory } from "@/lib/analysis-history";
+import { analyzeRelationship, RelationshipAnalysis } from "@/lib/saju/compatibility";
+import { TEN_GOD_GROUPS, getTenGodGuide } from "@/lib/saju/terminology";
+import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
 import KakaoShareButton from "@/components/share/KakaoShareButton";
-import { parseCivilDate } from "@/lib/civil-date";
+import { parseCivilDate } from "@/lib/saju/civil-date";
 
 type Winner = "A" | "B" | "Draw";
 

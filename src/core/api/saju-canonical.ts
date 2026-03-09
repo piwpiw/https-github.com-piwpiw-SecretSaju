@@ -4,7 +4,7 @@ import { JIJANGGAN_TABLE } from '../myeongni/jijanggan';
 import type { ElementAnalysisResult } from '../myeongni/elements';
 import type { SipsongResult } from '../myeongni/sipsong';
 import type { DaewunInfo, CurrentUnInfo } from '../myeongni/daewun';
-import type { GangYakScore } from '../../lib/advancedScoring';
+import type { GangYakScore } from '@/lib/saju/advancedScoring';
 import type { YongshinAnalysis } from '../myeongni/yongshin';
 import type { Sinsal } from '../myeongni/sinsal';
 import type { GyeokgukInfo } from '../myeongni/gyeokguk';

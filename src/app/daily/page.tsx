@@ -7,7 +7,7 @@ import {
   ArrowLeft, CalendarClock, RefreshCw, Sun, Moon, Sunset, Coffee,
   Sparkles, TrendingUp, Star, Flame, Droplets, Wind, Zap, Leaf
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/app/utils";
 import { getDayPillar, getHourPillar } from "@/core/calendar/ganji";
 import AINarrativeSection from "@/components/result/AINarrativeSection";
 

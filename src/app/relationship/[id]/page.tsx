@@ -3,17 +3,17 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { analyzeRelationship, RelationshipAnalysis } from '@/lib/compatibility';
+import { analyzeRelationship, RelationshipAnalysis } from '@/lib/saju/compatibility';
 import { calculateHighPrecisionSaju } from '@/core/api/saju-engine';
 import { ArrowLeft, Lock, Sparkles, AlertTriangle, CheckCircle2, TrendingUp, ChevronRight, Loader2, Zap } from 'lucide-react';
 import Link from 'next/link';
 import JellyBalance from '@/components/shop/JellyBalance';
 import JellyShopModal from '@/components/shop/JellyShopModal';
-import { isUnlocked, unlockContent, hasSufficientBalance } from '@/lib/jelly-wallet';
-import { parseCivilDate } from '@/lib/civil-date';
+import { isUnlocked, unlockContent, hasSufficientBalance } from '@/lib/payment/jelly-wallet';
+import { parseCivilDate } from '@/lib/saju/civil-date';
 
-import { useProfiles } from '@/components/ProfileProvider';
-import { useWallet } from '@/components/WalletProvider';
+import { useProfiles } from '@/components/profile/ProfileProvider';
+import { useWallet } from '@/components/payment/WalletProvider';
 
 function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
     return (

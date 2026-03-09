@@ -3,7 +3,7 @@
 import { useId, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SvgChart from "@/components/ui/SvgChart";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/app/utils";
 
 type ElementMetric = {
   label: string;

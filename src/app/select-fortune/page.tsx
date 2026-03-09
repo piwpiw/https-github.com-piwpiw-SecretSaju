@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getProfiles, SajuProfile } from '@/lib/storage';
+import { getProfiles, SajuProfile } from '@/lib/app/storage';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Star, Calendar, Sparkles, Crown, ChevronRight, Gem, Flame, Rocket, HelpCircle, Sun } from 'lucide-react';
-import { useLocale } from '@/lib/i18n';
+import { useLocale } from '@/lib/app/i18n';
 
 export default function SelectionPage() {
     const [profiles, setProfiles] = useState<SajuProfile[]>([]);

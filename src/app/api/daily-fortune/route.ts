@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDayPillarIndex, getPillarNameKo, getPillarCode } from "@/lib/saju";
-import { getSupabaseAdmin } from "@/lib/supabase";
+import { getSupabaseAdmin } from "@/lib/integrations/supabase";
 
 export const dynamic = "force-dynamic";
 

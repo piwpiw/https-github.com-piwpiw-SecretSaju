@@ -1,5 +1,5 @@
 # SecretSaju Deep History (압축 요약)
-> 상세 이력은 `docs/archive/ai-logs/` 참조. 이 파일은 AI 작업용 요약본.
+> 상세 이력은 `docs/archive/decision-history/` 참조. 이 파일은 AI 작업용 요약본.
 
 ---
 
@@ -27,12 +27,12 @@
 ## Phase 4: AI Intelligence (Waves 11-12)
 | Wave | 성취 | 핵심 파일 |
 |------|------|-----------|
-| 11 | MPPS — persona-matrix × ai-routing × AIIntelligenceBadge | `src/lib/persona-matrix.ts`, `src/core/ai-routing.ts` |
+| 11 | MPPS — persona-matrix × ai-routing × AIIntelligenceBadge | `src/lib/reader/persona-matrix.ts`, `src/core/ai-routing.ts` |
 | 11.5 | Anti-hallucination 3중 시스템 | `AI_BOOTSTRAP.md`, `ERROR_LEDGER.md`, `CONTEXT_ENGINE.md §4` |
 | 11.6 | P0/P1 전체 구현 — LLM 체인, TransitTicker, ProfileWallet, 테스트 40개 | `src/app/api/persona/route.ts` |
 | 11.7 | 프리미엄 UI 배치 2 — mypage/daily/fortune 전면 재설계 | `src/app/mypage/`, `daily/`, `fortune/` |
 | 12 | Lineage/Evidence 기반 신뢰 시스템 | `src/core/api/saju-lineage.ts`, `saju-canonical.ts` |
-| 12+ | Fortune Reader System — 5종 리더 × 3 AI 모델 라우팅 | `src/lib/fortune-readers.ts` |
+| 12+ | Fortune Reader System — 5종 리더 × 3 AI 모델 라우팅 | `src/lib/reader/fortune-readers.ts` |
 
 ---
 
@@ -44,7 +44,7 @@
 | 2026-03-06 | `NEXT_ACTIONS.md` SSOT 수립 | task.md/implementation_plan 불일치 해소 |
 | 2026-03-07 | `fortune-readers.ts` 도입 | persona 시스템 → reader 시스템으로 승격 |
 | 2026-03-08 | `_temp/` 임시파일 격리 | 루트 오염 방지, AI 에이전트 파일 배치 규칙 수립 |
-| 2026-03-08 | `docs/` 구조 고도화 | 부유 파일 정리, archive/ai-logs/ 격리, 중복 폴더 통합 |
+| 2026-03-08 | `docs/` 구조 고도화 | 부유 파일 정리, archive/decision-history/ 격리, 중복 폴더 통합 |
 
 ## 품질 스코어 (2026-03-06 기준)
 - **현재**: 40/100 | build ✅ lint ✅ tsc ✅ | test ❌(ERR-L001) | admin audit 부분 실패

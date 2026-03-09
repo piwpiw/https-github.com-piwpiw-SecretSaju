@@ -1,109 +1,39 @@
-﻿# 🔮 Secret Saju (시크릿사주)
+# SecretSaju
 
-> **Premium Fortune-Telling Platform — High-Precision Saju Engine & Immersive UI**
+Premium fortune-telling platform built on Next.js, Supabase, and a custom saju engine.
 
-<p align="center">
-  <strong>This project is orchestrated by a 10-Team Agent Architecture for rapid, high-quality delivery.</strong><br>
-  All configurations, code, and documents are systematically managed.
-</p>
+## Start Here
 
----
+| File | Purpose |
+|---|---|
+| `AI_BOOTSTRAP.md` | Fast context for active implementation work |
+| `NEXT_ACTIONS.md` | Single source of truth for remaining work |
+| `ERROR_LEDGER.md` | Known failures, mitigations, and follow-up |
+| `docs/index.md` | Documentation index and repo navigation |
+| `docs/00-overview/CONTEXT_ENGINE.md` | Feature-to-file map for the current codebase |
+| `docs/00-overview/repository-structure.md` | Canonical repository layout and placement rules |
 
-## 📑 Essential Documents
+## Quick Commands
 
-| Document | Purpose |
-|----------|---------|
-| **[CONTEXT_ENGINE.md](./.agent/CONTEXT_ENGINE.md)** | **[CRITICAL]** Current project status, decision log, and file map. |
-| **[ARCHITECTURE.md](./docs/ARCHITECTURE.md)** | Technical layers, data flow, and agent roles. |
-| **[MASTER_PRD.md](./docs/MASTER_PRD.md)** | Product requirements, roadmap, and business logic. |
-| **[ERROR_CATALOG.md](./docs/ERROR_CATALOG.md)** | Known error patterns and standard solutions. |
-| **[OPERATIONS.md](./docs/OPERATIONS.md)** | Operational cycle, SLAs, and escalation paths. |
-
----
-
-## 🚀 Current State (Wave 5)
-
-### ✅ Completed Milestones
-- **Saju Engine (Wave 5)**: High-precision calculations based on 12 Solar Terms (Jeol-gi), Sinsal (Gods/Killers) expansion.
-- **Crawler Layer**: DinnerQueen and Revu adapters for real-time campaign data integration.
-- **Premium UI**: Jeomsin-inspired dark theme, glassmorphism, and Framer Motion animations.
-- **Payment & Growth**: Toss Payments (Advanced Verify), Referral system, and Kakao Share API.
-
-### 🔄 In Progress / Next Steps
-- **AI Agent Integration**: Autonomous content generation for personalized fortune results.
-- **Global Expansion**: Multi-language support and international payment gateways.
-- **Data Analytics**: Advanced user behavior tracking and conversion optimization.
-
----
-
-## 📂 Project Structure
-
-```
-SecretSaju/
-├── .agent/                 # Agent orchestration (Context, Protocols)
-├── docs/                   # Structured documentation (PRD, Arch, Guides)
-├── scripts/                # Utility scripts (QA, Migrate, Deploy)
-├── supabase/               # Database schema and migrations
-├── src/
-│   ├── app/                # Next.js App Router (Pages & API)
-│   ├── components/         # Premium UI Components
-│   ├── core/               # Pure logic & Math (Saju Engine)
-│   ├── lib/                # Shared utilities & Adapters (Crawlers, Auth)
-│   └── types/              # Unified TypeScript definitions
-└── public/                 # Static assets
-```
-
----
-
-## 🔧 Getting Started
-
-### 1. Installation
-```bash
-npm install
-```
-
-### 2. Environment Setup
-Copy `.env.local.template` to `.env.local` and fill in the required keys:
-- Supabase URL/Key
-- Toss Payments Client/Secret Key
-- Kakao JS/Rest API Key
-
-### 3. Verification
-Run the QA suite to ensure everything is correct:
-```bash
-npm run qa
-```
-
-### 4. Development
 ```bash
 npm run dev:safe -- --port 3000 --auto-port
+npm run lint
+npx tsc --noEmit
+npm run test:logic
+npm run smoke:auth
 ```
 
-### 5. Browser MCP (Playwright)
-Browser execution MCP is configured for Cursor in `.cursor/mcp.json` and also provided in root `.mcp.json`.
+## Fast Lookup
 
-Manual run:
-```bash
-npm run mcp:browser
-```
+| Need | Path |
+|---|---|
+| Payment verify route | `src/app/api/payment/verify/route.ts` |
+| Payment verify helper | `src/lib/payment/payment-verify.ts` |
+| Auth callback messages | `src/lib/auth/auth-callback-message.ts` |
+| Payment failure messages | `src/lib/payment/payment-verify-message.ts` |
+| Deploy scripts | `scripts/deploy/` |
+| Smoke scripts | `scripts/smoke/` |
+| Live QA docs | `docs/01-team/qa/` |
+| Temporary browser logs | `_temp/browser/` and `_temp/logs/` |
 
-Quick check:
-```bash
-npx -y @playwright/mcp@latest --help
-```
-
----
-
-## 🛡️ Development Guidelines
-
-1. **Context-First**: Always check `CONTEXT_ENGINE.md` before starting a task.
-2. **Type Safety**: No `any`. Ensure all data structures follow `src/types/`.
-3. **Pure Logic**: Saju core logic must remain pure (no UI/Window references).
-4. **Agent Collaboration**: Respect team scopes (T1-T10) as defined in `ARCHITECTURE.md`.
-
----
-
-<p align="center">
-  <strong>Made with 🔮 by Bohemian Studio</strong><br>
-  <sub>Version 5.0.0 | Last Updated: 2026-03-03</sub>
-</p>
+Repository layout and placement rules live in `docs/00-overview/repository-structure.md`.

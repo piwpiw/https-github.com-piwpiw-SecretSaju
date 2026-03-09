@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { refreshMcpToken, STORAGE_KEYS } from '@/lib/auth-mcp'
+import { refreshMcpToken, STORAGE_KEYS } from '@/lib/auth/auth-mcp'
 
 const MCP_COOKIE_DEFAULTS = {
     path: '/',

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { KAKAO_CONFIG, STORAGE_KEYS } from '@/config'
-import { sendWelcomeEmail, MAIL_RETRY_TTL_SECONDS } from '@/lib/mail'
+import { sendWelcomeEmail, MAIL_RETRY_TTL_SECONDS } from '@/lib/integrations/mail'
 
 const processedCodeSet: Set<string> = new Set<string>()
 const WELCOME_RETRY_COOKIE = 'secretsaju_welcome_email_retry'
@@ -128,7 +128,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-      const { getSupabaseAdmin } = await import('@/lib/supabase')
+      const { getSupabaseAdmin } = await import('@/lib/integrations/supabase')
       const supabaseAdmin = getSupabaseAdmin()
 
       if (supabaseAdmin) {

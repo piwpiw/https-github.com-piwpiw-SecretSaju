@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Search, ArrowLeft, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { getAllTenGodGuides } from "@/lib/terminology";
+import { getAllTenGodGuides } from "@/lib/saju/terminology";
 import EncyclopediaIndex from "@/components/encyclopedia/EncyclopediaIndex";
 import AmbientSoundPortal from "@/components/ui/AmbientSoundPortal";
 import ReadingProgressBar from "@/components/ui/ReadingProgressBar";

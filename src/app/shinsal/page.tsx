@@ -5,7 +5,7 @@ import { ArrowLeft, Shield, ShieldAlert, ShieldCheck, Sparkles } from "lucide-re
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import JellyBalance from "@/components/shop/JellyBalance";
-import { useWallet } from "@/components/WalletProvider";
+import { useWallet } from "@/components/payment/WalletProvider";
 
 type ShinSalType = {
   id: string;

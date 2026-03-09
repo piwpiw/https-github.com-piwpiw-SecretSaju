@@ -1,10 +1,10 @@
 ﻿"use client";
 
-import { useProfiles } from "../ProfileProvider";
+import { useProfiles } from "@/components/profile/ProfileProvider";
 import { motion } from "framer-motion";
 import { Zap, TrendingUp, Sparkles, Activity, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/app/utils";
 
 export default function LuckyScoreCard() {
     const { activeProfile } = useProfiles();

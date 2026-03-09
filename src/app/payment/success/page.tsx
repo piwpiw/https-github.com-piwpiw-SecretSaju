@@ -4,30 +4,14 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
+import { getPaymentVerifyFailureMessage } from '@/lib/payment/payment-verify-message';
 import {
   trackPaymentFail,
   trackPaymentVerifyRequest,
   trackPaymentVerifyComplete,
-} from '@/lib/analytics';
+} from '@/lib/app/analytics';
 
 type VerifyState = 'loading' | 'success' | 'error';
-
-function getFailureMessage(errorCode?: string) {
-  switch (errorCode) {
-    case 'PAYMENT_AMOUNT_MISMATCH':
-      return '결제 금액 정보가 일치하지 않습니다. 결제 시작 화면에서 다시 시도해 주세요.';
-    case 'PAYMENT_TOSS_VERIFICATION_FAILED':
-      return '결제 승인 확인 실패. 잠시 후 다시 시도하거나 결제 내역을 확인해 주세요.';
-    case 'PAYMENT_ORDER_NOT_PENDING':
-      return '현재 주문 상태가 처리 대상이 아닙니다. 이미 처리되었거나 취소된 건일 수 있습니다.';
-    case 'PAYMENT_IDEMPOTENCY_LIMIT_EXCEEDED':
-      return '요청이 지나치게 반복되었습니다. 1분 후 다시 시도해 주세요.';
-    case 'PAYMENT_VERIFICATION_SIGNATURE_INVALID':
-      return '결제 검증 서명이 유효하지 않습니다. 결제 경로를 다시 확인해 주세요.';
-    default:
-      return '결제 검증에 실패했습니다. 결제 페이지로 돌아가 재시도해 주세요.';
-  }
-}
 
 function SuccessContent() {
   const searchParams = useSearchParams();
@@ -94,7 +78,7 @@ function SuccessContent() {
         }
 
         trackPaymentFail(orderId, errorCode || 'PAYMENT_VERIFY_FAILED');
-        throw new Error(getFailureMessage(errorCode));
+        throw new Error(getPaymentVerifyFailureMessage(errorCode));
       } catch (error) {
         const errMessage = error instanceof Error ? error.message : '결제 인증 처리 중 오류가 발생했습니다.';
         setStatus('error');

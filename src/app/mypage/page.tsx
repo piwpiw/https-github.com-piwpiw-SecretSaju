@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useWallet } from "@/components/WalletProvider";
-import { clearUserSession, getUserFromCookie } from "@/lib/kakao-auth";
-import AuthModal from "@/components/AuthModal";
+import { useWallet } from "@/components/payment/WalletProvider";
+import { clearUserSession, getUserFromCookie } from "@/lib/auth/kakao-auth";
+import AuthModal from "@/components/auth/AuthModal";
 import JellyShopModal from "@/components/shop/JellyShopModal";
 import { motion, AnimatePresence } from "framer-motion";
 import {

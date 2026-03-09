@@ -3,10 +3,10 @@
 import { useState, useEffect, Suspense, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getDayPillarIndex } from "@/lib/saju";
-import { getYearlyFortune } from "@/lib/yearlyFortune";
-import { validateBirthInput } from "@/lib/validation";
+import { getYearlyFortune } from "@/lib/saju/yearlyFortune";
+import { validateBirthInput } from "@/lib/app/validation";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/app/utils";
 import {
   Sparkles, Star, TrendingUp, Heart, Briefcase,
   DollarSign, Activity, Loader2, ChevronRight,
@@ -14,11 +14,11 @@ import {
   CalendarDays, Trophy, Orbit, BarChart3,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useLocale } from "@/lib/i18n";
-import { getProfiles } from "@/lib/storage";
+import { useLocale } from "@/lib/app/i18n";
+import { getProfiles } from "@/lib/app/storage";
 import SvgChart from "@/components/ui/SvgChart";
 import KakaoShareButton from "@/components/share/KakaoShareButton";
-import { parseCivilDate } from "@/lib/civil-date";
+import { parseCivilDate } from "@/lib/saju/civil-date";
 import AINarrativeSection from "@/components/result/AINarrativeSection";
 
 type ScoreMetric = {

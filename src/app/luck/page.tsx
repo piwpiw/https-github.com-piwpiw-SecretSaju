@@ -16,11 +16,11 @@ import {
   Palette,
   Heart,
 } from "lucide-react";
-import { useWallet } from "@/components/WalletProvider";
-import { useProfiles } from "@/components/ProfileProvider";
+import { useWallet } from "@/components/payment/WalletProvider";
+import { useProfiles } from "@/components/profile/ProfileProvider";
 import JellyBalance from "@/components/shop/JellyBalance";
 import LuxuryToast from "@/components/ui/LuxuryToast";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/app/utils";
 
 type TalismanId = "gold" | "love" | "shield" | "luck";
 

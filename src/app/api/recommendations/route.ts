@@ -7,8 +7,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getFoodRecommendationsByCode } from "@/data/foodRecommendations";
 import { getProductRecommendationsByCode } from "@/data/productRecommendations";
 import { PILLAR_CODES } from "@/lib/saju";
-import { normalizeAgeGroup } from "@/lib/validation";
-import { getSupabaseAdmin } from "@/lib/supabase";
+import { normalizeAgeGroup } from "@/lib/app/validation";
+import { getSupabaseAdmin } from "@/lib/integrations/supabase";
 
 export type AgeGroup = "10s" | "20s" | "30s";
 

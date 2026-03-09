@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Sparkles, Zap } from "lucide-react";
 import { useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/app/utils";
 
 const MENU_ITEMS = [
     { href: "/tojeong", label: "토정비결", emoji: "🧭", desc: "일간운/월간운 핵심 해석", highlight: true },

@@ -5,14 +5,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Sparkles, ChevronRight, Calculator, History, Zap, User2 } from "lucide-react";
 import { motion } from "framer-motion";
 import JellyBalance from "@/components/shop/JellyBalance";
-import { getProfiles, SajuProfile } from "@/lib/storage";
-import { useWallet } from "@/components/WalletProvider";
+import { getProfiles, SajuProfile } from "@/lib/app/storage";
+import { useWallet } from "@/components/payment/WalletProvider";
 import { calculateSajuFromBirthdate } from "@/lib/saju";
-import { saveAnalysisToHistory } from "@/lib/analysis-history";
-import ResultCard from "@/components/ResultCard";
-import { getArchetypeByCode } from "@/lib/archetypes";
+import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
+import ResultCard from "@/components/result/ResultCard";
+import { getArchetypeByCode } from "@/lib/saju/archetypes";
 import AdvancedInterpretationPanel from "@/components/saju/AdvancedInterpretationPanel";
-import { trackStartAnalysis } from "@/lib/analytics";
+import { trackStartAnalysis } from "@/lib/app/analytics";
 import JellyShopModal from "@/components/shop/JellyShopModal";
 
 type Step = {

@@ -7,10 +7,10 @@ import {
     History, ArrowLeft, Clock, ChevronRight,
     Trash2, Database, Search, Calendar, Zap, Sparkles, BarChart3
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/app/utils';
 import Link from 'next/link';
 
-import { getAnalysisHistory, deleteAnalysisFromHistory, getAnalysisTypeInfo } from '@/lib/analysis-history';
+import { getAnalysisHistory, deleteAnalysisFromHistory, getAnalysisTypeInfo } from '@/lib/app/analysis-history';
 import { AnalysisHistoryLog } from '@/types/history';
 
 export default function HistoryPage() {

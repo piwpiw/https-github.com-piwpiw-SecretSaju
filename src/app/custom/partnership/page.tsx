@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Rocket, Briefcase, Workflow, Send, ShieldCheck, Mail, Globe } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/app/utils";
 import LuxuryToast from "@/components/ui/LuxuryToast";
 
 export default function PartnershipPage() {

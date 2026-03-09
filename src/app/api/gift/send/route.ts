@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { sendSajuResultEmail } from '@/lib/mail';
-import { getAuthenticatedUser } from '@/lib/api-auth';
+import { sendSajuResultEmail } from '@/lib/integrations/mail';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
 import crypto from 'crypto';
 import { APP_CONFIG } from '@/config';
-import { isMockMode } from '@/lib/use-mock';
+import { isMockMode } from '@/lib/app/use-mock';
 
 /**
  * [gem-backend] 익명 발송 API. 인증된 유저만 젤리를 소모(추후 연결)하여 발송 가능.

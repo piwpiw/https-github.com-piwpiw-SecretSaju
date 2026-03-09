@@ -10,15 +10,14 @@ export default defineConfig({
         maxWorkers: 2,
         setupFiles: ['./vitest.setup.ts'],
         include: [
-            'src/__tests__/validation/golden.test.ts',
+            'tests/validation/golden.test.ts',
         ],
         exclude: [
             'node_modules/**',
             'docs/**',
             'scripts/**',
             '.next/**',
-            'tmp/**',
-            'logs/**',
+            '_temp/**',
             'coverage/**',
             'dist/**',
         ],

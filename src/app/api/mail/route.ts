@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendWelcomeEmail, sendSajuResultEmail } from '@/lib/mail';
-import { getAuthenticatedUser } from '@/lib/api-auth';
-import { insertNotionRow } from '@/lib/notion';
+import { sendWelcomeEmail, sendSajuResultEmail } from '@/lib/integrations/mail';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
+import { insertNotionRow } from '@/lib/integrations/notion';
 
 /**
  * T3 — BE-003

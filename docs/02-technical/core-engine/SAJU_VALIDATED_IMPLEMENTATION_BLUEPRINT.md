@@ -1,5 +1,5 @@
 # Saju Validated Implementation Blueprint (압축 요약)
-> 상세 원문은 docs/archive/ai-logs/ 참조. Companion: SAJU_DEEP_RESEARCH_STANDARD.md
+> 상세 원문은 docs/archive/decision-history/ 참조. Companion: SAJU_DEEP_RESEARCH_STANDARD.md
 
 ## 핵심 수정 사항 (Heuristic으로 다운그레이드)
 

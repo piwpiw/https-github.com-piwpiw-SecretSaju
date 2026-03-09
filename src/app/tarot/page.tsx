@@ -27,7 +27,7 @@ import {
   Clock
 } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
-import { saveAnalysisToHistory } from "@/lib/analysis-history";
+import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
 import { DrawnTarotCard, buildTarotDeckCards, pickCardsFromDeck, TarotSuit } from "@/data/tarotDeck";
 import AmbientSoundPortal from "@/components/ui/AmbientSoundPortal";
 import ReadingProgressBar from "@/components/ui/ReadingProgressBar";

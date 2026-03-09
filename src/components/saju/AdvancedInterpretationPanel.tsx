@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { BookOpen, FlaskConical, ShieldCheck, Sparkles } from "lucide-react";
-import { ELEMENT_ACTIONS, getTenGodGuide } from "@/lib/terminology";
+import { ELEMENT_ACTIONS, getTenGodGuide } from "@/lib/saju/terminology";
 
 type PillarKey = "year" | "month" | "day" | "hour";
 

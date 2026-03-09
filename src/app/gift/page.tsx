@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Gift, Send, Mail, ArrowLeft, ShieldCheck } from "lucide-react";
-import { useLocale } from "@/lib/i18n";
+import { useLocale } from "@/lib/app/i18n";
 import { useRouter } from "next/navigation";
-import AuthRequiredNotice from "@/components/AuthRequiredNotice";
-import { useWallet } from "@/components/WalletProvider";
+import AuthRequiredNotice from "@/components/auth/AuthRequiredNotice";
+import { useWallet } from "@/components/payment/WalletProvider";
 import JellyBalance from "@/components/shop/JellyBalance";
 import JellyShopModal from "@/components/shop/JellyShopModal";
-import { useAuthStatus } from "@/lib/auth-status";
+import { useAuthStatus } from "@/lib/auth/auth-status";
 
 export default function GiftPage() {
   const { t, locale } = useLocale();

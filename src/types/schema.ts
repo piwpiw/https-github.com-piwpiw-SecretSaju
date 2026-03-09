@@ -9,7 +9,7 @@
  * ==============================================================================
  */
 
-import { formatCivilDate, formatClockTime, parseCivilDate } from '@/lib/civil-date';
+import { formatCivilDate, formatClockTime, parseCivilDate } from '@/lib/saju/civil-date';
 
 // ============================================
 // ENUMS & CONSTANTS

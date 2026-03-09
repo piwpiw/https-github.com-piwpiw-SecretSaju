@@ -1,11 +1,11 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
-import { getSupabaseAdmin } from '@/lib/supabase';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
 import { APP_CONFIG } from '@/config';
-import { getAuthenticatedUser } from '@/lib/api-auth';
-import { insertNotionRow } from '@/lib/notion';
-import { buildErrorResponsePayload } from '@/lib/error-response';
-import { buildPaymentVerifySignature } from '@/lib/payment-verify';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
+import { insertNotionRow } from '@/lib/integrations/notion';
+import { buildErrorResponsePayload } from '@/lib/contracts/error-response';
+import { buildPaymentVerifySignature } from '@/lib/payment/payment-verify';
 
 /**
  * POST /api/payment/initialize

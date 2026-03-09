@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Crown, Sparkles, Star } from "lucide-react";
-import { getFortuneReaderById, getReaderUnlockCost, isReaderUnlocked } from "@/lib/fortune-readers";
-import { getReaderMembership } from "@/lib/reader-membership";
+import { getFortuneReaderById, getReaderUnlockCost, isReaderUnlocked } from "@/lib/reader/fortune-readers";
+import { getReaderMembership } from "@/lib/reader/reader-membership";
 
 export default function FortuneReaderDetailPage() {
   const router = useRouter();

@@ -3,19 +3,19 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
-import { analyzeRelationship, RelationshipAnalysis } from '@/lib/compatibility';
+import { analyzeRelationship, RelationshipAnalysis } from '@/lib/saju/compatibility';
 import { calculateHighPrecisionSaju } from '@/core/api/saju-engine';
 import { Plus, Users, Sparkles, ChevronRight, Loader2, User, Calendar, Zap } from 'lucide-react';
 import Link from 'next/link';
 import JellyBalance from '@/components/shop/JellyBalance';
-import { isUnlocked } from '@/lib/jelly-wallet';
+import { isUnlocked } from '@/lib/payment/jelly-wallet';
 import DestinyNetwork from '@/components/dashboard/DestinyNetwork';
-import { useLocale } from '@/lib/i18n';
+import { useLocale } from '@/lib/app/i18n';
 import SvgChart from '@/components/ui/SvgChart';
 
-import { useProfiles } from '@/components/ProfileProvider';
-import { useWallet } from '@/components/WalletProvider';
-import { parseCivilDate } from '@/lib/civil-date';
+import { useProfiles } from '@/components/profile/ProfileProvider';
+import { useWallet } from '@/components/payment/WalletProvider';
+import { parseCivilDate } from '@/lib/saju/civil-date';
 
 interface RelationshipData {
     profile: any;

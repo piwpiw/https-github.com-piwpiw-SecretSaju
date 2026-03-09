@@ -11,18 +11,18 @@ import {
 import Link from "next/link";
 
 import { calculateHighPrecisionSaju, type HighPrecisionSajuResult } from "@/core/api/saju-engine";
-import { analyzeRelationship, RelationshipAnalysis } from "@/lib/compatibility";
+import { analyzeRelationship, RelationshipAnalysis } from "@/lib/saju/compatibility";
 import { RelationshipType as ProfileRelationshipType } from "@/types/schema";
-import { useProfiles } from "@/components/ProfileProvider";
-import { useWallet } from "@/components/WalletProvider";
+import { useProfiles } from "@/components/profile/ProfileProvider";
+import { useWallet } from "@/components/payment/WalletProvider";
 import JellyBalance from "@/components/shop/JellyBalance";
-import { useLocale } from "@/lib/i18n";
+import { useLocale } from "@/lib/app/i18n";
 import ElementPolygon from "@/components/ui/ElementPolygon";
 import LuxuryToast from "@/components/ui/LuxuryToast";
 import LoveScoreCounter from "@/components/compatibility/LoveScoreCounter";
 import RelationshipRadar from "@/components/compatibility/RelationshipRadar";
-import { cn } from "@/lib/utils";
-import { parseCivilDate } from "@/lib/civil-date";
+import { cn } from "@/lib/app/utils";
+import { parseCivilDate } from "@/lib/saju/civil-date";
 import AINarrativeSection from "@/components/result/AINarrativeSection";
 
 const RELATIONSHIP_PRESETS: { labelKey: string; value: ProfileRelationshipType; icon: string }[] = [

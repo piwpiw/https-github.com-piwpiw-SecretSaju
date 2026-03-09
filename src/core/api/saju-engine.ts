@@ -31,7 +31,7 @@ import { determineGyeokguk, type GyeokgukInfo } from '../myeongni/gyeokguk';
 import { analyzeSibiwoonseongAll, type SibiwoonseongAnalysis } from '../myeongni/sibiwoonseong';
 import { analyzeTransitInteractions, analyzeVisibleInteractions, type InteractionEvent } from '../myeongni/interactions';
 import { calculateDaewun, getCurrentUnInfo, type DaewunInfo, type CurrentUnInfo } from '../myeongni/daewun';
-import { calculateGangYak, type GangYakScore } from '../../lib/advancedScoring';
+import { calculateGangYak, type GangYakScore } from '@/lib/saju/advancedScoring';
 import { calculateYongshin, type YongshinAnalysis } from '../myeongni/yongshin';
 import { evaluateGyeokgukCandidates } from '../myeongni/gyeokguk-candidates';
 import { evaluateYongshinCandidates } from '../myeongni/yongshin-candidates';

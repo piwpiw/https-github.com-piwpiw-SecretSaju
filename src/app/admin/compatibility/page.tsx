@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { PILLAR_CODES, getPillarNameKo, getDayStemElement, getDayBranchElement } from "@/lib/saju"; // Ensure these are exported from lib/saju
-import { analyzeRelationship, RelationshipAnalysis } from "@/lib/compatibility";
+import { analyzeRelationship, RelationshipAnalysis } from "@/lib/saju/compatibility";
 import animalsData from "@/data/animals.json";
 import { HighPrecisionSajuResult } from "@/core/api/saju-engine";
 import { SIXTY_GANJI } from "@/core/calendar/ganji";

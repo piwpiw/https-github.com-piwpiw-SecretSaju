@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Lock, Sparkles } from 'lucide-react';
-import { hasSufficientBalance, unlockContent } from '@/lib/jelly-wallet';
+import { hasSufficientBalance, unlockContent } from '@/lib/payment/jelly-wallet';
 import { triggerBalanceUpdate } from './JellyBalance';
 import { useState } from 'react';
 

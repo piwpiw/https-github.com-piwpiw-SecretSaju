@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseAdmin } from '@/lib/supabase';
-import { getAuthenticatedUser } from '@/lib/api-auth';
-import { insertNotionRow } from '@/lib/notion';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
+import { insertNotionRow } from '@/lib/integrations/notion';
 
 const INQUIRY_NOTION_RETRY_COUNTER = new Map<string, number>();
 const MAX_MESSAGE_LENGTH = 1000;

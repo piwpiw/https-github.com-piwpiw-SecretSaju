@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Search, SendHorizonal, Sparkles } from "lucide-react";
-import { saveAnalysisToHistory } from "@/lib/analysis-history";
+import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
 import AIDreamParser from "@/components/dreams/AIDreamParser";
 import DreamKeywordCloud from "@/components/dreams/DreamKeywordCloud";
 import ScrollReveal from "@/components/ui/ScrollReveal";

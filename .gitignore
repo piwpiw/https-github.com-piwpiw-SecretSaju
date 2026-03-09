@@ -1,59 +1,56 @@
-# dependencies
+# Dependencies
 /node_modules
 /.pnp
 .pnp.js
 
-# testing
-/coverage
-/.nyc_output
-
-# next.js
+# Build and coverage
 /.next/
 /out/
 /.swc/
-
-# production
 /build
 /dist
+/coverage
+/.nyc_output
+*.tsbuildinfo
+next-env.d.ts
 
-# misc
-.DS_Store
-*.pem
-*.log
-*.cache
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# local env files (절대 커밋 금지 - 과금 방지)
+# Environment files
 .env*.local
 .env
 .env.production
 .env.development
 .env.test
 
-# vercel
-.vercel
-.vercel.json
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# OS
-Thumbs.db
-Desktop.ini
-
-# IDE
+# Local editor and tool state
+.vscode/
+.idea/
 *.sublime-project
 *.sublime-workspace
+*.swp
+*.swo
+*~
+.claude/
+.cursor/
+.playwright-cli/
+.vercel/
+.tmp/
 
-# 임시 파일
+# Runtime scratch and generated artifacts
+_temp/
+logs/
+tmp/
+/.tmp-next-start.log
+/.tmp-next-start.pid
+/*.log
+/*.pid
+_temp/reports/dispatch/
+
+# Misc local files
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.pem
 *.tmp
 *.temp
+*.cache
 .cache/
-
-# Temporary debug/log files
-_temp/

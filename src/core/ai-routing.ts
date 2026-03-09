@@ -1,10 +1,10 @@
-import { getPersona, Tendency } from "@/lib/persona-matrix";
+import { getPersona, Tendency } from "@/lib/reader/persona-matrix";
 import {
   getFortuneReaderById,
   getRecommendedReader,
   type FortuneReaderProfile,
   type ReaderQueryType,
-} from "@/lib/fortune-readers";
+} from "@/lib/reader/fortune-readers";
 
 export interface AIRoutingRequest {
   userName: string;

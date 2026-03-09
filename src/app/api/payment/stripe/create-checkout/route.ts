@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { getSupabaseAdmin } from '@/lib/supabase';
-import { getAuthenticatedUser } from '@/lib/api-auth';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
 import { APP_CONFIG } from '@/config';
 
 function getStripe() {

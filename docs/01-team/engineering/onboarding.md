@@ -43,7 +43,7 @@ npm install
 ```
 
 #### 3. Environment Variables
-Follow the **[QUICK_START.md](../../archive/QUICK_START.md)** guide:
+Follow the **[QUICK_START.md](../../archive/legacy/QUICK_START.md)** guide:
 
 **Required for Development**:
 - `NEXT_PUBLIC_KAKAO_JS_KEY` - Kakao JavaScript Key
@@ -87,7 +87,7 @@ Should complete without errors.
 Documentation priority:
 - Source-of-Truth for deployment: `./deployment-guide.md`
 - Source-of-Truth for testing: `./testing-guide.md`
-- For detailed checklists or command tips, use `docs/guides/deployment.md`
+- For detailed checklists or command tips, use `./deployment-guide.md`
 - If details and SOT differ, follow SOT first; for drift, check `Last Updated` and `Next Review`.
 
 #### Key Files to Understand:
@@ -174,7 +174,7 @@ Pick ONE area to specialize in:
 
 #### Option B: Backend (API/Database)
 - **Focus**: API routes, database operations
-- **Key Files**: `src/app/api/`, `src/lib/supabase.ts`
+- **Key Files**: `src/app/api/`, `src/lib/integrations/supabase.ts`
 - **Learn**: [API Design](../../02-technical/api/design.md)
 
 #### Option C: Core Engine (Algorithms)
@@ -195,7 +195,7 @@ Schedule a 2-hour session with a senior engineer:
 
 ### Must-Read (Week 1)
 - [ ] [README.md](../../../README.md)
-- [ ] [MASTER_PRD.md](../../MASTER_PRD.md)
+- [ ] [MASTER_PRD.md](../../00-overview/MASTER_PRD.md)
 - [ ] [Architecture Overview](../../02-technical/architecture/overview.md)
 - [ ] [Coding Standards](./coding-standards.md)
 - [ ] [Git Workflow](./git-workflow.md)
@@ -207,7 +207,7 @@ Schedule a 2-hour session with a senior engineer:
 - [ ] [Troubleshooting Scenarios](../qa/test-scenarios.md)
 
 ### Nice-to-Read (Month 1)
-- [ ] [Saju Layers](../../SAJU_LAYERS.md)
+- [ ] [Saju Layers](../../02-technical/core-engine/SAJU_LAYERS.md)
 - [ ] [Business Model](../../03-business/strategy/business-model.md)
 - [ ] [Product Roadmap](../../00-overview/roadmap.md)
 
@@ -260,7 +260,7 @@ When multiple docs describe the same process, use the SOT rule in each domain gu
 ### Saju & Myeongni (Traditional Astrology)
 - [Wikipedia: Saju](https://en.wikipedia.org/wiki/Four_Pillars_of_Destiny)
 - [Korean Astrology Basics](https://www.youtube.com/watch?v=...)
-- Internal: [Saju Layers](../../SAJU_LAYERS.md)
+- Internal: [Saju Layers](../../02-technical/core-engine/SAJU_LAYERS.md)
 
 ---
 
@@ -287,7 +287,7 @@ When multiple docs describe the same process, use the SOT rule in each domain gu
 ### Common Questions
 
 **Q: Where do I find API credentials?**  
-A: Ask your team lead for the `.env.local` file or see [SECURITY.md](../../archive/SECURITY.md)
+A: Ask your team lead for the `.env.local` file or see [SECURITY.md](../../archive/legacy/SECURITY.md)
 
 **Q: How do I run tests?**  
 A: `npm run test` (see [Testing Guide](./testing-guide.md))
@@ -323,4 +323,4 @@ You're now part of building the future of premium saju services. Remember:
 - Confirm `deploy:local` passes before first PR
 - Confirm env validation (`npm run verify:env`) when touching auth/payment
 - Run smoke on `/payment/success`, `/payment/fail`, `/auth/callback`
-- Update `docs/active-dispatch.md` after each task batch
+- Update `docs/archive/decision-history/active-dispatch.md` after each task batch

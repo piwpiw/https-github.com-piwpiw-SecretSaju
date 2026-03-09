@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { PILLAR_CODES, getPillarNameKo } from "@/lib/saju";
-import { getArchetypeByCode, type AgeGroup } from "@/lib/archetypes";
+import { getArchetypeByCode, type AgeGroup } from "@/lib/saju/archetypes";
 import animalsData from "@/data/animals.json";
 
 export default function AdminTestControlPage() {

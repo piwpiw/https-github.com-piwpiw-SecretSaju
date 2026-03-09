@@ -19,7 +19,7 @@
 > 
 > **1. Architecture Hub & Protocol (루트 시스템)**
 > - `.agent/AGENT_SYSTEM.md`: 10개 팀의 Registry, 3단계 레이어 구조, 실행 규칙 맵 생성.
-> - `.agent/CONTEXT_ENGINE.md`: 프로젝트의 기술 스택, 상태 맵, 에러 카탈로그 등을 `#`태그 (예: `#identity`, `#filemap`, `#errors`) 기법을 사용해 생성. (에이전트가 `grep_search`로 부분 로딩할당 가능하게 설계)
+> - `docs/00-overview/CONTEXT_ENGINE.md`: 프로젝트의 기술 스택, 상태 맵, 에러 카탈로그 등을 `#`태그 (예: `#identity`, `#filemap`, `#errors`) 기법을 사용해 생성. (에이전트가 `grep_search`로 부분 로딩할당 가능하게 설계)
 > - `.agent/AGENT_PROTOCOLS.md`: 팀 간의 Handoff 스키마 포맷 결정, 봇들 스스로 `trigger_event`를 발생시켜 다음 로직/작업(`TEST_QA_FAILED` ➔ T7 등)을 호출하는 연쇄 협업 룰 작성.
 > - `.agent/COST_RULES.md`: `view_file` 무지성 호출(전체 로드) 차단, 원샷 타격 수정(`multi_replace`) 명시, Team별 SLA 생성.
 > 

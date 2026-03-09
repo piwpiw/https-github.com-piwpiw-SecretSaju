@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { PILLAR_CODES, getPillarNameKo } from "@/lib/saju";
-import { generateEnhancedProfile } from "@/lib/enhancedProfiles";
-import { WUXING_INFO } from "@/lib/wuxing";
+import { generateEnhancedProfile } from "@/lib/saju/enhancedProfiles";
+import { WUXING_INFO } from "@/lib/saju/wuxing";
 import animalsData from "@/data/animals.json";
 
 export default function CharacterProfilePage() {

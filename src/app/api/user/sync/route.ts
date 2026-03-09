@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAuthenticatedUser } from '@/lib/api-auth';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
 
 export async function POST(request: NextRequest) {
     const rawBody = await request.json().catch(() => ({}));

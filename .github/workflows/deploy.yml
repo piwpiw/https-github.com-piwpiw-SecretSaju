@@ -164,13 +164,13 @@ jobs:
       - name: Enforce deployment policy
         run: |
           echo "DEPLOY_STAGE=policy" >> "$GITHUB_ENV"
-          node scripts/deploy-policy.js --platform render --mode production
+          node scripts/deploy/deploy-policy.js --platform render --mode production
 
       - name: Trigger Render deploy hook
         run: |
           echo "DEPLOY_STAGE=hook" >> "$GITHUB_ENV"
           set -o pipefail
-          node scripts/render-deploy.js 2>&1 | tee /tmp/render-deploy.log
+          node scripts/deploy/render-deploy.js 2>&1 | tee /tmp/render-deploy.log
 
       - name: Wait for service health
         shell: bash
@@ -180,7 +180,7 @@ jobs:
             export HEALTHCHECK_URL="${NEXT_PUBLIC_BASE_URL}/api/health"
           fi
           set -o pipefail
-          node scripts/wait-for-health.js 2>&1 | tee /tmp/healthcheck.log
+          node scripts/deploy/wait-for-health.js 2>&1 | tee /tmp/healthcheck.log
 
       - name: Publish diagnostics summary
         if: always()

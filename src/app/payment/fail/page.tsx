@@ -4,7 +4,7 @@ import { Suspense, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { XCircle, ChevronLeft, AlertCircle } from 'lucide-react';
-import { trackPaymentFail } from '@/lib/analytics';
+import { trackPaymentFail } from '@/lib/app/analytics';
 
 function FailContent() {
   const searchParams = useSearchParams();
@@ -21,7 +21,15 @@ function FailContent() {
 
   const failureType = (() => {
     if (normalizedCode === 'USER_CANCEL' || normalizedCode === 'CANCELED') return 'cancel';
-    if (normalizedCode === 'INVALID_PAYMENT_AMOUNT' || normalizedCode === 'AMOUNT_MISMATCH') return 'amount';
+    if (
+      normalizedCode === 'INVALID_PAYMENT_AMOUNT' ||
+      normalizedCode === 'AMOUNT_MISMATCH' ||
+      normalizedCode === 'PAYMENT_AMOUNT_MISMATCH' ||
+      normalizedCode === 'PAYMENT_TOSS_AMOUNT_MISMATCH' ||
+      normalizedCode === 'PAYMENT_TOSS_ORDER_MISMATCH' ||
+      normalizedCode === 'PAYMENT_TOSS_PAYMENT_KEY_MISMATCH' ||
+      normalizedCode === 'PAYMENT_VERIFICATION_SIGNATURE_INVALID'
+    ) return 'amount';
     return 'general';
   })();
 

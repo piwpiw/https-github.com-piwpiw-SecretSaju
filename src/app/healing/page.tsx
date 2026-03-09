@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Heart, RefreshCw, Sparkles, Zap } from "lucide-react";
-import { useWallet } from "@/components/WalletProvider";
-import { useProfiles } from "@/components/ProfileProvider";
+import { useWallet } from "@/components/payment/WalletProvider";
+import { useProfiles } from "@/components/profile/ProfileProvider";
 import AppOnlyModal from "@/components/ui/AppOnlyModal";
 import JellyBalance from "@/components/shop/JellyBalance";
 

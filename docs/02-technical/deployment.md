@@ -17,7 +17,7 @@
 ## 배포 기준(필수)
 
 - 배포 플랫폼: **Render only**
-- 배포 실행은 `node scripts/deploy-policy.js`를 통과해야 함.
+- 배포 실행은 `node scripts/deploy/deploy-policy.js`를 통과해야 함.
 - 렌더 훅(`RENDER_DEPLOY_HOOK_URL` 또는 `RENDER_DEPLOY_HOOK`)이 필수.
 - `.vercel` 연동이 남아 있으면 배포 전 차단 (`ALLOW_VERCEL_LINK=true`로 예외 허용).
 - 배포 전 `.vercel` 폴더를 삭제한다.
@@ -68,7 +68,7 @@
 
 ## 빠른 반복 배포 지침(최소 변경 모드)
 
-- 수정 범위는 사전 영향도 3단계만 허용: 워크플로(`.github/workflows/deploy.yml`), 배포 스크립트(`scripts/deploy.sh`, `scripts/wait-for-health.js`), 배포 명령(`package.json`).
+- 수정 범위는 사전 영향도 3단계만 허용: 워크플로(`.github/workflows/deploy.yml`), 배포 스크립트(`scripts/deploy/deploy.sh`, `scripts/deploy/wait-for-health.js`), 배포 명령(`package.json`).
 - 이 범위를 벗어나는 수정은 `수락 필요`로 간주하고 즉시 중단.
 - 실행은 항상 병렬 확인 후 일괄 반영:
   - `npm run pre-deploy:parallel`
@@ -104,7 +104,7 @@
 - [ ] 핵심 API 스모크 통과
 - [ ] 결제/환불/웹훙 기본 동작 확인
 - [ ] 정책 페이지 링크 정상 동작
-- [ ] 장애 기록: `docs/active-dispatch.md`
+- [ ] 장애 기록: `docs/archive/decision-history/active-dispatch.md`
 
 ### 장애 기록 Wave 자동 표기 규칙
 
@@ -117,7 +117,7 @@
 - 승인자 미확정 항목은 배포 실행 전에 `승인자 미정` 태그로 남기고, 배포 블록 처리
 - 승인 누락 시 배포를 중단하고 DO-430에서 규칙 배포 템플릿으로 이관
 - 예시: `Wave-20 · FE-412 (DestinyNetwork tooltip animation jitter)` 형식.
-- 기록 템플릿은 `docs/active-dispatch.md`의 Wave 헤더(`Dispatch Wave YY`)와 동일 형식을 유지합니다.
+- 기록 템플릿은 `docs/archive/decision-history/active-dispatch.md`의 Wave 헤더(`Dispatch Wave YY`)와 동일 형식을 유지합니다.
 - 발생일/해결일은 `YYYY-MM-DD` UTC+9 기준으로 기재합니다.
 - 동일 항목 반복 이슈가 생길 경우 중복 ID는 `#01`, `#02`로 suffix 처리합니다.
 
@@ -132,7 +132,7 @@
 - `docs/01-team/engineering/deployment-guide.md` (SOT)
 - `docs/01-team/engineering/testing-guide.md`
 - `docs/01-team/engineering/local-dev-sop.md`
-- `docs/active-dispatch.md`
+- `docs/archive/decision-history/active-dispatch.md`
 
 **Last Updated**: 2026-03-05  
 **Owner**: DevOps + Engineering Lead  

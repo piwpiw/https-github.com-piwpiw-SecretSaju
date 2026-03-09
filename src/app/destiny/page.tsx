@@ -6,7 +6,7 @@ import { Heart, ArrowRight, Zap, LayoutGrid, Compass, CalendarDays, Sparkles, Us
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import JellyBalance from "@/components/shop/JellyBalance";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/app/utils";
 
 const FATE_MODULES = [
   {

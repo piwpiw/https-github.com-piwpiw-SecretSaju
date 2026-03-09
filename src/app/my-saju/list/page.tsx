@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SajuProfileRepository } from '@/lib/repositories/saju-profile.repository';
+import { SajuProfileRepository } from '@/lib/saju/repositories/saju-profile.repository';
 import RelationshipMap from '@/components/mysaju/RelationshipMap';
 import LifeTimeline from '@/components/mysaju/LifeTimeline';
 import ScrollReveal from '@/components/ui/ScrollReveal';
@@ -10,7 +10,7 @@ import { Sparkles, Users, UserPlus, RefreshCcw } from 'lucide-react';
 import { Plus, Trash2, Loader2, ArrowLeft, ChevronRight, User, Calendar } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useProfiles } from '@/components/ProfileProvider';
+import { useProfiles } from '@/components/profile/ProfileProvider';
 
 const relationshipLabel: Record<string, string> = {
   self: '본인',

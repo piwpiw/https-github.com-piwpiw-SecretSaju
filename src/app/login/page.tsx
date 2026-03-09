@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import AuthModal from '@/components/AuthModal';
+import AuthModal from '@/components/auth/AuthModal';
 
 export default function LoginPage() {
     const router = useRouter();

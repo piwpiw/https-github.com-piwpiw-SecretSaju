@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { routeAIPersona } from "@/core/ai-routing";
-import { isMockMode } from "@/lib/use-mock";
+import { isMockMode } from "@/lib/app/use-mock";
 
 type DualNarrative = {
   easy: string;
@@ -59,10 +59,13 @@ async function callLLM(model: string, systemPrompt: string, userPrompt: string):
 
   if ((model === "GEMINI-1.5" || model.startsWith("GEMINI")) && process.env.GOOGLE_AI_KEY && !isMock) {
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GOOGLE_AI_KEY}`,
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": process.env.GOOGLE_AI_KEY,
+        },
         body: JSON.stringify({
           contents: [{ role: "user", parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }] }],
           generationConfig: { maxOutputTokens: 1000, temperature: 0.7 },

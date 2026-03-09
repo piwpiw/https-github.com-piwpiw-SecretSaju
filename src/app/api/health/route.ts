@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { APP_CONFIG, KAKAO_CONFIG, MCP_CONFIG, PAYMENT_CONFIG } from '@/config';
-import { getSupabaseAdmin } from '@/lib/supabase';
-import { isMockMode } from '@/lib/use-mock';
+import { getSupabaseAdmin } from '@/lib/integrations/supabase';
+import { isMockMode } from '@/lib/app/use-mock';
 
 export const dynamic = 'force-dynamic';
 

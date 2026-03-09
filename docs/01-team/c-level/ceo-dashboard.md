@@ -191,7 +191,7 @@ graph LR
 
 ---
 
-**For Immediate Attention**: Review [Implementation Plan](../../active-dispatch.md) and [Task List](../../00-overview/execution-backlog-ko.md)
+**For Immediate Attention**: Review [Implementation Plan](../../archive/decision-history/active-dispatch.md) and [Task List](../../00-overview/execution-backlog-ko.md)
 
 ---
 
