@@ -11,12 +11,14 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - 문서 충돌 판단은 각 문서 상단의 `Last Updated`/`Next Review`로 동기화 상태를 확인
 
 ## 배포 정책 (최우선 규칙)
-- 배포 플랫폼은 **Render 기본 + Vercel 선택 지원**으로 운영한다.
+- 배포 플랫폼은 **Vercel 우선 + Render 보조**로 운영한다.
+- 기본 배포 명령 `deploy`, `deploy:preview`, `deploy:fast`, `deploy:full`, `deploy:ci` 는 Vercel 기준이다.
+- Render 운영 배포는 `deploy:render*` 계열 명령으로만 수행한다.
 - Render 운영 배포는 `RENDER_DEPLOY_HOOK_URL`(또는 `RENDER_DEPLOY_HOOK`)이 없으면 실패 처리한다.
 - Vercel 배포는 Vercel CLI 인증/연동이 선행돼야 한다.
 - 요청 사항 반영 후 배포 전에는 반드시 로컬 사전 검증을 통과해야 한다. 로컬 검증 실패 시 배포는 즉시 중단한다.
-- 운영 배포(Render `deploy` / `deploy:fast`, Vercel `deploy:vercel:prod`): `main` 기준으로만 수행한다.
-- Preview(Render `deploy:preview`, Vercel `deploy:vercel`): dev/PR 또는 수동 검증 경로로 수행한다.
+- 운영 배포(Vercel `deploy`, Render `deploy:render`): `main` 기준으로만 수행한다.
+- Preview(Vercel `deploy:preview`, Render `deploy:render:preview`): dev/PR 또는 수동 검증 경로로 수행한다.
 
 ## 배포 대상
 - Production: `main` 브랜치
@@ -47,11 +49,15 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - `npm run pre-deploy:parallel`
   - `pre-deploy` 내 `tests/build` 병렬 점검
 - `npm run deploy:fast`
-  - `--parallel-checks` + prebuilt 배포 경로 (Render 훅 필수)
+  - Vercel 운영 빠른 배포 경로
 - `npm run deploy`
-  - Render-only 운영 배포(기본 경로)
+  - Vercel 운영 배포(기본 경로)
 - `npm run deploy:preview`
-  - Render-only Preview 배포
+  - Vercel Preview 배포
+- `npm run deploy:render`
+  - Render 운영 배포
+- `npm run deploy:render:preview`
+  - Render Preview 배포
 
 ## 배포 명령 사용 가이드
 
@@ -62,15 +68,19 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - `npm run preflight:local:serial`
   - 동일 검사 직렬
 - `npm run deploy:fast`
-  - 빠른 Render 검증 경로, 병렬 체크 중심 (Render 훅 필수)
+  - 빠른 Vercel 운영 배포 경로
 - `npm run deploy`
-  - 기본 운영 배포(Render)
+  - 기본 운영 배포(Vercel)
 - `npm run deploy:preview`
-  - Render Preview 배포
+  - Vercel Preview 배포
 - `npm run deploy:vercel`
-  - 기본 Vercel Preview 배포
+  - Vercel Preview 별칭
 - `npm run deploy:vercel:prod`
-  - Vercel 운영 배포
+  - Vercel 운영 배포 별칭
+- `npm run deploy:render`
+  - Render 운영 배포
+- `npm run deploy:render:preview`
+  - Render Preview 배포
 
 ## 검증 속도 참고 (로컬 측정)
 - preflight 병렬: 약 9.4초
@@ -88,7 +98,7 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - CI 정책 변경 시 `.github/workflows/deploy.yml`과 본 문서/상세 가이드를 함께 갱신한다.
 - 관련 명령 변경은 `docs/guides/deployment.md`와 동기화한다.
 - 배포 실행은 반드시 `node scripts/deploy/deploy-policy.js` 통과 전제에서 진행한다.
-- Render CI는 유지하되, Vercel은 필요 시 수동 또는 별도 워크플로로 선택 실행한다.
+- Vercel을 기준 배포 경로로 유지하고, Render는 fallback/비교/이관 목적의 보조 경로로만 다룬다.
 
 ## 체크포인트
 - [ ] `deploy:local` 성공

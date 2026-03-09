@@ -26,6 +26,7 @@ npm run smoke:fast
 npm run smoke:full
 npm run deploy
 npm run deploy:vercel
+npm run deploy:render
 npm run qa
 npm run migrate:db
 ```
@@ -36,8 +37,10 @@ npm run migrate:db
 |---|---|
 | Safe local dev | `scripts/dev/dev-safe.js` |
 | Local preflight | `scripts/dev/preflight-local.js` |
-| Render deploy flow | `scripts/deploy/render-deploy.js` |
+| Default production deploy | `npm run deploy` |
+| Default preview deploy | `npm run deploy:preview` |
 | Vercel deploy flow | `scripts/deploy/vercel-deploy.js` |
+| Render deploy flow | `scripts/deploy/render-deploy.js` |
 | Smoke suite | `scripts/smoke/` |
 | Full admin audit | `scripts/qa/admin-full-site-audit.mjs` |
 | Zero-script QA | `scripts/qa/zero-script-qa.mjs` |

@@ -23,6 +23,7 @@ npm run test:logic
 npm run smoke:auth
 npm run deploy
 npm run deploy:vercel
+npm run deploy:render
 ```
 
 ## Fast Lookup
@@ -34,8 +35,9 @@ npm run deploy:vercel
 | Auth callback messages | `src/lib/auth/auth-callback-message.ts` |
 | Payment failure messages | `src/lib/payment/payment-verify-message.ts` |
 | Deploy scripts | `scripts/deploy/` |
-| Render production deploy | `npm run deploy` |
+| Vercel production deploy | `npm run deploy` |
 | Vercel preview deploy | `npm run deploy:vercel` |
+| Render production deploy | `npm run deploy:render` |
 | Smoke scripts | `scripts/smoke/` |
 | Live QA docs | `docs/01-team/qa/` |
 | Temporary browser logs | `_temp/browser/` and `_temp/logs/` |
