@@ -36,6 +36,15 @@ function fail(message) {
   process.exit(1);
 }
 
+function commandExists(command) {
+  try {
+    execSync(`${command} --version`, { stdio: "ignore" });
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 function resolveGitBranch() {
   const envBranch = process.env.GITHUB_REF_NAME || process.env.GIT_BRANCH;
   if (envBranch) return envBranch;
@@ -54,8 +63,8 @@ function verifyDeploymentPolicy(options = {}) {
   const strictBranch = process.env.DEPLOY_STRICT_BRANCH === "true";
   const branch = resolveGitBranch();
 
-  if (platform !== "render") {
-    fail(`Invalid deployment platform. Allowed platform is render only. current: ${platform}`);
+  if (!["render", "vercel"].includes(platform)) {
+    fail(`Invalid deployment platform. Allowed: render or vercel. current: ${platform}`);
   }
 
   if (!["production", "preview"].includes(mode)) {
@@ -71,22 +80,25 @@ function verifyDeploymentPolicy(options = {}) {
     }
   }
 
-  const hookUrl = process.env.RENDER_DEPLOY_HOOK_URL || process.env.RENDER_DEPLOY_HOOK;
-  if (!hookUrl) {
-    fail("RENDER_DEPLOY_HOOK_URL (or RENDER_DEPLOY_HOOK) is required for policy-enforced deployment.");
+  if (platform === "render") {
+    const hookUrl = process.env.RENDER_DEPLOY_HOOK_URL || process.env.RENDER_DEPLOY_HOOK;
+    if (!hookUrl) {
+      fail("RENDER_DEPLOY_HOOK_URL (or RENDER_DEPLOY_HOOK) is required for Render deployment.");
+    }
+
+    const renderFile = path.join(process.cwd(), "render.yaml");
+    if (!fs.existsSync(renderFile)) {
+      fail("render.yaml is required for Render deployment.");
+    }
   }
 
-  const vercelDir = path.join(process.cwd(), ".vercel");
-  if (fs.existsSync(vercelDir) && process.env.ALLOW_VERCEL_LINK !== "true") {
-    fail(".vercel directory exists. Render-only policy blocks deployment unless ALLOW_VERCEL_LINK=true.");
+  if (platform === "vercel") {
+    if (!commandExists("vercel")) {
+      fail("Vercel CLI is required for Vercel deployment. Install or authenticate Vercel CLI first.");
+    }
   }
 
-  const renderFile = path.join(process.cwd(), "render.yaml");
-  if (!fs.existsSync(renderFile)) {
-    fail("render.yaml is required for Render deployment policy.");
-  }
-
-  const expected = `render/${mode}`;
+  const expected = `${platform}/${mode}`;
   const branchInfo = branch ? `, branch=${branch}` : "";
   console.log(`[deploy-policy] policy passed: platform=${platform}, mode=${mode}${branchInfo}`);
   console.log(`[deploy-policy] deployment target enforced (${expected})`);

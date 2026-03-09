@@ -21,6 +21,8 @@ npm run lint
 npx tsc --noEmit
 npm run test:logic
 npm run smoke:auth
+npm run deploy
+npm run deploy:vercel
 ```
 
 ## Fast Lookup
@@ -32,6 +34,8 @@ npm run smoke:auth
 | Auth callback messages | `src/lib/auth/auth-callback-message.ts` |
 | Payment failure messages | `src/lib/payment/payment-verify-message.ts` |
 | Deploy scripts | `scripts/deploy/` |
+| Render production deploy | `npm run deploy` |
+| Vercel preview deploy | `npm run deploy:vercel` |
 | Smoke scripts | `scripts/smoke/` |
 | Live QA docs | `docs/01-team/qa/` |
 | Temporary browser logs | `_temp/browser/` and `_temp/logs/` |

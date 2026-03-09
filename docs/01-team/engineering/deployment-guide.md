@@ -11,12 +11,12 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - 문서 충돌 판단은 각 문서 상단의 `Last Updated`/`Next Review`로 동기화 상태를 확인
 
 ## 배포 정책 (최우선 규칙)
-- 배포 플랫폼은 **Render only**로 고정한다.
-- `RENDER_DEPLOY_HOOK_URL`(또는 `RENDER_DEPLOY_HOOK`)가 없으면 배포를 실패 처리한다.
-- `.vercel` 폴더가 존재하면 배포를 차단한다(예외적으로 `ALLOW_VERCEL_LINK=true`만 허용). 배포 환경은 먼저 해당 폴더를 삭제하고 시작한다.
+- 배포 플랫폼은 **Render 기본 + Vercel 선택 지원**으로 운영한다.
+- Render 운영 배포는 `RENDER_DEPLOY_HOOK_URL`(또는 `RENDER_DEPLOY_HOOK`)이 없으면 실패 처리한다.
+- Vercel 배포는 Vercel CLI 인증/연동이 선행돼야 한다.
 - 요청 사항 반영 후 배포 전에는 반드시 로컬 사전 검증을 통과해야 한다. 로컬 검증 실패 시 배포는 즉시 중단한다.
-- 운영 배포(`deploy` / `deploy:fast`): `main` 브랜치의 배포 절차로만 수행한다.
-- Preview: `deploy:preview` / `deploy:preview:fast`는 dev/PR 경로로 수행한다.
+- 운영 배포(Render `deploy` / `deploy:fast`, Vercel `deploy:vercel:prod`): `main` 기준으로만 수행한다.
+- Preview(Render `deploy:preview`, Vercel `deploy:vercel`): dev/PR 또는 수동 검증 경로로 수행한다.
 
 ## 배포 대상
 - Production: `main` 브랜치
@@ -62,11 +62,15 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - `npm run preflight:local:serial`
   - 동일 검사 직렬
 - `npm run deploy:fast`
-  - 빠른 검증 경로, 병렬 체크 중심 (Render 훅 필수)
+  - 빠른 Render 검증 경로, 병렬 체크 중심 (Render 훅 필수)
 - `npm run deploy`
-  - 운영 배포(Policy + Render Hook 검증 통과 시)
+  - 기본 운영 배포(Render)
 - `npm run deploy:preview`
-  - 미리보기 배포(Render-only)
+  - Render Preview 배포
+- `npm run deploy:vercel`
+  - 기본 Vercel Preview 배포
+- `npm run deploy:vercel:prod`
+  - Vercel 운영 배포
 
 ## 검증 속도 참고 (로컬 측정)
 - preflight 병렬: 약 9.4초
@@ -84,6 +88,7 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - CI 정책 변경 시 `.github/workflows/deploy.yml`과 본 문서/상세 가이드를 함께 갱신한다.
 - 관련 명령 변경은 `docs/guides/deployment.md`와 동기화한다.
 - 배포 실행은 반드시 `node scripts/deploy/deploy-policy.js` 통과 전제에서 진행한다.
+- Render CI는 유지하되, Vercel은 필요 시 수동 또는 별도 워크플로로 선택 실행한다.
 
 ## 체크포인트
 - [ ] `deploy:local` 성공

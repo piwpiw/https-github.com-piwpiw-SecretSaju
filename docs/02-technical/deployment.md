@@ -16,11 +16,10 @@
 
 ## 배포 기준(필수)
 
-- 배포 플랫폼: **Render only**
+- 배포 플랫폼: **Render 기본 + Vercel 선택 지원**
 - 배포 실행은 `node scripts/deploy/deploy-policy.js`를 통과해야 함.
-- 렌더 훅(`RENDER_DEPLOY_HOOK_URL` 또는 `RENDER_DEPLOY_HOOK`)이 필수.
-- `.vercel` 연동이 남아 있으면 배포 전 차단 (`ALLOW_VERCEL_LINK=true`로 예외 허용).
-- 배포 전 `.vercel` 폴더를 삭제한다.
+- Render 경로는 렌더 훅(`RENDER_DEPLOY_HOOK_URL` 또는 `RENDER_DEPLOY_HOOK`)이 필수.
+- Vercel 경로는 Vercel CLI 인증/프로젝트 링크가 필수.
 - 요청 반영 후 배포 전에는 `npm run deploy:local` 또는 동등한 로컬 사전검증을 반드시 성공해야 한다.
 - 로컬 검증 실패는 배포 블록 처리한다.
 
@@ -56,11 +55,15 @@
 ## 배포 명령 사용 가이드
 
 - `npm run deploy:fast`
-  - `--parallel-checks` 기반으로 빠른 검사 경로 사용
+  - `--parallel-checks` 기반 Render 빠른 검사 경로 사용
 - `npm run deploy`
-  - 기본 전체 배포 흐름(표준 경로)
+  - 기본 Render 운영 배포 흐름
 - `npm run deploy:preview`
-  - Preview 배포
+  - Render Preview 배포
+- `npm run deploy:vercel`
+  - Vercel Preview 배포
+- `npm run deploy:vercel:prod`
+  - Vercel 운영 배포
 - `npm run pre-deploy`
   - 배포 전 기본 사전 처리 수행
 - `npm run pre-deploy:parallel`
@@ -88,8 +91,10 @@
 3. Git Push / PR 상태 확인
    - `main`은 운영(Production), `dev` 또는 PR은 Preview 기준
 4. 배포 실행
-   - 운영: `npm run deploy` 또는 `npm run deploy:fast`
-   - 미리보기: `npm run deploy:preview` (Preview도 Render 훅 기반으로만 실행)
+   - Render 운영: `npm run deploy` 또는 `npm run deploy:fast`
+   - Render 미리보기: `npm run deploy:preview`
+   - Vercel 미리보기: `npm run deploy:vercel`
+   - Vercel 운영: `npm run deploy:vercel:prod`
 5. 배포 후 검증
    - `/api/saju/calculate`, `/api/payment/verify` 스모크 확인
    - 결제/웹훅 경로 및 주요 정책 페이지(terms/privacy/refund) 링크 확인
