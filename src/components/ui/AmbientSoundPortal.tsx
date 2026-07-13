@@ -8,25 +8,61 @@ export default function AmbientSoundPortal() {
     const [isOpen, setIsOpen] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    // Set when the external asset fails to load; disables audio silently.
+    const audioFailedRef = useRef(false);
 
     useEffect(() => {
-        audioRef.current = new Audio(AMBIENT_URL);
-        audioRef.current.loop = true;
+        try {
+            const audio = new Audio(AMBIENT_URL);
+            audio.loop = true;
+            audio.preload = 'none';
+            // A failed/blocked external asset must never surface a console error.
+            audio.addEventListener('error', () => {
+                audioFailedRef.current = true;
+                setIsPlaying(false);
+            });
+            audioRef.current = audio;
+        } catch {
+            // Audio construction failed (e.g. unsupported environment) — degrade silently.
+            audioFailedRef.current = true;
+        }
         return () => {
-            audioRef.current?.pause();
+            try {
+                audioRef.current?.pause();
+            } catch {
+                /* ignore */
+            }
             audioRef.current = null;
         };
     }, []);
 
     const togglePlay = () => {
-        if (isPlaying) {
-            audioRef.current?.pause();
-        } else {
-            audioRef.current?.play().catch(() => {
-                console.log("Audio play blocked by browser policy");
-            });
+        // Audio is strictly opt-in / user-initiated (invoked from a click handler).
+        if (audioFailedRef.current || !audioRef.current) {
+            return;
         }
-        setIsPlaying(!isPlaying);
+        if (isPlaying) {
+            try {
+                audioRef.current.pause();
+            } catch {
+                /* ignore */
+            }
+            setIsPlaying(false);
+            return;
+        }
+        // play() returns a promise that rejects on autoplay policy or load failure.
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+            playPromise
+                .then(() => setIsPlaying(true))
+                .catch(() => {
+                    // Blocked by browser policy or asset unreachable — stay silent.
+                    audioFailedRef.current = true;
+                    setIsPlaying(false);
+                });
+        } else {
+            setIsPlaying(true);
+        }
     };
 
     return (

@@ -76,12 +76,13 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         }
 
         // Verify with DB
+        const controller = new AbortController();
         const fetchBalance = async () => {
             if (!hasAuthenticatedUser && mockAdmin !== 'true' && !cookieAdmin) {
                 return;
             }
             try {
-                const res = await fetch('/api/wallet/balance');
+                const res = await fetch('/api/wallet/balance', { signal: controller.signal });
                 if (res.ok) {
                     const data = await res.json();
                     if (data.balance !== undefined) {
@@ -104,18 +105,19 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
                     severity: res.status >= 500 ? 'error' : 'warning',
                 });
             } catch (err) {
-                console.error("Failed to sync wallet balance", err);
-                setSyncIssue({
-                    scope: 'wallet',
-                    code: 'WALLET_FETCH_FAILED',
-                    summary: '지갑 잔액 요청 중 네트워크 오류가 발생했습니다.',
-                    detail: err instanceof Error ? err.message : '알 수 없는 fetch 오류',
-                    severity: 'error',
-                });
+                // Request was cancelled on unmount — expected, not an error.
+                if (err instanceof DOMException && err.name === 'AbortError') {
+                    return;
+                }
+                // Network failure: silently fall back to the local wallet value
+                // already loaded above. No console noise, no broken UI banner.
+                setSyncIssue(null);
             }
         };
 
         fetchBalance();
+
+        return () => controller.abort();
     }, []);
 
     useEffect(() => {
