@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -38,16 +38,19 @@ import JellyShopModal from "@/components/shop/JellyShopModal";
 const SPREAD_POSITIONS = ["과거 (Past)", "현재 (Present)", "미래 (Future)"] as const;
 
 function MysticBackground() {
+  const rawId = useId();
+  // SVG url(#id) references break on characters like ":" that React's useId emits, so sanitize.
+  const noiseId = `tarot-noise-${rawId.replace(/[^a-zA-Z0-9_-]/g, "")}`;
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
       <div className="absolute top-[20%] right-[10%] w-[20%] h-[20%] bg-blue-600/10 rounded-full blur-[80px]" />
       <svg className="absolute inset-0 w-full h-full opacity-[0.03]">
-        <filter id="noise">
+        <filter id={noiseId}>
           <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch" />
         </filter>
-        <rect width="100%" height="100%" filter="url(#noise)" />
+        <rect width="100%" height="100%" filter={`url(#${noiseId})`} />
       </svg>
     </div>
   );

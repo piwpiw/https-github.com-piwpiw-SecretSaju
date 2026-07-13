@@ -189,7 +189,10 @@ export async function POST(req: NextRequest) {
         requestedAmount: amount,
         orderAmount,
       });
-      return createErrorResponse('PAYMENT_AMOUNT_MISMATCH', 'Amount mismatch', 400);
+      return createErrorResponse('PAYMENT_AMOUNT_MISMATCH', 'Order amount does not match requested amount', 400, {
+        orderAmount,
+        requestedAmount: amount,
+      });
     }
 
     if (order.status && order.status !== 'pending') {

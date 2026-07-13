@@ -28,6 +28,8 @@ export default function GiftPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    if (!isReady) return;
     setSubmitError("");
 
     if (!isAuthenticated && !isAdmin) {

@@ -13,8 +13,25 @@ import {
 
 import { insertNotionRow } from '@/lib/integrations/notion'
 
+// Coerce a JWT claim value to a safe non-empty string, or null.
+// Accepts strings (trimmed) and finite numbers (some providers use numeric sub);
+// anything else (object/array/boolean/null) is rejected rather than leaking a
+// non-string into downstream id resolution.
+function coerceJwtSubjectValue(value: unknown): string | null {
+  if (typeof value === 'string') {
+    const trimmed = value.trim()
+    return trimmed ? trimmed : null
+  }
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return String(value)
+  }
+  return null
+}
+
 function decodeJwtPayloadSub(jwt: string): string | null {
   try {
+    if (typeof jwt !== 'string' || !jwt) return null
+
     const [, payload] = jwt.split('.')
     if (!payload) return null
 
@@ -22,13 +39,17 @@ function decodeJwtPayloadSub(jwt: string): string | null {
     const padLength = normalized.length % 4 === 0 ? 0 : 4 - (normalized.length % 4)
     const padded = `${normalized}${'='.repeat(padLength)}`
     const decoded = typeof atob === 'function' ? atob(padded) : Buffer.from(padded, 'base64').toString('utf-8')
-    const parsed = JSON.parse(decoded) as { sub?: string; external_id?: string; externalUserId?: string; provider_id?: string }
+    const parsed: unknown = JSON.parse(decoded)
+
+    // Guard against payloads that decode to a non-object (e.g. `null`, number, array).
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null
+    const claims = parsed as Record<string, unknown>
 
     return (
-      parsed.sub ??
-      parsed.external_id ??
-      parsed.externalUserId ??
-      parsed.provider_id ??
+      coerceJwtSubjectValue(claims.sub) ??
+      coerceJwtSubjectValue(claims.external_id) ??
+      coerceJwtSubjectValue(claims.externalUserId) ??
+      coerceJwtSubjectValue(claims.provider_id) ??
       null
     )
   } catch {
@@ -71,6 +92,24 @@ const MCP_CODE_VERIFIER_REGEX = /^[A-Za-z0-9._~\-]{16,128}$/
 const mcpProcessedStates = new Set<string>()
 const mcpProcessedVerifiers = new Set<string>()
 
+// Query params that must never reach logs verbatim: the authorization `code`
+// and PKCE `code_verifier` are single-use secrets; `state`/`session_state` are
+// CSRF tokens. Redact them while keeping the URL shape useful for debugging.
+const SENSITIVE_QUERY_KEYS = new Set(['code', 'code_verifier', 'state', 'session_state', 'id_token', 'access_token'])
+
+function describeCallbackUrl(rawUrl: string): { path: string; query: Record<string, string> } {
+  try {
+    const parsed = new URL(rawUrl)
+    const query: Record<string, string> = {}
+    parsed.searchParams.forEach((value, key) => {
+      query[key] = SENSITIVE_QUERY_KEYS.has(key) ? '[redacted]' : value
+    })
+    return { path: parsed.pathname, query }
+  } catch {
+    return { path: '[unparseable]', query: {} }
+  }
+}
+
 function clearOauthArtifacts(response: NextResponse) {
   response.cookies.set(STORAGE_KEYS.MCP_STATE, '', MCP_ERROR_COOKIE_DEFAULTS)
   response.cookies.set(STORAGE_KEYS.MCP_CODE_VERIFIER, '', MCP_ERROR_COOKIE_DEFAULTS)
@@ -104,7 +143,9 @@ export async function GET(req: NextRequest) {
 
   console.info(`[MCP:AUTH_CALLBACK][${requestId}] Request start`, {
     timestamp: new Date().toISOString(),
-    url: req.url,
+    provider: 'mcp',
+    requestId,
+    ...describeCallbackUrl(req.url),
   })
 
   const code = req.nextUrl.searchParams.get('code')?.trim() ?? ''

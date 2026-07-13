@@ -56,5 +56,15 @@
 - [x] `NEXT_ACTIONS.md` — 완료 항목 아카이브
 - [ ] `AI_BOOTSTRAP.md` — 구버전 Resume Checkpoint 섹션 제거
 
-**Last Updated**: 2026-03-08T02:00
+### PWQ-1. 병렬 작업 큐 소진 (완료 2026-07-13)
+- [x] Frontend FE-312~320 잔여 항목 해소 (실제 수정 + 이미 충족분 검증)
+- [x] Backend BE-305~320 잔여 항목 해소 (실제 수정 + 이미 충족분 검증)
+- [x] `docs/archive/decision-history/parallel-work-queue.md` mojibake 손상 → UTF-8 복원
+- [ ] Ops/QA OPS-301~320 — 라이브 배포/수동 검증 필요분 잔존
+
+### 잔여 인코딩 관측(후속)
+- [ ] `docs/01-team/cs/provider_error_mapping.md` EUC-KR → UTF-8 변환 (내용 온전, GitHub 표시 대비)
+- [ ] `docs/archive/legacy/readme.md` EUC-KR → UTF-8 변환
+
+**Last Updated**: 2026-07-13
 **Updated By**: Claude

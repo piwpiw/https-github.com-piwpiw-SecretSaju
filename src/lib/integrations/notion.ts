@@ -5,6 +5,27 @@ const MAX_DESCRIPTION_LENGTH = 2000;
 const MAX_METADATA_LENGTH = 1500;
 const MOCK_MODE = isMockMode();
 
+// BE-305: Retry policy for best-effort Notion inserts.
+// Notion logging is fire-and-forget telemetry, so we never throw to the caller.
+// Transient failures (HTTP 429 rate limits / 5xx server errors / network blips) are
+// retried a small, bounded number of times with short exponential-ish backoff.
+// Non-transient failures (auth, validation, "Could not find property") are NOT
+// retried here — the field-set fallback loop handles schema mismatches, and auth/
+// validation errors will not succeed on retry, so we surface them immediately.
+const MAX_INSERT_RETRIES = 2;
+const INSERT_RETRY_BASE_DELAY_MS = 150;
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+function isTransientNotionError(error: unknown): boolean {
+    if (error == null) return false;
+    const record = error as { status?: number; code?: string };
+    if (record.status === 429) return true;
+    if (typeof record.status === 'number' && record.status >= 500) return true;
+    const code = typeof record.code === 'string' ? record.code : '';
+    return code === 'rate_limited' || code === 'internal_server_error' || code === 'service_unavailable';
+}
+
 function normalizeText(input: unknown, fallback = ''): string {
     if (typeof input !== 'string') return fallback;
     return input.trim();
@@ -151,6 +172,7 @@ export async function insertNotionRow(data: NotionLogData): Promise<NotionLogRes
 
     const createWithFallback = async (baseTitle: string, baseDesc: string, baseCategory: string, fieldCandidates: string[][]) => {
         let lastError: any = null;
+        candidateLoop:
         for (let i = 0; i < fieldCandidates.length; i += 1) {
             const fieldSet = fieldCandidates[i];
             const props = buildProperties(baseDesc, baseTitle, baseCategory);
@@ -160,20 +182,32 @@ export async function insertNotionRow(data: NotionLogData): Promise<NotionLogRes
                     selectedProps[field] = (props as Record<string, unknown>)[field];
                 }
             });
-            try {
-                const response = await notion.pages.create({
-                    parent: { database_id: DATABASE_ID },
-                    // eslint-disable-next-line
-                    properties: selectedProps as any,
+            // BE-305: bounded retry for transient failures on this field set.
+            let attempt = 0;
+            while (true) {
+                try {
+                    const response = await notion.pages.create({
+                        parent: { database_id: DATABASE_ID },
+                        // eslint-disable-next-line
+                        properties: selectedProps as any,
 
-                });
-                return { success: true, id: response.id };
-            } catch (error) {
-                lastError = error;
-                if (error instanceof Error && error.message?.includes('Could not find property')) {
-                    continue;
+                    });
+                    return { success: true, id: response.id };
+                } catch (error) {
+                    lastError = error;
+                    if (isTransientNotionError(error) && attempt < MAX_INSERT_RETRIES) {
+                        attempt += 1;
+                        // Short backoff (150ms, 300ms) before retrying the same field set.
+                        await sleep(INSERT_RETRY_BASE_DELAY_MS * attempt);
+                        continue;
+                    }
+                    if (error instanceof Error && error.message?.includes('Could not find property')) {
+                        // Schema mismatch: fall through to the next field-set candidate.
+                        continue candidateLoop;
+                    }
+                    // Non-transient, non-schema error: stop trying further candidates.
+                    break candidateLoop;
                 }
-                break;
             }
         }
         const normalized = normalizeNotionError(lastError);

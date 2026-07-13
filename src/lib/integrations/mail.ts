@@ -99,7 +99,9 @@ export async function sendWelcomeEmail(to: string, name: string) {
         return { success: true, data } as MailResult;
     } catch (error) {
         console.error('Unhandled email error:', error);
-        return { success: false, error };
+        // BE-306: normalize to a structured { code, message } reason like the other
+        // senders, so all mail failures expose distinguishable, consistent reason codes.
+        return { success: false, error: normalizeMailError(error) };
     }
 }
 
