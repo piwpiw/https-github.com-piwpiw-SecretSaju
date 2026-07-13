@@ -1,15 +1,22 @@
 ﻿"use client";
 
 import { useState, useEffect, useMemo, type FormEvent, type KeyboardEvent } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import BirthInputRetro from "@/components/home/BirthInputRetro";
-import LoadingGlitch from "@/components/system/LoadingGlitch";
-import { ResultCard } from "@/components/result/ResultCard";
 import TerminalBoot from "@/components/system/TerminalBoot";
+
+// Interaction-driven components that never appear in the initial (boot/input)
+// render — lazy-loaded to cut the home route's First Load JS on mobile.
+const LoadingGlitch = dynamic(() => import("@/components/system/LoadingGlitch"), { ssr: false });
+const ResultCard = dynamic(
+  () => import("@/components/result/ResultCard").then((m) => m.ResultCard),
+  { ssr: false },
+);
 import { calculateSaju, getPillarNameKo, type SajuResult } from "@/lib/saju";
 import { getArchetypeByCode } from "@/lib/saju/archetypes";
 import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
-import JellyShopModal from "@/components/shop/JellyShopModal";
+const JellyShopModal = dynamic(() => import("@/components/shop/JellyShopModal"), { ssr: false });
 import { Shield, Zap, Activity, Compass } from "lucide-react";
 import { handleShare } from '@/lib/app/share';
 import Link from 'next/link';
@@ -298,7 +305,7 @@ export default function HomePage() {
 
       {/* 1.4 Background Starfield Parallax */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.05]" />
+        <div className="absolute inset-0 bg-[image:var(--noise-texture)] opacity-[0.05]" />
         <motion.div
           animate={{ opacity: [0.1, 0.2, 0.1], scale: [1, 1.05, 1] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}

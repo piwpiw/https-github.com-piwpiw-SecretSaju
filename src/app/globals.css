@@ -16,6 +16,9 @@
   --font-display: "Noto Sans KR", "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --radius: 0.75rem;
   --font-size-base: 16px;
+  /* Self-contained grain texture (inline SVG fractal noise) — replaces external
+     transparenttextures.com PNG so pages need zero third-party requests. */
+  --noise-texture: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='140'%20height='140'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.85'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 html {
@@ -183,7 +186,7 @@ body {
 .noise-texture {
   position: absolute;
   inset: 0;
-  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+  background-image: var(--noise-texture);
   opacity: 0.1;
   /* Slightly increased for visibility */
   pointer-events: none;
@@ -227,7 +230,7 @@ body {
 .noise-texture {
   position: absolute;
   inset: 0;
-  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+  background-image: var(--noise-texture);
   opacity: 0.05;
   pointer-events: none;
   mix-blend-mode: overlay;
