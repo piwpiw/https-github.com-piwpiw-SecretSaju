@@ -88,6 +88,24 @@
 - 해결법: 셸 환경 재설정
 - 재발 방지: **빌드 명령은 pwsh에서 직접 실행**
 
+### [E-006] CI Quality workflow — `npm config set optional false` 하드 실패
+- 상태: ✅ 해결
+- 발생일: 2026-07-13
+- 발생 위치: `.github/workflows/deploy.yml` (Quality job, Install dependencies), `agent-autopilot.yml`
+- 증상: CI "Quality" 체크가 의존성 설치 단계에서 `npm error The 'optional' option is deprecated, and can not be set in this way` 로 exit 1. tsc/lint/test 는 실행조차 되지 않음. (npm 10.x, 로컬 재현 완료)
+- 원인: npm 7+ 에서 `npm config set optional false` 는 폐기됨. 또한 optional 을 끄면 Next.js 의 `@next/swc-linux-x64-gnu` 등 **네이티브 optional 바이너리 34개**가 제외되어 빌드가 오히려 깨짐 (ERR-L001 과 동일 계열).
+- 해결법: `deploy.yml` 의 `npm config set optional false` 줄 **삭제**. optional 은 기본값(install)로 두고 `platform/arch` 설정 + `npm ci` 로 올바른 네이티브 바이너리를 설치.
+- 재발 방지: **`npm config set optional ...` / `npm install --omit=optional` 를 CI/vercel.json 어디에도 쓰지 말 것.** 네이티브 optional deps 는 반드시 설치되어야 함. 제외가 필요하면 `--omit=optional` 문법을 쓰되 native 바이너리 영향 먼저 확인. (연관: ERR-L001)
+
+### [E-007] CI workflow summary — escape 안 된 백틱으로 shell EOF 에러
+- 상태: ✅ 해결
+- 발생일: 2026-07-13
+- 발생 위치: `.github/workflows/deploy.yml` (Publish quality summary / diagnostics summary 스텝)
+- 증상: `$GITHUB_STEP_SUMMARY` 작성 스텝이 `unexpected EOF while looking for matching \`\`'` 로 exit 2. (로컬 `bash -n` 으로 재현/수정 확인 완료)
+- 원인: `echo "- ref: \`${{ github.ref_name }}\`"` 에서 여는 백틱이 escape 안 됨(`\``) → bash 가 명령 치환으로 해석하고 닫는 백틱을 못 찾음.
+- 해결법: literal 백틱은 모두 `\`` 로 escape (다른 줄의 `\`${{ ... }}\`` 패턴과 통일). line 126, 193, 194 수정.
+- 재발 방지: **heredoc/echo 안에서 마크다운 코드 백틱을 넣을 때는 반드시 `\`` 로 escape.** 워크플로 shell 블록 변경 시 로컬에서 `bash -n` 문법 검사 후 커밋.
+
 ---
 
 ## 할루시네이션 방지 체크리스트 (모든 AI 필독)

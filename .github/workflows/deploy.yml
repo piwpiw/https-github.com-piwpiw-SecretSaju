@@ -47,7 +47,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm config set optional false
           npm config set platform linux
           npm config set arch x64
           npm ci --no-audit --no-fund
@@ -123,7 +122,7 @@ jobs:
             echo "## Quality Gate Summary"
             echo ""
             echo "- event: \`${{ github.event_name }}\`"
-            echo "- ref: `${{ github.ref_name }}\`"
+            echo "- ref: \`${{ github.ref_name }}\`"
             echo "- run-tests: \`${RUN_TESTS}\`"
             echo ""
             echo "### logs"
@@ -190,8 +189,8 @@ jobs:
             echo ""
             echo "- workflow: ${{ github.workflow }}"
             echo "- run: [${{ github.run_id }} #${{ github.run_attempt }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-            echo "- ref: `${{ github.ref_name }}`"
-            echo "- commit: `${{ github.sha }}`"
+            echo "- ref: \`${{ github.ref_name }}\`"
+            echo "- commit: \`${{ github.sha }}\`"
             echo "- status: \`${{ job.status }}\`"
             echo ""
             echo "### Artifacts"
