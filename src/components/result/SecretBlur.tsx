@@ -3,6 +3,7 @@
 import { cn } from "@/lib/app/utils";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { FREE_LAUNCH } from "@/config/constants";
 
 type SecretBlurProps = {
   hook: string;
@@ -18,6 +19,8 @@ export function SecretBlur({
   onPaymentClick,
 }: SecretBlurProps) {
   const [showModal, setShowModal] = useState(false);
+  // Free open-launch unlocks all secret content regardless of caller state.
+  const isOpen = unlocked || FREE_LAUNCH;
 
   const handlePay = () => {
     onPaymentClick?.();
@@ -28,7 +31,7 @@ export function SecretBlur({
     <section className="w-full max-w-md mx-auto py-12 px-4">
       <h3 className="font-display text-xl text-foreground mb-4 text-center">비밀 미리보기 (시크릿)</h3>
 
-      {unlocked ? (
+      {isOpen ? (
         <motion.div
           className="rounded-2xl glass p-6 text-center"
           initial={{ opacity: 0 }}

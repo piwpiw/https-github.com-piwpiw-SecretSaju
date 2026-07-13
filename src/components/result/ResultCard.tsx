@@ -14,6 +14,7 @@ import ReadingProgressBar from "@/components/ui/ReadingProgressBar";
 import AIIntelligenceBadge from "@/components/ui/AIIntelligenceBadge";
 import AINarrativeSection from "@/components/result/AINarrativeSection";
 import { CalendarDays, Lock, Target, TrendingUp, Orbit, Crown, Flame, Gem, ChevronRight } from "lucide-react";
+import { FREE_LAUNCH } from "@/config/constants";
 
 type Archetype = {
   code: string;
@@ -363,6 +364,8 @@ function ResultCard({
   onInsufficientJelly,
   initialFocus = "base",
 }: Props) {
+  // Free open-launch: premium/secret sections are unlocked for everyone.
+  const effectiveUnlocked = secretUnlocked || FREE_LAUNCH;
   const safeInitialFocus: InsightFocus =
     initialFocus === "love" || initialFocus === "money" || initialFocus === "career" ? initialFocus : "base";
   const [insightFocus, setInsightFocus] = useState<InsightFocus>(safeInitialFocus);
@@ -723,7 +726,7 @@ function ResultCard({
             그래서 기본 성향은 강한 축으로 빠르게 드러나고, 장기 안정감은 부족한 축을 어떻게 보완하느냐에 따라 달라집니다.
           </p>
 
-          {secretUnlocked && (
+          {effectiveUnlocked && (
             <div className="mt-6 border-t border-indigo-500/20 pt-6">
               <AINarrativeSection
                 persona={`${ageGroup}_balanced`}
@@ -1160,7 +1163,7 @@ function ResultCard({
           <p className="text-base text-slate-200 leading-relaxed">{detailedPremiumPreview}</p>
           <p className="text-sm text-slate-400 mt-2">{premiumReportCopy}</p>
           <div className="mt-5 rounded-[2rem] border border-white/10 bg-black/20 overflow-hidden relative">
-            {!secretUnlocked ? (
+            {!effectiveUnlocked ? (
               <>
                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6 bg-slate-950/55 backdrop-blur-md">
                   <p className="text-xs font-black uppercase tracking-[0.3em] text-rose-200">Premium Deep Dive Locked</p>

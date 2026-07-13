@@ -8,6 +8,18 @@
  */
 
 // ============================================
+// LAUNCH FLAGS
+// ============================================
+
+/**
+ * Free open-launch mode. When on, all premium / "secret" content is unlocked
+ * for everyone and the jelly paywall is bypassed (no payment integration
+ * required to launch). Default ON; set NEXT_PUBLIC_FREE_LAUNCH=false to
+ * re-enable paid unlocks once the payment flow goes live.
+ */
+export const FREE_LAUNCH = process.env.NEXT_PUBLIC_FREE_LAUNCH !== 'false';
+
+// ============================================
 // BUSINESS INFORMATION
 // ============================================
 
