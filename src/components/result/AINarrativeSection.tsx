@@ -32,7 +32,7 @@ import {
   type ReaderQueryType,
 } from "@/lib/reader/fortune-readers";
 import { activateReaderMembership, getReaderMembership } from "@/lib/reader/reader-membership";
-import { getReaderExperimentVariant, reorderReadersForExperiment } from "@/lib/reader/reader-experiments";
+import { getReaderExperimentVariant, reorderReadersForVariant } from "@/lib/reader/reader-experiments";
 
 type DualNarrative = {
   easy: string;
@@ -131,9 +131,13 @@ export default function AINarrativeSection({
   categoryFocus,
 }: Props) {
   const { consumeChuru, churu, isAdmin } = useWallet();
+  // Starts as "control" on both server and the client's first render so the
+  // initial reader order matches SSR output; the real variant is applied
+  // after mount via the effect below (avoids a hydration mismatch).
+  const [experimentVariant, setExperimentVariant] = useState<"control" | "easy_first">("control");
   const availableReaders = useMemo(
-    () => reorderReadersForExperiment(getFortuneReaderProfiles(queryType), queryType),
-    [queryType],
+    () => reorderReadersForVariant(getFortuneReaderProfiles(queryType), queryType, experimentVariant),
+    [queryType, experimentVariant],
   );
   const recommendedReader = useMemo(
     () => getRecommendedReader(queryType, categoryFocus, tendency as never),
@@ -154,7 +158,6 @@ export default function AINarrativeSection({
   const [showShop, setShowShop] = useState(false);
   const [membershipActive, setMembershipActive] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
-  const [experimentVariant, setExperimentVariant] = useState<"control" | "easy_first">("control");
 
   useEffect(() => {
     const lastReaderId = getLastReaderId(queryType);

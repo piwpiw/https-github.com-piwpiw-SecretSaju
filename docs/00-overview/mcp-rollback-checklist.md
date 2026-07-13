@@ -28,7 +28,8 @@
 
 - 오류율 알림 임계치 초과 시 `/api/auth/mcp/callback` 호출을 모니터링 제외 처리
 - `/auth/callback?error=` 접속 비율 추적
-  - 주요 추적 에러명: `expired_oauth_state`, `invalid_oauth_state`, `missing_oauth_artifacts`
+  - 주요 추적 에러명(코드 기준, 2026-07 재확인): 최상위 `error=`는 `provider_error`, `oauth_callback_error`, `invalid_oauth_state`, `token_exchange_failed`, `missing_oauth_profile`, `missing_provider_user_id` 중 하나로 발생하며, 세부 원인은 `provider_error=` 파라미터(`missing_required_params`, `invalid_pkce_code_verifier`, `duplicate_state`, `duplicate_code_verifier` 등)로 구분됨(`src/app/api/auth/mcp/callback/route.ts`)
+  - 참고: `expired_oauth_state`/`missing_oauth_artifacts`는 메시지 맵에 상수로 정의되어 있으나, 현재 콜백 로직은 상태 만료/아티팩트 부재 시 `oauth_callback_error`(`missing_required_params`)로 처리하며 이 두 코드를 최상위 `error` 값으로 직접 발생시키지 않음
 - 임시 안내 문구: 로그인 실패 시 기본 로그인/문의 경로로 유도
 
 ## 복구 확인
@@ -42,9 +43,5 @@
 - MCP 엔드포인트/클라이언트 시크릿 점검
 - `USERINFO_URL` 응답 스키마 재확인
 - `mcp_state` 쿠키의 JSON 페이로드 파싱 정책(`{ value, issuedAt }`) 검열
-- `mcp_state` 내 `issuedAt` 기준 TTL(10분 초과) 즉시 만료(`expired_oauth_state`) 정책 정상 작동 여부 재확인
+- `mcp_state` 쿠키 max-age(10분) 만료 정책 정상 작동 여부 재확인 — 쿠키 만료/부재 시 `oauth_callback_error`(`missing_required_params`)로 처리됨. `issuedAt`은 쿠키 페이로드에 저장되지만 현재 코드는 이를 별도 TTL 비교/만료 코드 분기에 사용하지 않음(코드 기준 2026-07 재확인, `src/lib/auth/auth-mcp.ts`)
 - `mcp_code_verifier` 쿠키 TTL 및 정합성 검증 확인
-# MCP �ѹ� üũ����Ʈ ����
-
-- ��� ������ �׸��� �ֽ� ���� ����Ʈ�� ����
-- ���� �ڵ� �̰� �׸� provider_error ���� ü�� �߰�

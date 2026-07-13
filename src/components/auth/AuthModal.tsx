@@ -36,6 +36,24 @@ function isAdminEmail(email: string | undefined) {
     return !!email && ADMIN_EMAILS.has(email.toLowerCase());
 }
 
+const SUPABASE_AUTH_ERROR_KO: Record<string, string> = {
+    'Invalid login credentials': '이메일 또는 비밀번호가 올바르지 않습니다.',
+    'User already registered': '이미 가입된 이메일입니다.',
+    'Email not confirmed': '이메일 인증이 필요합니다. 메일함을 확인해 주세요.',
+    'Password should be at least 6 characters': '비밀번호는 6자 이상이어야 합니다.',
+    'Email rate limit exceeded': '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.',
+};
+
+// Supabase는 원문 오류 메시지를 영어로 반환하므로, 알려진 케이스는 한국어로 치환하고
+// 매핑되지 않은 영문 메시지는 사용자에게 그대로 노출하지 않고 일반 안내 문구로 대체한다.
+function localizeAuthErrorMessage(message: string | undefined, fallback: string): string {
+    if (!message) return fallback;
+    const mapped = SUPABASE_AUTH_ERROR_KO[message];
+    if (mapped) return mapped;
+    if (/^[\x00-\x7F]*$/.test(message)) return fallback;
+    return message;
+}
+
 export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: AuthModalProps) {
     const { locale } = useLocale();
 
@@ -263,7 +281,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
                 });
 
                 if (error) {
-                    setEmailError(error.message || '회원가입 요청 처리 중 오류가 발생했습니다.');
+                    setEmailError(localizeAuthErrorMessage(error.message, '회원가입 요청 처리 중 오류가 발생했습니다.'));
                     return;
                 }
 
@@ -304,7 +322,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
                 }
 
                 if (error) {
-                    setEmailError(error.message || '로그인 처리 중 오류가 발생했습니다.');
+                    setEmailError(localizeAuthErrorMessage(error.message, '로그인 처리 중 오류가 발생했습니다.'));
                     return;
                 }
                 await refreshWithResult('login', normalizedEmail);

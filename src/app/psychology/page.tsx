@@ -126,17 +126,17 @@ export default function PsychologyPage() {
             <p className="text-slate-200">{result.line}</p>
             <div className="grid gap-4 md:grid-cols-3">
               <ResultSummaryCard
-                title="🧠 Who You Are"
+                title="🧠 당신의 성향"
                 tone="border-indigo-400/30 bg-indigo-500/10"
                 body={`현재 응답 기준으로 당신은 ${result.title} 성향에 가깝습니다. 숫자 ${result.score}점은 단순 우열이 아니라, 판단 방식이 얼마나 빠르고 직접적인지 보여주는 지표로 읽는 편이 맞습니다.`}
               />
               <ResultSummaryCard
-                title="📚 Why It Happens"
+                title="📚 왜 이런 결과가"
                 tone="border-cyan-400/30 bg-cyan-500/10"
                 body={`${result.line} 이 결과는 문제를 처리할 때 감정, 사실, 속도 중 어디에 먼저 반응하는지가 반영된 것입니다. 그래서 같은 상황에서도 당신은 남과 다른 순서로 결정을 내리게 됩니다.`}
               />
               <ResultSummaryCard
-                title="✨ What To Do"
+                title="✨ 이렇게 해보세요"
                 tone="border-emerald-400/30 bg-emerald-500/10"
                 body={`${result.suggestion} 오늘은 판단을 내리기 전에 기준을 짧게 문장으로 남기면, 성향의 장점은 살리고 과잉 반응은 줄일 수 있습니다.`}
               />

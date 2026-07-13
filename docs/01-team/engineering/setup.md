@@ -48,6 +48,8 @@ npm run setup:auto
 
 ## ??Step 1: ?꾩닔 怨꾩젙 ?앹꽦 (10遺?
 
+> 2026-07 갱신: 여기서 말하는 "필수"는 카카오 로그인·Supabase 이력 저장 기능을 쓸 때 필요하다는 뜻입니다. 두 값이 없어도 앱 자체는 정상 기동합니다(로그인/이력 저장만 비활성화). Toss(1-3)는 결제 기능용이며, 무료 오픈 런칭(`NEXT_PUBLIC_FREE_LAUNCH` 기본 ON, `src/config/constants.ts`)에서는 아예 불필요합니다. 자세한 내용은 `docs/02-technical/FREE_LAUNCH_RUNBOOK.md` 참고.
+
 ### 1-1. Kakao Developers
 
 1. **?뚯썝媛??*: https://developers.kakao.com/
@@ -129,6 +131,9 @@ npm run setup:auto
    # Toss (?좏깮)
    NEXT_PUBLIC_TOSS_CLIENT_KEY=test_ck_...
    TOSS_SECRET_KEY=test_sk_...
+
+   # Free Launch (선택, 기본 ON)
+   # NEXT_PUBLIC_FREE_LAUNCH=false  # 유료 전환 시에만 false로 설정. 기본값(미설정/true)이면 위 Toss 값 없이도 전체 프리미엄 공개
    ```
 
 3. **???*: Ctrl+S (?먮뒗 Cmd+S)
@@ -325,7 +330,7 @@ KAKAO_REST_API_KEY=your-rest-api-key
 KAKAO_CLIENT_SECRET=your-client-secret
 KAKAO_REDIRECT_URI=http://localhost:3000/api/auth/kakao/callback
 
-# Toss Payments (?좎뒪?섏씠癒쇱툩?먯꽌 諛쒓툒)
+# Toss Payments (?좎뒪?섏씠癒쇱툩?먯꽌 諛쒓툒) — 선택, 무료 오픈 런칭(FREE_LAUNCH 기본 ON) 시 불필요
 NEXT_PUBLIC_TOSS_CLIENT_KEY=your-toss-client-key
 TOSS_SECRET_KEY=your-toss-secret-key
 ```
@@ -454,6 +459,8 @@ git push -u origin main --force
 # MVP ?듭떖 ?ㅼ젙 媛?대뱶
 
 ?ㅻ뒛 諛??꾩꽦???꾪븳 ?꾩닔 ?ㅼ젙 泥댄겕由ъ뒪?몄엯?덈떎.
+
+> 2026-07 갱신: 이 섹션의 Toss Payments 관련 단계(2·6·8단계)는 이제 선택입니다. `NEXT_PUBLIC_FREE_LAUNCH`(기본 ON, `src/config/constants.ts`)가 켜져 있으면 결제 키 없이 모든 프리미엄/시크릿 콘텐츠가 공개되므로 건너뛰어도 됩니다. 자세한 내용은 `docs/02-technical/FREE_LAUNCH_RUNBOOK.md` 참고.
 
 ---
 
