@@ -34,9 +34,6 @@ jobs:
           
       - name: Install dependencies
         run: |
-          npm config set optional false
-          npm config set platform linux
-          npm config set arch x64
           npm ci --no-audit --no-fund
 
       - name: Run Build and QA

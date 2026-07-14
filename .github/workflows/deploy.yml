@@ -47,8 +47,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm config set platform linux
-          npm config set arch x64
           npm ci --no-audit --no-fund
 
       - name: Run quality checks in parallel
