@@ -60,7 +60,7 @@ export default function DreamsPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.18),transparent_45%)]" />
       <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
         <div className="flex items-center justify-between mb-8">
-          <button onClick={() => router.back()} className="w-10 h-10 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center">
+          <button type="button" onClick={() => router.back()} aria-label="뒤로 가기" className="w-10 h-10 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center">
             <ArrowLeft className="w-5 h-5 text-slate-200" />
           </button>
           <div className="text-xs px-4 py-2 rounded-full border border-white/10 bg-white/10 text-slate-300">꿈해몽 정밀 도우미</div>

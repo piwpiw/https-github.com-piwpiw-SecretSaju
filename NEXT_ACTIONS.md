@@ -61,7 +61,8 @@
 - [x] Backend BE-305~320 잔여 항목 해소 (실제 수정 + 이미 충족분 검증)
 - [x] `docs/archive/decision-history/parallel-work-queue.md` mojibake 손상 → UTF-8 복원
 - [x] Ops/QA 문서 정합성 항목(OPS-309/310/311/312/313/319) — deployment.md, setup.md, active-dispatch.md, roadmap.md, mcp-rollback-checklist.md 최신화 + UI 영어 카피 누락 3건 수정
-- [ ] Ops/QA OPS-301/302/304/305/306/307/308/314/315/316/317/318/320 — 라이브 배포/수동 브라우저 검증 필요분 잔존 (헤드리스로 불가)
+- [x] Ops/QA 자동화 가능 항목(OPS-303/305/306/307/308/315/316/318/320) — 모바일 브레이크포인트·404/빈상태·성능·세션만료·직접진입·접근성 전수 점검, 버그 4건 발견·수정(오버플로우 2건, 로딩/빈상태 중복노출 1건, a11y 아리아라벨 6건) + 세션만료 취약점 1건 발견(ERROR_LEDGER ERR-L004, 제품 결정 필요해 미수정)
+- [ ] Ops/QA OPS-301/302/304/314/317 — 라이브 배포/실 결제 키/크로스브라우저 필요로 헤드리스 불가, 최종 잔존
 
 ### PWQ-2. 런타임 회귀 스윕 (완료 2026-07-13)
 - [x] 전체 54개 라우트 모바일 뷰포트 런타임 스모크(Playwright, `scripts/qa/menu-smoke.mjs`) — 크래시/404/예외 0건

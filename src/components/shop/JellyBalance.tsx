@@ -41,9 +41,19 @@ export default function JellyBalance({
         setIsLowBalance(currentBalance < 2);
     };
 
+    // Defends the pill layout against unexpectedly large balances (e.g. a
+    // runaway/dev default) so the badge never overflows the viewport on
+    // narrow breakpoints.
+    const formattedBalance = new Intl.NumberFormat('ko-KR', {
+        notation: 'compact',
+        maximumFractionDigits: 1,
+    }).format(balance);
+
     return (
         <motion.button
+            type="button"
             onClick={onClick}
+            aria-label={`젤리 잔액 ${balance}개, 충전하기`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`
@@ -71,9 +81,10 @@ export default function JellyBalance({
                 key={balance}
                 initial={{ y: -10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="font-bold text-foreground"
+                className="font-bold text-foreground max-w-[72px] truncate"
+                title={balance.toLocaleString('ko-KR')}
             >
-                {balance}
+                {formattedBalance}
             </motion.span>
 
             {/* Add Icon */}

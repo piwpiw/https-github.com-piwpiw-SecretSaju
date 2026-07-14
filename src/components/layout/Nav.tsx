@@ -236,7 +236,10 @@ export function Nav() {
 
             {/* Settings Mobile/Tablet Toggle */}
             <button
+              type="button"
               onClick={() => setMobileOpen(!mobileOpen)}
+              aria-expanded={mobileOpen}
+              aria-label={mobileOpen ? "메뉴 닫기" : "메뉴 열기"}
               className="lg:hidden w-10 h-10 rounded-2xl bg-white/5 border border-white/5 text-slate-500 flex items-center justify-center"
             >
               <Menu className="w-5 h-5" />

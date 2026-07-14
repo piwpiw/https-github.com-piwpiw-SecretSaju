@@ -43,10 +43,10 @@ export default function FortuneCarousel() {
                     </div>
                 </div>
                 <div className="flex gap-2 sm:gap-3 flex-shrink-0">
-                    <button onClick={() => scroll("left")} className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-white/5 text-slate-400 hover:text-white hover:border-white/20 transition-all flex items-center justify-center">
+                    <button type="button" onClick={() => scroll("left")} aria-label="이전 메뉴 보기" className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-white/5 text-slate-400 hover:text-white hover:border-white/20 transition-all flex items-center justify-center">
                         <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
-                    <button onClick={() => scroll("right")} className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-white/5 text-slate-400 hover:text-white hover:border-white/20 transition-all flex items-center justify-center">
+                    <button type="button" onClick={() => scroll("right")} aria-label="다음 메뉴 보기" className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-white/5 text-slate-400 hover:text-white hover:border-white/20 transition-all flex items-center justify-center">
                         <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                 </div>

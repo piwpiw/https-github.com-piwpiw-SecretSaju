@@ -221,15 +221,15 @@ export default function DailyFortunePage() {
               className="space-y-4">
 
               {/* Score + Message */}
-              <div className="rounded-[2.5rem] border border-white/10 bg-slate-900/60 backdrop-blur-xl p-8 relative overflow-hidden">
+              <div className="rounded-[2.5rem] border border-white/10 bg-slate-900/60 backdrop-blur-xl p-5 sm:p-8 relative overflow-hidden">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-0.5 bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent rounded-full" />
 
-                <div className="flex items-center gap-8">
+                <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-8">
                   {/* Score Ring */}
                   <ScoreRing score={scoreVal} />
 
                   {/* Info */}
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 w-full text-center sm:text-left">
                     <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500 mb-1">{fortune.date}</p>
                     {fortune.pillarName && (
                       <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-3">

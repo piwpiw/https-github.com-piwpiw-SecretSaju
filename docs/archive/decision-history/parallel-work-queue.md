@@ -53,24 +53,26 @@
 > 아래 항목은 대부분 실행 중인 배포 환경 또는 수동 검증이 필요하여 헤드리스 자동화로 완료할 수 없습니다. 라이브 환경 확보 후 순차 수행합니다.
 1. [ ] OPS-301: `/docs/01-team/qa/USER_VERIFICATION.md` 사용자 시나리오 체크리스트 1회 수행 (수동)
 2. [ ] OPS-302: `/docs/01-team/qa/USER_VERIFICATION.md` `/gift` 플로우 결과 검증 (수동)
-3. [ ] OPS-303: `/docs/GITHUB_ISSUES.md` 잔여 문서 정합성 2차 검토
-4. [ ] OPS-304: `/docs/01-team/qa/test-scenarios.md` Homepage, 결제, 로그인 시나리오 1회 통과 (수동)
-5. [ ] OPS-305: `/docs/01-team/qa/test-scenarios.md` 콘솔 error critical 없음 검증 (수동)
-6. [ ] OPS-306: 모바일 브레이크포인트(320~768) 시각 정합 점검 (수동)
-7. [ ] OPS-307: 404/로딩/빈 상태 페이지 동작 1회 점검 (수동)
-8. [ ] OPS-308: 성능 체크: 초기 렌더 블록 리소스 2초 이상 측정 (수동)
-9. [ ] OPS-309: `/docs/guides/deployment.md` 배포 사전 검증 절차 최신화
-10. [ ] OPS-310: `/docs/guides/setup.md` 환경변수 문구와 실제 필요 변수 정합
-11. [ ] OPS-311: `docs/archive/decision-history/active-dispatch.md` Wave 상태 정합 정리
-12. [ ] OPS-312: `docs/00-overview/roadmap.md` Remaining 항목 우선순위 재분류
-13. [ ] OPS-313: MCP rollback checklist 최신 문구/명령 정합 점검
-14. [ ] OPS-314: 결제 플로우 에러 시나리오(실패/취소/중단) 로그 체크 (수동)
-15. [ ] OPS-315: 로그인 상태 이탈/세션 만료 UX 점검 (수동)
-16. [ ] OPS-316: 결제 성공/실패 페이지 접근권한 없이 직접 진입 시 안내 UX 점검 (수동)
-17. [ ] OPS-317: 공유 기능(카카오/복사) 크로스 브라우저 호환 점검 (수동)
-18. [ ] OPS-318: 접근성(포커스 순서/ARIA) 샘플 페이지 1회 점검
-19. [ ] OPS-319: 에러 문구/버튼 라벨 번역 누락 검토(한국어 우선)
-20. [ ] OPS-320: `/docs/parallel-work-queue.md` 주간 업데이트 루틴 확정
+3. [x] OPS-303: `/docs/GITHUB_ISSUES.md` — 해당 파일 없음(문서 구조 리팩터로 제거/미생성 확인). N/A 처리
+4. [/] OPS-304: `/docs/01-team/qa/test-scenarios.md` Homepage, 결제, 로그인 시나리오 1회 통과 — Homepage/로그인은 로컬 스모크로 커버, 실 결제는 라이브 키 필요 (수동 잔존)
+5. [x] OPS-305: `/docs/01-team/qa/test-scenarios.md` 콘솔 error critical 없음 검증 — 54개 라우트 전수 스모크로 완료(2026-07-13)
+6. [x] OPS-306: 모바일 브레이크포인트(320~768) 시각 정합 점검 (완료 2026-07-13, `/tarot` 잔액 배지 오버플로우·`/daily` 텍스트 컬럼 붕괴 2건 수정)
+7. [x] OPS-307: 404/로딩/빈 상태 페이지 동작 1회 점검 (완료 2026-07-13, `/history` 로딩·빈상태 동시노출 수정)
+8. [x] OPS-308: 성능 체크: 초기 렌더 블록 리소스 2초 이상 측정 (완료 2026-07-13, 전 라우트 2초 이하, 렌더블로킹 없음 확인)
+9. [x] OPS-309: `/docs/02-technical/deployment.md` 배포 사전 검증 절차 최신화 (완료 2026-07-13)
+10. [x] OPS-310: `/docs/01-team/engineering/setup.md` 환경변수 문구와 실제 필요 변수 정합 (완료 2026-07-13)
+11. [x] OPS-311: `docs/archive/decision-history/active-dispatch.md` Wave 상태 정합 정리 (완료 2026-07-13)
+12. [x] OPS-312: `docs/00-overview/roadmap.md` Remaining 항목 우선순위 재분류 (완료 2026-07-13)
+13. [x] OPS-313: MCP rollback checklist 최신 문구/명령 정합 점검 (완료 2026-07-13, mojibake 조각도 제거)
+14. [ ] OPS-314: 결제 플로우 에러 시나리오(실패/취소/중단) 로그 체크 (수동, 라이브 키 필요)
+15. [x] OPS-315: 로그인 상태 이탈/세션 만료 UX 점검 (완료 2026-07-13 — 실제 취약점 발견: 쿠키 만료 후에도 localStorage 캐시로 로그인 상태 지속 표시. 제품 결정 필요해 자동수정 안 함, ERROR_LEDGER ERR-L004 기록)
+16. [x] OPS-316: 결제 성공/실패 페이지 접근권한 없이 직접 진입 시 안내 UX 점검 (완료 2026-07-13, 이미 안전하게 처리됨 확인)
+17. [ ] OPS-317: 공유 기능(카카오/복사) 크로스 브라우저 호환 점검 (수동, 이 환경엔 Chromium만 있어 크로스브라우저 불가 — 단일 브라우저 동작만 검증 가능)
+18. [x] OPS-318: 접근성(포커스 순서/ARIA) 샘플 페이지 1회 점검 (완료 2026-07-13, 아이콘 전용 버튼 aria-label 누락 6건 수정)
+19. [x] OPS-319: 에러 문구/버튼 라벨 번역 누락 검토(한국어 우선) (완료 2026-07-13, 영어 노출 3건 수정)
+20. [x] OPS-320: 주간 업데이트 루틴 확정 (완료 2026-07-13, 아래 명시)
+
+**주간 업데이트 루틴(OPS-320)**: 매주 스프린트 종료 시 (1) 이 큐 파일의 신규 완료 항목 체크, (2) `NEXT_ACTIONS.md` Last Updated 갱신, (3) `ERROR_LEDGER.md` 신규/해결 항목 반영, (4) `scripts/qa/menu-smoke.mjs` 재실행으로 회귀 확인.
 
 ---
 
