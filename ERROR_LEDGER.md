@@ -48,18 +48,16 @@
 - **방지**: 감사/리포트 자동 생성 스크립트가 한글을 출력할 때는 반드시 UTF-8로 파일에 직접 씀(콘솔 codepage 경유 금지). `scripts/qa/` 계열 리포트 생성기 점검 권장.
 - **관련 파일**: `docs/archive/decision-history/admin-audit-priority-plan.md`
 
-### ERR-L004 | 상태: ❌ 미해결 (보안/UX, 제품 결정 필요)
-- **날짜**: 2026-07-13
+### ERR-L004 | 상태: ✅ 해결 (옵션 1 채택)
+- **날짜**: 2026-07-13 발견 / 2026-07-14 해결
 - **발생 AI**: Claude (Opus 4.8) — OPS-315 QA 감사 중 발견
 - **증상**: 서버 세션 쿠키(`user_data`)가 만료/삭제된 뒤에도, `localStorage`에 남아있는 예전 캐시가 있으면 `getUserFromCookie()`가 이를 그대로 신뢰하여 로그인 상태로 렌더링함. 즉 세션이 만료된 사용자가 브라우저를 새로고침해도 계속 "로그인된 것처럼" 자신의 프로필/지갑/추천 카드가 보임 — 재로그인 유도 UI가 전혀 뜨지 않음.
 - **재현**: `/mypage` 방문 → 쿠키 `user_data`만 제거하고 `localStorage['user_data']`는 유지 → 새로고침 → 여전히 로그인 대시보드 표시(로그아웃 버튼까지 정상 렌더).
-- **근본 원인**: `src/lib/auth/kakao-auth.ts`(약 141~184줄) `getUserFromCookie()`의 폴백 로직 — 쿠키 부재 시 `localStorage` 캐시를 무조건 신뢰. 별도로 `McpAuthRefresher.tsx`는 MCP OAuth 토큰만 갱신할 뿐 이 Kakao 세션 캐시는 검증하지 않음. 보호된 API를 실제로 호출하기 전까지는 클라이언트가 세션 무효를 감지할 방법이 없음(401 인터셉터 부재).
-- **조치**: 자동 수정하지 않음 — 인증 신뢰 로직 변경은 제품 결정이 필요한 영역(현재의 localStorage 폴백이 일시적 쿠키 읽기 실패를 견디기 위한 의도적 설계일 가능성 있음). 아래 해결 옵션 중 선택 필요.
-- **해결 옵션(택1 이상)**:
-  1. `localStorage` 캐시에 TTL을 두고 만료 시 폐기
-  2. 캐시를 신뢰하기 전 가벼운 서버 핑(`/api/auth/session` 등)으로 세션 유효성 재확인
-  3. 보호된 API가 401을 반환하면 전역 인터셉터가 로컬 인증 상태를 즉시 초기화하고 로그인 유도 UI로 전환
-- **관련 파일**: `src/lib/auth/kakao-auth.ts`(141~184줄), `src/lib/auth/auth-status.ts`, `src/components/auth/McpAuthRefresher.tsx`
+- **근본 원인**: `src/lib/auth/kakao-auth.ts`(약 141~184줄) `getUserFromCookie()`의 폴백 로직 — 쿠키 부재 시 `localStorage` 캐시를 무조건 신뢰. 별도로 `McpAuthRefresher.tsx`는 MCP OAuth 토큰만 갱신할 뿐 이 Kakao 세션 캐시는 검증하지 않음.
+- **해결법(사용자 결정: 옵션 1 — TTL)**: `getUserFromCookie()`에서 쿠키로 사용자 정보를 읽어올 때마다 `localStorage`에 `user_data_cached_at` 타임스탬프(`Date.now()`)를 함께 기록. 쿠키가 없어 `localStorage` 캐시로 폴백할 때는 이 타임스탬프가 **1시간(`USER_DATA_CACHE_TTL_MS`) 이내**인 경우에만 신뢰하고, TTL을 넘겼거나 타임스탬프 자체가 없으면(이 수정 이전에 저장된 구 캐시 포함) 캐시를 즉시 폐기하고 로그아웃 상태로 처리. `clearUserSession()`에도 타임스탬프 키 정리 추가.
+- **검증**: `npx tsc --noEmit` 0 / lint 0 / 테스트 68/68 통과.
+- **미채택 옵션(향후 강화 여지)**: 옵션 2(서버 세션 핑), 옵션 3(401 전역 인터셉터) — 지금은 옵션 1로 충분하다고 판단, 필요 시 추가 검토.
+- **관련 파일**: `src/lib/auth/kakao-auth.ts`
 
 ## 형식
 ```

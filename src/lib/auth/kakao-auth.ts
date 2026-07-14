@@ -5,6 +5,13 @@ import { isMockMode } from '@/lib/app/use-mock';
 
 const ADMIN_BYPASS_STORAGE_KEY = 'secret_paws_mock_admin';
 
+// How long the localStorage mirror of the session cookie is trusted once the
+// cookie itself is gone (e.g. expired, cleared by the server, or blocked).
+// Prevents a stale local cache from indefinitely impersonating a logged-in
+// session after the server-side session has actually ended (ERR-L004).
+const USER_DATA_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const USER_DATA_CACHE_TS_KEY = `${STORAGE_KEYS.USER_DATA}_cached_at`;
+
 declare global {
     interface Window {
         Kakao: any;
@@ -160,14 +167,25 @@ export function getUserFromCookie(): UserFromCookie | null {
             parsed = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
             if (typeof localStorage !== 'undefined') {
                 localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(parsed));
+                localStorage.setItem(USER_DATA_CACHE_TS_KEY, String(Date.now()));
             }
         } catch { }
     } else if (typeof localStorage !== 'undefined') {
-        const cached = localStorage.getItem(STORAGE_KEYS.USER_DATA);
-        if (cached) {
-            try {
-                parsed = JSON.parse(cached);
-            } catch { }
+        const cachedAt = Number(localStorage.getItem(USER_DATA_CACHE_TS_KEY) || 0);
+        const isFresh = cachedAt > 0 && Date.now() - cachedAt < USER_DATA_CACHE_TTL_MS;
+        if (isFresh) {
+            const cached = localStorage.getItem(STORAGE_KEYS.USER_DATA);
+            if (cached) {
+                try {
+                    parsed = JSON.parse(cached);
+                } catch { }
+            }
+        } else {
+            // Cookie is gone and the cache is stale (or was never timestamped,
+            // e.g. from before this fix) — treat the session as expired rather
+            // than trusting old local data indefinitely.
+            localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+            localStorage.removeItem(USER_DATA_CACHE_TS_KEY);
         }
     }
 
@@ -203,6 +221,7 @@ export function clearUserSession() {
     if (typeof localStorage !== 'undefined') {
         try {
             localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+            localStorage.removeItem(USER_DATA_CACHE_TS_KEY);
             localStorage.removeItem(ADMIN_BYPASS_STORAGE_KEY);
             localStorage.removeItem('mcp_access_token');
             localStorage.removeItem('mcp_refresh_token');
