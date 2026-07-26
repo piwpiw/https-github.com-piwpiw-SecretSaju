@@ -33,6 +33,7 @@ import {
 } from "@/lib/reader/fortune-readers";
 import { activateReaderMembership, getReaderMembership } from "@/lib/reader/reader-membership";
 import { getReaderExperimentVariant, reorderReadersForVariant } from "@/lib/reader/reader-experiments";
+import { FREE_LAUNCH } from "@/config/constants";
 
 type DualNarrative = {
   easy: string;
@@ -362,11 +363,12 @@ export default function AINarrativeSection({
               const recommended = reader.id === recommendedReader.id;
               const favorite = favoriteReaderIds.includes(reader.id);
               const unlocked =
-                reader.tier === "starter"
+                FREE_LAUNCH ||
+                (reader.tier === "starter"
                   ? true
                   : reader.tier === "signature"
                     ? membershipActive || isAdmin
-                    : unlockedReaderIds.includes(reader.id) || isAdmin;
+                    : unlockedReaderIds.includes(reader.id) || isAdmin);
               const unlockCost = getReaderUnlockCost(reader);
 
               return (
