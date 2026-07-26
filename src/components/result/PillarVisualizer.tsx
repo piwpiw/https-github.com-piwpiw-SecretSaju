@@ -20,7 +20,7 @@ export default function PillarVisualizer({ pillars }: { pillars: Pillar[] }) {
 
   return (
     <div className="flex justify-center gap-4 md:gap-8 py-10 px-4 bg-slate-900/40 rounded-[3rem] border border-white/5 relative overflow-hidden backdrop-blur-xl">
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/pinstripe-dark.png')] opacity-[0.03]" />
+      <div className="absolute inset-0 bg-[image:var(--noise-texture)] opacity-[0.03]" />
 
       {displayPillars.map((p, i) => (
         <motion.div

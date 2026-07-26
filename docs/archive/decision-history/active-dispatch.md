@@ -2,6 +2,7 @@
 
 - Updated: 2026-03-07
 - Status: EXECUTION IN PROGRESS (active top-10 backlog 기준으로 재정렬)
+- OPS-311 정합성 검토(2026-07-13): 최상단 Wave 21의 미완료 smoke 항목은 여전히 유효(수동 검증 잔여, `NEXT_ACTIONS.md`/`parallel-work-queue.md` OPS 트랙과 동일). 하위 Wave 30 / Wave 30-6 / Continuous-Dev의 상태 라벨 불일치는 정정함. 이 문서는 아카이브 로그이며, 현재 잔여 작업의 SSOT는 `NEXT_ACTIONS.md`.
 
 ## Dispatch Wave 21 (Backlog Compression, 2026-03-07)
 - Status: In Progress
@@ -556,7 +557,7 @@
 - 첫 스파인: 20개 항목 단위로 선분할 후 10분 단위 스탠드업 로그.
 
 ## Dispatch Wave 30 (Residual Queue Expansion: Enterprise + Roadmap Follow-up, 2026-03-03)
-- Status: In Progress
+- Status: Completed (2026-03-03) — 하위 슬롯 Wave30-1~30-3 전량 [x] 완료, Wave30-4로 정상 인계됨 (OPS-311 정합성 정리, 2026-07-13)
 - Objective: 잔여량 대형 큐(`enterprise-upgrade-daily-plan-2026-03-03.md`)의 20개 단위 재할당과, `roadmap.md` 중단기 항목의 우선순위 정렬 후 즉시 분기 실행.
 
 ### Wave 30 멀티 에이전트 운영
@@ -1227,7 +1228,7 @@
 - 다음 스텝: Wave30-6 착수 준비 (`101~120` 분할).
 
 ## Dispatch Wave 30-6 (잔여 확장 착수)
-- Status: In Progress
+- Status: Completed (2026-03-03) — 하위 슬롯 BE/FE/PO/OPS-101~120 전량 [x] 완료(20/20), Wave30-7로 정상 인계됨 (OPS-311 정합성 정리, 2026-07-13)
 - Task IDs: BE-101~120 / FE-101~120 / PO-101~120 / OPS-101~120
 - Source: `docs/00-overview/enterprise-upgrade-daily-plan-2026-03-03.md`
 - Wave30-6 멀티 에이전트 슬롯
@@ -2953,8 +2954,8 @@
   - [x] OPS-400 docs/00-overview/enterprise-upgrade-daily-plan-2026-03-03.md 항목 선점/정합성 검토 (2026-03-04)
 
 ## Dispatch Wave Continuous-Dev (2026-03-03)
-- Status: In Progress
-- Mission: 5-hour continuous development sweep without manual prompts
+- Status: Concluded — 마지막 로그는 `docs/archive/decision-history/continuous-development-queue.md` 기준 2026-03-05, 이후 신규 사이클 없음. "5-hour loop window active"는 더 이상 유효하지 않으며, 현재 잔여 작업의 SSOT는 `NEXT_ACTIONS.md` (OPS-311 정합성 정리, 2026-07-13)
+- Mission (당시): 5-hour continuous development sweep without manual prompts
 - Owner: Autonomous Dev Loop
 - Scope:
   - Continuous scan of route pages and docs for quick-win UI/UX defects
@@ -2963,10 +2964,10 @@
 - Execution:
   - Script: `scripts/qa/autonomous-ux-loop.js`
   - Run command: `npm run auto:ux-loop`
-  - Update artifact: `docs/continuous-development-queue.md`
-  - Summary artifact: `docs/residual-issue-queue-summary.md`
-- Current signal:
-  - 5-hour loop window active
+  - Update artifact: `docs/archive/decision-history/continuous-development-queue.md` (경로 이동됨, 구 경로 `docs/continuous-development-queue.md`는 더 이상 존재하지 않음)
+  - Summary artifact: `docs/archive/decision-history/residual-issue-queue-summary.md` (경로 이동됨, 구 경로 `docs/residual-issue-queue-summary.md`는 더 이상 존재하지 않음)
+- Current signal (당시 기록, 더 이상 유효하지 않음):
+  - 5-hour loop window active → 실제로는 2026-03-05까지 사이클 기록 후 종료
 
 ## 운영 배포 시도 기록 (2026-03-04)
 - 16:35 KST: `npm run deploy` 재시도 실행.

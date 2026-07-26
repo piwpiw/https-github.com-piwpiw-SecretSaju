@@ -14,7 +14,8 @@ import {
   type ReaderQueryType,
 } from "@/lib/reader/fortune-readers";
 import { useAuthStatus } from "@/lib/auth/auth-status";
-import { getReaderExperimentVariant, reorderReadersForExperiment } from "@/lib/reader/reader-experiments";
+import { getReaderExperimentVariant, reorderReadersForVariant } from "@/lib/reader/reader-experiments";
+import { FREE_LAUNCH } from "@/config/constants";
 import { getReaderMembership } from "@/lib/reader/reader-membership";
 
 const QUERY_TYPES: ReaderQueryType[] = ["result", "compatibility", "daily", "chat"];
@@ -29,8 +30,8 @@ export default function FortuneReadersPage() {
   const [experimentVariant, setExperimentVariant] = useState<ReturnType<typeof getReaderExperimentVariant>>("control");
 
   const readers = useMemo(
-    () => reorderReadersForExperiment(getFortuneReaderProfiles(queryType), queryType),
-    [queryType],
+    () => reorderReadersForVariant(getFortuneReaderProfiles(queryType), queryType, experimentVariant),
+    [queryType, experimentVariant],
   );
 
   useEffect(() => {
@@ -89,6 +90,7 @@ export default function FortuneReadersPage() {
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {readers.map((reader) => {
             const unlocked =
+              FREE_LAUNCH ||
               reader.tier === "starter" ||
               unlockedIds.includes(reader.id) ||
               (reader.tier === "signature" && membershipActive);

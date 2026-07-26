@@ -33,6 +33,11 @@
 - `npm run deploy:local`
   - 기본 동작: `preflight:local` + `pre-deploy --skip-build --skip-tests`
   - 목적: 배포 전 최소한의 안전성 확인
+  - 주의: `--skip-build`로 실행되므로 `npm run build`(아래) 가드는 건너뛴다. 별도로 최소 1회 실행 필요
+- `npm run build`
+  - 실제 명령: `npm run guard:result-card && next build`
+  - `guard:result-card`는 `ResultCard.tsx` / `saju-hanja.ts`의 UTF-8·한자 이스케이프 손상을 사전 차단하는 가드(ERROR_LEDGER.md E-001/E-002 재발 방지)
+  - `pre-deploy`(`--skip-build` 미사용) 또는 `pre-deploy:parallel` 실행 시 자동 포함되지만, `deploy:local`/`deploy:fast` 경로에서는 생략되므로 PR 머지 전 최소 1회 직접 확인
 
 ### 2. preflight 실행 모드
 
@@ -91,18 +96,20 @@
    - 운영: `npm run deploy` 또는 `npm run deploy:fast`
    - 미리보기: `npm run deploy:preview` (Preview도 Render 훅 기반으로만 실행)
 5. 배포 후 검증
-   - `/api/saju/calculate`, `/api/payment/verify` 스모크 확인
-   - 결제/웹훅 경로 및 주요 정책 페이지(terms/privacy/refund) 링크 확인
+   - `/api/saju/calculate` 스모크 확인
+   - 결제 관련 확인(`/api/payment/verify` 스모크, 결제/웹훅 경로)은 `NEXT_PUBLIC_FREE_LAUNCH`가 `false`로 유료 전환된 배포에서만 필수. 무료 오픈 런칭(기본값, `FREE_LAUNCH` ON) 상태에서는 결제 키 자체가 설정되지 않으므로 해당 스모크는 생략하고 프리미엄/시크릿 콘텐츠가 잠금 없이 노출되는지만 확인(`docs/02-technical/FREE_LAUNCH_RUNBOOK.md` 참고)
+   - 주요 정책 페이지(terms/privacy/refund) 링크 확인
 6. 장애 대응
    - 이상 징후 발생 시 즉시 모니터링 및 롤백 프로세스 수행
 
 ## 체크리스트
 
 - [ ] `deploy:local` 성공
+- [ ] `npm run build`(`guard:result-card && next build`) 최소 1회 통과 — 인코딩/한자 이스케이프 가드(E-001/E-002 재발 방지)
 - [ ] `smoke:auth` 성공 (인증/회원가입 수정 시)
 - [ ] `npm run verify:env` 통과(필요 시)
 - [ ] 핵심 API 스모크 통과
-- [ ] 결제/환불/웹훙 기본 동작 확인
+- [ ] 결제/환불/웹훅 기본 동작 확인 (유료 전환 배포에 한함, `NEXT_PUBLIC_FREE_LAUNCH=false`일 때만 필수)
 - [ ] 정책 페이지 링크 정상 동작
 - [ ] 장애 기록: `docs/archive/decision-history/active-dispatch.md`
 
@@ -133,10 +140,12 @@
 - `docs/01-team/engineering/testing-guide.md`
 - `docs/01-team/engineering/local-dev-sop.md`
 - `docs/archive/decision-history/active-dispatch.md`
+- `docs/02-technical/DEPLOYMENT_CHECKLIST.md` (스키마/OAuth/롤백 요약 체크리스트)
+- `docs/02-technical/FREE_LAUNCH_RUNBOOK.md` (무료 오픈 런칭 배포 계획 — 결제 키 불요 사유)
 
-**Last Updated**: 2026-03-05  
+**Last Updated**: 2026-07-13  
 **Owner**: DevOps + Engineering Lead  
-**Next Review**: 2026-03-12
+**Next Review**: 2026-07-20
 
 ## Release Approval Checklist Update
 - Approval step 1: build/test + core smoke + secret review logged

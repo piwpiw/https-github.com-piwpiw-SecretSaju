@@ -61,19 +61,19 @@ Become the go-to saju platform in Korea by combining:
   - Cyber (neon futuristic)
 
 #### In Progress
-- 🚧 **Real Payment Integration** (70%)
-  - Toss Payments widget
-  - Server-side verification
-  - Jelly credit system
+- 🚧 **Real Payment Integration** (코드 완료 / 실키 검증 대기, 2026-07-13 기준)
+  - Toss Payments widget, server-side verification, Jelly credit system 모두 구현 완료
+  - 무료 오픈 런칭에는 불필요 — 유료 전환 시점까지 지연 (`docs/02-technical/FREE_LAUNCH_RUNBOOK.md` 참조)
+  - 남은 작업: 실 테스트 카드 결제 검증 (`NEXT_ACTIONS.md` P1-3, 실 키 설정 필요)
 
-- 🚧 **Database Migration** (85%)
-  - Supabase schema ready
-  - Need production migration
+- 🚧 **Database Migration** (코드 준비 완료 / 운영 DB 적용 대기)
+  - Supabase 마이그레이션(`supabase/migrations/*`) 준비 완료
+  - 운영 DB 적용은 사용자 조치 항목 (`docs/02-technical/FREE_LAUNCH_RUNBOOK.md` §4)
 
 #### Planned (Remaining Q1)
-- [ ] **Beta Launch** (100-500 users) `DO-703A`
-- [ ] **Analytics Setup** (GA4, Hotjar) `DO-703B`
-- [ ] **Bug Bash** (team + beta users) `DO-703C`
+- [x] **Analytics Setup** (GA4) `DO-703B` — GA4 연동 완료, 배포 시 `NEXT_PUBLIC_GA_ID` 설정만 필요
+- [ ] **Beta Launch → Free Open Launch로 전환** `DO-703A` — 소규모 베타 대신 프리미엄 전부 무료 개방 런칭으로 방향 확정. 상세: `docs/02-technical/FREE_LAUNCH_RUNBOOK.md`
+- [ ] **Bug Bash** (수동 QA) `DO-703C` — Ops/QA 수동 검증 잔여 항목과 동일 트랙 (`docs/archive/decision-history/parallel-work-queue.md` OPS-301~320)
 
 **Success Metrics**:
 - Beta users: 500
@@ -326,17 +326,20 @@ Original user gets full report unlocked
 
 ## 🎨 Feature Prioritization
 
+### 현재 우선순위 (2026-07-13 기준)
+무료 오픈 런칭 준비가 활성 최우선 순위입니다 — 상세: `docs/02-technical/FREE_LAUNCH_RUNBOOK.md`. 결제/실키 연동 작업은 런칭을 막지 않는 항목으로 유료 전환 시점까지 지연됩니다. 최신 잔여 작업 목록은 `NEXT_ACTIONS.md` 기준.
+
 ### Must-Have (Core Product)
 - [x] Saju calculation
 - [x] Profile management
 - [x] Jelly system
-- [ ] Payment integration `DO-703D`
-- [ ] Share feature `DO-703E`
+- [x] Share feature `DO-703E` — Kakao 공유 연동 완료 (`src/components/share/KakaoShareButton.tsx`)
+- [ ] Payment integration `DO-703D` — 코드 완료, 실 키 검증만 남음. 무료 런칭에는 불필요(유료 전환 시 활성화)
 
 ### Should-Have (Growth)
+- [x] Daily fortune `DO-703H` — `/daily`, `/api/daily-fortune` 구현 완료
 - [ ] Referral system `DO-703F`
 - [ ] Celebrity matching `DO-703G`
-- [ ] Daily fortune `DO-703H`
 - [ ] AI insights `DO-703I`
 
 ### Nice-to-Have (Premium)
@@ -429,7 +432,8 @@ Execution-ready screen contracts are centralized in [Execution Backlog](./execut
 
 ## Roadmap 현황
 
-- Beta launch 체크리스트 상태: 결제 안정화/동작 검증 완료 기준 반영
+- 활성 우선순위: 무료 오픈 런칭 준비 (`docs/02-technical/FREE_LAUNCH_RUNBOOK.md`). Beta launch 체크리스트는 이 트랙으로 대체됨.
+- 결제/실키 연동: 코드 완료, 무료 런칭 비필수 — 유료 전환 시점까지 지연.
 
 ## Handoff Integration Milestones
 - Auth: callback reliability + retry flags + provider error UX

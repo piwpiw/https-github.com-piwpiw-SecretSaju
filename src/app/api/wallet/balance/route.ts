@@ -5,18 +5,25 @@ import { getAuthenticatedUser } from '@/lib/auth/api-auth';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
-    const authResult = await getAuthenticatedUser(request);
-    if (authResult.error) return authResult.error;
-    if (!authResult.user) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const supabase = getSupabaseAdmin();
-    if (!supabase) {
-        return NextResponse.json({ error: 'Database unavailable' }, { status: 503 });
-    }
-
     try {
+        const authResult = await getAuthenticatedUser(request);
+
+        // Guest / unauthenticated, or an expected auth/config failure (401/503):
+        // degrade gracefully instead of surfacing an error to the global wallet
+        // provider that mounts on every page. Only genuine 5xx faults pass through.
+        if (authResult.error) {
+            if (authResult.error.status >= 500) return authResult.error;
+            return NextResponse.json({ balance: 0, isAdmin: false, configured: false });
+        }
+        if (!authResult.user) {
+            return NextResponse.json({ balance: 0, isAdmin: false, configured: false });
+        }
+
+        const supabase = getSupabaseAdmin();
+        if (!supabase) {
+            return NextResponse.json({ balance: 0, isAdmin: false, configured: false });
+        }
+
         const { data: wallet, error: walletError } = await supabase
             .from('jelly_wallets')
             .select('balance')

@@ -152,17 +152,23 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
                     </div>
 
                     {/* Time known toggle */}
-                    <div
-                        className="flex items-center gap-3 cursor-pointer py-2"
+                    {/* Real checkbox semantics: this toggle changes the saju
+                        calculation, so it must be reachable by keyboard and
+                        announced as a checkbox, not just clickable by mouse. */}
+                    <button
+                        type="button"
+                        role="checkbox"
+                        aria-checked={!timeKnown}
                         onClick={() => setTimeKnown(!timeKnown)}
+                        className="flex w-full items-center gap-3 py-2 text-left cursor-pointer rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70"
                     >
-                        <div className={`w-5 h-5 rounded-md flex items-center justify-center border transition-all ${!timeKnown ? 'bg-indigo-500 border-indigo-400' : 'bg-transparent border-slate-600'}`}>
-                            {!timeKnown && <div className="w-2.5 h-2.5 bg-white rounded-sm" />}
-                        </div>
+                        <span className={`w-5 h-5 shrink-0 rounded-md flex items-center justify-center border transition-all ${!timeKnown ? 'bg-indigo-500 border-indigo-400' : 'bg-transparent border-slate-600'}`}>
+                            {!timeKnown && <span className="w-2.5 h-2.5 bg-white rounded-sm" />}
+                        </span>
                         <span className={`text-sm transition-colors ${!timeKnown ? 'text-indigo-300 font-medium' : 'text-slate-500'}`}>
                             태어난 시간이 불확실하면 체크 해제
                         </span>
-                    </div>
+                    </button>
 
                     {/* Time Input */}
                     <AnimatePresence>

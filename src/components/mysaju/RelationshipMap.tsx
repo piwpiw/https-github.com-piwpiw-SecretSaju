@@ -1,22 +1,43 @@
 import { motion } from 'framer-motion';
-import { User, Users, Heart, Zap } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 interface Member {
     id: string;
     name: string;
-    type: 'family' | 'friend' | 'partner';
     animal: string;
-    score: number;
 }
 
-const MOCK_MEMBERS: Member[] = [
-    { id: '1', name: '나', type: 'family', animal: '🐯', score: 100 },
-    { id: '2', name: '김철수', type: 'friend', animal: '🐉', score: 85 },
-    { id: '3', name: '이영희', type: 'partner', animal: '🐰', score: 92 },
-    { id: '4', name: '박민수', type: 'family', animal: '🐶', score: 78 },
-];
+export interface RelationshipMapProps {
+    /** The user's own saved profiles. Only real profiles are shown — this map
+     *  must never present invented people or fabricated compatibility numbers
+     *  as if they were the user's data. */
+    members?: { id: string; name: string }[];
+}
 
-export default function RelationshipMap() {
+// Purely decorative per-node avatars, assigned deterministically by position so
+// the same profile keeps the same glyph between renders.
+const NODE_GLYPHS = ['🐉', '🐰', '🐶', '🐱', '🐴', '🐷'];
+
+export default function RelationshipMap({ members = [] }: RelationshipMapProps) {
+    const satellites: Member[] = members.slice(0, 3).map((m, i) => ({
+        id: m.id,
+        name: m.name,
+        animal: NODE_GLYPHS[i % NODE_GLYPHS.length],
+    }));
+
+    if (satellites.length === 0) {
+        return (
+            <div className="relative w-full aspect-square max-w-md mx-auto bg-white/[0.02] border border-white/5 rounded-[3rem] overflow-hidden flex flex-col items-center justify-center text-center px-10">
+                <span className="text-4xl">🧭</span>
+                <p className="mt-4 text-sm font-black text-white">아직 연결된 인연이 없습니다</p>
+                <p className="mt-2 text-xs leading-6 text-slate-400">
+                    프로필을 2명 이상 등록하면 이곳에 실제 인연 네트워크가 그려집니다.
+                </p>
+                <div className="noise-texture opacity-[0.03]" />
+            </div>
+        );
+    }
+
     return (
         <div className="relative w-full aspect-square max-w-md mx-auto bg-white/[0.02] border border-white/5 rounded-[3rem] overflow-hidden group">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.1)_0%,transparent_70%)]" />
@@ -56,10 +77,10 @@ export default function RelationshipMap() {
 
                 {/* Satellite Nodes */}
                 <div className="absolute inset-0">
-                    {MOCK_MEMBERS.slice(1).map((m, i) => {
+                    {satellites.map((m, i) => {
                         const angles = [300, 45, 140];
                         const dist = 120;
-                        const angle = (angles[i] * Math.PI) / 180;
+                        const angle = (angles[i % angles.length] * Math.PI) / 180;
                         const x = Math.cos(angle) * dist;
                         const y = Math.sin(angle) * dist;
 
@@ -69,16 +90,11 @@ export default function RelationshipMap() {
                                 initial={{ opacity: 0, scale: 0 }}
                                 animate={{ opacity: 1, scale: 1, x, y }}
                                 transition={{ delay: i * 0.2, type: 'spring' }}
-                                whileHover={{ scale: 1.2, zIndex: 20 }}
-                                className="absolute left-1/2 top-1/2 -ml-8 -mt-8 w-16 h-16 rounded-full bg-slate-900 border border-white/10 flex flex-col items-center justify-center cursor-pointer shadow-xl backdrop-blur-md"
+                                className="absolute left-1/2 top-1/2 -ml-8 -mt-8 w-16 h-16 rounded-full bg-slate-900 border border-white/10 flex flex-col items-center justify-center shadow-xl backdrop-blur-md"
                             >
-                                <span className="text-xl">{m.animal}</span>
-                                <div className="absolute -bottom-6 whitespace-nowrap">
+                                <span className="text-xl" aria-hidden="true">{m.animal}</span>
+                                <div className="absolute -bottom-5 whitespace-nowrap">
                                     <p className="text-[9px] font-black text-white">{m.name}</p>
-                                    <div className="flex items-center gap-1 justify-center mt-0.5">
-                                        <Heart className="w-2 h-2 text-rose-400 fill-rose-400" />
-                                        <span className="text-[8px] font-bold text-slate-400">{m.score}%</span>
-                                    </div>
                                 </div>
                             </motion.div>
                         );

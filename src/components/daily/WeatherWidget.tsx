@@ -13,14 +13,45 @@ export default function WeatherWidget() {
             if (data) setWeather(data as any);
         };
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude),
-                () => fetchWeather()
-            );
-        } else {
-            fetchWeather();
-        }
+        // Geolocation is best-effort. A denied/blocked/absent provider must never
+        // throw or log an error — we silently fall back to the default coordinates
+        // baked into getWeatherData (Seoul).
+        const tryGeolocate = async () => {
+            try {
+                if (typeof navigator === "undefined" || !navigator.geolocation) {
+                    fetchWeather();
+                    return;
+                }
+
+                // If the Permissions API reports the feature is denied/blocked,
+                // skip getCurrentPosition entirely to avoid a permissions-policy
+                // console violation, and use the default coordinates.
+                try {
+                    const status = await navigator.permissions?.query({
+                        name: "geolocation" as PermissionName,
+                    });
+                    if (status && status.state === "denied") {
+                        fetchWeather();
+                        return;
+                    }
+                } catch {
+                    // Permissions API unavailable/unsupported — proceed with a
+                    // guarded getCurrentPosition below.
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude),
+                    () => fetchWeather(),
+                    { timeout: 8000, maximumAge: 1000 * 60 * 30 }
+                );
+            } catch {
+                // Any unexpected throw (e.g. blocked by permissions policy) falls
+                // back silently to the default coordinates.
+                fetchWeather();
+            }
+        };
+
+        tryGeolocate();
 
         const interval = setInterval(() => fetchWeather(), 1000 * 60 * 30);
         return () => clearInterval(interval);

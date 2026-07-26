@@ -301,17 +301,28 @@ Find celebrities with similar saju.
 
 ## 🚨 Error Handling
 
-All errors follow this structure:
+All errors follow this **flat** structure, produced by `buildErrorResponsePayload()`
+in [`src/lib/contracts/error-response.ts`](../../../src/lib/contracts/error-response.ts):
 
 ```typescript
 {
-  error: {
-    code: string;        // "VALIDATION_ERROR", "AUTH_REQUIRED", etc.
-    message: string;     // Human-readable Korean message
-    details?: unknown;   // Additional info (dev mode only)
-  }
+  error: string;        // Human-readable message (Korean or English)
+  error_code: string;   // Machine code, e.g. "VALIDATION_ERROR", "PAYMENT_MISSING_TIER"
+  details?: unknown;    // Optional; key is omitted entirely when no details are passed
 }
 ```
+
+**Field reference**:
+
+| Field | Type | Presence | Meaning |
+|-------|------|----------|---------|
+| `error` | string | always | Human-readable message shown to / logged for the caller |
+| `error_code` | string | always | Stable machine-readable code for branching and telemetry |
+| `details` | unknown | optional | Extra context; the key is absent (not `null`) when omitted |
+
+The HTTP **status** code is carried by the response itself (e.g. `NextResponse.json(payload, { status })`),
+not as a field inside the body. There is no nested `error.code` / `error.message` object and no top-level
+`code` or `status` field in the payload.
 
 ### Common Error Codes
 

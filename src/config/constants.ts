@@ -8,6 +8,24 @@
  */
 
 // ============================================
+// LAUNCH FLAGS
+// ============================================
+
+/**
+ * Free open-launch mode. When on, all premium / "secret" content is unlocked
+ * for everyone and the jelly paywall is bypassed (no payment integration
+ * required to launch). Flip to `false` here to re-enable paid unlocks once
+ * the payment flow goes live.
+ *
+ * Deliberately a literal, not `process.env.NEXT_PUBLIC_*`: Next.js only
+ * inlines public env vars that are actually defined at build time, so an
+ * unset var leaves `process.env` untouched in the client bundle, where
+ * `process` is undefined — the expression then evaluates falsy and silently
+ * re-locks every paywall.
+ */
+export const FREE_LAUNCH = true;
+
+// ============================================
 // BUSINESS INFORMATION
 // ============================================
 

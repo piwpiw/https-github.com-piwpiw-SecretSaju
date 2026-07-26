@@ -11,6 +11,7 @@ import type {
     UnlockRecord,
 } from '@/types/jelly';
 import { getUserFromCookie } from '@/lib/auth/kakao-auth';
+import { FREE_LAUNCH } from '@/config/constants';
 
 const WALLET_STORAGE_KEY = 'secret_paws_jelly_wallet';
 const UNLOCK_STORAGE_KEY = 'secret_paws_unlocks';
@@ -274,6 +275,7 @@ function saveUnlockRecords(records: UnlockRecord[]): void {
  * Check if content is unlocked
  */
 export function isUnlocked(profileId: string, sectionId?: string): boolean {
+    if (FREE_LAUNCH) return true;
     if (isAdminUser()) return true;
     const records = getUnlockRecords();
     const record = records.find((r) => r.profileId === profileId);

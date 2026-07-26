@@ -14,6 +14,55 @@ import { isMockMode } from '@/lib/app/use-mock';
 let supabaseAdmin: any = null;
 let fallbackPublicClient: any = null;
 
+// ============================================
+// BE-310: MOCK PAYLOAD TYPE-CONSISTENCY VALIDATION
+// --------------------------------------------
+// The mock client below returns seeded rows typed loosely as Record<string, unknown>,
+// so drift between the mock shape and the real `Database` Row types is invisible to the
+// compiler. This opt-in, dev-only, non-throwing validator compares each seeded row's
+// columns against the expected column set for its table (kept in sync with
+// src/types/database.ts) and warns on missing/extra columns, so consumers relying on
+// the real return shape don't get surprised in mock/dev mode.
+// Enable with MOCK_SCHEMA_VALIDATE=true (never runs in production).
+const MOCK_SCHEMA_VALIDATE = process.env.MOCK_SCHEMA_VALIDATE === 'true';
+
+// Expected columns per seeded table, mirroring Database['public']['Tables'][*]['Row'].
+const MOCK_ROW_COLUMNS: Record<string, string[]> = {
+    users: [
+        'id', 'kakao_id', 'auth_provider', 'mcp_user_id', 'mcp_access_token',
+        'mcp_refresh_token', 'email', 'nickname', 'name', 'profile_image_url',
+        'is_admin', 'created_at', 'updated_at', 'last_login_at',
+    ],
+    saju_profiles: [
+        'id', 'user_id', 'name', 'relationship', 'birthdate', 'birth_time',
+        'is_time_unknown', 'calendar_type', 'is_leap_month', 'gender',
+        'created_at', 'updated_at',
+    ],
+    jelly_wallets: [
+        'user_id', 'balance', 'total_purchased', 'total_consumed',
+        'total_rewarded', 'created_at', 'updated_at',
+    ],
+};
+
+function validateMockRowShapes(state: Record<string, Array<Record<string, unknown>>>) {
+    if (!MOCK_SCHEMA_VALIDATE || process.env.NODE_ENV === 'production') return;
+    Object.entries(MOCK_ROW_COLUMNS).forEach(([table, expected]) => {
+        const expectedSet = new Set(expected);
+        (state[table] || []).forEach((row, index) => {
+            const actual = Object.keys(row);
+            const missing = expected.filter((col) => !(col in row));
+            const extra = actual.filter((col) => !expectedSet.has(col));
+            if (missing.length || extra.length) {
+                console.warn(
+                    `[Supabase Mock Schema] ${table}[${index}] shape drift vs Database Row —`,
+                    `missing: [${missing.join(', ')}]`,
+                    `extra: [${extra.join(', ')}]`
+                );
+            }
+        });
+    });
+}
+
 function createPublicSupabaseClient() {
     if (fallbackPublicClient) return fallbackPublicClient;
 
@@ -155,6 +204,9 @@ function createMockSupabase() {
         jelly_transactions: [],
         rewards: [],
     };
+
+    // BE-310: verify seeded mock rows match the real Database Row shapes (opt-in/dev-only).
+    validateMockRowShapes(state);
 
     const createChain = (table: string) => {
         const filters: Array<{ column: string; value: unknown }> = [];

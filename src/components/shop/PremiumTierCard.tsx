@@ -1,5 +1,6 @@
 ﻿import { motion } from 'framer-motion';
 import { Check, Sparkles, Zap } from 'lucide-react';
+import { FREE_LAUNCH } from '@/config/constants';
 
 interface TierProps {
     name: string;
@@ -10,8 +11,11 @@ interface TierProps {
 }
 
 export default function PremiumTierCard({ name, jellies, price, isPro, features }: TierProps) {
+    // During the free open launch there is nothing to purchase, so this card is
+    // purely informational. It must not look clickable — the CTA below has no
+    // handler, and a button-styled div that does nothing is worse than no CTA.
     return (
-        <label className="relative block h-full cursor-pointer">
+        <div className="relative block h-full">
             <div className={`h-full rounded-[2.5rem] p-8 transition-all duration-500 relative overflow-hidden group border ${isPro
                     ? 'bg-indigo-600/10 border-indigo-500 shadow-[0_0_40px_rgba(99,102,241,0.1)] scale-105 z-10'
                     : 'bg-white/[0.02] border-white/10 hover:border-white/20'
@@ -45,18 +49,29 @@ export default function PremiumTierCard({ name, jellies, price, isPro, features 
 
                 <div className="mt-auto">
                     <div className="mb-4 text-center">
-                        <span className="text-xl font-black text-white italic tracking-tighter">{price}</span>
+                        <span
+                            className={`text-xl font-black italic tracking-tighter ${FREE_LAUNCH ? 'text-slate-500 line-through' : 'text-white'
+                                }`}
+                        >
+                            {price}
+                        </span>
                         <span className="text-[10px] text-slate-500 ml-1 font-bold">원</span>
                     </div>
-                    {/* Just a stylized button-look label */}
-                    <div className={`w-full py-4 rounded-2xl flex items-center justify-center gap-2 font-black italic tracking-widest text-[11px] transition-all ${isPro
-                            ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-950/40'
-                            : 'bg-white/5 text-slate-300 group-hover:bg-white/10'
-                        }`}>
-                        {isPro && <Sparkles className="w-3.5 h-3.5" />}
-                        이 플랜 선택
-                        {isPro && <Zap className="w-3.5 h-3.5 fill-current" />}
-                    </div>
+                    {FREE_LAUNCH ? (
+                        <div className="w-full py-4 rounded-2xl flex items-center justify-center gap-2 font-black italic tracking-widest text-[11px] border border-emerald-400/30 bg-emerald-500/10 text-emerald-100">
+                            <Sparkles className="w-3.5 h-3.5" />
+                            무료 오픈 기간 · 전체 무료
+                        </div>
+                    ) : (
+                        <div className={`w-full py-4 rounded-2xl flex items-center justify-center gap-2 font-black italic tracking-widest text-[11px] transition-all ${isPro
+                                ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-950/40'
+                                : 'bg-white/5 text-slate-300 group-hover:bg-white/10'
+                            }`}>
+                            {isPro && <Sparkles className="w-3.5 h-3.5" />}
+                            이 플랜 선택
+                            {isPro && <Zap className="w-3.5 h-3.5 fill-current" />}
+                        </div>
+                    )}
                 </div>
 
                 {isPro && (
@@ -69,7 +84,7 @@ export default function PremiumTierCard({ name, jellies, price, isPro, features 
                 )}
                 <div className="noise-texture opacity-[0.03]" />
             </div>
-        </label>
+        </div>
     );
 }
 

@@ -388,6 +388,31 @@ const MCP_PROVIDER_ID_FIELDS = [
     'kakao_id',
 ] as const;
 
+// Upper bound for a normalized provider user id. Real OAuth `sub`/id values are
+// short; anything larger is almost certainly malformed/abusive input and is
+// rejected (null) rather than truncated, which would risk silent identity mixups.
+const MAX_PROVIDER_USER_ID_LENGTH = 512;
+
+// Normalize a scalar id candidate to a safe, bounded string.
+// Returns null for empty/whitespace-only, non-finite, or over-long values so
+// callers surface `missing_provider_user_id` instead of persisting junk.
+function normalizeProviderIdCandidate(value: string | number | bigint): string | null {
+    let normalized: string;
+    if (typeof value === 'number') {
+        if (!Number.isFinite(value)) return null;
+        normalized = String(value);
+    } else if (typeof value === 'bigint') {
+        normalized = String(value);
+    } else {
+        // Trim outer whitespace but preserve inner/non-ascii content (valid ids).
+        normalized = value.trim();
+    }
+
+    if (!normalized) return null;
+    if (normalized.length > MAX_PROVIDER_USER_ID_LENGTH) return null;
+    return normalized;
+}
+
 function parseUserId(raw: unknown): { externalUserId: string | null; providerUserId: string | null } {
     // MCP 사용자 ID 파싱 정책:
     // 1) 문자열/숫자: 그대로 문자열로 사용
@@ -397,19 +422,12 @@ function parseUserId(raw: unknown): { externalUserId: string | null; providerUse
         return { externalUserId: null, providerUserId: null };
     }
 
-    if (typeof raw === 'string' && raw.trim()) {
-        const normalized = raw.trim();
-        return { externalUserId: normalized, providerUserId: normalized };
-    }
-
-    if (typeof raw === 'number' && Number.isFinite(raw)) {
-        const normalized = String(raw);
-        return { externalUserId: normalized, providerUserId: normalized };
-    }
-
-    if (typeof raw === 'bigint') {
-        const normalized = String(raw);
-        return { externalUserId: normalized, providerUserId: normalized };
+    if (typeof raw === 'string' || typeof raw === 'number' || typeof raw === 'bigint') {
+        const normalized = normalizeProviderIdCandidate(raw);
+        if (normalized) {
+            return { externalUserId: normalized, providerUserId: normalized };
+        }
+        return { externalUserId: null, providerUserId: null };
     }
 
     if (typeof raw === 'object' && raw !== null) {

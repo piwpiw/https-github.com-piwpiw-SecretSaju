@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 import PremiumTierCard from '@/components/shop/PremiumTierCard';
 import ScrollReveal from '@/components/ui/ScrollReveal';
+import { FREE_LAUNCH } from '@/config/constants';
 
 export default function ShopPage() {
   const router = useRouter();
@@ -37,6 +38,23 @@ export default function ShopPage() {
             <p className="text-sm text-slate-400 uppercase tracking-widest font-bold">
               전문가급 오라클 젤리로 무제한 개인 통찰
             </p>
+            {FREE_LAUNCH ? (
+              <div className="mx-auto mt-8 max-w-2xl rounded-[2rem] border border-emerald-400/30 bg-emerald-500/10 p-6">
+                <p className="text-[10px] font-black uppercase tracking-[0.28em] text-emerald-200">Free Open Launch</p>
+                <h2 className="mt-3 text-2xl font-black text-white">지금은 모든 기능이 무료입니다</h2>
+                <p className="mt-3 text-sm leading-7 text-emerald-50/90">
+                  무료 오픈 기간 동안에는 젤리를 구매하지 않아도 사주·타로·궁합을 비롯한 모든 분석과
+                  프리미엄 리포트를 제한 없이 이용하실 수 있습니다. 아래 플랜 정보는 유료 전환 이후를
+                  위한 참고용이며, 지금은 결제가 진행되지 않습니다.
+                </p>
+                <Link
+                  href="/saju"
+                  className="mt-5 inline-flex items-center justify-center rounded-2xl bg-emerald-500/90 px-5 py-3 text-sm font-black text-slate-950"
+                >
+                  바로 사주 분석 시작하기
+                </Link>
+              </div>
+            ) : null}
           </section>
         </ScrollReveal>
 
@@ -99,7 +117,7 @@ export default function ShopPage() {
         <section className="mt-24 text-center">
           <div className="inline-flex flex-col items-center">
             <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.5em] mb-4">
-              신경망 암호화로 결제 데이터 보호
+              {FREE_LAUNCH ? '무료 오픈 기간 · 결제 정보를 받지 않습니다' : '신경망 암호화로 결제 데이터 보호'}
             </p>
             <div className="flex gap-4 opacity-30 grayscale hover:grayscale-0 transition-all">
               <div className="h-6 w-16 bg-white/10 rounded" />

@@ -1,14 +1,14 @@
-# CS ´ëÀÀ ¸Å´º¾ó - Provider Error ¸ÅÇÎ
+# CS ëŒ€ì‘ ë§¤ë‰´ì–¼ - Provider Error ë§¤í•‘
 
-## °øÅë provider_error ¸ÅÇÎ
+## ê³µí†µ provider_error ë§¤í•‘
 
-- `invalid_code`: ÀÎ°¡ ÄÚµå ¹«È¿/¸¸·á
-- `token_exchange_failed`: ÅäÅ« ±³È¯ ½ÇÆĞ
-- `kakao_userinfo_failed`: »ç¿ëÀÚ Á¤º¸ Á¶È¸ ½ÇÆĞ
-- `kakao_user_sync_failed`: Supabase »ç¿ëÀÚ µ¿±âÈ­ ½ÇÆĞ
-- `user_lookup_failed`: ±âÁ¸ »ç¿ëÀÚ Á¶È¸ ½ÇÆĞ
-- `missing_provider_user_id`: provider ID ÃßÃâ ½ÇÆĞ
-- `oauth_callback_error`: OAuth ÀÏ¹İ ¿À·ù
-- `provider_error`: »óÀ§ °ø±ŞÀÚ Àü´Ş ¿À·ù
+- `invalid_code`: ì¸ê°€ ì½”ë“œ ë¬´íš¨/ë§Œë£Œ
+- `token_exchange_failed`: í† í° êµí™˜ ì‹¤íŒ¨
+- `kakao_userinfo_failed`: ì‚¬ìš©ì ì •ë³´ ì¡°íšŒ ì‹¤íŒ¨
+- `kakao_user_sync_failed`: Supabase ì‚¬ìš©ì ë™ê¸°í™” ì‹¤íŒ¨
+- `user_lookup_failed`: ê¸°ì¡´ ì‚¬ìš©ì ì¡°íšŒ ì‹¤íŒ¨
+- `missing_provider_user_id`: provider ID ì¶”ì¶œ ì‹¤íŒ¨
+- `oauth_callback_error`: OAuth ì¼ë°˜ ì˜¤ë¥˜
+- `provider_error`: ìƒìœ„ ê³µê¸‰ì ì „ë‹¬ ì˜¤ë¥˜
 
-À§ Ç×¸ñÀº `/auth/callback` Äõ¸® ÆÄ¶ó¹ÌÅÍ ±âÁØÀ¸·Î ¿øÀÎ ºĞ·ùÇÏ°í, `provider_error_description`À» ÇÔ²² È®ÀÎÇÕ´Ï´Ù.
+ìœ„ í•­ëª©ì€ `/auth/callback` ì¿¼ë¦¬ íŒŒë¼ë¯¸í„° ê¸°ì¤€ìœ¼ë¡œ ì›ì¸ ë¶„ë¥˜í•˜ê³ , `provider_error_description`ì„ í•¨ê»˜ í™•ì¸í•©ë‹ˆë‹¤.

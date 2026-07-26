@@ -89,11 +89,12 @@ export default function AuthCallback() {
                     },
                 });
                 const syncData = await syncRes.json().catch(() => ({}));
-                if (!syncRes.ok) {
-                    console.error('User sync failed:', syncData);
-                } else if (syncData?.user?.isAdmin) {
+                if (syncRes.ok && syncData?.user?.isAdmin) {
                     setMessage('로그인이 완료되었습니다. 관리자 계정으로 이동합니다.');
                 } else {
+                    // Sync may be unavailable (e.g. database not configured) or the
+                    // user record may not be synced yet. This is an expected,
+                    // non-fatal state, so proceed with login without logging noise.
                     setMessage('로그인이 완료되었습니다.');
                 }
             } catch (syncError) {

@@ -19,11 +19,19 @@ export function getReaderExperimentVariant(): ReaderExperimentVariant {
   }
 }
 
-export function reorderReadersForExperiment(
+/**
+ * Pure reorder — takes the variant explicitly instead of reading
+ * localStorage/Math.random() internally. Callers must source `variant` from
+ * state that starts as "control" on both server and the client's first
+ * render (e.g. set via useEffect after mount), otherwise SSR and the
+ * client's initial render can disagree on the variant and produce a
+ * hydration mismatch (different reader order between server and client).
+ */
+export function reorderReadersForVariant(
   readers: FortuneReaderProfile[],
   queryType: ReaderQueryType,
+  variant: ReaderExperimentVariant,
 ): FortuneReaderProfile[] {
-  const variant = getReaderExperimentVariant();
   if (variant !== "easy_first" || queryType !== "result") {
     return readers;
   }

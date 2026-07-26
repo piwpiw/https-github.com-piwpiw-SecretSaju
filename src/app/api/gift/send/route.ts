@@ -19,7 +19,7 @@ export async function POST(req: Request) {
         const { targetName, targetBirthDate, targetEmail } = await req.json();
 
         if (!targetName || !targetBirthDate || !targetEmail) {
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+            return NextResponse.json({ error: '필수 입력값이 누락되었습니다.' }, { status: 400 });
         }
 
         const senderName = isMockMode() ? '테스트유저' : ((user as any)?.name || '익명의 친구');
@@ -35,13 +35,13 @@ export async function POST(req: Request) {
         // 2. Send the email using Resend
         const domain = APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || '';
         if (!domain) {
-            return NextResponse.json({ error: 'Base URL is not configured' }, { status: 500 });
+            return NextResponse.json({ error: '서버 설정 오류로 발송할 수 없습니다. 잠시 후 다시 시도해 주세요.' }, { status: 500 });
         }
         const resultLink = `${new URL(`/result/${encodedToken}`, domain).toString()}`;
         const emailResult = await sendSajuResultEmail(targetEmail, senderName, resultLink);
 
         if (!emailResult.success) {
-            return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
+            return NextResponse.json({ error: '이메일 발송에 실패했습니다. 잠시 후 다시 시도해 주세요.' }, { status: 500 });
         }
 
         // 3. Deduct Jelly (Future Integration)
@@ -51,6 +51,6 @@ export async function POST(req: Request) {
 
     } catch (error: any) {
         console.error('[API/Gift] Error sending gift:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: '서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.' }, { status: 500 });
     }
 }

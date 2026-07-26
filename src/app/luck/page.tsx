@@ -149,7 +149,9 @@ export default function LuckPage() {
       <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
         <header className="flex items-center justify-between mb-16">
           <button
+            type="button"
             onClick={() => router.back()}
+            aria-label="뒤로 가기"
             className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all"
           >
             <ArrowLeft className="w-5 h-5 text-slate-400" />

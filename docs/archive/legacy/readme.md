@@ -1,6 +1,6 @@
-## Archive Á¤¸®
+## Archive ì •ë¦¬
 
-- Áßº¹ ¹®¼­ °æ·Î¸¦ ½Äº°ÇØ `docs/ARCHIVE` ¶Ç´Â ÇØ´ç »óÅÂ ·¹ÀÌºí·Î ÀÌÀü
+- ì¤‘ë³µ ë¬¸ì„œ ê²½ë¡œë¥¼ ì‹ë³„í•´ `docs/ARCHIVE` ë˜ëŠ” í•´ë‹¹ ìƒíƒœ ë ˆì´ë¸”ë¡œ ì´ì „
 
 ## Archive Dedup Rule
 - If a doc exists in `docs/archive` and active tree, keep only one active source and mark the other as archived.

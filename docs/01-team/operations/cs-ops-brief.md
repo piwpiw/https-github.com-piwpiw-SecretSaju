@@ -1,9 +1,9 @@
-# CS Guide - ���� ���� ǥ
+# CS Guide - 에러 대응 표
 
-## ����/�α��� ���� ����
+## 결제/로그인 에러 대응
 
-- `PAYMENT_*`: ���� API ������ �ֹ���ȣ/�ݾ�/���¸� �Բ� Ȯ���ϰ�, ���� �ֹ� �ߺ� ������ �α��� `idempotent_attempt_count` �������� ó���մϴ�.
-- `provider_error`: OAuth ���� ���� �� `error`/`error_description`�� ����ڿ��� ǥ���ϰ� 24�ð� �̳� �̽� �߻����� �����մϴ�.
+- `PAYMENT_*`: 결제 API 에러는 주문번호/금액/상태를 함께 확인하고, 동일 주문 중복 검증은 로그의 `idempotent_attempt_count` 기준으로 처리합니다.
+- `provider_error`: OAuth 연동 실패 시 `error`/`error_description`을 사용자에게 표시하고 24시간 이내 이슈 발생률을 집계합니다.
 
 ## 장애 대응 우선순위 순번표(1차/2차/3차)
 
