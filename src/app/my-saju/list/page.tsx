@@ -137,7 +137,7 @@ export default function SajuListPage() {
                 <p className="text-[10px] font-black text-indigo-500/60 uppercase tracking-[0.2em] mt-1 italic">사주 시너지 지도</p>
               </div>
             </div>
-            <RelationshipMap />
+            <RelationshipMap members={profiles.map((p) => ({ id: p.id, name: p.name }))} />
           </div>
         </ScrollReveal>
 

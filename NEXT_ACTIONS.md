@@ -71,6 +71,15 @@
 - [x] `/fortune-readers`, `AINarrativeSection` hydration mismatch 버그 발견·수정 (실험 변형 조회를 렌더 중 비순수 호출 → 상태 기반 순수 함수로 전환) — 재검증 5/5 클린
 - 최종 결과: 54/54 라우트 정상, tsc 0 / lint 0 / 테스트 68/68 / guard pass / mojibake 0
 
+### PWQ-3. 프로덕션 빌드 기준 실구동 검증 (완료 2026-07-26)
+> 배운 점: `next dev`는 지연 로드 청크를 캐시해 수정이 반영되지 않은 것처럼 보였고, 이 프로젝트는 `output: standalone` 설정이라 `next start`도 미지원(낡은 빌드를 서빙). **검증은 반드시 `next build` + `node .next/standalone/server.js`로 할 것.**
+- [x] `FREE_LAUNCH`가 브라우저에서 항상 false로 평가되던 치명적 버그 수정 — `process.env.NEXT_PUBLIC_*`는 빌드 시 정의된 경우에만 치환되므로, 미설정(=기본 ON 의도) 시 표현식이 클라이언트 번들에 그대로 남아 모든 유료 장벽이 다시 잠김. 리터럴 `true`로 전환 + 누락된 게이트 2곳(`AINarrativeSection`, `/fortune-readers`) 연결
+- [x] `/shop` 죽은 CTA 제거 — "이 플랜 선택"이 onClick 없는 `<div>`(소스 주석: *stylized button-look label*)였고 `<label className="cursor-pointer">`로 감싸 클릭 가능해 보였음. 무료 오픈 상태 표시로 교체 + 안내 배너/동작하는 CTA 추가
+- [x] 홈 메인 폼 "시간 모름" 체크박스 키보드 접근 불가 수정 — `<div onClick>` → `<button role="checkbox" aria-checked>`. 사주 계산 결과를 바꾸는 항목이라 기능적으로도 중요
+- [x] `/my-saju/list` 가짜 데이터 노출 수정 — "인연 네트워크"가 하드코딩된 김철수 85%·이영희 92%·박민수 78%를 사용자 실제 관계인 것처럼 표시. 실제 프로필 기반으로 전환 + 빈 상태 추가
+- [x] 인터랙션/가짜버튼 검증 도구 추가: `scripts/qa/interaction-smoke.mjs`(입력·주요 버튼 실제 구동), `scripts/qa/fake-button-scan.mjs`(죽은/키보드 접근 불가 CTA 탐지)
+- 최종 결과: 54/54 라우트 정상 · 인터랙션 18/18 에러 0 · 가짜버튼 스캔 잔여 0 · tsc 0 / lint 0 / 테스트 68/68 / guard pass
+
 ### 잔여 인코딩 관측
 - [x] `docs/01-team/cs/provider_error_mapping.md` EUC-KR → UTF-8 변환 완료
 - [x] `docs/archive/legacy/readme.md` EUC-KR → UTF-8 변환 완료
