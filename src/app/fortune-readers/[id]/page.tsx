@@ -24,7 +24,7 @@ export default function FortuneReaderDetailPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-32">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.16),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(244,114,182,0.10),transparent_45%)]" />
-      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
         <header className="flex items-center justify-between mb-10">
           <button onClick={() => router.back()} className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center">
             <ArrowLeft className="w-5 h-5 text-slate-200" />

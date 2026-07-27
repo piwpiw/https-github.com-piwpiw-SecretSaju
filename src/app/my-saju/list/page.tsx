@@ -97,7 +97,7 @@ export default function SajuListPage() {
 
   return (
     <main className="min-h-screen relative overflow-hidden pb-40">
-      <div className="max-w-4xl mx-auto px-6 py-16 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-16 relative z-10">
         <ScrollReveal>
           <div className="flex items-center justify-between mb-8">
             <button

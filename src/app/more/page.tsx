@@ -163,7 +163,7 @@ export default function MorePage() {
   return (
     <main className="min-h-[100dvh] relative overflow-hidden pb-40 bg-background text-foreground">
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.05]" />
-      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
         <div className="flex items-center gap-6 mb-12 pb-8 border-b border-border-color">
           <div className="w-20 h-20 rounded-3xl bg-surface border border-border-color flex items-center justify-center shadow-2xl relative overflow-hidden group">
             <div className="absolute inset-0 bg-primary/20 animate-pulse group-hover:scale-150 transition-transform duration-700" />

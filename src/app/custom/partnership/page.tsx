@@ -102,7 +102,7 @@ export default function PartnershipPage() {
 
       <LuxuryToast isVisible={toastVisible} message={toastMessage} />
 
-      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
         <header className="flex items-center gap-4 mb-20">
           <button
             onClick={() => router.back()}

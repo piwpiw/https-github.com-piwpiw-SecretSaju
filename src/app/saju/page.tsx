@@ -190,7 +190,7 @@ function SajuPageContent() {
   return (
     <main className="min-h-[100dvh] bg-slate-950 text-slate-100 relative overflow-hidden pb-32">
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
         <div className="flex items-center justify-between mb-10">
           <button
             onClick={() => router.back()}

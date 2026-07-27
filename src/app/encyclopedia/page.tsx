@@ -103,7 +103,7 @@ export default function EncyclopediaPage() {
       <AmbientSoundPortal />
       <EncyclopediaIndex />
 
-      <div className="max-w-4xl mx-auto px-6 py-12">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12">
         <button onClick={() => router.back()} className="inline-flex items-center gap-2 text-slate-400 hover:text-white">
           <ArrowLeft className="w-4 h-4" />
           이전

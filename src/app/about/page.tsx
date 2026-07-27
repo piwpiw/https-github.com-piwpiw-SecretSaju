@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default function AboutPage() {
     return (
         <main className="min-h-screen relative overflow-hidden pb-32">
-            <div className="max-w-4xl mx-auto px-6 pt-16 relative z-10">
+            <div className="max-w-4xl mx-auto px-0 sm:px-6 pt-16 relative z-10">
                 <Link href="/" className="flex items-center gap-3 text-slate-500 hover:text-white transition-all group mb-16">
                     <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                     <span className="text-[10px] font-black tracking-[0.3em] uppercase">돌아가기</span>

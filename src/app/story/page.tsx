@@ -24,7 +24,7 @@ export default function StoryPage() {
     <main className="min-h-[100dvh] bg-background text-foreground relative pb-40">
       <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
 
-      <div className="max-w-5xl mx-auto px-6 py-12 relative z-10">
+      <div className="max-w-5xl mx-auto px-0 sm:px-6 py-12 relative z-10">
         <div className="flex items-center justify-between mb-16">
           <button
             onClick={() => router.back()}

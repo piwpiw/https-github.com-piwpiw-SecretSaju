@@ -85,7 +85,7 @@ export default function HistoryPage() {
         <main className="min-h-screen bg-[#050505] text-foreground relative overflow-hidden pb-40">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(99,102,241,0.05)_0%,transparent_50%)]" />
 
-            <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+            <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
                 <div className="flex items-center justify-between mb-16">
                     <button
                         onClick={() => router.back()}

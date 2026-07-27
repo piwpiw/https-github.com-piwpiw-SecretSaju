@@ -36,7 +36,7 @@ export default function GiftResultPage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-slate-950 text-white relative overflow-hidden pb-28">
-      <div className="max-w-3xl mx-auto px-6 py-16 relative z-10">
+      <div className="max-w-3xl mx-auto px-0 sm:px-6 py-16 relative z-10">
         <Link href="/" className="inline-flex items-center gap-3 text-slate-400 hover:text-white mb-10">
           <ArrowLeft className="w-4 h-4" />
           홈으로

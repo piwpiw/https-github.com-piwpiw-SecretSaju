@@ -78,7 +78,7 @@ export default function DestinyPage() {
       <div className="absolute inset-x-0 top-0 h-[50dvh] bg-gradient-to-b from-indigo-900/10 via-slate-900/5 to-transparent pointer-events-none" />
       <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-indigo-600/5 rounded-full blur-[150px] pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
         <header className="flex items-center justify-between mb-16">
           <button
             onClick={() => router.back()}

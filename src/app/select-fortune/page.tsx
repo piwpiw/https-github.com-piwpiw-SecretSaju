@@ -85,7 +85,7 @@ export default function SelectionPage() {
 
     return (
         <main className="min-h-screen relative overflow-hidden pb-40">
-            <div className="max-w-5xl mx-auto px-6 py-16 relative z-10">
+            <div className="max-w-5xl mx-auto px-0 sm:px-6 py-16 relative z-10">
                 {/* Header */}
                 <div className="text-center md:text-left mb-20 border-b border-border-color pb-16">
                     <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-flex px-4 py-2 rounded-full mb-6 bg-surface border border-border-color">
