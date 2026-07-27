@@ -8,7 +8,19 @@ import { getAuthenticatedUser } from '@/lib/auth/api-auth';
  */
 export async function POST(req: NextRequest) {
     try {
-        const { jellies, purpose, profile_id, feature } = await req.json();
+        // A malformed/empty body is a client error, not a server fault — parsing it
+        // inside the outer try would surface as a 500.
+        let body: any;
+        try {
+            body = await req.json();
+        } catch {
+            return NextResponse.json(
+                { error: 'Invalid JSON body' },
+                { status: 400 }
+            );
+        }
+
+        const { jellies, purpose, profile_id, feature } = body ?? {};
 
         if (!jellies || !purpose) {
             return NextResponse.json(

@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getUserFromCookie } from '@/lib/auth/kakao-auth';
+import { FREE_LAUNCH } from '@/config/constants';
 
 const ADMIN_STORAGE_KEY = 'secret_paws_mock_admin';
 const ADMIN_BALANCE_PREVIEW = 999999999;
@@ -23,8 +24,22 @@ function hasAuthSessionCookie(): boolean {
         .some((row) => AUTH_SESSION_COOKIE_NAMES.some((prefix) => row.startsWith(prefix)));
 }
 
+/**
+ * 무료 오픈 기간에 노출할 잔액.
+ *
+ * 소비 게이트가 두 가지 모양으로 흩어져 있다 — 어떤 화면은 `consumeChuru(n)`의
+ * 반환값을 보고, 어떤 화면은 `churu < n` 을 직접 비교한다(예: `saju/page.tsx`,
+ * `tojeong/page.tsx`). 그래서 소비를 no-op으로 만드는 것만으로는 부족하고,
+ * 노출 잔액 자체가 어떤 요금보다도 커야 10곳 전부가 열린다.
+ * 화면에는 숫자 대신 "무료"로 표시하므로(JellyBalance) 사용자가 이 값을
+ * 실제 보유 젤리로 오해하지 않는다.
+ */
+const FREE_LAUNCH_BALANCE = 999999;
+
 interface WalletContextType {
     isAdmin: boolean;
+    /** 무료 오픈 기간 여부 — 잔액 배지 등 표시를 바꾸는 데 쓴다. */
+    isFreeLaunch: boolean;
     churu: number; // Coins
     nyang: number; // Points
     addChuru: (amount: number) => void;
@@ -126,6 +141,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
     const addChuru = (amount: number) => setChuru((prev) => prev + amount);
     const consumeChuru = (amount: number) => {
+        if (FREE_LAUNCH) return true; // 무료 오픈 기간 — 차감하지 않는다
         if (isAdmin) return true; // Admin bypass
         if (churu >= amount) {
             setChuru((prev) => prev - amount);
@@ -136,6 +152,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
     const addNyang = (amount: number) => setNyang((prev) => prev + amount);
     const consumeNyang = (amount: number) => {
+        if (FREE_LAUNCH) return true;
         if (isAdmin) return true;
         if (nyang >= amount) {
             setNyang((prev) => prev - amount);
@@ -144,7 +161,11 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         return false;
     };
 
-    const visibleChuru = isAdmin ? ADMIN_BALANCE_PREVIEW : churu;
+    const visibleChuru = FREE_LAUNCH
+        ? FREE_LAUNCH_BALANCE
+        : isAdmin
+            ? ADMIN_BALANCE_PREVIEW
+            : churu;
 
     return (
         <WalletContext.Provider
@@ -156,6 +177,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
                 addNyang,
                 consumeNyang,
                 isAdmin,
+                isFreeLaunch: FREE_LAUNCH,
                 syncIssue,
                 clearSyncIssue: () => setSyncIssue(null),
             }}

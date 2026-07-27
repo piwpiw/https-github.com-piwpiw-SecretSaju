@@ -24,6 +24,7 @@ import RelationshipRadar from "@/components/compatibility/RelationshipRadar";
 import { cn } from "@/lib/app/utils";
 import { parseCivilDate } from "@/lib/saju/civil-date";
 import AINarrativeSection from "@/components/result/AINarrativeSection";
+import { FREE_LAUNCH } from "@/config/constants";
 
 const RELATIONSHIP_PRESETS: { labelKey: string; value: ProfileRelationshipType; icon: string }[] = [
   { labelKey: "common.relation.lover", value: "lover", icon: "💕" },
@@ -164,8 +165,8 @@ function CompatibilityContent() {
             <Users className="w-12 h-12 text-indigo-400" />
           </div>
           <div className="space-y-4">
-            <h2 className="text-3xl font-black italic tracking-tighter text-white uppercase">{t("compat.noProfiles")}</h2>
-            <p className="text-sm text-slate-500 font-bold leading-relaxed">{t("compat.noProfilesDesc")}</p>
+            <h2 className="text-3xl font-black italic tracking-tighter text-white uppercase break-keep">{t("compat.noProfiles")}</h2>
+            <p className="text-sm text-slate-500 font-bold leading-relaxed break-keep">{t("compat.noProfilesDesc")}</p>
           </div>
           <div className="space-y-4 pt-8">
             <Link href="/my-saju/add" className="w-full py-5 rounded-2xl bg-indigo-600 text-white font-black uppercase italic tracking-widest text-xs shadow-xl shadow-indigo-950/20 hover:scale-105 transition-all flex items-center justify-center gap-3">
@@ -299,7 +300,7 @@ function CompatibilityContent() {
             disabled={loading || !personAId || !personBId}
             className="w-full py-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase italic tracking-[0.3em] text-sm shadow-xl shadow-indigo-950/20 transition-all flex items-center justify-center gap-4 disabled:opacity-40 active:scale-95"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Zap className="w-5 h-5" /> 30젤리로 궁합 계산</>}
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Zap className="w-5 h-5" /> {FREE_LAUNCH ? "궁합 계산하기 (무료)" : "30젤리로 궁합 계산"}</>}
           </button>
         </form>
 

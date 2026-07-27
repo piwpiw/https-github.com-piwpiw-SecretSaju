@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import JellyBalance from "@/components/shop/JellyBalance";
 import { useWallet } from "@/components/payment/WalletProvider";
+import { FREE_LAUNCH } from "@/config/constants";
 
 type ShinSalType = {
   id: string;
@@ -97,7 +98,7 @@ export default function ShinsalPage() {
             className="mt-7 w-full py-5 rounded-full bg-fuchsia-500 text-white font-black uppercase tracking-[0.2em]"
           >
             <Sparkles className="inline mr-2 w-4 h-4" />
-            {run ? "분석 중..." : "5젤리로 전체 신살 요약 받기"}
+            {run ? "분석 중..." : FREE_LAUNCH ? "전체 신살 요약 받기 (무료)" : "5젤리로 전체 신살 요약 받기"}
           </button>
           {errorMessage && (
             <p className="mt-3 text-sm text-center text-rose-300 font-medium">{errorMessage}</p>

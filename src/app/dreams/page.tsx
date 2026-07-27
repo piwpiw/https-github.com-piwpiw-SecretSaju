@@ -71,7 +71,8 @@ export default function DreamsPage() {
             <DreamKeywordCloud />
           </div>
 
-          <section className="bg-slate-900/55 border border-white/10 rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden">
+          {/* 320px에서 좌우 여백이 과해 본문이 잘리던 문제 — 모바일만 축소 */}
+          <section className="bg-slate-900/55 border border-white/10 rounded-[1.75rem] p-5 sm:rounded-[2.5rem] sm:p-8 md:p-12 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] -mr-32 -mt-32" />
 
             <div className="flex items-center gap-3 mb-6">
@@ -84,7 +85,7 @@ export default function DreamsPage() {
               </div>
             </div>
 
-            <p className="text-sm text-slate-300 leading-relaxed max-w-lg mb-8">어젯밤 당신의 무의식이 보낸 메시지를 AI가 정밀 분석합니다. 이미지와 감정을 상세히 기록할수록 높은 정확도의 해석을 도출합니다.</p>
+            <p className="text-sm text-slate-300 leading-relaxed max-w-lg mb-8 break-keep">어젯밤 당신의 무의식이 보낸 메시지를 AI가 정밀 분석합니다. 이미지와 감정을 상세히 기록할수록 높은 정확도의 해석을 도출합니다.</p>
 
             <AIDreamParser />
 

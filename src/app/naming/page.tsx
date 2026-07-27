@@ -384,7 +384,7 @@ export default function NamingPage() {
             <Edit3 className="inline-block w-6 h-6 mr-2" />
             작명 분석
           </div>
-          <p className="text-sm text-slate-400 mt-2">이름과 한자 후보를 입력해 사운드/획수/시나리오 기반으로 분석합니다.</p>
+          <p className="text-sm text-slate-400 mt-2 break-keep">이름과 한자 후보를 입력해 사운드/획수/시나리오 기반으로 분석합니다.</p>
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3">
             <label className="space-y-2">
@@ -399,7 +399,7 @@ export default function NamingPage() {
                 placeholder="예: 김진우"
                 className="w-full bg-black/45 border border-white/10 rounded-2xl px-5 py-4 text-white text-2xl font-black focus:outline-none"
               />
-              <p id="naming-name-help" className="text-[11px] text-slate-400">
+              <p id="naming-name-help" className="text-[11px] text-slate-400 break-keep">
                 분석을 위해 2자 이상의 한글 이름이 필요합니다.
               </p>
               <p id="naming-name-error" className="text-xs text-rose-400 min-h-[18px]">
@@ -418,7 +418,7 @@ export default function NamingPage() {
                 placeholder="예: 정宇"
                 className="w-full bg-black/45 border border-white/10 rounded-2xl px-5 py-4 text-cyan-100 text-lg font-bold focus:outline-none"
               />
-              <p id="naming-hanja-help" className="text-[11px] text-slate-400">
+              <p id="naming-hanja-help" className="text-[11px] text-slate-400 break-keep">
                 한자가 없다면 빈칸으로 둬도 됩니다. 한글/영문 혼합은 피해주세요.
               </p>
               <p id="naming-hanja-error" className="text-xs text-rose-400 min-h-[18px]">

@@ -250,6 +250,8 @@ export function getHistory(limit?: number): Transaction[] {
  * Check if user has sufficient balance
  */
 export function hasSufficientBalance(required: number): boolean {
+    // 무료 오픈 기간에는 잔액과 무관하게 모든 기능을 연다.
+    if (FREE_LAUNCH) return true;
     if (isAdminUser()) return true;
     return getBalance() >= required;
 }

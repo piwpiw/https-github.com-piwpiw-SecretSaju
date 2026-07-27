@@ -81,7 +81,7 @@ function ResultSummaryCard({ title, body, tone }: { title: string; body: string;
   return (
     <div className={`rounded-2xl border p-4 ${tone}`}>
       <p className="text-xs font-black uppercase tracking-[0.2em] text-white/80">{title}</p>
-      <p className="mt-2 text-sm leading-relaxed text-slate-100">{body}</p>
+      <p className="mt-2 text-sm leading-relaxed text-slate-100 break-keep">{body}</p>
     </div>
   );
 }
@@ -237,7 +237,7 @@ export default function DailyFortunePage() {
                         <span className="text-[10px] font-black text-indigo-300">{fortune.pillarName}</span>
                       </div>
                     )}
-                    <p className="text-sm text-slate-300 leading-relaxed font-medium">{fortune.message}</p>
+                    <p className="text-sm text-slate-300 leading-relaxed font-medium break-keep">{fortune.message}</p>
                   </div>
                 </div>
 
@@ -302,7 +302,7 @@ export default function DailyFortunePage() {
               {fortune.caution && (
                 <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-4 flex items-start gap-3">
                   <Zap className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-amber-200/80 leading-relaxed">{fortune.caution}</p>
+                  <p className="text-sm text-amber-200/80 leading-relaxed break-keep">{fortune.caution}</p>
                 </div>
               )}
 
@@ -324,13 +324,13 @@ export default function DailyFortunePage() {
                         <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${seg.color} flex items-center justify-center mb-3`}>
                           <seg.icon className="w-4 h-4 text-white" />
                         </div>
-                        <p className="text-sm font-black text-slate-200">{seg.label}</p>
-                        <p className="text-[10px] text-slate-500 mt-0.5">{seg.sub}</p>
+                        <p className="text-sm font-black text-slate-200 break-keep">{seg.label}</p>
+                        <p className="text-[10px] text-slate-500 mt-0.5 break-keep">{seg.sub}</p>
                         <p className="text-[9px] text-slate-600 mt-1.5 font-bold">{seg.time}</p>
                         {isCurrent && (
                           <div className="mt-2 flex items-center gap-1">
                             <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-                            <span className="text-[9px] font-black text-indigo-400 uppercase">현재</span>
+                            <span className="text-[9px] font-black text-indigo-400 uppercase break-keep">현재</span>
                           </div>
                         )}
                       </div>

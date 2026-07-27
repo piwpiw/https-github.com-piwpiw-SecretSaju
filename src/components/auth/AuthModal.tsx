@@ -218,7 +218,12 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
     const handleKakaoLogin = () => {
         saveReturnTo();
         setIsLoading('kakao');
-        loginWithKakao();
+        // loginWithKakao() reports its own failure to the user; drop the loading
+        // state immediately so the modal stays usable instead of spinning.
+        if (!loginWithKakao()) {
+            setIsLoading(null);
+            return;
+        }
         setTimeout(() => setIsLoading(null), 1200);
     };
 
@@ -434,6 +439,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
                                         onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
                                         type="email"
                                         placeholder="이메일"
+                                        aria-label="이메일"
                                         autoComplete={isSignupMode ? 'new-password' : 'email'}
                                         className="w-full rounded-xl bg-background border border-border-color px-4 py-3 text-sm"
                                         disabled={!!isLoading}
@@ -448,6 +454,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
                                         onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
                                         type="password"
                                         placeholder="비밀번호"
+                                        aria-label="비밀번호"
                                         autoComplete={isSignupMode ? 'new-password' : 'current-password'}
                                         className="w-full rounded-xl bg-background border border-border-color px-4 py-3 text-sm"
                                         disabled={!!isLoading}

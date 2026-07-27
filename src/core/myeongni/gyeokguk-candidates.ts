@@ -214,9 +214,11 @@ export function evaluateGyeokgukCandidates(saju: FourPillars): GyeokgukCandidate
           ...(specialPattern === 'jeonwanggyeok' && sameElementBranchCount < 3 ? ['root_support_moderate'] : []),
           ...(breakRisk === 'high' ? ['break_risk_high'] : breakRisk === 'medium' ? ['break_risk_medium'] : []),
         ],
+        // 이 문구는 결과 화면의 격국 카드에 그대로 노출된다. 영어로 두면 사용자에게
+        // "Month branch hidden stem 경 protrudes into visible stems." 처럼 보인다.
         summary: protrusion
-          ? `Month branch hidden stem ${phaseEntry.stem} protrudes into visible stems${specialPattern === 'jonggyeok' ? ', but a following-pattern signal is still present.' : specialPattern === 'jeonwanggyeok' ? ', and an overly-strong day-master signal is accumulating around the same element.' : specialPattern === 'hwagyeok' ? ', and the chart shows a fire-dominant transformation signal.' : '.'}`
-          : `Month branch hidden stem ${phaseEntry.stem} remains implicit and is treated as a fallback frame candidate${specialPattern === 'jonggyeok' ? ' under a weak-daymaster following-pattern signal.' : specialPattern === 'jeonwanggyeok' ? ' while the chart still shows an overly-strong same-element concentration.' : specialPattern === 'hwagyeok' ? ' under a fire-dominant transformation signal.' : '.'}`,
+          ? `월지 지장간 ${phaseEntry.stem}이(가) 천간에 드러나 있습니다${specialPattern === 'jonggyeok' ? ', 다만 종격(從格) 신호도 함께 나타납니다.' : specialPattern === 'jeonwanggyeok' ? ', 다만 일간과 같은 오행이 지나치게 몰려 전왕격(專旺格) 신호가 쌓이고 있습니다.' : specialPattern === 'hwagyeok' ? ', 여기에 화(火) 중심의 화격(化格) 신호가 함께 보입니다.' : '.'}`
+          : `월지 지장간 ${phaseEntry.stem}이(가) 천간에 드러나지 않아 보조 격국 후보로 봅니다${specialPattern === 'jonggyeok' ? ' — 일간이 약해 종격(從格) 신호가 있는 상태입니다.' : specialPattern === 'jeonwanggyeok' ? ' — 같은 오행이 지나치게 몰려 있는 상태이기도 합니다.' : specialPattern === 'hwagyeok' ? ' — 화(火) 중심의 화격(化格) 신호가 있는 상태입니다.' : '.'}`,
       } satisfies GyeokgukCandidate;
     })
     .sort((left, right) => {

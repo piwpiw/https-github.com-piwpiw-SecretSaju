@@ -80,6 +80,44 @@
 - [x] 인터랙션/가짜버튼 검증 도구 추가: `scripts/qa/interaction-smoke.mjs`(입력·주요 버튼 실제 구동), `scripts/qa/fake-button-scan.mjs`(죽은/키보드 접근 불가 CTA 탐지)
 - 최종 결과: 54/54 라우트 정상 · 인터랙션 18/18 에러 0 · 가짜버튼 스캔 잔여 0 · tsc 0 / lint 0 / 테스트 68/68 / guard pass
 
+### PWQ-4. 메뉴 노출 · 무료 오픈 게이트 · 결과 화면 정합성 (완료 2026-07-27)
+> 실제로 앱을 써 보고 나온 보고를 기점으로 진행. 소스 검사만으로는 안 잡히고 **프로덕션 빌드를 브라우저로 몰아 봐야** 드러나는 것들이었음.
+
+**메뉴 트리 — 구현했는데 안 보이던 기능들**
+- [x] `src/config/site-menu.ts` 신설 — 사용자 화면 37개를 6그룹으로 정리한 **단일 정본**. 타로·토정비결·꿈해몽·작명·손금·천문·신살·만세력이 홈 캐러셀과 `/more` 안에만 있어 "메뉴에 없다 = 없는 기능"처럼 보이던 문제 해소
+- [x] 모바일 드로어(`Nav.tsx`)에 전체 그룹 메뉴 노출, `/more`에 전체 메뉴 디렉터리 추가
+- [x] `scripts/qa/menu-coverage.mjs` 가드 — 라우트와 메뉴 정본 대조. 현재 라우트 54 / 등록 37 / 명시 제외 19 → 누락 0, 유령 0
+
+**무료 오픈 게이트 — 무료라면서 전부 막혀 있던 문제 (런칭 블로커)**
+- [x] `FREE_LAUNCH`는 표시·해금 7곳에서만 참조되고 **젤리 차감 10곳은 아무도 확인하지 않았음**. 게스트 잔액은 0이라 사주·궁합·토정비결·작명·신살·힐링이 전부 "젤리가 부족합니다"로 차단됨. 게이트가 `consumeChuru(n)` 반환값 확인과 `churu < n` 직접 비교 두 모양으로 흩어져 있어 `WalletProvider`에서 노출 잔액과 소비를 함께 처리
+- [x] `hasSufficientBalance()`도 무료 기간 통과 처리 (`/my-saju/add`, `/relationship/[id]`)
+- [x] 잔액 배지는 숫자 대신 "무료" 표시 — 내부적으로 큰 값을 넣는 구조라 그대로 두면 "1조 젤리 보유"처럼 읽혔음. 충전(+) 아이콘도 무료 기간에는 숨김
+- [x] 1차 CTA에서 가격 제거 (`3젤리로 사주 실행` → `사주 분석 시작 (무료)` 등), 젤리 상점 모달에 무료 오픈 안내 배너
+- [x] `scripts/qa/free-launch-smoke.mjs` 가드 — 실제 브라우저로 각 화면 CTA를 눌러 잔액 차단 문구·가격 CTA를 탐지
+
+**결과 화면 — 사용자가 지적한 4건**
+- [x] **멘탈 게이지가 항상 0** — 엔진 정본 표기는 한글인데 `advancedScoring.ts` 점수 테이블은 한자 키라 모든 조회가 undefined. 득령·득지·득세 전부 0 → **모든 사용자가 언제나 "신약"** 이었음. 표기 정규화 6곳 적용, 회귀 테스트 `tests/logic/gangyak-scoring.test.ts` 추가 (ERROR_LEDGER E-008)
+- [x] **오행 "10점 만점"이 3/2/3/2/2** — 오행은 합이 100%인 구성비라 평균이 20%다. 0~100 척도나 `/10` 라벨로는 누구도 높은 값이 안 나옴. 균형점 20%, 최대 40% 척도로 전환하고 비중(%)+강약 라벨로 표기 → 실제 분포(3%~46%)가 드러남
+- [x] **레이더가 너무 작게 보임** — 같은 원인. `SvgChart`에 `maxValue`/`baselineValue` 추가, 균형선(20%) 점선 표시. 결과 카드·결과 차트 실험실이 `wuxing.ts`의 공용 상수를 쓰도록 통일
+- [x] **운세 상호작용이 영문** — `scope`('daewun')와 `actors`('currentSaewunBranch')가 내부 식별자 그대로 렌더링됨. 한국어 라벨 매핑 추가. 격국 근거 문구(`Month branch hidden stem ...`), 역법 스냅샷(`Calendar Boundary Snapshot`, `lichun`, `hour-source`), 결과 섹션 헤더(`Who You Are` 등)도 한국어화
+- [x] 결과 차트 실험실이 카드와 다른 지표(`percent`, 출현 횟수 기반)를 써서 같은 오행이 카드 8% / 실험실 0%로 어긋나던 문제 → 카드와 같은 `score`로 통일
+
+**가독성 · 줄바꿈 전수 점검**
+- [x] 320/390/430 폭에서 문자 단위 rect를 측정해 단어 중간 줄바꿈·1~2자 고아 줄을 탐지하고, 수정 전 런타임으로 개선 여부를 확인한 뒤 소스 반영 — 20개 파일에 `break-keep`(+ 좁은 줄간격 `leading-relaxed`)
+- [x] `/tarot`, `/dreams` 320px 가로 오버플로(콘텐츠 잘림) — 모바일 패딩 축소로 해소
+
+**로그인 · 결제 점검**
+- [x] `loginWithKakao()`가 JS 키 없이 호출되면 예외로 죽고 **사용자에게 아무 안내가 없던** 문제 — 키/리다이렉트 URI 검증과 한국어 안내 추가, 반환값으로 로딩 상태 해제
+- [x] 카카오 콜백이 `NEXT_PUBLIC_KAKAO_JS_KEY is not configured` 를 사용자에게 그대로 노출하던 문제 제거(서버 로그에는 유지)
+- [x] **로그아웃 시 Supabase 세션이 남던 문제** — `clearUserSession()`이 `sb-*` 세션을 지우지 않아, 로그아웃 후에도 `resolveUserId()`가 이전 사용자로 해석돼 공용 기기에서 타인 프로필이 보일 수 있었음. `auth.signOut()` 연결
+- [x] API 4곳이 빈/깨진 JSON 본문에 500을 반환하던 문제 → 400으로 정정, `/gift` 중복 제출 잠금과 영문 오류 노출 수정
+- [x] 클라이언트 번들에 미치환 `process.env.*` 0건 확인(결제 키 미설정 빌드 기준)
+
+**영문 노출 가드**
+- [x] `scripts/qa/english-leak-scan.mjs` — 54개 라우트를 실제로 렌더해 화면 텍스트의 영문을 탐지. 잔여 226건은 기준선(`english-leak-baseline.json`)으로 관리하고 **새로 생긴 것만 실패**. 잔여는 타로 카드 영문 원명과 장식용 헤더가 대부분
+
+**검증 결과**: tsc 0 / lint 0 / 로직 테스트 50/50 / 메뉴 커버리지 누락 0 / 무료 게이트 차단 0 / 54개 라우트 스모크 54/54 / 신규 영문 노출 0
+
 ### 잔여 인코딩 관측
 - [x] `docs/01-team/cs/provider_error_mapping.md` EUC-KR → UTF-8 변환 완료
 - [x] `docs/archive/legacy/readme.md` EUC-KR → UTF-8 변환 완료
@@ -88,5 +126,5 @@
 - [ ] `docs/01-team/engineering/setup.md` — 부분 손상, 완전 복구 불가로 ERROR_LEDGER ERR-L002에 미해결 기록 (앱 기능 영향 없음)
 - [ ] `docs/archive/decision-history/admin-audit-priority-plan.md` — 원본 생성 시점 손실(리터럴 `?`), 복구 불가로 ERROR_LEDGER ERR-L003에 기록 (아카이브 참고용, 영향 없음)
 
-**Last Updated**: 2026-07-13
+**Last Updated**: 2026-07-27
 **Updated By**: Claude

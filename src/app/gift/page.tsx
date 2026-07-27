@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Gift, Send, Mail, ArrowLeft, ShieldCheck } from "lucide-react";
 import { useLocale } from "@/lib/app/i18n";
@@ -21,6 +21,10 @@ export default function GiftPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  // `isSubmitting` state (and the derived `disabled` prop) only settles after a
+  // re-render, so rapid same-tick clicks slip past it and fire N requests —
+  // each one deducting jellies. This ref closes the window synchronously.
+  const submitLockRef = useRef(false);
   const hasName = formData.name.trim().length > 1;
   const hasBirth = formData.birthDate.trim().length > 0;
   const hasEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
@@ -28,7 +32,7 @@ export default function GiftPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmitting || submitLockRef.current) return;
     if (!isReady) return;
     setSubmitError("");
 
@@ -42,8 +46,12 @@ export default function GiftPage() {
       return;
     }
 
+    // Claim the lock before the first side effect (jelly deduction).
+    submitLockRef.current = true;
+
     const consumed = consumeChuru(3);
     if (!consumed) {
+      submitLockRef.current = false;
       setSubmitError(locale === 'ko' ? "젤리 차감에 실패했습니다. 잠시 후 다시 시도해 주세요." : "Failed to deduct Jelly.");
       return;
     }
@@ -63,11 +71,21 @@ export default function GiftPage() {
 
       const payload = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(
-          payload?.error || (locale === 'ko'
-            ? '발송에 실패했습니다. 잠시 후 다시 시도해 주세요.'
-            : 'Error sending gift. Please try again later.')
-        );
+        const generic = locale === 'ko'
+          ? '발송에 실패했습니다. 잠시 후 다시 시도해 주세요.'
+          : 'Error sending gift. Please try again later.';
+
+        if (res.status === 401 || res.status === 403) {
+          throw new Error(locale === 'ko'
+            ? '로그인 세션이 만료되었습니다. 다시 로그인한 뒤 시도해 주세요.'
+            : 'Your session has expired. Please log in again.');
+        }
+
+        // The API emits internal English strings ("Unauthorized: No token
+        // provided", "Internal server error"). Only pass a server message
+        // through when it is user-facing copy, i.e. already written in Korean.
+        const serverMessage = typeof payload?.error === 'string' ? payload.error.trim() : '';
+        throw new Error(/[가-힣]/.test(serverMessage) ? serverMessage : generic);
       }
 
       setSuccess(true);
@@ -77,6 +95,7 @@ export default function GiftPage() {
         : (locale === 'ko' ? '발송에 실패했습니다. 잠시 후 다시 시도해 주세요.' : 'Error sending gift. Please try again later.');
       setSubmitError(message);
     } finally {
+      submitLockRef.current = false;
       setIsSubmitting(false);
     }
   };

@@ -10,6 +10,7 @@ import {
   trackPaymentFail,
   trackPaymentInit,
 } from '@/lib/app/analytics';
+import { FREE_LAUNCH } from '@/config/constants';
 
 interface JellyShopModalProps {
   isOpen: boolean;
@@ -199,10 +200,19 @@ export default function JellyShopModal({
                     젤리 구매
                   </h2>
                 </div>
-                <p id={descriptionId} className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                  내 지갑 잔액을 간편하게 충전하세요.
+                <p id={descriptionId} className="text-sm break-keep" style={{ color: 'var(--text-secondary)' }}>
+                  {FREE_LAUNCH
+                    ? '무료 오픈 기간에는 모든 기능이 무료라 충전하지 않아도 됩니다. 아래는 정식 오픈 후 가격 안내입니다.'
+                    : '내 지갑 잔액을 간편하게 충전하세요.'}
                 </p>
               </div>
+
+              {FREE_LAUNCH && (
+                <div className="mx-6 mt-4 rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-4 text-sm text-emerald-100 break-keep">
+                  🎉 지금은 <strong>무료 오픈 기간</strong>입니다. 사주·타로·궁합·토정비결 등
+                  모든 분석을 젤리 없이 이용하실 수 있어요.
+                </div>
+              )}
 
               <div className="p-6 space-y-4">
                 {PRICING_TIERS.map((tier, index) => {

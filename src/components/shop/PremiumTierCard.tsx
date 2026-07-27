@@ -42,7 +42,7 @@ export default function PremiumTierCard({ name, jellies, price, isPro, features 
                             <div className={`w-5 h-5 rounded-full flex items-center justify-center border ${isPro ? 'bg-indigo-500/20 border-indigo-400/30' : 'bg-white/5 border-white/10'}`}>
                                 <Check className={`w-3 h-3 ${isPro ? 'text-indigo-400' : 'text-slate-400'}`} />
                             </div>
-                            <span className="text-[11px] font-medium text-slate-300 leading-none">{f}</span>
+                            <span className="text-[11px] font-medium text-slate-300 leading-relaxed break-keep">{f}</span>
                         </div>
                     ))}
                 </div>

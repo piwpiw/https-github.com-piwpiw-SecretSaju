@@ -7,12 +7,41 @@
  * - 용신 선정 (用神選定)
  */
 
-import { WuxingElement, CHEONGAN_TO_WUXING, JIJI_TO_WUXING } from "@/lib/saju/wuxing";
+import { WuxingElement, CHEONGAN_TO_WUXING } from "@/lib/saju/wuxing";
 
 /**
  * 4기둥 (연월일시)
  */
 import { FourPillars, Stem, Branch } from "@/core/calendar/ganji";
+
+/**
+ * 표기 정규화 (한글 → 한자)
+ *
+ * 엔진의 정본 표기는 한글이다(`Stem = '갑'|'을'|...`, `Branch = '자'|'축'|...`).
+ * 반면 이 파일의 점수 테이블(WANGSEONG_SCORE, SIBIIUNSEONG_TABLE)과
+ * `CHEONGAN_TO_WUXING`은 한자 키를 쓴다.
+ *
+ * 이 변환이 없으면 모든 조회가 undefined가 되어 득령·득지·득세가 전부 0이 되고,
+ * 합계 0 → 등급이 언제나 "신약"으로 고정된다. 실제로 그렇게 동작하고 있었다.
+ */
+const STEM_TO_HANJA: Record<string, string> = {
+    갑: "甲", 을: "乙", 병: "丙", 정: "丁", 무: "戊",
+    기: "己", 경: "庚", 신: "辛", 임: "壬", 계: "癸",
+};
+
+const BRANCH_TO_HANJA: Record<string, string> = {
+    자: "子", 축: "丑", 인: "寅", 묘: "卯", 진: "辰", 사: "巳",
+    오: "午", 미: "未", 신: "申", 유: "酉", 술: "戌", 해: "亥",
+};
+
+/** 이미 한자면 그대로, 한글이면 한자로. 알 수 없으면 원본을 돌려준다. */
+function toStemHanja(stem: string): string {
+    return STEM_TO_HANJA[stem] ?? stem;
+}
+
+function toBranchHanja(branch: string): string {
+    return BRANCH_TO_HANJA[branch] ?? branch;
+}
 
 /**
  * 일간 강약 점수
@@ -244,10 +273,10 @@ function calculateDeukryeong(
     ilgan: Stem,
     monthJiji: Branch
 ): number {
-    const ilganElement = CHEONGAN_TO_WUXING[ilgan]?.element;
+    const ilganElement = CHEONGAN_TO_WUXING[toStemHanja(ilgan)]?.element;
     if (!ilganElement) return 0;
 
-    const scoreTable = WANGSEONG_SCORE[monthJiji];
+    const scoreTable = WANGSEONG_SCORE[toBranchHanja(monthJiji)];
     if (!scoreTable) return 0;
 
     return scoreTable[ilganElement] || 0;
@@ -262,12 +291,12 @@ function calculateDeukji(
     ilgan: Stem,
     jijis: Branch[]
 ): number {
-    const runseongTable = SIBIIUNSEONG_TABLE[ilgan];
+    const runseongTable = SIBIIUNSEONG_TABLE[toStemHanja(ilgan)];
     if (!runseongTable) return 0;
 
     let totalScore = 0;
     jijis.forEach((jiji) => {
-        const runseong = runseongTable[jiji];
+        const runseong = runseongTable[toBranchHanja(jiji)];
         if (runseong) {
             totalScore += SIBIIUNSEONG_SCORE[runseong];
         }
@@ -287,7 +316,7 @@ function calculateDeukse(
     ilgan: Stem,
     cheongans: Stem[]
 ): number {
-    const ilganElement = CHEONGAN_TO_WUXING[ilgan]?.element;
+    const ilganElement = CHEONGAN_TO_WUXING[toStemHanja(ilgan)]?.element;
     if (!ilganElement) return 0;
 
     // 오행 상생 관계
@@ -309,7 +338,7 @@ function calculateDeukse(
 
     let helpCount = 0;
     cheongans.forEach((cheongan) => {
-        const element = CHEONGAN_TO_WUXING[cheongan]?.element;
+        const element = CHEONGAN_TO_WUXING[toStemHanja(cheongan)]?.element;
         if (!element) return;
 
         // 비겁 (같은 오행)

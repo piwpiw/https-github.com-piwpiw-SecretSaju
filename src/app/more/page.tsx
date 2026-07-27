@@ -20,6 +20,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { SITE_MENU } from "@/config/site-menu";
 
 const MORE_MENUS = [
   {
@@ -216,6 +217,55 @@ export default function MorePage() {
               </div>
             </motion.section>
           ))}
+
+          {/* 전체 메뉴 — 위 카드에 없는 화면까지 빠짐없이 노출한다.
+              정본은 src/config/site-menu.ts 이며, 새 페이지 추가 시 그곳에 등록하면 여기에 자동 반영된다. */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="space-y-6 pt-8 border-t border-border-color"
+          >
+            <div>
+              <h2 className="text-sm font-black text-secondary tracking-widest uppercase flex items-center gap-3">
+                <Compass className="w-4 h-4 text-primary" /> 전체 메뉴
+              </h2>
+              <p className="mt-2 text-xs text-secondary break-keep">
+                구현된 모든 화면을 한곳에 모았습니다. 찾는 기능이 위에 없다면 여기서 확인하세요.
+              </p>
+            </div>
+
+            <div className="space-y-8">
+              {SITE_MENU.map((group) => (
+                <div key={group.title}>
+                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.24em] text-primary break-keep">
+                    {group.title}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {group.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="flex items-start gap-3 rounded-2xl border border-border-color bg-surface px-4 py-3 hover:border-primary/50 transition-colors"
+                      >
+                        <span aria-hidden="true" className="text-lg leading-none mt-0.5">
+                          {item.emoji}
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block text-sm font-bold break-keep">{item.label}</span>
+                          {item.desc ? (
+                            <span className="block text-[11px] leading-5 text-secondary break-keep">
+                              {item.desc}
+                            </span>
+                          ) : null}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.section>
         </div>
       </div>
     </main>

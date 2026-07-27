@@ -68,7 +68,7 @@ function NarrativeCard({
   return (
     <article className={`rounded-3xl border p-4 ${tone}`}>
       <h4 className="text-xs font-black uppercase tracking-[0.22em] text-white">{title}</h4>
-      <p className="mt-3 text-sm leading-7 text-slate-100">{body}</p>
+      <p className="mt-3 text-sm leading-7 text-slate-100 break-keep">{body}</p>
     </article>
   );
 }
@@ -307,9 +307,9 @@ export default function AINarrativeSection({
             <div>
               <h3 className="mb-1 text-sm font-black uppercase tracking-widest leading-none text-indigo-200">AI 확장 해석</h3>
               <p className="text-[10px] font-bold uppercase text-slate-500">
-                persona: {persona} / 모델: {modelLabel}
+                해석 페르소나: {persona} / 모델: {modelLabel}
               </p>
-              <p className="mt-1 text-[11px] text-slate-300">
+              <p className="mt-1 text-[11px] text-slate-300 break-keep">
                 {activeReader.heroEmoji} {activeReader.name} / {activeReader.subtitle}
               </p>
               {favoriteReaderIds.includes(activeReader.id) ? (
@@ -393,8 +393,8 @@ export default function AINarrativeSection({
                       className="flex-1 text-left disabled:opacity-60"
                     >
                       <p className="text-xl">{reader.heroEmoji}</p>
-                      <p className="mt-2 text-sm font-black text-white">{reader.name}</p>
-                      <p className="mt-2 text-xs text-slate-300">{reader.subtitle}</p>
+                      <p className="mt-2 text-sm font-black text-white break-keep">{reader.name}</p>
+                      <p className="mt-2 text-xs leading-relaxed text-slate-300 break-keep">{reader.subtitle}</p>
                     </button>
 
                     <div className="flex flex-col items-end gap-2">
@@ -423,9 +423,9 @@ export default function AINarrativeSection({
                     <div className="mt-3 rounded-2xl border border-rose-300/20 bg-rose-500/10 p-3">
                       <p className="inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-[0.16em] text-rose-100">
                         <Lock className="h-3 w-3" />
-                        {reader.tier === "signature" ? "Signature Membership" : "Premium Reader"}
+                        {reader.tier === "signature" ? "시그니처 멤버십" : "프리미엄 리더"}
                       </p>
-                      <p className="mt-2 text-[11px] leading-6 text-slate-200">{reader.curiosityPrompt}</p>
+                      <p className="mt-2 text-[11px] leading-6 text-slate-200 break-keep">{reader.curiosityPrompt}</p>
                       <button
                         type="button"
                         onClick={() => handleUnlockReader(reader)}
@@ -445,7 +445,7 @@ export default function AINarrativeSection({
                         }}
                         className="mt-3 block w-full text-left"
                       >
-                        <p className="text-[11px] text-indigo-100">{reader.curiosityPrompt}</p>
+                        <p className="text-[11px] leading-relaxed text-indigo-100 break-keep">{reader.curiosityPrompt}</p>
                         <div className="mt-3 flex flex-wrap gap-1.5">
                           {reader.specialties.slice(0, 3).map((item) => (
                             <span
@@ -511,8 +511,8 @@ export default function AINarrativeSection({
             </div>
 
             <div className="rounded-3xl border border-indigo-300/20 bg-indigo-500/10 p-4">
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-indigo-100">Reader Hook</p>
-              <p className="mt-2 text-sm leading-7 text-slate-100">{dualNarrative.hook}</p>
+              <p className="text-xs font-black tracking-[0.2em] text-indigo-100 break-keep">이 리더의 한마디</p>
+              <p className="mt-2 text-sm leading-7 text-slate-100 break-keep">{dualNarrative.hook}</p>
             </div>
 
             <div className={`grid gap-4 ${compareNarrative ? "xl:grid-cols-2" : ""}`}>
@@ -546,11 +546,11 @@ export default function AINarrativeSection({
             <div className="rounded-3xl border border-white/10 bg-black/20 p-4">
               <div className="flex flex-wrap items-center gap-2">
                 <Sparkles className="h-4 w-4 text-amber-200" />
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-amber-100">왜 리더마다 다르게 말하나요?</p>
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-amber-100 break-keep">왜 리더마다 다르게 말하나요?</p>
               </div>
-              <p className="mt-3 text-sm leading-7 text-slate-200">{dualNarrative.disclaimer}</p>
+              <p className="mt-3 text-sm leading-7 text-slate-200 break-keep">{dualNarrative.disclaimer}</p>
               {compareNarrative ? (
-                <p className="mt-3 text-sm leading-7 text-slate-300">
+                <p className="mt-3 text-sm leading-7 text-slate-300 break-keep">
                   비교 모드에서는 같은 결과를 각 리더가 어떤 순서와 강조점으로 설명하는지 보여줍니다. 차이는 계산값이 아니라 해석의 초점과 행동 조언의 우선순위에서 생깁니다.
                 </p>
               ) : null}

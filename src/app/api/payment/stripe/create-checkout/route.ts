@@ -19,7 +19,16 @@ const packages = {
 
 export async function POST(req: NextRequest) {
   try {
-    const { tierId } = await req.json();
+    // A malformed/empty body is a client error, not a server fault — parsing it
+    // inside the outer try would surface as a 500.
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: 'Request body must be valid JSON' }, { status: 400 });
+    }
+
+    const { tierId } = body ?? {};
     const tierToPackage: Record<string, string> = {
       'taste': 'TRIAL',
       'smart': 'SMART',

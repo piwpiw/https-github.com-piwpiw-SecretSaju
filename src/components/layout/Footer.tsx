@@ -25,7 +25,7 @@ export function Footer() {
                             </div>
                             <span className="text-lg font-black text-foreground uppercase tracking-tight">시크릿사주</span>
                         </Link>
-                        <p className="text-sm max-w-sm leading-relaxed text-secondary">
+                        <p className="text-sm max-w-sm leading-relaxed text-secondary break-keep">
                             {t('home.feature.desc') || '프리미엄 사주 분석 및 운세 플랫폼'}
                         </p>
                     </div>
@@ -67,7 +67,7 @@ export function Footer() {
                         <Link href="/custom/partnership" className="hover:text-white transition-colors">광고 및 제휴</Link>
                     </div>
 
-                <div className="text-[11px] leading-relaxed text-slate-400">
+                <div className="text-[11px] leading-relaxed text-slate-400 break-keep">
                         <p className="font-black text-foreground mb-1">보헤미안 스튜디오 (Bohemian Studio)</p>
                         <p>대표: 박인혁 | 사업자등록번호: 123-45-67890 | 통신판매업신고: 2026-서울강남-0000호</p>
                         <p className="mt-1">주소: 서울특별시 강남구 테헤란로 123, 보헤미안 스튜디오</p>

@@ -14,6 +14,7 @@ import { getArchetypeByCode } from "@/lib/saju/archetypes";
 import AdvancedInterpretationPanel from "@/components/saju/AdvancedInterpretationPanel";
 import { trackStartAnalysis } from "@/lib/app/analytics";
 import JellyShopModal from "@/components/shop/JellyShopModal";
+import { FREE_LAUNCH } from "@/config/constants";
 
 type Step = {
   key: "select" | "ready" | "run";
@@ -362,7 +363,7 @@ function SajuPageContent() {
               ) : (
                 <Sparkles className="w-6 h-6 fill-white" />
               )}
-              {loading ? "사주 분석 중..." : "3젤리로 사주 실행"}
+              {loading ? "사주 분석 중..." : FREE_LAUNCH ? "사주 분석 시작 (무료)" : "3젤리로 사주 실행"}
             </button>
 
             {notice && <p className="text-sm text-center text-rose-300 font-medium">{notice}</p>}
@@ -396,6 +397,10 @@ function SajuPageContent() {
               isTimeUnknown={result.isTimeUnknown}
               canonicalFeatures={result.canonicalFeatures}
               evidence={result.evidence}
+              gangyak={result.gangyak}
+              yongshin={result.yongshin}
+              sipsong={result.sipsong}
+              sibiwoonseong={result.sibiwoonseong}
               secretUnlocked={isAdmin}
               onUnlockClick={() => setShopOpen(true)}
               onInsufficientJelly={() => setShopOpen(true)}

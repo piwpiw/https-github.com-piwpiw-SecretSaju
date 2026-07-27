@@ -13,6 +13,7 @@ export default defineConfig({
         maxWorkers: 2,
         include: [
             'tests/logic/saju-engine.test.ts',
+            'tests/logic/gangyak-scoring.test.ts',
             'tests/logic/ai-routing.test.ts',
             'tests/logic/auth-callback-message.test.ts',
             'tests/logic/payment-flow.test.ts',

@@ -139,6 +139,18 @@
 - 해결법: literal 백틱은 모두 `\`` 로 escape (다른 줄의 `\`${{ ... }}\`` 패턴과 통일). line 126, 193, 194 수정.
 - 재발 방지: **heredoc/echo 안에서 마크다운 코드 백틱을 넣을 때는 반드시 `\`` 로 escape.** 워크플로 shell 블록 변경 시 로컬에서 `bash -n` 문법 검사 후 커밋.
 
+### [E-008] 강약(멘탈 게이지)이 모든 사용자에게 0 — 한글/한자 표기 불일치
+- 상태: ✅ 해결
+- 발생일: 2026-07-26
+- 발생 위치: `src/lib/saju/advancedScoring.ts` (`calculateDeukryeong` / `calculateDeukji` / `calculateDeukse`)
+- 증상: 결과 화면의 "멘탈 게이지"가 **누구를 넣어도 0**. 등급은 항상 "신약". 화면 버그처럼 보였지만 엔진 출력 자체가 `{deukryeong:0, deukji:0, deukse:0, total:0, level:"신약"}` 이었음.
+- 원인: 엔진의 **정본 표기는 한글**(`src/core/calendar/ganji.ts` 의 `Stem = '갑'|'을'|...`, `Branch = '자'|'축'|...`)인데, 이 파일의 점수 테이블(`WANGSEONG_SCORE`, `SIBIIUNSEONG_TABLE`)과 `CHEONGAN_TO_WUXING` 은 **한자 키**(甲/乙, 寅/卯). 그래서 `WANGSEONG_SCORE['사']`, `SIBIIUNSEONG_TABLE['경']` 같은 조회가 전부 `undefined` → 세 항목 모두 0 → 합계 0 → 등급이 언제나 "신약"으로 고정.
+- 해결법: `STEM_TO_HANJA` / `BRANCH_TO_HANJA` 매핑과 `toStemHanja()` / `toBranchHanja()` 헬퍼를 추가하고, 한자 테이블을 조회하는 **6곳 전부**에 적용(득령 2곳, 득지 2곳 — 바깥 천간 조회와 `forEach` 안쪽 지지 조회, 득세 2곳). 수정 후 5개 사주 표본에서 신약 35 / 중화 43 / 신강 64·73·83 으로 정상 분포.
+- 재발 방지:
+  - `tests/logic/gangyak-scoring.test.ts` 회귀 테스트 추가 — 득령·득지·득세가 0으로 뭉개지지 않는지, 등급이 사주별로 달라지는지 검증. `vitest.logic.config.ts` include 목록에 등록.
+  - **한자 키 테이블(`WANGSEONG_SCORE`, `SIBIIUNSEONG_TABLE`, `CHEONGAN_TO_WUXING`, `JIJI_TO_WUXING`)을 `Stem`/`Branch` 값으로 조회할 때는 반드시 `toStemHanja()`/`toBranchHanja()` 를 거칠 것.** 조회 사이트를 고칠 때는 `forEach`/`map` 콜백 **안쪽**까지 훑을 것 — 이번에도 바깥 4곳만 고치고 콜백 안 1곳을 놓칠 뻔했음.
+  - 교훈: **"0" 은 조용한 실패다.** 옵셔널 체이닝(`?.`)과 `|| 0` 이 undefined 를 정상값처럼 삼켜서 예외 없이 잘못된 결과가 배포됐다. 점수/지표 계산에서 0 이 나오면 "정상적으로 0" 인지 "조회 실패로 0" 인지 구분되는 테스트를 남길 것.
+
 ---
 
 ## 할루시네이션 방지 체크리스트 (모든 AI 필독)

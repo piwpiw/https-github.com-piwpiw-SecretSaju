@@ -330,12 +330,12 @@ function DashboardContent() {
                                             size={140}
                                             accentColor={rel.analysis.score >= 80 ? "#22d3ee" : "#fbbf24"}
                                             animDelay={0.2}
-                                            title="Energy Sync"
+                                            title="기운 밸런스"
                                             data={[
-                                                { label: "Emotion", value: 50 + (rel.analysis.score % 40) },
-                                                { label: "Logic", value: 40 + (rel.analysis.score % 50) },
-                                                { label: "Passion", value: 60 + (rel.profile.name.length * 5 % 30) },
-                                                { label: "Stability", value: Math.min(95, rel.analysis.score + 10) },
+                                                { label: "감정", value: 50 + (rel.analysis.score % 40) },
+                                                { label: "이성", value: 40 + (rel.analysis.score % 50) },
+                                                { label: "열정", value: 60 + (rel.profile.name.length * 5 % 30) },
+                                                { label: "안정", value: Math.min(95, rel.analysis.score + 10) },
                                             ]}
                                         />
                                     </div>
