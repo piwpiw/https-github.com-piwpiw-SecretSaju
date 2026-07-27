@@ -55,11 +55,12 @@ export async function GET(request: NextRequest) {
   }
 
   if (!KAKAO_CONFIG.isConfigured) {
+    // The specific missing variable is an operator concern: log it server-side,
+    // but never surface an env var name to the end user.
     console.error('Kakao is not configured:', KAKAO_CONFIG.error)
     return redirectToAuthCallback(request, {
       error: 'kakao_not_configured',
       provider: 'kakao',
-      provider_error_description: KAKAO_CONFIG.error || 'Kakao config missing',
     })
   }
 

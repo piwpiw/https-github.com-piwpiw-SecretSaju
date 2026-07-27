@@ -180,10 +180,10 @@ export default function LuckPage() {
               </div>
 
               <div className="space-y-6 max-w-lg mx-auto">
-                <h2 className="text-5xl font-black text-white italic tracking-tighter leading-tight uppercase">
+                <h2 className="text-5xl font-black text-white italic tracking-tighter leading-tight uppercase break-keep">
                   운명의 흐름을<br />바꾸는 기운
                 </h2>
-                <p className="text-lg text-slate-400 font-medium leading-relaxed italic">
+                <p className="text-lg text-slate-400 font-medium leading-relaxed italic break-keep">
                   동양의 신비로운 에너지를 담은 디지털 부적을 통해<br />
                   당신이 원하는 기운을 강화하고 액운을 막으세요.
                 </p>
@@ -192,7 +192,7 @@ export default function LuckPage() {
               <div className="pt-10 flex flex-col items-center gap-6">
                 <button
                   onClick={handleStart}
-                  className="px-12 py-6 bg-white text-black font-black text-2xl italic tracking-tighter border-none rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(255,255,255,0.2)] flex items-center gap-4"
+                  className="px-12 py-6 bg-white text-black font-black text-2xl italic tracking-tighter border-none rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(255,255,255,0.2)] flex items-center gap-4 break-keep"
                 >
                   <Sparkles className="w-8 h-8 text-indigo-500" />
                   의식 시작하기

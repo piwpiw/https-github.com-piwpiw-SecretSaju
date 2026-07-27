@@ -13,6 +13,7 @@ import WeatherWidget from "@/components/daily/WeatherWidget";
 import AppDownloadBanner from "@/components/layout/AppDownloadBanner";
 import { useProfiles } from "@/components/profile/ProfileProvider";
 import { isMockMode } from '@/lib/app/use-mock';
+import { SITE_MENU } from "@/config/site-menu";
 
 export function Nav() {
   const themeStorageKey = "theme";
@@ -304,6 +305,47 @@ export function Nav() {
                     </Link>
                   );
                 })}
+
+                {/* 전체 기능 목록 — 구현된 화면이 메뉴에서 빠지지 않도록 정본(SITE_MENU) 기준으로 노출 */}
+                <div className="mt-4 border-t border-white/10 pt-4 space-y-5">
+                  {SITE_MENU.map((group) => (
+                    <div key={group.title}>
+                      <p className="px-2 mb-2 text-[10px] font-black uppercase tracking-[0.24em] text-indigo-300/80 break-keep">
+                        {group.title}
+                      </p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {group.items.map((item) => {
+                          const isActive = pathname === item.href;
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setMobileOpen(false)}
+                              className={cn(
+                                "flex items-start gap-2 rounded-2xl px-3 py-3 transition-all border",
+                                isActive
+                                  ? "bg-indigo-600 text-white border-indigo-400/40"
+                                  : "bg-white/5 text-slate-200 border-white/10 hover:bg-white/10",
+                              )}
+                            >
+                              <span aria-hidden="true" className="text-base leading-none mt-0.5">
+                                {item.emoji}
+                              </span>
+                              <span className="min-w-0">
+                                <span className="block text-[12px] font-bold break-keep">{item.label}</span>
+                                {item.desc ? (
+                                  <span className="block text-[10px] leading-4 text-slate-400 break-keep">
+                                    {item.desc}
+                                  </span>
+                                ) : null}
+                              </span>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </motion.div>
           )}

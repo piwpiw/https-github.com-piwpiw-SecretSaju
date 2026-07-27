@@ -107,10 +107,10 @@ export default function HistoryPage() {
                     >
                         <History className="w-12 h-12 text-indigo-400 shadow-[0_0_30px_rgba(99,102,241,0.3)]" />
                     </motion.div>
-                    <h1 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter uppercase leading-[0.9] mb-6">
+                    <h1 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter uppercase leading-[0.9] mb-6 break-keep">
                         운명 <span className="text-indigo-400">데이터 로그</span>
                     </h1>
-                    <p className="text-slate-400 text-lg font-medium italic opacity-70 max-w-xl mx-auto">
+                    <p className="text-slate-400 text-lg font-medium italic opacity-70 max-w-xl mx-auto break-keep">
                         분석 내역을 검색하고 정렬해 실전에서 바로 재사용하세요.
                     </p>
                 </div>
@@ -213,7 +213,7 @@ export default function HistoryPage() {
                     {error ? <p className="text-rose-300 text-sm border border-rose-500/40 bg-rose-500/10 rounded-xl px-4 py-2">{error}</p> : null}
                     {loading ? <p className="text-sm text-slate-500">데이터를 불러오는 중입니다...</p> : null}
                     {!loading && filteredLogs.length === 0 && (
-                        <p className="text-slate-400 text-sm">표시할 분석 결과가 없습니다. 프로필 분석을 먼저 실행해 보세요.</p>
+                        <p className="text-slate-400 text-sm leading-relaxed break-keep">표시할 분석 결과가 없습니다. 프로필 분석을 먼저 실행해 보세요.</p>
                     )}
                 </div>
 

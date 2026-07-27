@@ -4,6 +4,7 @@ import { useId, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SvgChart from "@/components/ui/SvgChart";
 import { cn } from "@/lib/app/utils";
+import { ELEMENT_BALANCED_SHARE, ELEMENT_CHART_MAX } from "@/lib/saju/wuxing";
 
 type ElementMetric = {
   label: string;
@@ -211,9 +212,11 @@ export default function InteractiveInsightLab({ elements, tenGods, gangyak, focu
               <figcaption className="mb-3 text-sm font-bold text-slate-100">오행 레이더 차트</figcaption>
               <div className="flex justify-center">
                 <SvgChart
-                  title="Elements"
+                  title="오행"
                   accentColor="#22d3ee"
                   data={elements.map((item) => ({ label: item.label, value: item.score }))}
+                  maxValue={ELEMENT_CHART_MAX}
+                  baselineValue={ELEMENT_BALANCED_SHARE}
                 />
               </div>
               <p className="mt-3 text-sm text-slate-300">
@@ -268,8 +271,12 @@ export default function InteractiveInsightLab({ elements, tenGods, gangyak, focu
                       focus,
                       "elements",
                       elementDetail.label,
-                      elementDetail.percent,
-                      `출현 횟수는 ${elementDetail.count}회이며 기본 해석은 ${elementDetail.meaning} 축입니다.`,
+                      // 결과 카드가 보여주는 "차지하는 비중"과 같은 값을 쓴다.
+                      // `percent`는 원국에 글자로 드러난 횟수만 센 별개 지표라,
+                      // 지장간·월령 가중치가 반영된 `score`와 어긋나 같은 오행이
+                      // 카드에서는 8%, 여기서는 0%로 보이는 문제가 있었다.
+                      elementDetail.score,
+                      `원국에 직접 드러난 횟수는 ${elementDetail.count}회이며 기본 해석은 ${elementDetail.meaning} 축입니다.`,
                     )}
                   </p>
                 </aside>

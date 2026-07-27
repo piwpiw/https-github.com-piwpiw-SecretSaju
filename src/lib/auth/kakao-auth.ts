@@ -2,6 +2,7 @@
 
 import { KAKAO_CONFIG, STORAGE_KEYS } from '@/config';
 import { isMockMode } from '@/lib/app/use-mock';
+import { getSupabaseClient } from '@/lib/integrations/supabase';
 
 const ADMIN_BYPASS_STORAGE_KEY = 'secret_paws_mock_admin';
 
@@ -36,25 +37,58 @@ export function initKakao() {
 
 /**
  * Start Kakao login flow
- * Redirects to Kakao OAuth page
+ * Redirects to Kakao OAuth page.
+ *
+ * Returns true when the OAuth redirect was actually started, false when the
+ * attempt failed and the user has already been told why. Callers use the
+ * return value to drop any "logging in..." state instead of spinning forever.
  */
-export function loginWithKakao() {
+export function loginWithKakao(): boolean {
     if (isMockMode()) {
         console.log('[MOCK] Bypassing Kakao Login');
         document.cookie = `${STORAGE_KEYS.USER_DATA}=${encodeURIComponent(JSON.stringify({ id: 999999, nickname: '테스트유저(Mock)' }))}; path=/; max-age=86400`;
         window.location.href = '/dashboard';
-        return;
+        return true;
     }
 
-    if (!window.Kakao) {
+    // Kakao login is optional at launch. Without a JS key the SDK can never be
+    // initialized, so fail with a clear message instead of throwing from
+    // Kakao.Auth.authorize() on an uninitialized SDK (the SDK object can be
+    // present on pages that load it for sharing).
+    if (!KAKAO_CONFIG.JS_KEY) {
+        console.error('Kakao JS Key is not configured. Please set NEXT_PUBLIC_KAKAO_JS_KEY in .env.local');
+        alert('카카오 로그인은 현재 준비 중입니다. 구글 또는 이메일 로그인을 이용해 주세요.');
+        return false;
+    }
+
+    // Kakao rejects a relative redirect_uri, which is what we would build if the
+    // base URL is missing. Stop before sending the user to a broken URL.
+    if (!/^https?:\/\//.test(KAKAO_CONFIG.REDIRECT_URI)) {
+        console.error('Kakao redirect URI is not an absolute URL:', KAKAO_CONFIG.REDIRECT_URI);
+        alert('카카오 로그인 설정이 올바르지 않습니다. 다른 로그인 수단을 이용해 주세요.');
+        return false;
+    }
+
+    if (!window.Kakao?.Auth) {
         console.error('Kakao SDK not loaded');
         alert('카카오 로그인을 사용할 수 없습니다. 페이지를 새로고침해주세요.');
-        return;
+        return false;
     }
 
-    window.Kakao.Auth.authorize({
-        redirectUri: KAKAO_CONFIG.REDIRECT_URI,
-    });
+    try {
+        if (!window.Kakao.isInitialized?.()) {
+            window.Kakao.init(KAKAO_CONFIG.JS_KEY);
+        }
+
+        window.Kakao.Auth.authorize({
+            redirectUri: KAKAO_CONFIG.REDIRECT_URI,
+        });
+        return true;
+    } catch (error) {
+        console.error('Kakao authorize error:', error);
+        alert('카카오 로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+        return false;
+    }
 }
 
 /**
@@ -206,6 +240,20 @@ export function getUserFromCookie(): UserFromCookie | null {
  */
 export function clearUserSession() {
     if (typeof window === 'undefined') return;
+
+    // Supabase keeps its own session in localStorage under `sb-*` keys, which the
+    // manual cleanup below does not touch. Without this, `ProfileProvider`'s
+    // `resolveUserId()` — which asks `supabase.auth.getUser()` first — still
+    // resolves the *previous* user after logout and loads their saved profiles.
+    // On a shared device that is a cross-user data leak.
+    //
+    // Fire-and-forget on purpose: this function is synchronous and is called from
+    // click handlers that navigate immediately afterwards. A failure here must not
+    // block the rest of the local cleanup, which is what actually logs the user out
+    // of this app.
+    try {
+        void getSupabaseClient()?.auth.signOut().catch(() => { });
+    } catch { }
 
     if (typeof sessionStorage !== 'undefined') {
         try {

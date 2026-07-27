@@ -15,6 +15,12 @@ import AIIntelligenceBadge from "@/components/ui/AIIntelligenceBadge";
 import AINarrativeSection from "@/components/result/AINarrativeSection";
 import { CalendarDays, Lock, Target, TrendingUp, Orbit, Crown, Flame, Gem, ChevronRight } from "lucide-react";
 import { FREE_LAUNCH } from "@/config/constants";
+import { toScopeLabelKo, toActorLabelKo } from "@/core/myeongni/interactions";
+import {
+  ELEMENT_BALANCED_SHARE,
+  ELEMENT_CHART_MAX,
+  getElementStrengthLabel,
+} from "@/lib/saju/wuxing";
 
 type Archetype = {
   code: string;
@@ -194,6 +200,16 @@ const ageGroupToKo = (ageGroup: AgeGroup): string => {
   if (ageGroup === "60s") return "60대";
   return ageGroup;
 };
+
+/**
+ * 역법 정책 코드는 내부 식별자라 영어다('lichun', 'hour-source').
+ * 결과 화면의 "역법 기준 스냅샷"에 그대로 노출되고 있었다.
+ */
+const toYearBoundaryLabelKo = (value?: string) =>
+  value === "lichun" ? "입춘(立春)" : value || "-";
+
+const toHourPolicyLabelKo = (value?: string) =>
+  value === "hour-source" ? "진태양시" : value === "civil" ? "표준시" : value || "-";
 
 const cleanText = (value: unknown, fallback: string) => {
   if (typeof value !== "string") return fallback;
@@ -678,7 +694,7 @@ function ResultCard({
           <section className="grid gap-4 lg:grid-cols-2">
             {boundaryInfo ? (
               <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-200">Calendar Boundary Snapshot</p>
+                <p className="text-xs font-black tracking-[0.22em] text-cyan-200 break-keep">역법 기준 스냅샷</p>
                 <div className="mt-3 flex flex-wrap gap-2 text-xs">
                   <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-slate-100">
                     공식 연도 {boundaryInfo.officialCalendarYear ?? "-"}년
@@ -687,11 +703,11 @@ function ResultCard({
                     명리 연도 {boundaryInfo.myeongriCalendarYear}년
                   </span>
                   <span className="rounded-full border border-indigo-300/25 bg-indigo-400/10 px-3 py-1 text-indigo-100">
-                    기준 {boundaryInfo.myeongriYearBoundary}
+                    해 바뀌는 기준 {toYearBoundaryLabelKo(boundaryInfo.myeongriYearBoundary)}
                   </span>
                   {lineagePolicy?.hourBranchPolicy ? (
                     <span className="rounded-full border border-cyan-300/25 bg-cyan-400/10 px-3 py-1 text-cyan-100">
-                      시지 {lineagePolicy.hourBranchPolicy}
+                      시지 기준 {toHourPolicyLabelKo(lineagePolicy.hourBranchPolicy)}
                     </span>
                   ) : null}
                 </div>
@@ -699,7 +715,7 @@ function ResultCard({
             ) : null}
             {evidence?.length ? (
               <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                <p className="text-xs font-black uppercase tracking-[0.22em] text-fuchsia-200">Evidence Trace</p>
+                <p className="text-xs font-black tracking-[0.22em] text-fuchsia-200 break-keep">근거 추적</p>
                 <p className="mt-3 text-sm text-slate-300">
                   근거 로그 {evidence.length}건이 연결되어 있으며, 프리미엄 해설은 이 근거 구조를 기준으로 확장됩니다.
                 </p>
@@ -751,15 +767,15 @@ function ResultCard({
           </div>
           <div className="grid gap-3 md:grid-cols-3">
             <div className="rounded-2xl border border-cyan-300/20 bg-cyan-500/10 p-4">
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-200">Who You Are</p>
+              <p className="text-xs font-black tracking-[0.2em] text-cyan-200 break-keep">지금의 나</p>
               <p className="mt-2 text-sm leading-relaxed text-slate-100">{identitySummary}</p>
             </div>
             <div className="rounded-2xl border border-amber-300/20 bg-amber-500/10 p-4">
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-amber-200">Why It Happens</p>
+              <p className="text-xs font-black tracking-[0.2em] text-amber-200 break-keep">왜 이런 흐름인가</p>
               <p className="mt-2 text-sm leading-relaxed text-slate-100">{reasonSummary}</p>
             </div>
             <div className="rounded-2xl border border-emerald-300/20 bg-emerald-500/10 p-4">
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-200">What To Do</p>
+              <p className="text-xs font-black tracking-[0.2em] text-emerald-200 break-keep">무엇을 하면 좋은가</p>
               <p className="mt-2 text-sm leading-relaxed text-slate-100">{actionSummary}</p>
             </div>
           </div>
@@ -812,17 +828,27 @@ function ResultCard({
 
                   <div className="mt-6 flex flex-col gap-2">
                     <div className="flex justify-between items-end mb-1">
-                      <span className="text-xs font-bold text-slate-300 uppercase">에너지 레벨</span>
-                      <span className="text-sm font-black text-white">{Math.min(10, Math.ceil(item.score / 10))}/10</span>
+                      <span className="text-xs font-bold text-slate-300">차지하는 비중</span>
+                      <span className="text-sm font-black text-white">
+                        {Math.round(item.score)}%
+                        <span className={`ml-2 text-[11px] font-bold ${getElementStrengthLabel(item.score).tone}`}>
+                          {getElementStrengthLabel(item.score).label}
+                        </span>
+                      </span>
                     </div>
-                    <div className="h-2 rounded-full bg-black/50 border border-white/10 overflow-hidden">
+                    {/* 막대는 균형점(20%)을 절반 지점으로 두어, 균형이면 딱 중간까지 찬다. */}
+                    <div className="relative h-2 rounded-full bg-black/50 border border-white/10 overflow-hidden">
+                      <div className="absolute inset-y-0 left-1/2 w-px bg-white/40" aria-hidden="true" />
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${item.score}%` }}
+                        animate={{ width: `${Math.min(100, (item.score / ELEMENT_CHART_MAX) * 100)}%` }}
                         transition={{ duration: 1, ease: 'easeOut' }}
                         className={`h-full ${item.bar} shadow-[0_0_10px_rgba(255,255,255,0.5)]`}
                       />
                     </div>
+                    <p className="text-[10px] text-slate-500">
+                      가운데 선 = 다섯 기운이 고른 상태({ELEMENT_BALANCED_SHARE}%)
+                    </p>
                   </div>
                 </motion.div>
               );
@@ -843,13 +869,16 @@ function ResultCard({
             </div>
             <div className="flex-1 w-full max-w-sm flex justify-center items-center opacity-90 drop-shadow-xl">
               <SvgChart
-                title="Five Elements Radar"
+                title="오행 밸런스"
                 accentColor="#818cf8"
                 data={metricRows.map((item) => ({ label: item.label.replace(/\(.*\)/, ''), value: item.score }))}
+                maxValue={ELEMENT_CHART_MAX}
+                baselineValue={ELEMENT_BALANCED_SHARE}
               />
             </div>
-            <p className="mt-6 text-sm text-slate-300 text-center bg-white/5 p-4 rounded-2xl border border-white/10 w-full">
-              모양이 둥글수록 밸런스가 좋고, 뾰족할수록 특정 분야에 재능이 강합니다.
+            <p className="mt-6 text-sm text-slate-300 text-center bg-white/5 p-4 rounded-2xl border border-white/10 w-full break-keep">
+              점선은 다섯 기운이 완전히 균형을 이룬 상태({ELEMENT_BALANCED_SHARE}%)입니다.
+              점선 밖으로 나온 기운이 나를 이끄는 힘, 안쪽에 머문 기운이 보완하면 좋은 부분입니다.
             </p>
           </div>
 
@@ -1128,11 +1157,11 @@ function ResultCard({
                 {transitInteractions.map((event) => (
                   <div key={event.id} className="rounded-lg border border-white/10 bg-black/20 p-3">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">{event.scope}</span>
+                      <span className="text-xs font-black tracking-[0.18em] text-cyan-200 break-keep">{toScopeLabelKo(event.scope)}</span>
                       <span className="text-[11px] text-slate-400">{Math.round(event.strength * 100)}%</span>
                     </div>
-                    <p className="mt-2 text-sm font-semibold text-white">{cleanText(event.description, "운세 상호작용을 계산했습니다.")}</p>
-                    <p className="mt-1 text-xs text-slate-400">{event.actors.join(" · ")}</p>
+                    <p className="mt-2 text-sm font-semibold text-white leading-relaxed break-keep">{cleanText(event.description, "운세 상호작용을 계산했습니다.")}</p>
+                    <p className="mt-1 text-xs text-slate-400 break-keep">{event.actors.map(toActorLabelKo).join(" · ")}</p>
                   </div>
                 ))}
               </div>

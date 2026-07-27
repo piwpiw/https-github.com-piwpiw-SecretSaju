@@ -17,6 +17,7 @@ const AUTH_ERRORS: Record<string, string> = {
   kakao_user_lookup_failed: "기존 계정 확인에 실패했습니다.",
   kakao_user_sync_failed: "카카오 계정 동기화에 실패했습니다.",
   kakao_callback_error: "카카오 로그인 처리 중 문제가 발생했습니다.",
+  kakao_not_configured: "카카오 로그인은 현재 준비 중입니다. 구글 또는 이메일 로그인을 이용해 주세요.",
   provider_error: "로그인 제공자 응답에 문제가 있습니다.",
 };
 

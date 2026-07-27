@@ -15,7 +15,7 @@ import { useRef, useEffect, useState } from "react";
 
 export interface RadarDataPoint {
     label: string;
-    value: number; // 0 ~ 100
+    value: number; // 0 ~ maxValue (기본 100)
     color?: string;
 }
 
@@ -29,6 +29,17 @@ export interface SvgChartProps {
     title?: string;
     /** 애니메이션 딜레이(초) */
     animDelay?: number;
+    /**
+     * 바깥 링이 나타내는 값. 기본 100.
+     *
+     * 오행처럼 **각 축의 합이 100%로 고정된 구성비**를 그릴 때는 100을 쓰면 안 됩니다.
+     * 5개 축의 평균이 20%라서 어떤 사주든 도형이 반지름의 20% 언저리에만 그려져
+     * "내 밸런스가 유난히 작다"는 잘못된 인상을 줍니다. 이런 데이터는 균형점(20%)의
+     * 2배인 40 정도를 최대치로 주는 편이 실제 분포를 제대로 보여줍니다.
+     */
+    maxValue?: number;
+    /** 균형 기준선(점선 링)으로 표시할 값. 오행이면 20(=100/5). */
+    baselineValue?: number;
 }
 
 // ─────────────────────────────────────────────
@@ -67,13 +78,15 @@ function buildPolygonPoints(
     cy: number,
     r: number,
     n: number,
-    values: number[], // 0~100
-    maxR: number
+    values: number[],
+    maxR: number,
+    maxValue: number
 ) {
     return values
         .map((v, i) => {
             const angle = (360 / n) * i;
-            const dist = maxR * (v / 100);
+            const ratio = maxValue > 0 ? Math.min(1, v / maxValue) : 0;
+            const dist = maxR * ratio;
             const pt = polarToCartesian(cx, cy, dist, angle);
             return `${pt.x},${pt.y}`;
         })
@@ -90,6 +103,8 @@ export default function SvgChart({
     accentColor = "#a855f7",
     title,
     animDelay = 0,
+    maxValue = 100,
+    baselineValue,
 }: SvgChartProps) {
     const ref = useRef<HTMLDivElement>(null);
     const inView = useInView(ref, { once: true, margin: "-40px" });
@@ -100,12 +115,15 @@ export default function SvgChart({
     const cx = size / 2;
     const cy = size / 2;
     const maxR = size * 0.38;
-    const steps = [25, 50, 75, 100];
+    const safeMax = maxValue > 0 ? maxValue : 100;
+    // 링 눈금은 최대치를 4등분해 실제 값 범위에 맞춘다.
+    const steps = [0.25, 0.5, 0.75, 1].map((f) => Math.round(safeMax * f));
 
     const dataPoints = buildPolygonPoints(
         cx, cy, maxR, n,
         data.map((d) => d.value),
-        maxR
+        maxR,
+        safeMax
     );
 
     const shouldAnimate = mounted && inView;
@@ -135,7 +153,7 @@ export default function SvgChart({
                 >
                     {/* ── 배경 그리드 링 ── */}
                     {steps.map((step, si) => {
-                        const r = maxR * (step / 100);
+                        const r = maxR * (step / safeMax);
                         const pts = Array.from({ length: n })
                             .map((_, i) => {
                                 const angle = (360 / n) * i;
@@ -176,6 +194,31 @@ export default function SvgChart({
                         );
                     })}
 
+                    {/* ── 균형 기준선 ── 모든 축이 같은 값일 때의 도형.
+                        이 링보다 바깥으로 나온 축이 "강한 기운"이다. */}
+                    {typeof baselineValue === "number" && baselineValue > 0 && (
+                        <motion.polygon
+                            points={Array.from({ length: n })
+                                .map((_, i) => {
+                                    const angle = (360 / n) * i;
+                                    const pt = polarToCartesian(
+                                        cx, cy,
+                                        maxR * Math.min(1, baselineValue / safeMax),
+                                        angle,
+                                    );
+                                    return `${pt.x},${pt.y}`;
+                                })
+                                .join(" ")}
+                            fill="none"
+                            stroke="rgba(255,255,255,0.28)"
+                            strokeWidth={1}
+                            strokeDasharray="4 4"
+                            initial={{ opacity: 0 }}
+                            animate={shouldAnimate ? { opacity: 1 } : {}}
+                            transition={{ duration: 0.4, delay: animDelay + 0.3 }}
+                        />
+                    )}
+
                     {/* ── SVG Stitch 드로잉 — 데이터 폴리곤 ── */}
                     <motion.polygon
                         points={dataPoints}
@@ -201,7 +244,7 @@ export default function SvgChart({
                     {/* ── 데이터 포인트 글로우 도트 ── */}
                     {data.map((d, i) => {
                         const angle = (360 / n) * i;
-                        const pt = polarToCartesian(cx, cy, maxR * (d.value / 100), angle);
+                        const pt = polarToCartesian(cx, cy, maxR * Math.min(1, d.value / safeMax), angle);
                         const color =
                             d.color || ELEMENT_COLORS[d.label] || accentColor;
 
@@ -230,7 +273,7 @@ export default function SvgChart({
                     {/* ── 값 퍼센트 텍스트 ── */}
                     {data.map((d, i) => {
                         const angle = (360 / n) * i;
-                        const pt = polarToCartesian(cx, cy, maxR * (d.value / 100) + 14, angle);
+                        const pt = polarToCartesian(cx, cy, maxR * Math.min(1, d.value / safeMax) + 14, angle);
                         return (
                             <motion.text
                                 key={`val-${i}`}

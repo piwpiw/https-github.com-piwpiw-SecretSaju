@@ -156,7 +156,7 @@ export default function MyPage() {
               <Crown className="w-10 h-10 text-indigo-400" />
             </div>
             <h1 className="text-2xl font-black text-white mb-2">로그인 필요</h1>
-            <p className="text-slate-400 text-sm mb-8 leading-relaxed">
+            <p className="text-slate-400 text-sm mb-8 leading-relaxed break-keep">
               내 프로필, 사용 내역, 혜택을 보려면<br />로그인해 주세요.
             </p>
             <button

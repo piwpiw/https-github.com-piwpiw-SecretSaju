@@ -278,3 +278,26 @@ export function getWuxingFromPillarCode(pillarCode: string): {
         dominant: cheonganElement,
     };
 }
+
+/**
+ * 오행 비중 표시 척도 (화면 공용)
+ *
+ * 오행 다섯 축의 합은 항상 100%라 평균이 20%다. 그래서 0~100 척도에 그리면
+ * 어떤 사주든 도형이 바깥 링의 20% 언저리에만 머물러 "내 밸런스가 유난히 작다"는
+ * 잘못된 인상을 준다. 같은 이유로 "10점 만점"식 라벨도 3/2/3/2/2 처럼 뭉개져서
+ * 실제 편차(예: 3% vs 46%)가 전혀 드러나지 않는다.
+ *
+ * 균형점(20%)의 2배를 최대치로 잡으면 실제 분포가 제대로 보인다.
+ * 결과 카드와 결과 차트 실험실이 같은 척도를 쓰도록 여기서 한 번만 정의한다.
+ */
+export const ELEMENT_BALANCED_SHARE = 20;
+export const ELEMENT_CHART_MAX = 40;
+
+/** 비중(%)을 강약 라벨로. 20%가 균형점이다. */
+export function getElementStrengthLabel(share: number): { label: string; tone: string } {
+    if (share >= ELEMENT_BALANCED_SHARE * 1.75) return { label: "매우 강함", tone: "text-rose-200" };
+    if (share >= ELEMENT_BALANCED_SHARE * 1.25) return { label: "강함", tone: "text-amber-200" };
+    if (share >= ELEMENT_BALANCED_SHARE * 0.75) return { label: "균형", tone: "text-emerald-200" };
+    if (share >= ELEMENT_BALANCED_SHARE * 0.4) return { label: "약함", tone: "text-sky-200" };
+    return { label: "매우 약함", tone: "text-slate-300" };
+}

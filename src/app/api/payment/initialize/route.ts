@@ -16,7 +16,16 @@ export async function POST(req: NextRequest) {
     NextResponse.json(buildErrorResponsePayload(code, message, details), { status });
 
   try {
-    const { tierId, callbackOverride, customerName } = await req.json();
+    // A malformed/empty body is a client error, not a server fault — parsing it
+    // inside the outer try would surface as a 500 and echo the raw SyntaxError.
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return createErrorResponse('PAYMENT_INVALID_BODY', 'Request body must be valid JSON', 400);
+    }
+
+    const { tierId, callbackOverride, customerName } = body ?? {};
     if (!tierId) {
       return createErrorResponse('PAYMENT_MISSING_TIER', 'Tier ID is required', 400);
     }

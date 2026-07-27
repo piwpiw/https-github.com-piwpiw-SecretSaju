@@ -83,17 +83,17 @@ export default function PsychologyPage() {
           <div className="inline-flex items-center gap-2 text-indigo-300 font-black tracking-[0.2em] uppercase text-xs">
             <Brain className="w-4 h-4" /> 심리 성향 진단
           </div>
-          <h1 className="text-3xl md:text-4xl font-black italic mt-2">간단 심리 체크</h1>
-          <p className="text-slate-300 mt-2">3문항으로 오늘의 판단 성향과 실행 전략을 추천합니다.</p>
+          <h1 className="text-3xl md:text-4xl font-black italic mt-2 break-keep">간단 심리 체크</h1>
+          <p className="text-slate-300 mt-2 break-keep">3문항으로 오늘의 판단 성향과 실행 전략을 추천합니다.</p>
 
           <div className="mt-7 grid gap-5">
             {QUESTIONS.map((item) => (
               <div key={item.key} className="rounded-2xl border border-white/10 bg-slate-950 p-5">
-                <p className="font-bold text-white">{item.question}</p>
+                <p className="font-bold text-white break-keep">{item.question}</p>
                 <div className="mt-3 flex items-center gap-2">
-                  <button onClick={() => onSet(item.key as keyof typeof answers, 1)} className="px-3 py-2 rounded-full border border-white/10">낮음</button>
-                  <button onClick={() => onSet(item.key as keyof typeof answers, 2)} className="px-3 py-2 rounded-full border border-white/10">보통</button>
-                  <button onClick={() => onSet(item.key as keyof typeof answers, 3)} className="px-3 py-2 rounded-full border border-white/10">높음</button>
+                  <button onClick={() => onSet(item.key as keyof typeof answers, 1)} className="px-3 py-2 rounded-full border border-white/10 break-keep">낮음</button>
+                  <button onClick={() => onSet(item.key as keyof typeof answers, 2)} className="px-3 py-2 rounded-full border border-white/10 break-keep">보통</button>
+                  <button onClick={() => onSet(item.key as keyof typeof answers, 3)} className="px-3 py-2 rounded-full border border-white/10 break-keep">높음</button>
                 </div>
               </div>
             ))}

@@ -113,7 +113,16 @@ export async function POST(req: NextRequest) {
     NextResponse.json(buildErrorResponsePayload(code, message, details), { status });
 
   try {
-    const payload = await req.json();
+    // A malformed/empty body is a client error, not a server fault — parsing it
+    // inside the outer try would surface as a 500.
+    let payload: any;
+    try {
+      payload = await req.json();
+    } catch {
+      return createErrorResponse('PAYMENT_INVALID_BODY', 'Request body must be valid JSON', 400);
+    }
+    payload = payload ?? {};
+
     const paymentKey = String(payload.paymentKey || '').trim();
     const orderId = String(payload.orderId || '').trim();
     const amount = Number(payload.amount);

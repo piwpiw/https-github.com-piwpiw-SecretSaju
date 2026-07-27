@@ -632,6 +632,10 @@ export default function HomePage() {
               analysisMeta={sajuData.analysisMeta}
               canonicalFeatures={sajuData.canonicalFeatures}
               evidence={sajuData.evidence}
+              gangyak={sajuData.gangyak}
+              yongshin={sajuData.yongshin}
+              sipsong={sajuData.sipsong}
+              sibiwoonseong={sajuData.sibiwoonseong}
               onUnlockClick={handleUnlockClick}
               onInsufficientJelly={handleUnlockClick}
             />

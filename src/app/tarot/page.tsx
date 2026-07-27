@@ -357,13 +357,15 @@ export default function TarotPage() {
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-[0.24em] border border-indigo-500/20">
               <Compass className="w-3 h-3" /> Tarot Oracle v1.0
             </div>
-            <h1 className="text-4xl font-black italic tracking-tighter uppercase text-white leading-none">타로 인사이트</h1>
+            <h1 className="text-4xl font-black italic tracking-tighter uppercase text-white leading-none break-keep">타로 인사이트</h1>
           </div>
 
           <JellyBalance onClick={() => setShopOpen(true)} />
         </header>
 
-        <section className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[3rem] p-10 md:p-14 relative overflow-hidden group">
+        {/* 좁은 화면에서 p-10(좌우 80px)은 320px 뷰포트의 콘텐츠 폭을 238px까지 깎아
+            카드 내용이 잘렸습니다. 모바일에서는 여백을 줄이고 sm 이상에서 원래 값으로 복귀. */}
+        <section className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 sm:rounded-[3rem] sm:p-10 md:p-14 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px] -mr-48 -mt-48 pointer-events-none group-hover:bg-indigo-600/20 transition-all duration-1000" />
 
           <div className="flex items-center gap-4 mb-10 relative z-10">
@@ -371,12 +373,12 @@ export default function TarotPage() {
               <Orbit className="w-6 h-6 text-indigo-400" />
             </div>
             <div>
-              <h2 className="text-2xl font-black italic tracking-tight uppercase text-white">과거/현재/미래 스프레드</h2>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">심층 심리 및 운 흐름 분석</p>
+              <h2 className="text-2xl font-black italic tracking-tight uppercase text-white break-keep">과거/현재/미래 스프레드</h2>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1 break-keep">심층 심리 및 운 흐름 분석</p>
             </div>
           </div>
 
-          <p className="text-slate-300 mb-10 leading-relaxed max-w-2xl px-2">
+          <p className="text-slate-300 mb-10 leading-relaxed max-w-2xl px-2 break-keep">
             3장의 카드로 당신의 무의식과 현실의 교차점을 읽어냅니다.<br />
             위치별 핵심 신호를 분석하고, 당신의 다음 액션을 위한 직관적 가이드를 생성합니다.
           </p>
@@ -400,7 +402,7 @@ export default function TarotPage() {
             <button
               onClick={draw}
               disabled={isDrawing}
-              className="flex-1 py-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest shadow-xl hover:shadow-indigo-500/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50 group/btn"
+              className="flex-1 py-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest shadow-xl hover:shadow-indigo-500/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50 group/btn break-keep"
             >
               <RefreshCw className={`w-5 h-5 ${isDrawing ? "animate-spin" : "group-hover/btn:rotate-180 transition-transform duration-500"}`} />
               {isDrawing ? "조율 중..." : "새로운 운명 전개"}
