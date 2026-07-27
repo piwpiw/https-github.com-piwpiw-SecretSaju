@@ -64,7 +64,7 @@ export function SecretBlur({
 
       {showModal && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-[71] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           onClick={() => setShowModal(false)}

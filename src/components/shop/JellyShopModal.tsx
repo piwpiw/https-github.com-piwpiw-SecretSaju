@@ -159,7 +159,8 @@ export default function JellyShopModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            aria-hidden="true"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70]"
             onClick={onClose}
           />
 
@@ -167,7 +168,7 @@ export default function JellyShopModal({
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+            className="fixed inset-0 z-[71] flex items-center justify-center p-4 pointer-events-none"
           >
             <div
               className="bg-surface rounded-2xl shadow-2xl max-w-2xl w-full pointer-events-auto overflow-hidden border border-white/10"

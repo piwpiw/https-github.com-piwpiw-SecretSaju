@@ -26,7 +26,7 @@ export default function StoryDetailPage({ params }: Props) {
     <main className="min-h-[100dvh] bg-background text-foreground relative pb-32">
       <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
         <header className="mb-12">
           <Link
             href="/story"

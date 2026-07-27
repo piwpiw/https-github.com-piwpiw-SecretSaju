@@ -146,7 +146,7 @@ export default function LuckPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.12),transparent_60%)] pointer-events-none" />
       {showToast && <LuxuryToast message={toastMsg} isVisible={showToast} />}
 
-      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
         <header className="flex items-center justify-between mb-16">
           <button
             type="button"

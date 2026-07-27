@@ -4,7 +4,7 @@ import { ArrowLeft, AlertTriangle, Mail, ShieldAlert } from "lucide-react";
 export default function AccountDeletePage() {
   return (
     <main className="min-h-screen relative overflow-hidden pb-40">
-      <div className="max-w-4xl mx-auto px-6 pt-16 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 pt-16 relative z-10">
         <Link href="/mypage" className="flex items-center gap-3 text-secondary hover:text-foreground transition-all group mb-12">
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-bold">뒤로</span>

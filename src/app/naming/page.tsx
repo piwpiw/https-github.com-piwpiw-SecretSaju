@@ -368,7 +368,7 @@ export default function NamingPage() {
     <main className="min-h-screen bg-slate-950 text-slate-200 relative overflow-hidden pb-36">
       <LuxuryToast message={toastMsg} isVisible={showToast} />
       <div className="absolute inset-0 bg-gradient-to-b from-cyan-900/20 via-slate-900/10 to-transparent pointer-events-none" />
-      <div className="max-w-5xl mx-auto px-6 py-10 relative z-10">
+      <div className="max-w-5xl mx-auto px-0 sm:px-6 py-10 relative z-10">
         <header className="flex items-center justify-between mb-8">
           <button
             onClick={() => router.back()}

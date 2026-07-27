@@ -32,7 +32,7 @@ export default function TarotGalleryPage() {
         <main className="min-h-screen bg-slate-950 text-slate-100 selection:bg-indigo-500/30">
             <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-indigo-900/10 to-transparent pointer-events-none" />
 
-            <div className="max-w-7xl mx-auto px-6 py-12 relative z-10">
+            <div className="max-w-7xl mx-auto px-0 sm:px-6 py-12 relative z-10">
                 <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div className="flex items-center gap-4">
                         <Link href="/tarot" className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
@@ -52,8 +52,8 @@ export default function TarotGalleryPage() {
                     </div>
                 </header>
 
-                <section className="mb-10 flex items-center justify-between gap-4 border-b border-white/10 pb-6">
-                    <div className="flex bg-slate-900/50 p-1 rounded-2xl border border-white/10">
+                <section className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-white/10 pb-4">
+                    <div className="flex flex-wrap bg-slate-900/50 p-1 rounded-2xl border border-white/10">
                         {[
                             { id: "ALL", label: "전체보기 (All)" },
                             { id: "MAJOR", label: "메이저 아르카나 (Major)" },
@@ -72,15 +72,15 @@ export default function TarotGalleryPage() {
                         ))}
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-black tracking-widest text-slate-500 break-keep">테마</span>
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <span className="text-[10px] font-black tracking-widest text-slate-500 break-keep shrink-0">테마</span>
                         <select
                             value={activeTheme}
                             onChange={(e) => setActiveTheme(e.target.value as TarotTheme)}
-                            className="bg-slate-900 border border-white/10 text-xs font-bold text-slate-300 rounded-xl px-4 py-2 outline-none focus:border-indigo-500/50 transition-colors uppercase tracking-wider"
+                            className="min-w-0 flex-1 sm:flex-none bg-slate-900 border border-white/10 text-xs font-bold text-slate-300 rounded-xl px-3 py-2 outline-none focus:border-indigo-500/50 transition-colors tracking-wider"
                         >
-                            <option value="standard">Standard (Rider-Waite)</option>
-                            <option value="svg_fallback">Vector (Fallback)</option>
+                            <option value="standard">기본 (라이더-웨이트)</option>
+                            <option value="svg_fallback">벡터 (대체 이미지)</option>
                         </select>
                     </div>
                 </section>

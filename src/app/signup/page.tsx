@@ -8,8 +8,11 @@ import AuthModal from '@/components/auth/AuthModal';
 export default function SignupPage() {
     const router = useRouter();
 
+    // min-h-screen + items-center 로 세로 중앙 정렬하면 콘텐츠가 sticky 내비게이션
+    // (z-60, 상단 32~97px) 아래로 파고들어 페이지 제목이 가려졌다.
+    // 내비 높이만큼 위쪽 여백을 확보한다.
     return (
-        <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-6 relative overflow-hidden">
+        <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-6 pb-10 pt-28 relative overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(79,70,229,0.22),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_75%,rgba(16,185,129,0.14),transparent_55%)]" />
 

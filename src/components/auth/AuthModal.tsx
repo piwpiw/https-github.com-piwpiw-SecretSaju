@@ -355,15 +355,21 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={handleClose}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+                        aria-hidden="true"
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70]"
                     />
                     <motion.div
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.98 }}
-                        className="fixed inset-0 z-50 flex items-start sm:items-center justify-center px-4 py-6 overflow-y-auto"
+                        className="fixed inset-0 z-[71] flex items-start sm:items-center justify-center px-4 py-6 overflow-y-auto"
                     >
-                        <div className="relative w-full max-w-md bg-surface rounded-4xl border border-border-color shadow-2xl overflow-hidden">
+                        <div
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label={isSignupMode ? '회원가입' : '로그인'}
+                            className="relative w-full max-w-md bg-surface rounded-4xl border border-border-color shadow-2xl overflow-hidden"
+                        >
                             <button
                                 onClick={handleClose}
                                 disabled={!!isLoading}

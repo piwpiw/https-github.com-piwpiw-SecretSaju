@@ -44,7 +44,7 @@ export default function WikiPage() {
     return (
         <main className="min-h-screen relative overflow-hidden pb-40 text-foreground">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,var(--primary)_0%,transparent_30%)] opacity-5" />
-            <div className="max-w-5xl mx-auto px-6 py-16 relative z-10">
+            <div className="max-w-5xl mx-auto px-0 sm:px-6 py-16 relative z-10">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 border-b border-border-color pb-16">
                     <div>
                         <button

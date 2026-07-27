@@ -77,7 +77,7 @@ export default function InquiryPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-32">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.14),transparent_50%)]" />
-      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
         <button onClick={() => router.back()} className="mb-8 inline-flex items-center gap-2 text-slate-300 hover:text-white">
           <ArrowLeft className="w-5 h-5" /> 뒤로
         </button>

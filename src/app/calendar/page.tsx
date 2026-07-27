@@ -109,7 +109,7 @@ export default function CalendarPage() {
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-28">
-      <div className="max-w-4xl mx-auto px-6 py-12">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12">
         <div className="flex items-center justify-between mb-6">
           <div className="inline-flex items-center gap-3">
             <button
