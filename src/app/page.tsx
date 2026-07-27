@@ -43,6 +43,15 @@ type HomeSearchItem = {
 };
 
 const HOME_SEARCH_INPUT_ID = "home-search-input";
+
+/**
+ * 떠 있는 검색바를 숨기기 시작하는 스크롤 위치(px).
+ *
+ * 이 검색바는 `fixed`라 스크롤과 무관하게 화면에 남아 있었고, 결과 화면까지
+ * 따라 내려와 "나를 채우는 5가지 원소" 같은 섹션 제목을 가렸습니다.
+ * 히어로 영역을 벗어나면 접어 두고, 위로 돌아오면 다시 보여줍니다.
+ */
+const SEARCH_HIDE_AFTER_Y = 220;
 const HOME_SEARCH_LISTBOX_ID = "home-search-listbox";
 const HOME_SEARCH_HELP_ID = "home-search-help";
 
@@ -83,6 +92,7 @@ export default function HomePage() {
   const [isSharing, setIsSharing] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
   const [hanjaDraft, setHanjaDraft] = useState("");
+  const [isSearchVisible, setIsSearchVisible] = useState(true);
   const [searchText, setSearchText] = useState("");
   const { activeProfile } = useProfiles();
   const [searchError, setSearchError] = useState("");
@@ -113,6 +123,13 @@ export default function HomePage() {
       .sort((a, b) => b.score - a.score)
       .slice(0, 5);
   }, [searchIndex, normalizedSearchText]);
+
+  useEffect(() => {
+    const onScroll = () => setIsSearchVisible(window.scrollY < SEARCH_HIDE_AFTER_Y);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!normalizedSearchText || topSearchMatches.length === 0) {
@@ -318,7 +335,12 @@ export default function HomePage() {
       <div className="absolute inset-x-0 bottom-0 h-screen bg-[radial-gradient(circle_at_80%_80%,rgba(168,85,247,0.1)_0%,transparent_50%)] pointer-events-none" />
 
       {/* 1.3 Floating Search Overlay UX */}
-      <div className="fixed top-[78px] sm:top-[86px] left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-lg z-[50]">
+      <div
+        className={`fixed top-[78px] sm:top-[86px] left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-lg z-[50] transition-all duration-300 ${
+          isSearchVisible ? "opacity-100 translate-y-0" : "pointer-events-none -translate-y-3 opacity-0"
+        }`}
+        aria-hidden={!isSearchVisible}
+      >
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -413,7 +435,9 @@ export default function HomePage() {
 
       <SocialProofTicker />
       {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-6 pt-28 pb-20">
+      {/* 앱 셸(layout.tsx)이 이미 좌우 px-4를 준다. 여기서 px-6을 또 주면
+          390px 화면에서 콘텐츠 폭이 계단식으로 깎인다. 모바일은 셸에 맡긴다. */}
+      <div className="relative z-10 container mx-auto px-0 sm:px-6 pt-28 pb-20">
         {/* Dashboard Portal */}
         {(flowState === "boot" || flowState === "input") && (
           <div className="max-w-5xl mx-auto flex flex-col gap-8 sm:gap-16">

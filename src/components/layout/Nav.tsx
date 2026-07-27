@@ -19,7 +19,7 @@ export function Nav() {
   const themeStorageKey = "theme";
   const router = useRouter();
   const pathname = usePathname();
-  const { churu } = useWallet();
+  const { churu, isFreeLaunch } = useWallet();
   const { theme, setTheme } = useTheme();
   const { t } = useLocale();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -219,8 +219,14 @@ export function Nav() {
               className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 group hover:bg-indigo-500/20 transition-all shadow-inner"
             >
               <Zap className="w-3.5 h-3.5 text-indigo-400 fill-current group-hover:scale-110 transition-transform" />
-              <span className="text-[11px] font-black text-white italic tracking-tighter">{churu || 0}</span>
-              <span className="hidden sm:inline text-[9px] font-bold text-indigo-400 uppercase tracking-widest opacity-60">젤리</span>
+              {/* 무료 오픈 기간에는 게이트를 열어두려고 내부적으로 큰 값을 넣는다.
+                  숫자를 그대로 노출하면 "999999 젤리 보유"처럼 읽히므로 상태만 표시. */}
+              <span className="text-[11px] font-black text-white italic tracking-tighter break-keep">
+                {isFreeLaunch ? "무료" : (churu || 0).toLocaleString("ko-KR")}
+              </span>
+              {!isFreeLaunch && (
+                <span className="hidden sm:inline text-[9px] font-bold text-indigo-400 tracking-widest opacity-60">젤리</span>
+              )}
             </Link>
 
             <button

@@ -3,10 +3,12 @@ import { Gem, Zap, ArrowRight } from 'lucide-react';
 
 interface PremiumWalletCardProps {
     jellies: number;
+    /** 무료 오픈 기간이면 잔액 숫자 대신 상태를 보여준다. */
+    isFreeLaunch?: boolean;
     onClickCharge: () => void;
 }
 
-export default function PremiumWalletCard({ jellies, onClickCharge }: PremiumWalletCardProps) {
+export default function PremiumWalletCard({ jellies, isFreeLaunch = false, onClickCharge }: PremiumWalletCardProps) {
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -34,10 +36,18 @@ export default function PremiumWalletCard({ jellies, onClickCharge }: PremiumWal
                 </div>
 
                 <div className="space-y-1">
-                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest italic">현재 잔액</p>
+                    <p className="text-xs font-black text-slate-500 tracking-widest italic break-keep">
+                        {isFreeLaunch ? '이용 상태' : '현재 잔액'}
+                    </p>
                     <div className="flex items-end gap-3">
-                        <span className="text-5xl font-black italic text-white tracking-tighter">{jellies.toLocaleString()}</span>
-                        <span className="text-2xl font-black italic text-indigo-400 mb-1 tracking-tighter uppercase">젤리</span>
+                        {isFreeLaunch ? (
+                            <span className="text-4xl font-black italic text-white tracking-tighter break-keep">전체 무료</span>
+                        ) : (
+                            <>
+                                <span className="text-5xl font-black italic text-white tracking-tighter">{jellies.toLocaleString('ko-KR')}</span>
+                                <span className="text-2xl font-black italic text-indigo-400 mb-1 tracking-tighter">젤리</span>
+                            </>
+                        )}
                     </div>
                 </div>
 
