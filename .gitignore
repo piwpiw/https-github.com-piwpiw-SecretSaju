@@ -54,3 +54,12 @@ Desktop.ini
 *.temp
 *.cache
 .cache/
+
+# next-pwa 생성물 (dest: "public")
+# 빌드마다 새로 만들어지고, 안에 그 빌드의 청크 해시가 박힌 precache 목록이 들어간다.
+# 추적하면 빌드할 때마다 작업 트리가 더러워지고, 커밋된 사본은 다른 환경(Vercel)의
+# 빌드 결과와 어긋난 URL을 가리키게 된다. next-pwa 권장대로 무시한다.
+public/sw.js
+public/sw.js.map
+public/workbox-*.js
+public/workbox-*.js.map
