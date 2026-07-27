@@ -3,6 +3,47 @@ import type { Tendency } from "@/lib/reader/persona-matrix";
 export type ReaderQueryType = "daily" | "result" | "compatibility" | "chat";
 export type ReaderTier = "starter" | "plus" | "pro" | "signature";
 export type ReaderCategory = "general" | "love" | "career" | "wealth" | "timing";
+/**
+ * 화면 표기용 한국어 라벨.
+ *
+ * `queryType`/`tier`/`category`는 내부 식별자라 영어다. `/fortune-readers`가 이 값을
+ * 그대로 렌더링하고 CSS `uppercase`까지 걸어서, 사용자에게는 `RESULT`, `STARTER`,
+ * `PLUS · LOVE` 처럼 보였다. 계산에는 관여하지 않고 표시할 때만 쓴다.
+ */
+const QUERY_TYPE_LABELS_KO: Record<ReaderQueryType, string> = {
+  daily: "오늘의 운세",
+  result: "사주 결과",
+  compatibility: "궁합",
+  chat: "상담",
+};
+
+const TIER_LABELS_KO: Record<ReaderTier, string> = {
+  starter: "기본",
+  plus: "플러스",
+  pro: "프로",
+  signature: "시그니처",
+};
+
+const CATEGORY_LABELS_KO: Record<ReaderCategory, string> = {
+  general: "종합",
+  love: "연애",
+  career: "직업",
+  wealth: "재물",
+  timing: "시기",
+};
+
+export function toQueryTypeLabelKo(value: string): string {
+  return QUERY_TYPE_LABELS_KO[value as ReaderQueryType] || value;
+}
+
+export function toTierLabelKo(value: string): string {
+  return TIER_LABELS_KO[value as ReaderTier] || value;
+}
+
+export function toCategoryLabelKo(value: string): string {
+  return CATEGORY_LABELS_KO[value as ReaderCategory] || value;
+}
+
 export type ReaderId =
   | "classic_balance"
   | "easy_translator"

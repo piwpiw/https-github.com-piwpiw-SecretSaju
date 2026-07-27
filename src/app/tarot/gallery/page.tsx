@@ -40,15 +40,15 @@ export default function TarotGalleryPage() {
                         </Link>
                         <div>
                             <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-[0.24em] border border-indigo-500/20 mb-2">
-                                <Library className="w-3 h-3" /> Tarot Archive
+                                <Library className="w-3 h-3" /> 타로 아카이브
                             </div>
-                            <h1 className="text-3xl font-black italic tracking-tighter uppercase text-white leading-none">Secret Tarot Gallery</h1>
+                            <h1 className="text-3xl font-black italic tracking-tighter text-white leading-none break-keep">타로 카드 갤러리</h1>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-2 text-xs font-bold font-mono text-slate-400 bg-slate-900/50 px-4 py-2 rounded-xl border border-white/10">
                         <Target className="w-4 h-4 text-indigo-400" />
-                        TOTAL {stats.total} CARDS (MAJOR {stats.major} / MINOR {stats.minor})
+                        전체 {stats.total}장 (메이저 {stats.major} · 마이너 {stats.minor})
                     </div>
                 </header>
 
@@ -73,7 +73,7 @@ export default function TarotGalleryPage() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Theme</span>
+                        <span className="text-[10px] font-black tracking-widest text-slate-500 break-keep">테마</span>
                         <select
                             value={activeTheme}
                             onChange={(e) => setActiveTheme(e.target.value as TarotTheme)}
@@ -116,7 +116,7 @@ export default function TarotGalleryPage() {
                                     <div className="relative flex-1 rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
                                         <div className="absolute inset-0 flex items-center justify-center p-4">
                                             <p className="text-[9px] text-slate-600 font-mono text-center opacity-50">
-                                                Image Pending<br />{card.code}
+                                                이미지 준비 중<br />{card.code}
                                             </p>
                                         </div>
                                         {imageUrl ? (

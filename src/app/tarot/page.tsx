@@ -64,6 +64,19 @@ const TAROT_3D_STYLES = `
   @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 `;
 
+const SUIT_LABELS_KO: Record<string, string> = {
+  wands: "완드",
+  cups: "컵",
+  swords: "소드",
+  pentacles: "펜타클",
+};
+
+/** suit 가 없으면 메이저 아르카나다. 카드 뒷면에 원문 그대로 노출되던 값. */
+function toSuitLabelKo(suit?: string | null): string {
+  if (!suit) return "메이저";
+  return SUIT_LABELS_KO[suit] || suit;
+}
+
 function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard, index: number, isRevealed: boolean, onReveal: () => void }) {
   const effect = getSuitEffect(card.suit);
   const Icon = effect.icon;
@@ -88,7 +101,7 @@ function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard
             <div className="w-16 h-16 rounded-full border border-indigo-500/30 flex items-center justify-center animate-spin-slow">
               <Orbit className="w-8 h-8 text-indigo-400 opacity-50" />
             </div>
-            <div className="text-[10px] font-black uppercase tracking-[0.4em] text-indigo-300 opacity-60">Tap to Reveal</div>
+            <div className="text-[10px] font-black tracking-[0.4em] text-indigo-300 opacity-60 break-keep">눌러서 펼치기</div>
             <div className="absolute top-6 left-6 w-8 h-8 border-t-2 border-l-2 border-indigo-500/20 rounded-tl-xl" />
             <div className="absolute bottom-6 right-6 w-8 h-8 border-b-2 border-r-2 border-indigo-500/20 rounded-br-xl" />
           </div>
@@ -110,7 +123,7 @@ function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard
               <h4 className="text-xl font-black text-white italic tracking-tight truncate">{card.name_kr}</h4>
               <div className="flex items-center gap-2">
                 <span className={`text-[9px] font-black uppercase tracking-widest ${card.isReversed ? "text-rose-400" : "text-emerald-400"}`}>
-                  {card.isReversed ? "Reverse" : "Upright"}
+                  {card.isReversed ? "역방향" : "정방향"}
                 </span>
               </div>
             </div>
@@ -118,7 +131,7 @@ function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard
             <div className="relative flex-1 min-h-[200px] mt-2 mb-2 rounded-xl overflow-hidden border border-slate-700/50 bg-slate-950">
               <div className="absolute inset-0 flex items-center justify-center p-4">
                 <p className="text-[10px] text-slate-600 font-mono text-center opacity-50">
-                  Image Pending<br />{card.code}
+                  이미지 준비 중<br />{card.code}
                 </p>
               </div>
               {card.imageUrl ? (
@@ -141,7 +154,7 @@ function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard
 
             <div className="pt-2 border-t border-white/5 flex items-center justify-between mt-auto">
               <div className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">
-                {card.suit?.toUpperCase() ?? "MAJOR"}
+                {toSuitLabelKo(card.suit)}
               </div>
               <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
             </div>
@@ -555,7 +568,7 @@ export default function TarotPage() {
             </div>
             <div className="text-center space-y-2">
               <p className="text-sm font-black uppercase tracking-[0.5em] text-slate-300 italic">
-                Awaiting Ritual
+                의식을 기다리는 중
               </p>
               <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">
                 신비로운 조언이 당신의 터치를 기다립니다

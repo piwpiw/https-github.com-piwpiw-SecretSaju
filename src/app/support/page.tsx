@@ -91,7 +91,7 @@ export default function SupportPage() {
             variants={itemVariants}
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-pink-400"
           >
-            <HeartHandshake className="h-3 w-3" /> Customer Support
+            <HeartHandshake className="h-3 w-3" /> 고객 지원
           </motion.div>
 
           <motion.h1

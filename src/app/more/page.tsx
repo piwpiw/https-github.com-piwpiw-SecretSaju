@@ -122,7 +122,7 @@ const MORE_MENUS = [
         desc: "해설가를 직접 고르고 비교하며, 프리미엄 리더를 해금할 수 있습니다.",
         link: "/fortune-readers",
         color: "text-yellow-300",
-        badge: "HOT",
+        badge: "인기",
         help: "리더 비교, 즐겨찾기, 시그니처 멤버십",
       },
     ],
@@ -144,7 +144,7 @@ const MORE_MENUS = [
         desc: "개발과 운영을 위해 정중한 후원 페이지입니다.",
         link: "/support",
         color: "text-rose-500",
-        badge: "NEW",
+        badge: "신규",
         help: "후원 안내, 혜택, 톡방 연결 링크",
       },
       {

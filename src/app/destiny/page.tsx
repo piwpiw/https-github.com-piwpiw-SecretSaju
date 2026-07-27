@@ -89,7 +89,7 @@ export default function DestinyPage() {
 
           <div className="text-center space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-[0.24em] border border-indigo-500/20">
-              <Compass className="w-3 h-3" /> Destiny Nexus
+              <Compass className="w-3 h-3" /> 운명 연결도
             </div>
             <h1 className="text-4xl font-black italic tracking-tighter uppercase text-white leading-none">사주 & 운명</h1>
           </div>
@@ -100,7 +100,7 @@ export default function DestinyPage() {
         <div className="space-y-16">
           <section className="space-y-8">
             <div className="flex items-center justify-between px-2">
-              <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.4em] italic">FATE FLOW</h3>
+              <h3 className="text-xs font-black text-slate-500 tracking-[0.3em] italic break-keep">운명의 흐름</h3>
               <LayoutGrid className="w-4 h-4 text-slate-700" />
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -125,7 +125,7 @@ export default function DestinyPage() {
 
           <section className="space-y-8">
             <div className="flex items-center justify-between px-2">
-              <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.4em] italic">RELATIONSHIP SIGNAL</h3>
+              <h3 className="text-xs font-black text-slate-500 tracking-[0.3em] italic break-keep">관계 신호</h3>
               <Heart className="w-4 h-4 text-rose-500/50" />
             </div>
             <div className="space-y-4">
@@ -148,7 +148,7 @@ export default function DestinyPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
                         <h4 className={cn("text-lg font-black italic", item.highlight ? "text-rose-400" : "text-white")}>{item.title}</h4>
-                        {item.highlight && <span className="px-2 py-0.5 bg-rose-600 text-white text-[8px] font-black rounded-full uppercase italic tracking-widest">Premium</span>}
+                        {item.highlight && <span className="px-2 py-0.5 bg-rose-600 text-white text-[8px] font-black rounded-full italic tracking-widest break-keep">프리미엄</span>}
                       </div>
                       <p className="text-xs text-slate-400 font-medium leading-relaxed">{item.desc}</p>
                     </div>

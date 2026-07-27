@@ -62,7 +62,7 @@ function PaymentLoadingContent() {
             </button>
           </div>
           <p className="text-xs text-slate-500 mt-8">
-            Order ID: <span className="text-primary">{orderId}</span>
+            주문번호 <span className="text-primary">{orderId}</span>
           </p>
         </motion.div>
       </main>
@@ -95,7 +95,7 @@ function PaymentLoadingContent() {
           ))}
         </div>
         <p className="text-xs text-slate-500">
-          Order ID: <span className="text-primary">{orderId}</span>
+          주문번호 <span className="text-primary">{orderId}</span>
         </p>
       </motion.div>
     </main>

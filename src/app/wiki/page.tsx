@@ -64,7 +64,7 @@ export default function WikiPage() {
                             </span>
                         </motion.div>
                         <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase mb-2">
-                            {locale === 'ko' ? '사주' : 'Saju'} <span className="text-primary italic">{locale === 'ko' ? 'Wiki' : 'Wiki'}</span>
+                            {locale === 'ko' ? '사주' : 'Saju'} <span className="text-primary italic">{locale === 'ko' ? '백과사전' : 'Wiki'}</span>
                         </h1>
                         <p className="text-xl md:text-2xl text-secondary font-medium italic opacity-70">
                             {locale === 'ko' ? '사주 도메인 전체 문서·기술 명세를 정리한 지식 공간입니다.' : 'Comprehensive technical specifications & docs'}

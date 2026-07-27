@@ -276,17 +276,17 @@ export default function TojeongPage() {
 
             <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
               <ResultSummaryCard
-                title="🧭 Who You Are"
+                title="🧭 지금의 나"
                 body={`${selectedYear}년의 ${profileName}님 흐름은 ${report.mainGrade} 등급, ${report.mainScore}점으로 요약되며 "${report.theme}"가 올해의 중심 주제입니다.`}
                 tone="bg-cyan-500/10 border-cyan-300/20"
               />
               <ResultSummaryCard
-                title="📚 Why It Happens"
+                title="📚 왜 이런 흐름인가"
                 body={`${report.oneLineSummary} ${report.sources.length}개의 근거가 현재 해석을 지지하고, 월평균 ${monthSummary?.avgMonthly ?? 0}점 리듬이 연간 흐름을 만듭니다.`}
                 tone="bg-amber-500/10 border-amber-300/20"
               />
               <ResultSummaryCard
-                title="✨ What To Do"
+                title="✨ 무엇을 하면 좋은가"
                 body={`${report.actionPlans[0] ?? "올해는 강한 달에 집중하고 약한 달은 보수적으로 운영하는 편이 좋습니다."}`}
                 tone="bg-emerald-500/10 border-emerald-300/20"
               />

@@ -271,17 +271,17 @@ export default function DailyFortunePage() {
 
               <section className="grid gap-3 md:grid-cols-3">
                 <ResultSummaryCard
-                  title="☀️ Who You Are"
+                  title="☀️ 지금의 나"
                   body={`오늘 흐름은 ${fortune.pillarName ?? "기본 운세"} 축을 중심으로 읽히며, 전체 에너지는 ${scoreVal}점 수준입니다.`}
                   tone="bg-cyan-500/10 border-cyan-300/20"
                 />
                 <ResultSummaryCard
-                  title="📚 Why It Happens"
+                  title="📚 왜 이런 흐름인가"
                   body={`${fortune.message ?? "운세 메시지"}${fortune.element ? ` 오행상으로는 ${fortune.element} 기운이 오늘의 핵심 축입니다.` : ""}`}
                   tone="bg-amber-500/10 border-amber-300/20"
                 />
                 <ResultSummaryCard
-                  title="✨ What To Do"
+                  title="✨ 무엇을 하면 좋은가"
                   body={`${fortune.caution ? `${fortune.caution} ` : ""}오늘은 무리하게 벌리기보다, 잘 되는 시간대에 핵심 한두 가지를 선명하게 처리하는 편이 좋습니다.`}
                   tone="bg-emerald-500/10 border-emerald-300/20"
                 />

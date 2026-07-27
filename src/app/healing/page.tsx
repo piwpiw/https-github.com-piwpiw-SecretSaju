@@ -79,7 +79,7 @@ export default function HealingPage() {
           </button>
           <div className="text-center">
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300 mb-1">
-              Healing Mode
+              힐링 모드
             </p>
             <h1 className="text-3xl font-black italic tracking-tight">마음 회복 스테이션</h1>
           </div>
@@ -113,7 +113,7 @@ export default function HealingPage() {
         </section>
 
         <section className="rounded-[2rem] border border-amber-500/20 bg-amber-500/5 p-8 text-center mb-8">
-          <p className="text-[10px] uppercase tracking-[0.25em] font-black text-amber-300 mb-3">Daily Draw</p>
+          <p className="text-[10px] tracking-[0.25em] font-black text-amber-300 mb-3 break-keep">오늘의 한 장</p>
           <h2 className="text-2xl font-black mb-2">힐링 포춘 1회 뽑기</h2>
           <p className="text-sm text-slate-400 mb-6">젤리 1개를 사용해 오늘의 회복 메시지를 확인합니다.</p>
 
@@ -158,7 +158,7 @@ export default function HealingPage() {
         <section>
           <div className="flex items-center gap-2 mb-4">
             <Zap className="w-4 h-4 text-indigo-300" />
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-slate-300">App Only Features</p>
+            <p className="text-xs font-black tracking-[0.25em] text-slate-300 break-keep">앱 전용 기능</p>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {APP_ONLY_FEATURES.map((f) => (

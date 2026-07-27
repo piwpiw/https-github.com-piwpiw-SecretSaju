@@ -59,7 +59,7 @@ function FailContent() {
             <div className="flex items-start gap-3 text-left">
               <AlertCircle className="w-6 h-6 text-rose-400 shrink-0 mt-0.5" />
               <div>
-                <p className="text-rose-400 font-bold text-base sm:text-lg">실패 코드: {normalizedCode || 'UNKNOWN'}</p>
+                <p className="text-rose-400 font-bold text-base sm:text-lg">실패 코드: {normalizedCode || '확인 불가'}</p>
                 <p className="text-rose-400/80 font-medium text-sm sm:text-base mt-2 leading-relaxed">{normalizedMessage}</p>
               </div>
             </div>

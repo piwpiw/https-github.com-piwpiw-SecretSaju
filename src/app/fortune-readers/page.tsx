@@ -12,6 +12,9 @@ import {
   getUnlockedReaderIds,
   toggleFavoriteReader,
   type ReaderQueryType,
+  toQueryTypeLabelKo,
+  toTierLabelKo,
+  toCategoryLabelKo,
 } from "@/lib/reader/fortune-readers";
 import { useAuthStatus } from "@/lib/auth/auth-status";
 import { getReaderExperimentVariant, reorderReadersForVariant } from "@/lib/reader/reader-experiments";
@@ -50,11 +53,10 @@ export default function FortuneReadersPage() {
             <ArrowLeft className="w-5 h-5 text-slate-200" />
           </button>
           <div className="text-center">
-            <p className="text-[10px] uppercase tracking-[0.24em] font-black text-indigo-300">Fortune Reader Market</p>
+            <p className="text-[10px] tracking-[0.24em] font-black text-indigo-300 break-keep">역술가 마켓</p>
             <h1 className="text-3xl font-black text-white">역술가 선택 마켓</h1>
           </div>
           <div className="text-right text-[11px] text-slate-300">
-            <div>실험군 {experimentVariant}</div>
             <div>{membershipActive ? "시그니처 멤버십 활성" : "시그니처 멤버십 비활성"}</div>
           </div>
         </header>
@@ -77,11 +79,11 @@ export default function FortuneReadersPage() {
                 key={item}
                 type="button"
                 onClick={() => setQueryType(item)}
-                className={`rounded-full px-4 py-2 text-xs font-black uppercase tracking-[0.18em] ${
+                className={`rounded-full px-4 py-2 text-xs font-black tracking-[0.18em] break-keep ${
                   queryType === item ? "bg-indigo-600 text-white" : "border border-white/10 bg-white/5 text-slate-300"
                 }`}
               >
-                {item}
+                {toQueryTypeLabelKo(item)}
               </button>
             ))}
           </div>
@@ -116,11 +118,11 @@ export default function FortuneReadersPage() {
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-slate-200">
-                    {reader.tier}
+                  <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[10px] font-black tracking-[0.16em] text-slate-200 break-keep">
+                    {toTierLabelKo(reader.tier)}
                   </span>
-                  <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-slate-200">
-                    {reader.category}
+                  <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[10px] font-black tracking-[0.16em] text-slate-200 break-keep">
+                    {toCategoryLabelKo(reader.category)}
                   </span>
                 </div>
 

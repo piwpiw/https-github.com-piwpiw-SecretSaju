@@ -163,7 +163,7 @@ export default function SajuListPage() {
 
         <ScrollReveal delay={0.2}>
           <div className="mb-10 bg-white/[0.02] border border-white/5 rounded-[3rem] p-10 overflow-hidden">
-            <h4 className="text-[10px] font-black text-indigo-500 uppercase tracking-widest italic mb-2">Life Path Energy</h4>
+            <h4 className="text-[10px] font-black text-indigo-500 tracking-widest italic mb-2 break-keep">인생 흐름 에너지</h4>
             <LifeTimeline />
           </div>
         </ScrollReveal>

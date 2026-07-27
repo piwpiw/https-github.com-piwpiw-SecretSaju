@@ -175,7 +175,7 @@ export default function SelectionPage() {
                 {/* Additional Utilities Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 pt-16 border-t border-border-color">
                     {[
-                        { icon: Gem, label: locale === 'ko' ? '젤리 충전소' : '젤리 충전소', href: '/shop', badge: 'HOT' },
+                        { icon: Gem, label: locale === 'ko' ? '젤리 충전소' : '젤리 충전소', href: '/shop', badge: '인기' },
                         { icon: HelpCircle, label: locale === 'ko' ? '이용 가이드' : '이용 가이드', href: '/wiki' },
                         { icon: Star, label: locale === 'ko' ? '운명 리뷰' : '운명 리뷰', href: '/inquiry' },
                         { icon: Flame, label: locale === 'ko' ? '특별 부적' : '특별 부적', href: '/gift' },
