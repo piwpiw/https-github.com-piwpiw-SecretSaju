@@ -82,17 +82,17 @@ export default function PsychologyModulePage({ params }: Props) {
 
           <div className="grid gap-4 md:grid-cols-3">
             <ResultSummaryCard
-              title="🧠 Who You Are"
+              title="🧠 지금의 나"
               tone="border-rose-400/30 bg-rose-500/10"
               body={`${moduleData.title} 모듈은 지금의 당신이 어떤 반응을 반복하는지 빠르게 포착하는 화면입니다. 핵심은 성격 판정이 아니라, 현재 삶에서 되풀이되는 패턴을 더 선명하게 보는 데 있습니다.`}
             />
             <ResultSummaryCard
-              title="📚 Why It Happens"
+              title="📚 왜 이런 흐름인가"
               tone="border-cyan-400/30 bg-cyan-500/10"
               body={`${moduleData.summary} 따라서 이 모듈은 단발성 기분보다, 특정 상황에서 자동으로 올라오는 생각과 행동의 연결을 읽어내는 데 초점이 맞춰져 있습니다.`}
             />
             <ResultSummaryCard
-              title="✨ What To Do"
+              title="✨ 무엇을 하면 좋은가"
               tone="border-emerald-400/30 bg-emerald-500/10"
               body={`${moduleData.action} 오늘은 체크리스트를 전부 하려 하기보다, 가장 자주 반복되는 반응 하나만 골라 기록하는 방식으로 시작하는 편이 실제 변화에 더 잘 연결됩니다.`}
             />

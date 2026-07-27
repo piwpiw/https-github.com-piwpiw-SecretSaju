@@ -504,9 +504,6 @@ export default function AINarrativeSection({
                   👑 시그니처 멤버십 활성
                 </span>
               ) : null}
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-black text-slate-200">
-                실험군 {experimentVariant}
-              </span>
               {saveMessage ? <span className="text-xs text-emerald-300">{saveMessage}</span> : null}
             </div>
 

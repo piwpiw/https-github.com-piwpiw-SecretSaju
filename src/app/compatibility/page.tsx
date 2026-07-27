@@ -330,17 +330,17 @@ function CompatibilityContent() {
 
               <section className="grid gap-4 md:grid-cols-3">
                 <ResultSummaryCard
-                  title="💞 Who You Are"
+                  title="💞 지금의 우리"
                   body={`${selectedPersonA?.name}님과 ${selectedPersonB?.name}님의 관계는 ${result.message}로 요약되며, 전체적으로 ${gradeInfo.label} 등급 흐름입니다.`}
                   tone="bg-cyan-500/10 border-cyan-300/20"
                 />
                 <ResultSummaryCard
-                  title="📚 Why It Happens"
+                  title="📚 왜 이런 흐름인가"
                   body={`궁합 점수 ${result.score}%와 "${result.chemistry}"라는 핵심 문장이 현재 두 사람의 강한 결합 포인트를 설명합니다.`}
                   tone="bg-amber-500/10 border-amber-300/20"
                 />
                 <ResultSummaryCard
-                  title="✨ What To Do"
+                  title="✨ 무엇을 하면 좋은가"
                   body={`${result.advice} 지금은 상대를 바꾸려 하기보다, 잘 맞는 리듬을 반복해서 쌓는 방식이 가장 효과적입니다.`}
                   tone="bg-emerald-500/10 border-emerald-300/20"
                 />

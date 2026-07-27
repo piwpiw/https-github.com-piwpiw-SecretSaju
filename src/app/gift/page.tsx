@@ -307,7 +307,7 @@ export default function GiftPage() {
 
       <div className="mt-24 flex items-center gap-4 px-8 py-4 rounded-full bg-surface border border-border-color shadow-sm opacity-50 hover:opacity-100 transition-opacity">
         <ShieldCheck className="w-6 h-6 text-emerald-500" />
-        <span className="text-sm font-black text-foreground uppercase tracking-widest">Encrypted Destiny Gift Protocol</span>
+        <span className="text-sm font-black text-foreground tracking-widest break-keep">암호화된 선물 전달</span>
       </div>
 
       <JellyShopModal

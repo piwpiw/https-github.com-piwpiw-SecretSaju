@@ -7,7 +7,7 @@ export default function PrivacyPage() {
       <div className="max-w-4xl mx-auto px-6 pt-16 relative z-10">
         <Link href="/mypage" className="flex items-center gap-3 text-secondary hover:text-foreground transition-all group mb-12">
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-sm font-bold tracking-widest uppercase">Return</span>
+          <span className="text-sm font-bold tracking-widest break-keep">돌아가기</span>
         </Link>
 
         <div className="bg-surface border border-border-color rounded-5xl p-10 sm:p-16 relative z-10 shadow-2xl">
@@ -63,10 +63,10 @@ export default function PrivacyPage() {
             </section>
 
             <div className="pt-12 border-t border-border-color flex items-center justify-between">
-              <span className="text-sm text-secondary font-bold uppercase tracking-widest">Protection Protocols</span>
+              <span className="text-sm text-secondary font-bold tracking-widest break-keep">보호 절차</span>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/20">
                 <ShieldCheck className="w-5 h-5 text-secondary" />
-                <span className="text-xs font-black text-secondary uppercase tracking-widest">Security First</span>
+                <span className="text-xs font-black text-secondary tracking-widest break-keep">보안 우선</span>
               </div>
             </div>
           </div>

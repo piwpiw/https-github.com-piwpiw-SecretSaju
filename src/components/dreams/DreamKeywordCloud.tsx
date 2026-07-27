@@ -34,7 +34,7 @@ export default function DreamKeywordCloud() {
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent pointer-events-none" />
             <div className="absolute top-4 left-6 flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Global Trending Symbols</span>
+                <span className="text-[9px] font-black text-slate-500 tracking-widest break-keep">많이 찾는 상징</span>
             </div>
         </div>
     );

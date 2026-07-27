@@ -168,7 +168,7 @@ function FortuneContent() {
           </button>
           <div className="text-center">
             <h1 className="text-lg font-black text-white">{year}년 연간 운세</h1>
-            <p className="text-[10px] font-black text-indigo-300 tracking-[0.3em] uppercase mt-0.5">Year Fortune Analysis</p>
+            <p className="text-[10px] font-black text-indigo-300 tracking-[0.25em] mt-0.5 break-keep">연간 운세 분석</p>
           </div>
           <div className="w-11 h-11" />
         </header>
@@ -269,17 +269,17 @@ function FortuneContent() {
 
               <section className="grid gap-3 md:grid-cols-3">
                 <ResultSummaryCard
-                  title="🧭 Who You Are"
+                  title="🧭 지금의 나"
                   body={`당신의 ${year}년은 ${result.pillarName} 리듬이 전면에 서며, ${result.summary} 쪽으로 읽히는 해입니다.`}
                   tone="bg-cyan-500/10 border-cyan-300/20"
                 />
                 <ResultSummaryCard
-                  title="📚 Why It Happens"
+                  title="📚 왜 이런 흐름인가"
                   body={`총운 ${result.scores.total}점을 중심으로 ${result.scores.love}점의 관계 흐름과 ${result.scores.money}점의 재물 흐름이 올해 분위기를 함께 만들고 있습니다.`}
                   tone="bg-amber-500/10 border-amber-300/20"
                 />
                 <ResultSummaryCard
-                  title="✨ What To Do"
+                  title="✨ 무엇을 하면 좋은가"
                   body={`${peakMonth + 1}월 전후의 상승 구간을 핵심 타이밍으로 보고, 점수가 낮은 영역은 과속보다 조정과 보완 중심으로 움직이는 편이 좋습니다.`}
                   tone="bg-emerald-500/10 border-emerald-300/20"
                 />

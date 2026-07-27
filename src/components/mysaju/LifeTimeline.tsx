@@ -25,7 +25,7 @@ export default function LifeTimeline() {
                             className="flex flex-col items-center gap-4 group"
                         >
                             <div className={`${m.color} h-2 px-3 flex items-center justify-center rounded-full text-[8px] font-black text-white italic tracking-widest`}>
-                                AGE {m.age}
+                                {m.age}세
                             </div>
                             <div className="w-4 h-4 rounded-full bg-slate-900 border-2 border-white/20 group-hover:scale-125 group-hover:border-white transition-all z-10" />
                             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter whitespace-nowrap group-hover:text-white transition-colors">

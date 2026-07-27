@@ -38,7 +38,7 @@ export default function RefundPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-background border border-emerald-500/20 rounded-3xl p-8">
                   <div className="flex items-center gap-3 text-emerald-500 font-black uppercase tracking-widest mb-6 text-sm">
-                    <CheckCircle className="w-5 h-5" /> Eligible
+                    <CheckCircle className="w-5 h-5" /> 환불 가능
                   </div>
                   <ul className="space-y-3 text-foreground font-medium">
                     <li>중복 결제 또는 명백한 결제 오류</li>
@@ -48,7 +48,7 @@ export default function RefundPage() {
                 </div>
                 <div className="bg-background border border-rose-500/20 rounded-3xl p-8">
                   <div className="flex items-center gap-3 text-rose-500 font-black uppercase tracking-widest mb-6 text-sm">
-                    <XCircle className="w-5 h-5" /> Not Eligible
+                    <XCircle className="w-5 h-5" /> 환불 불가
                   </div>
                   <ul className="space-y-3 text-foreground font-medium">
                     <li>이미 사용한 젤리, 분석권, 프리미엄 리포트</li>
@@ -98,10 +98,10 @@ export default function RefundPage() {
             </section>
 
             <div className="pt-12 border-t border-border-color flex items-center justify-between">
-              <span className="text-sm text-secondary font-bold uppercase tracking-widest">Asset Protection</span>
+              <span className="text-sm text-secondary font-bold tracking-widest break-keep">자산 보호</span>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/20">
                 <ShieldAlert className="w-5 h-5 text-secondary" />
-                <span className="text-xs font-black text-secondary uppercase tracking-widest">Verified Billing Only</span>
+                <span className="text-xs font-black text-secondary tracking-widest break-keep">검증된 결제만</span>
               </div>
             </div>
           </div>

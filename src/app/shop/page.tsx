@@ -40,7 +40,7 @@ export default function ShopPage() {
             </p>
             {FREE_LAUNCH ? (
               <div className="mx-auto mt-8 max-w-2xl rounded-[2rem] border border-emerald-400/30 bg-emerald-500/10 p-6">
-                <p className="text-[10px] font-black uppercase tracking-[0.28em] text-emerald-200">Free Open Launch</p>
+                <p className="text-[10px] font-black tracking-[0.25em] text-emerald-200 break-keep">무료 오픈</p>
                 <h2 className="mt-3 text-2xl font-black text-white break-keep">지금은 모든 기능이 무료입니다</h2>
                 <p className="mt-3 text-sm leading-7 text-emerald-50/90 break-keep">
                   무료 오픈 기간 동안에는 젤리를 구매하지 않아도 사주·타로·궁합을 비롯한 모든 분석과
@@ -86,7 +86,7 @@ export default function ShopPage() {
           <section className="mt-16 rounded-[2rem] border border-white/10 bg-white/[0.04] p-8">
             <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div className="max-w-2xl">
-                <p className="text-[10px] font-black uppercase tracking-[0.28em] text-fuchsia-200">Signature Reader Membership</p>
+                <p className="text-[10px] font-black tracking-[0.25em] text-fuchsia-200 break-keep">시그니처 리더 멤버십</p>
                 <h2 className="mt-3 text-3xl font-black text-white break-keep">시그니처 리더 멤버십</h2>
                 <p className="mt-4 text-sm leading-7 text-slate-200 break-keep">
                   단건 해금보다 더 깊은 해설을 원하면 시그니처 리더 멤버십이 맞습니다.

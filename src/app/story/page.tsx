@@ -50,9 +50,9 @@ export default function StoryPage() {
             <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
             <div className="w-full md:w-1/2 bg-surface/50 border-r border-border-color p-12 flex flex-col justify-center relative z-10">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 w-fit">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 rounded-full text-primary font-bold text-xs tracking-widest mb-6 w-fit break-keep">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                PICK
+                에디터 추천
               </div>
               <h2 className="text-3xl md:text-5xl font-black mb-6 leading-tight group-hover:text-primary transition-colors duration-300">
                 {featuredStory.title}

@@ -118,6 +118,20 @@
 
 **검증 결과**: tsc 0 / lint 0 / 로직 테스트 50/50 / 메뉴 커버리지 누락 0 / 무료 게이트 차단 0 / 54개 라우트 스모크 54/54 / 신규 영문 노출 0
 
+### PWQ-5. 영문 노출 정리 · 사문 제거 (완료 2026-07-27)
+- [x] **`/fortune-readers`가 내부 식별자를 그대로 렌더링** — `queryType`/`tier`/`category`(`result`, `starter`, `plus · love` 등)에 CSS `uppercase`까지 걸려 `RESULT`, `STARTER`처럼 보였음. 사용자가 지적한 "운세 상호작용 영문"과 **같은 계열의 버그**. 정본(`fortune-readers.ts`)에 한국어 라벨 맵을 두고 모든 소비자가 쓰도록 함
+- [x] **A/B 실험군(`control`)이 화면에 그대로 노출**되던 디버그 표시 제거 (`/fortune-readers`, 결과 화면)
+- [x] 결과 헤더 3종(`Who You Are` / `Why It Happens` / `What To Do`)이 **7개 페이지**에 흩어져 있던 것 일괄 한국어화
+- [x] 결제·환불·타로 문구: `UNKNOWN`→`확인 불가`, `Order ID:`→`주문번호`, `Eligible`/`Not Eligible`→`환불 가능`/`환불 불가`, `Awaiting Ritual`→`의식을 기다리는 중`, `Tap to Reveal`→`눌러서 펼치기`, `Reverse`/`Upright`→`역방향`/`정방향`, `Image Pending`→`이미지 준비 중`
+- [x] 백과사전 카드가 내부 카테고리 코드(`STEMS` 등)를 노출하던 것 → 필터와 같은 한국어 라벨
+- [x] 장식용 영문 헤더 20여 곳 한국어화(`Destiny Nexus`, `FATE FLOW`, `Secret Tarot Gallery`, `Year Fortune Analysis`, `Healing Mode`, `Life Path Energy`, `Security First` 등) — `uppercase` 클래스도 함께 제거해야 한국어가 뭉개지지 않음
+- [x] 배지 `HOT`/`NEW`/`PICK` → `인기`/`신규`/`에디터 추천`
+- [x] **영문 노출 기준선 226 → 170건.** 남은 170건 중 126건은 타로 카드 영문 원명, 44건은 한국어 안에 괄호로 든 영어(`용(Dragon)`, `원국(Original Chart)`)·브랜드명·이메일·라우트 경로 등 **오탐**
+- [x] `KakaoLoginButton.tsx` 삭제 — import하는 곳 0개인 사문. 실제 로그인 경로는 `AuthModal`
+- [x] `buildAuthCallbackMessage`가 provider 오류 설명을 그대로 붙여 raw Supabase 에러 같은 **영문 기술 문자열이 사용자에게 도달**하던 문제 — 한글이 없는 설명은 화면에서 감추고(서버 로그에는 유지), 요청번호만 한국어로 노출
+
+**검증 결과**: tsc 0 / lint 0 / 로직 테스트 51/51 / 라우트 스모크 54/54 / 메뉴 누락 0 / 무료 게이트 차단 0 / 신규 영문 노출 0
+
 ### 잔여 인코딩 관측
 - [x] `docs/01-team/cs/provider_error_mapping.md` EUC-KR → UTF-8 변환 완료
 - [x] `docs/archive/legacy/readme.md` EUC-KR → UTF-8 변환 완료

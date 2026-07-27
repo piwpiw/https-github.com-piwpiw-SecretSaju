@@ -35,6 +35,11 @@ const CATEGORIES: { id: TermCategory; label: string }[] = [
   { id: "ENERGY", label: "신살/운성" },
 ];
 
+/** 카드에 내부 코드(STEMS 등)가 그대로 노출되던 것을 필터와 같은 한국어로 맞춘다. */
+function toCategoryLabel(id: string): string {
+  return CATEGORIES.find((c) => c.id === id)?.label ?? id;
+}
+
 const INDEX_CHARS = ["ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
 
 export default function EncyclopediaPage() {
@@ -152,7 +157,7 @@ export default function EncyclopediaPage() {
                   <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
                     <Sparkles className="w-5 h-5 text-indigo-400" />
                   </div>
-                  <div className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">{term.category}</div>
+                  <div className="text-[10px] font-black text-indigo-500 tracking-widest break-keep">{toCategoryLabel(term.category)}</div>
                   <h2 className="text-xl font-black mt-1 text-white group-hover:text-indigo-200 transition-colors flex items-center gap-2">
                     <span className={query && term.name.includes(query) ? "text-indigo-300 underline underline-offset-4 decoration-indigo-500/50" : ""}>{term.name}</span>
                     <span className="text-slate-500 text-sm font-bold">[{term.hanja}]</span>

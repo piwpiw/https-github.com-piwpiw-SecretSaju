@@ -292,17 +292,17 @@ export default function VSModePage() {
 
         <section className="grid gap-4 md:grid-cols-3">
           <ResultSummaryCard
-            title="💞 Who You Are"
+            title="💞 지금의 우리"
             tone="border-indigo-400/30 bg-indigo-500/10"
             body={`${mainProfile?.name}님과 ${targetProfile?.name}님의 비교 결과는 ${analysis.score}점입니다. 이 관계는 감정 호감 하나만으로 읽기보다, 실제 생활 리듬과 의사결정 스타일이 얼마나 맞물리는지로 보는 편이 더 정확합니다.`}
           />
           <ResultSummaryCard
-            title="📚 Why It Happens"
+            title="📚 왜 이런 흐름인가"
             tone="border-cyan-400/30 bg-cyan-500/10"
             body={`${analysis.chemistry}${analysis.tension ? ` 반면 ${analysis.tension}` : ""} 즉, 잘 맞는 축과 부딪히는 축이 동시에 보여서 어느 한쪽만 강조하면 관계 해석이 과장될 수 있습니다.`}
           />
           <ResultSummaryCard
-            title="✨ What To Do"
+            title="✨ 무엇을 하면 좋은가"
             tone="border-emerald-400/30 bg-emerald-500/10"
             body={`${analysis.advice} 지금 단계에서는 승패를 가르기보다, 누가 리드할 때 편한지와 어떤 주제에서 방어가 올라오는지를 먼저 확인하는 것이 가장 실전적입니다.`}
           />
