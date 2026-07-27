@@ -74,6 +74,7 @@ export default function SupportPage() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => router.back()}
+          aria-label="뒤로 가기"
           className="group mb-10 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
         >
           <ArrowLeft className="h-5 w-5 text-slate-400 transition-colors group-hover:-translate-x-1 group-hover:text-white" />

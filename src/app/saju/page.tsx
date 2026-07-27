@@ -263,6 +263,7 @@ function SajuPageContent() {
                 <label className="text-sm font-black flex items-center gap-2 text-slate-300 uppercase tracking-widest">생년월일</label>
                 <input
                   type="date"
+                  aria-label="생년월일"
                   value={manualBirthDate}
                   onChange={(e) => setManualBirthDate(e.target.value)}
                   className="w-full rounded-2xl bg-black/40 border border-white/10 px-6 py-4 text-white font-bold text-lg focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
@@ -308,6 +309,7 @@ function SajuPageContent() {
                 <div className="flex gap-3 items-center">
                   <input
                     type="time"
+                    aria-label="출생시간"
                     value={manualBirthTime}
                     onChange={(e) => setManualBirthTime(e.target.value)}
                     disabled={manualTimeUnknown}

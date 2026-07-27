@@ -75,9 +75,7 @@ export default async function DocPage({
             >
               문서
             </div>
-            <button className="rounded-xl border border-white/5 bg-white/5 p-2 transition hover:bg-white/10">
-              <Share2 className="h-4 w-4 text-slate-500" />
-            </button>
+            <button className="rounded-xl border border-white/5 bg-white/5 p-2 transition hover:bg-white/10" aria-label="공유하기"><Share2 className="h-4 w-4 text-slate-500" /></button>
           </div>
         </div>
 

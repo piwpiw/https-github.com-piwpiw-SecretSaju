@@ -59,7 +59,7 @@ export default function LuckySecretModal() {
                     >
                         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px] -mr-32 -mt-32" />
 
-                        <button onClick={() => setIsOpen(false)} className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors">
+                        <button onClick={() => setIsOpen(false)} className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors" aria-label="닫기">
                             <X className="w-6 h-6" />
                         </button>
 

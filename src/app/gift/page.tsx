@@ -196,6 +196,7 @@ export default function GiftPage() {
                 <input
                   required
                   type="date"
+                  aria-label="받는 분 생년월일"
                   aria-required="true"
                   value={formData.birthDate}
                   onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}

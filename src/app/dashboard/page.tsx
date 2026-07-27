@@ -225,9 +225,7 @@ function DashboardContent() {
                     </div>
                     <div className="flex items-center gap-4 sm:gap-6">
                         <JellyBalance onClick={() => router.push('/shop')} />
-                        <Link href="/my-saju/add" className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-surface border border-border-color flex items-center justify-center hover:bg-primary/20 hover:border-primary/50 transition-all shadow-lg group">
-                            <Plus className="w-6 h-6 sm:w-8 sm:h-8 text-foreground group-hover:text-primary transition-colors" />
-                        </Link>
+                        <Link href="/my-saju/add" className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-surface border border-border-color flex items-center justify-center hover:bg-primary/20 hover:border-primary/50 transition-all shadow-lg group" aria-label="추가"><Plus className="w-6 h-6 sm:w-8 sm:h-8 text-foreground group-hover:text-primary transition-colors" /></Link>
                     </div>
                 </div>
 

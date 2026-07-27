@@ -106,8 +106,7 @@ export default function PartnershipPage() {
         <header className="flex items-center gap-4 mb-20">
           <button
             onClick={() => router.back()}
-            className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all group shrink-0"
-          >
+            className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all group shrink-0" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-400 group-hover:-translate-x-0.5 transition-transform" />
           </button>
           <div>

@@ -91,6 +91,8 @@ export default function AmbientSoundPortal() {
 
             <button
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label={isOpen ? '배경음 설정 닫기' : '배경음 설정 열기'}
+                aria-expanded={isOpen}
                 className="w-14 h-14 rounded-3xl bg-indigo-600 border border-white/10 flex items-center justify-center shadow-2xl hover:scale-105 transition-all group"
             >
                 <Music className={`w-6 h-6 text-white ${isPlaying ? 'animate-pulse' : ''}`} />

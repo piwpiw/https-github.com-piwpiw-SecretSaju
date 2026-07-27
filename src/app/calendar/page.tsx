@@ -114,14 +114,12 @@ export default function CalendarPage() {
           <div className="inline-flex items-center gap-3">
             <button
               onClick={() => shiftMonth(-1)}
-              className="w-9 h-9 rounded-xl bg-white/10 border border-white/10"
-            >
+              className="w-9 h-9 rounded-xl bg-white/10 border border-white/10" aria-label="이전">
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={() => shiftMonth(1)}
-              className="w-9 h-9 rounded-xl bg-white/10 border border-white/10"
-            >
+              className="w-9 h-9 rounded-xl bg-white/10 border border-white/10" aria-label="다음">
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>

@@ -322,8 +322,7 @@ export default function AINarrativeSection({
             <button
               onClick={() => void fetchNarratives(selectedReaderId, compareReaderId)}
               className="rounded-xl border border-white/10 bg-white/5 p-2 transition-all hover:border-indigo-500/30 hover:bg-indigo-500/20"
-              title="AI 해석 다시 생성"
-            >
+              title="AI 해석 다시 생성" aria-label="새로고침">
               <RefreshCw className="h-4 w-4 text-slate-400" />
             </button>
           ) : null}
@@ -412,8 +411,7 @@ export default function AINarrativeSection({
                             ? "border-amber-300/30 bg-amber-500/10 text-amber-100"
                             : "border-white/10 bg-black/20 text-slate-400"
                         }`}
-                        title={favorite ? "즐겨찾기 해제" : "즐겨찾기 추가"}
-                      >
+                        title={favorite ? "즐겨찾기 해제" : "즐겨찾기 추가"} aria-label="즐겨찾기">
                         <Star className={`h-4 w-4 ${favorite ? "fill-current" : ""}`} />
                       </button>
                     </div>

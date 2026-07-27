@@ -372,8 +372,7 @@ export default function NamingPage() {
         <header className="flex items-center justify-between mb-8">
           <button
             onClick={() => router.back()}
-            className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center"
-          >
+            className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-400" />
           </button>
           <JellyBalance />

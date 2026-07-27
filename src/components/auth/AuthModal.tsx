@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Loader2, ShieldCheck, Lock } from 'lucide-react';
 import { supabase } from '@/lib/integrations/supabase';
@@ -85,6 +85,65 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
         setPassword('');
         setIsLoading(null);
     }, [isOpen, defaultMode]);
+
+    const dialogRef = useRef<HTMLDivElement | null>(null);
+
+    // 포커스 가둠(focus trap).
+    //
+    // 모달이 열려 있는데 Tab 이 뒤쪽 페이지로 새어 나가면, 키보드·스크린리더
+    // 사용자는 자기가 어디에 있는지 알 수 없고 보이지 않는 요소를 조작하게 된다.
+    // /login·/signup 은 이 모달을 항상 열어 두는 페이지라 특히 문제가 된다.
+    // Tab 을 모달 안에서 순환시키고, Esc 로 닫고, 열릴 때 첫 요소에 포커스를 준다.
+    useEffect(() => {
+        if (!isOpen || typeof document === 'undefined') return;
+
+        const selector = [
+            'a[href]', 'button:not([disabled])', 'input:not([disabled])',
+            'select:not([disabled])', 'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])',
+        ].join(',');
+
+        const focusables = () => {
+            const root = dialogRef.current;
+            if (!root) return [] as HTMLElement[];
+            return Array.from(root.querySelectorAll<HTMLElement>(selector)).filter(
+                (el) => el.offsetParent !== null || el === document.activeElement,
+            );
+        };
+
+        const previouslyFocused = document.activeElement as HTMLElement | null;
+        // 열릴 때 모달 안으로 포커스를 옮긴다.
+        const first = focusables()[0];
+        first?.focus();
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                onClose();
+                return;
+            }
+            if (event.key !== 'Tab') return;
+            const items = focusables();
+            if (items.length === 0) return;
+            const firstItem = items[0];
+            const lastItem = items[items.length - 1];
+            const active = document.activeElement as HTMLElement | null;
+
+            if (event.shiftKey && (active === firstItem || !dialogRef.current?.contains(active))) {
+                event.preventDefault();
+                lastItem.focus();
+            } else if (!event.shiftKey && (active === lastItem || !dialogRef.current?.contains(active))) {
+                event.preventDefault();
+                firstItem.focus();
+            }
+        };
+
+        document.addEventListener('keydown', onKeyDown);
+        return () => {
+            document.removeEventListener('keydown', onKeyDown);
+            // 닫힐 때 원래 있던 곳으로 포커스를 되돌린다.
+            previouslyFocused?.focus?.();
+        };
+    }, [isOpen, onClose]);
 
     useEffect(() => {
         if (!isOpen || typeof document === 'undefined') return;
@@ -365,6 +424,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
                         className="fixed inset-0 z-[71] flex items-start sm:items-center justify-center px-4 py-6 overflow-y-auto"
                     >
                         <div
+                            ref={dialogRef}
                             role="dialog"
                             aria-modal="true"
                             aria-label={isSignupMode ? '회원가입' : '로그인'}
@@ -373,10 +433,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
                             <button
                                 onClick={handleClose}
                                 disabled={!!isLoading}
-                                className="absolute top-5 right-5 p-2 rounded-full hover:bg-background transition-colors border border-transparent hover:border-border-color disabled:opacity-30"
-                            >
-                                <X className="w-5 h-5 text-secondary" />
-                            </button>
+                                className="absolute top-5 right-5 p-2 rounded-full hover:bg-background transition-colors border border-transparent hover:border-border-color disabled:opacity-30" aria-label="닫기"><X className="w-5 h-5 text-secondary" /></button>
 
                             <div className="px-7 py-8">
                                 <div className="mb-8 text-center">
