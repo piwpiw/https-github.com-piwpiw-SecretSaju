@@ -99,7 +99,7 @@ function StatCard({ label, value, unit, color, icon: Icon, percent }: {
 
 export default function MyPage() {
   const router = useRouter();
-  const { churu, nyang } = useWallet();
+  const { churu, nyang, isFreeLaunch } = useWallet();
   const [user, setUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showShop, setShowShop] = useState(false);
@@ -247,7 +247,7 @@ export default function MyPage() {
           transition={{ delay: 0.1 }}
           className="mb-6"
         >
-          <PremiumWalletCard jellies={churu} onClickCharge={() => setShowShop(true)} />
+          <PremiumWalletCard jellies={churu} isFreeLaunch={isFreeLaunch} onClickCharge={() => setShowShop(true)} />
         </motion.div>
 
         {/* ── Referral ────────────────────────────────── */}

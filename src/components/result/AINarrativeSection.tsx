@@ -292,13 +292,13 @@ export default function AINarrativeSection({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative mt-8 overflow-hidden rounded-[2.5rem] border border-white/5 bg-slate-900/40 p-8"
+      className="relative mt-5 overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 bg-slate-900/40 p-3 sm:p-6"
     >
       <div className="absolute right-0 top-0 p-8 opacity-5">
         <BookOpen className="h-32 w-32 -rotate-12 text-indigo-400" />
       </div>
 
-      <div className="relative z-10 space-y-6">
+      <div className="relative z-10 space-y-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-indigo-400/30 bg-indigo-500/20">
@@ -329,7 +329,7 @@ export default function AINarrativeSection({
           ) : null}
         </div>
 
-        <section className="rounded-3xl border border-white/10 bg-black/20 p-4">
+        <section className="rounded-3xl border border-white/10 bg-black/20 p-2.5 sm:p-4">
           <div className="mb-3 flex items-center gap-2 text-amber-200">
             <Wand2 className="h-4 w-4" />
             <p className="text-xs font-black uppercase tracking-[0.2em]">리더 선택</p>
@@ -374,7 +374,7 @@ export default function AINarrativeSection({
               return (
                 <div
                   key={reader.id}
-                  className={`rounded-3xl border p-4 text-left transition-all ${
+                  className={`rounded-3xl border p-3 sm:p-4 text-left transition-all ${
                     selected
                       ? "border-indigo-300/40 bg-indigo-500/15 shadow-[0_0_0_1px_rgba(165,180,252,0.2)]"
                       : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]"
@@ -540,7 +540,7 @@ export default function AINarrativeSection({
               ) : null}
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-black/20 p-4">
+            <div className="rounded-3xl border border-white/10 bg-black/20 p-2.5 sm:p-4">
               <div className="flex flex-wrap items-center gap-2">
                 <Sparkles className="h-4 w-4 text-amber-200" />
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-amber-100 break-keep">왜 리더마다 다르게 말하나요?</p>

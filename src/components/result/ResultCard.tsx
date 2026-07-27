@@ -211,6 +211,34 @@ const toYearBoundaryLabelKo = (value?: string) =>
 const toHourPolicyLabelKo = (value?: string) =>
   value === "hour-source" ? "진태양시" : value === "civil" ? "표준시" : value || "-";
 
+/**
+ * 일간 강약을 이루는 세 요소. 만점이 서로 달라(30/30/40) 값만 보면 비교가 안 된다.
+ * 0은 고장이 아니라 "그 경로로는 힘을 못 받는다"는 정상적인 결과다.
+ */
+const GANGYAK_PARTS = [
+  {
+    key: "deukryeong" as const,
+    label: "멘탈력",
+    max: 30,
+    hint: "계절 기운",
+    zeroHint: "계절운 X",
+  },
+  {
+    key: "deukji" as const,
+    label: "실행력",
+    max: 30,
+    hint: "뿌리 힘",
+    zeroHint: "뿌리 약함",
+  },
+  {
+    key: "deukse" as const,
+    label: "주변운",
+    max: 40,
+    hint: "주변 도움",
+    zeroHint: "도움 적음",
+  },
+];
+
 const cleanText = (value: unknown, fallback: string) => {
   if (typeof value !== "string") return fallback;
   if (!value.trim()) return fallback;
@@ -541,16 +569,16 @@ function ResultCard({
   const premiumReportCopy = premiumReportCopyByFocus[insightFocus];
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 relative">
+    <section className="max-w-6xl mx-auto px-0 sm:px-6 relative">
       <ReadingProgressBar />
       <AmbientSoundPortal />
 
       <motion.div
-        className="bg-surface border border-border-color rounded-4xl p-6 md:p-10 space-y-6 md:space-y-8 shadow-[0_30px_120px_rgba(76,29,149,0.35)]"
+        className="bg-surface border border-border-color rounded-4xl p-4 md:p-7 space-y-4 md:space-y-5 shadow-[0_30px_120px_rgba(76,29,149,0.35)]"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <header className="text-center relative py-12 md:py-16 overflow-hidden rounded-3xl border border-indigo-400/25 bg-gradient-to-b from-indigo-900/40 via-slate-900/80 to-slate-950">
+        <header className="text-center relative py-7 md:py-10 overflow-hidden rounded-3xl border border-indigo-400/25 bg-gradient-to-b from-indigo-900/40 via-slate-900/80 to-slate-950">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-500/20 via-transparent to-transparent pointer-events-none" />
 
           <div className="relative z-10 px-4 flex flex-col items-center">
@@ -609,14 +637,14 @@ function ResultCard({
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="rounded-3xl border border-white/10 bg-black/40 p-5 md:p-8 backdrop-blur-xl relative overflow-hidden"
+          className="rounded-3xl border border-white/10 bg-black/40 p-4 md:p-6 backdrop-blur-xl relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-3xl rounded-full mix-blend-screen pointer-events-none" />
 
           <div className="flex items-center gap-3 mb-6 relative z-10">
             <span className="text-3xl">🧩</span>
             <div>
-              <h3 className="text-xl md:text-2xl font-black text-white">타고난 인생의 네 기둥</h3>
+              <h3 className="text-lg md:text-2xl font-black text-white break-keep">타고난 인생의 네 기둥</h3>
               <p className="text-sm text-slate-400 mt-1">내가 가진 4장의 카드를 확인하세요</p>
             </div>
           </div>
@@ -727,7 +755,7 @@ function ResultCard({
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="p-6 rounded-[2rem] bg-gradient-to-br from-indigo-600/15 to-fuchsia-700/10 border border-indigo-400/25 shadow-2xl"
+          className="p-3 sm:p-5 rounded-[2rem] bg-gradient-to-br from-indigo-600/15 to-fuchsia-700/10 border border-indigo-400/25 shadow-2xl"
         >
           <div className="flex items-center gap-3 mb-2">
             <span className="text-2xl">✨</span>
@@ -763,7 +791,7 @@ function ResultCard({
         <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7 space-y-4">
           <div className="flex items-center gap-3">
             <span className="text-2xl">🪄</span>
-            <h3 className="text-xl md:text-2xl font-black text-white">한눈에 보는 결과 요약</h3>
+            <h3 className="text-lg md:text-2xl font-black text-white break-keep">한눈에 보는 결과 요약</h3>
           </div>
           <div className="grid gap-3 md:grid-cols-3">
             <div className="rounded-2xl border border-cyan-300/20 bg-cyan-500/10 p-4">
@@ -781,18 +809,18 @@ function ResultCard({
           </div>
         </section>
 
-        <section className="rounded-3xl border border-white/10 bg-black/30 p-5 md:p-8 space-y-6">
+        <section className="rounded-3xl border border-white/10 bg-black/30 p-4 md:p-6 space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center text-2xl shadow-lg shadow-indigo-500/20">
               📊
             </div>
             <div>
-              <h3 className="text-xl md:text-2xl font-black text-white">나를 채우는 5가지 원소</h3>
+              <h3 className="text-lg md:text-2xl font-black text-white break-keep">나를 채우는 5가지 원소</h3>
               <p className="text-sm text-slate-400 mt-1">어떤 기운이 가장 강할까요? 직관적으로 확인하세요.</p>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-1 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 md:gap-3">
             {metricRows.map((item) => {
               const isDominant = item.label === metricRows[topElementIndex].label;
               const isWeakest = item.label === metricRows[lowestElementIndex].label;
@@ -801,7 +829,7 @@ function ResultCard({
                 <motion.div
                   key={item.key}
                   whileHover={{ y: -5 }}
-                  className={`rounded-2xl border p-5 relative overflow-hidden transition-all duration-300 ${isDominant
+                  className={`rounded-2xl border p-3.5 md:p-4 relative overflow-hidden transition-all duration-300 ${isDominant
                     ? 'bg-gradient-to-br border-white/30 from-white/10 to-transparent'
                     : 'bg-black/40 border-white/10'
                     }`}
@@ -818,22 +846,22 @@ function ResultCard({
                     </div>
                   )}
 
-                  <div className="flex items-center gap-3 mb-3 mt-2">
-                    <span className="text-4xl drop-shadow-md">{item.emoji}</span>
-                    <div>
-                      <h4 className="font-black text-lg text-white tracking-wide">{item.label.replace(/\(.*\)/, '')}</h4>
-                      <p className="text-xs text-slate-400">{item.meaning.split('·')[0]}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-2xl md:text-3xl drop-shadow-md leading-none">{item.emoji}</span>
+                    <div className="min-w-0">
+                      <h4 className="font-black text-base md:text-lg text-white tracking-wide break-keep">{item.label.replace(/\(.*\)/, '')}</h4>
+                      <p className="text-[11px] text-slate-400 break-keep">{item.meaning.split('·')[0]}</p>
                     </div>
                   </div>
 
-                  <div className="mt-6 flex flex-col gap-2">
-                    <div className="flex justify-between items-end mb-1">
-                      <span className="text-xs font-bold text-slate-300">차지하는 비중</span>
-                      <span className="text-sm font-black text-white">
-                        {Math.round(item.score)}%
-                        <span className={`ml-2 text-[11px] font-bold ${getElementStrengthLabel(item.score).tone}`}>
-                          {getElementStrengthLabel(item.score).label}
-                        </span>
+                  {/* 라벨과 수치를 한 줄에 두면 5열(카드 폭 ~180px)에서 '차지하는 비 / 중'
+                      으로 단어 중간이 잘렸다. 세로로 쌓아 어떤 폭에서도 깨지지 않게 한다. */}
+                  <div className="mt-3 flex flex-col gap-1.5">
+                    <span className="text-[10px] font-bold text-slate-400 tracking-wide break-keep">차지하는 비중</span>
+                    <div className="flex items-baseline gap-1.5 flex-wrap">
+                      <span className="text-2xl font-black text-white leading-none">{Math.round(item.score)}%</span>
+                      <span className={`text-[11px] font-bold break-keep ${getElementStrengthLabel(item.score).tone}`}>
+                        {getElementStrengthLabel(item.score).label}
                       </span>
                     </div>
                     {/* 막대는 균형점(20%)을 절반 지점으로 두어, 균형이면 딱 중간까지 찬다. */}
@@ -846,48 +874,55 @@ function ResultCard({
                         className={`h-full ${item.bar} shadow-[0_0_10px_rgba(255,255,255,0.5)]`}
                       />
                     </div>
-                    <p className="text-[10px] text-slate-500">
-                      가운데 선 = 다섯 기운이 고른 상태({ELEMENT_BALANCED_SHARE}%)
-                    </p>
                   </div>
                 </motion.div>
               );
             })}
           </div>
 
-          <div className="mt-4 p-4 rounded-xl bg-white/5 border border-white/10 text-sm text-slate-300 text-center">
+          <p className="mt-2.5 text-[11px] text-slate-500 text-center break-keep">
+            막대 가운데 선 = 다섯 기운이 고른 상태({ELEMENT_BALANCED_SHARE}%). 선을 넘으면 그만큼 강한 기운입니다.
+          </p>
+
+          <div className="mt-3 p-3.5 rounded-xl bg-white/5 border border-white/10 text-sm text-slate-300 text-center leading-relaxed break-keep">
             {metricRows[topElementIndex].label.replace(/\(.*\)/, '')} 기운이 강해 <strong>{metricRows[topElementIndex].meaning}</strong> 성향이 두드러지며,
             {metricRows[lowestElementIndex].label.replace(/\(.*\)/, '')} 기운을 보완하면 더욱 완벽한 밸런스를 갖출 수 있습니다.
           </div>
         </section>
 
-        <section className="grid xl:grid-cols-[1.1fr_0.9fr] gap-5">
-          <div className="rounded-3xl border border-white/10 bg-black/30 p-5 md:p-8 flex flex-col items-center">
-            <div className="flex items-center self-start gap-3 mb-6">
-              <span className="text-2xl">🕸️</span>
-              <h3 className="text-xl md:text-2xl font-black text-white">나의 밸런스 모양</h3>
+        {/* grid 기본값(align-items: stretch)이라 옆 카드(행동 패턴 분석)가 길면
+            밸런스 카드까지 같이 늘어나 차트 아래로 큰 빈 공간이 생겼다.
+            `items-start`로 각자 내용 높이만 차지하게 한다. */}
+        <section className="grid xl:grid-cols-[1.1fr_0.9fr] gap-4 items-start">
+          {/* `flex-1`이 차트 영역을 형제 카드 높이만큼 늘려 큰 빈 공간이 생겼다.
+              차트가 제 크기를 갖도록 두고 컨테이너는 내용에 맞춘다. */}
+          <div className="rounded-3xl border border-white/10 bg-black/30 p-4 md:p-6 flex flex-col items-center">
+            <div className="flex items-center self-start gap-2.5 mb-3">
+              <span className="text-xl">🕸️</span>
+              <h3 className="text-lg md:text-xl font-black text-white break-keep">나의 밸런스 모양</h3>
             </div>
-            <div className="flex-1 w-full max-w-sm flex justify-center items-center opacity-90 drop-shadow-xl">
+            <div className="w-full flex justify-center items-center opacity-90 drop-shadow-xl">
               <SvgChart
                 title="오행 밸런스"
+                size={300}
                 accentColor="#818cf8"
                 data={metricRows.map((item) => ({ label: item.label.replace(/\(.*\)/, ''), value: item.score }))}
                 maxValue={ELEMENT_CHART_MAX}
                 baselineValue={ELEMENT_BALANCED_SHARE}
               />
             </div>
-            <p className="mt-6 text-sm text-slate-300 text-center bg-white/5 p-4 rounded-2xl border border-white/10 w-full break-keep">
+            <p className="mt-3 text-[13px] leading-relaxed text-slate-300 text-center bg-white/5 px-3.5 py-3 rounded-2xl border border-white/10 w-full break-keep">
               점선은 다섯 기운이 완전히 균형을 이룬 상태({ELEMENT_BALANCED_SHARE}%)입니다.
               점선 밖으로 나온 기운이 나를 이끄는 힘, 안쪽에 머문 기운이 보완하면 좋은 부분입니다.
             </p>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-black/30 p-5 md:p-8">
+          <div className="rounded-3xl border border-white/10 bg-black/30 p-4 md:p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-fuchsia-500/20 border border-fuchsia-500/30 flex items-center justify-center text-xl shadow-lg">
                 🎭
               </div>
-              <h3 className="text-xl md:text-2xl font-black text-white">행동 패턴 분석</h3>
+              <h3 className="text-lg md:text-2xl font-black text-white break-keep">행동 패턴 분석</h3>
             </div>
 
             {tenGodSummary.length > 0 ? (
@@ -922,7 +957,7 @@ function ResultCard({
                 </div>
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center p-8 bg-white/5 rounded-2xl border border-white/10">
+              <div className="h-full flex items-center justify-center p-5 bg-white/5 rounded-2xl border border-white/10">
                 <p className="text-sm text-slate-400 text-center">
                   데이터를 불러오는 중입니다.<br />잠시만 기다려주세요.
                 </p>
@@ -932,13 +967,13 @@ function ResultCard({
         </section>
 
         <section className="grid xl:grid-cols-[1fr_1fr] gap-5">
-          <div className="rounded-3xl border border-white/10 bg-black/30 p-5 md:p-8 flex flex-col justify-between">
+          <div className="rounded-3xl border border-white/10 bg-black/30 p-4 md:p-6 flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center shadow-lg">
                   <Flame className="w-5 h-5 text-amber-300" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-black text-white">나의 멘탈 게이지</h3>
+                <h3 className="text-lg md:text-2xl font-black text-white break-keep">나의 멘탈 게이지</h3>
               </div>
 
               <div className="flex items-center justify-between gap-4 mb-4">
@@ -968,28 +1003,44 @@ function ResultCard({
               </p>
             </div>
 
-            <div className="mt-6 flex justify-between px-2 text-center text-xs text-slate-400 gap-2">
-              <div className="flex-1 rounded-xl bg-black/40 p-3 shadow-inner">
-                <p>멘탈력</p>
-                <p className="font-bold text-white mt-1 text-sm">{Math.round(Number(gangyak?.deukryeong || 0))}</p>
-              </div>
-              <div className="flex-1 rounded-xl bg-black/40 p-3 shadow-inner">
-                <p>실행력</p>
-                <p className="font-bold text-white mt-1 text-sm">{Math.round(Number(gangyak?.deukji || 0))}</p>
-              </div>
-              <div className="flex-1 rounded-xl bg-black/40 p-3 shadow-inner">
-                <p>주변운</p>
-                <p className="font-bold text-white mt-1 text-sm">{Math.round(Number(gangyak?.deukse || 0))}</p>
-              </div>
+            {/* 이전에는 값만 덩그러니 찍어서 `멘탈력 0` 이 고장처럼 보였다.
+                세 항목은 만점이 서로 다르고(30/30/40), 0도 정상적으로 나올 수 있는
+                값이다(예: 금 일간이 여름에 나면 계절 기운을 못 받아 득령 0).
+                만점·막대·한 줄 설명을 함께 보여 0의 의미가 읽히게 한다. */}
+            <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-slate-400">
+              {GANGYAK_PARTS.map((part) => {
+                const raw = Math.round(Number(gangyak?.[part.key] || 0));
+                const ratio = Math.max(0, Math.min(1, raw / part.max));
+                return (
+                  <div key={part.key} className="rounded-xl bg-black/40 p-2.5 shadow-inner">
+                    <p className="break-keep leading-tight">{part.label}</p>
+                    <p className="mt-1 font-bold text-white">
+                      <span className="text-base">{raw}</span>
+                      <span className="text-[11px] text-slate-500"> / {part.max}</span>
+                    </p>
+                    <div className="mt-1.5 h-1 rounded-full bg-white/10 overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${ratio * 100}%` }}
+                        transition={{ duration: 0.9, ease: "easeOut" }}
+                        className="h-full bg-gradient-to-r from-amber-300 to-rose-400"
+                      />
+                    </div>
+                    <p className="mt-1.5 text-[9px] md:text-[10px] text-slate-500 break-keep leading-tight">
+                      {raw === 0 ? part.zeroHint : part.hint}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-black/30 p-5 md:p-8">
+          <div className="rounded-3xl border border-white/10 bg-black/30 p-4 md:p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shadow-lg">
                 <Crown className="w-5 h-5 text-emerald-300" />
               </div>
-              <h3 className="text-xl md:text-2xl font-black text-white">행운을 부르는 기운</h3>
+              <h3 className="text-lg md:text-2xl font-black text-white break-keep">행운을 부르는 기운</h3>
             </div>
 
             <div className="grid gap-3">
@@ -1040,7 +1091,7 @@ function ResultCard({
         <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7">
           <div className="flex items-center gap-3 mb-4">
             <span className="text-2xl">📈</span>
-            <h3 className="text-xl md:text-2xl font-black text-white">십이운성 흐름 카드</h3>
+            <h3 className="text-lg md:text-2xl font-black text-white break-keep">십이운성 흐름 카드</h3>
           </div>
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
             {phaseEntries.map((phase, index) => (
@@ -1061,7 +1112,7 @@ function ResultCard({
         <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7 space-y-5">
           <div className="flex items-center gap-3">
             <span className="text-2xl">🧱</span>
-            <h3 className="text-xl md:text-2xl font-black text-white">사주 기둥 해설 카드</h3>
+            <h3 className="text-lg md:text-2xl font-black text-white break-keep">사주 기둥 해설 카드</h3>
           </div>
           <PillarVisualizer
             pillars={pillarCards.map((p) => ({ kan: `${p.stemHanja}(${p.stemKo})`, ji: `${p.branchHanja}(${p.branchKo})`, name: p.labelKo, color: "text-indigo-200" }))}
@@ -1082,8 +1133,8 @@ function ResultCard({
         <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7 space-y-4">
           <div className="flex items-center gap-3">
             <span className="text-2xl">📚</span>
-            <h3 className="text-xl md:text-2xl font-black text-white inline-flex items-center gap-2">
-              격국 · 대운 요약
+            <h3 className="text-lg md:text-2xl font-black text-white inline-flex items-center gap-2 break-keep">
+              <span className="break-keep">격국 · 대운 요약</span>
               <InfoTip title="격국/대운" description="격국은 사주의 기본 구조, 대운은 10년 단위 인생 흐름 변화 구간을 뜻합니다." />
             </h3>
           </div>
@@ -1187,7 +1238,7 @@ function ResultCard({
         <section className="rounded-3xl border border-rose-400/20 bg-gradient-to-br from-rose-500/10 to-indigo-900/20 p-5 md:p-7">
           <div className="flex items-center gap-3 mb-3">
             <Lock className="w-5 h-5 text-rose-300" />
-            <h3 className="text-xl md:text-2xl font-black text-white">프리미엄 잠금 해제</h3>
+            <h3 className="text-lg md:text-2xl font-black text-white break-keep">프리미엄 잠금 해제</h3>
           </div>
           <p className="text-base text-slate-200 leading-relaxed">{detailedPremiumPreview}</p>
           <p className="text-sm text-slate-400 mt-2">{premiumReportCopy}</p>
@@ -1279,7 +1330,7 @@ function ResultCard({
                   <button
                     type="button"
                     onClick={onInsufficientJelly || onUnlockClick}
-                    className="mt-4 inline-flex items-center gap-2 rounded-xl border border-yellow-300/30 bg-yellow-400/15 px-4 py-2 text-sm font-black text-yellow-100 hover:bg-yellow-400/20 transition-colors"
+                    className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl border border-yellow-300/30 bg-yellow-400/15 px-4 py-2.5 text-sm font-black text-yellow-100 hover:bg-yellow-400/20 transition-colors break-keep text-left"
                   >
                     {insightFocus === "love" ? "연애 멤버십 대기 등록" : insightFocus === "money" ? "재물 멤버십 대기 등록" : insightFocus === "career" ? "커리어 멤버십 대기 등록" : "멤버십 대기 등록"}
                     <ChevronRight className="w-4 h-4" />
