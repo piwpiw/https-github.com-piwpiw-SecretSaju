@@ -11,12 +11,17 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 - 문서 충돌 판단은 각 문서 상단의 `Last Updated`/`Next Review`로 동기화 상태를 확인
 
 ## 배포 정책 (최우선 규칙)
-- 배포 플랫폼은 **Render only**로 고정한다.
-- `RENDER_DEPLOY_HOOK_URL`(또는 `RENDER_DEPLOY_HOOK`)가 없으면 배포를 실패 처리한다.
-- `.vercel` 폴더가 존재하면 배포를 차단한다(예외적으로 `ALLOW_VERCEL_LINK=true`만 허용). 배포 환경은 먼저 해당 폴더를 삭제하고 시작한다.
-- 요청 사항 반영 후 배포 전에는 반드시 로컬 사전 검증을 통과해야 한다. 로컬 검증 실패 시 배포는 즉시 중단한다.
-- 운영 배포(`deploy` / `deploy:fast`): `main` 브랜치의 배포 절차로만 수행한다.
-- Preview: `deploy:preview` / `deploy:preview:fast`는 dev/PR 경로로 수행한다.
+- 배포 플랫폼은 **Vercel only**로 고정한다. (2026-07-27 확정)
+- **배포를 실행하는 명령은 없다.** Vercel Git 연동이 수행한다 — `main` 푸시 = 프로덕션, PR = 프리뷰.
+- 빌드 설정의 정본은 `vercel.json`이다 (`framework: nextjs`, `installCommand: npm ci`).
+- GitHub Actions는 품질 검사(Quality)만 담당하고 배포를 트리거하지 않는다.
+- 푸시 전에는 반드시 로컬 사전 검증을 통과해야 한다. 실패 시 푸시하지 않는다.
+- `NEXT_PUBLIC_*` 환경변수는 **빌드 시점에 정의되어 있어야** 클라이언트 번들에 치환된다. Vercel에서 나중에 추가했다면 반드시 재배포한다. (ERROR_LEDGER: FREE_LAUNCH 사건)
+
+> 이전 정책(Render only)은 폐기했다. Render 훅 시크릿이 설정된 적이 없어
+> `main` 푸시마다 CI가 실패했고, 정작 배포는 Vercel이 하고 있었다.
+> `render.yaml`·`deploy-policy.js`·`render-deploy.js`·`auto-deploy.js`와
+> `npm run deploy*` 계열 명령을 모두 제거했다.
 
 ## 배포 대상
 - Production: `main` 브랜치
@@ -25,8 +30,8 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
 ## 표준 배포 흐름
 1. 로컬 안정화 실행: `npm run dev:safe -- --port 3000 --auto-port`
 2. 로컬 사전검증: `npm run deploy:local`
-3. CI 품질/배포 파이프라인 확인
-4. 배포 실행
+3. 푸시 / PR 생성 → Vercel 프리뷰 자동 배포, GitHub Actions Quality 확인
+4. `main` 병합 → Vercel 프로덕션 자동 배포
 5. 배포 후 스모크 및 모니터링
 
 ## 명령 기준 (구현 반영)
@@ -46,27 +51,21 @@ SOT: 배포 운영 기준은 이 문서가 단일 기준이다.
   - 배포 전 기본 사전 처리 수행
 - `npm run pre-deploy:parallel`
   - `pre-deploy` 내 `tests/build` 병렬 점검
-- `npm run deploy:fast`
-  - `--parallel-checks` + prebuilt 배포 경로 (Render 훅 필수)
-- `npm run deploy`
-  - Render-only 운영 배포(기본 경로)
-- `npm run deploy:preview`
-  - Render-only Preview 배포
+- `npm run predeploy:check`
+  - `scripts/deploy/deploy.sh` — 설치 + 사전 점검 일괄 실행
 
-## 배포 명령 사용 가이드
+## 배포 전 점검 명령
+
+배포를 실행하는 명령은 없다. 아래는 **푸시 전 로컬 점검**이다.
 
 - `npm run deploy:local`
   - `preflight:local` + `pre-deploy --skip-build --skip-tests`
+- `npm run predeploy:check`
+  - 설치 + 사전 점검 일괄
 - `npm run preflight:local` (기본)
   - lint + tsc noEmit 병렬
 - `npm run preflight:local:serial`
   - 동일 검사 직렬
-- `npm run deploy:fast`
-  - 빠른 검증 경로, 병렬 체크 중심 (Render 훅 필수)
-- `npm run deploy`
-  - 운영 배포(Policy + Render Hook 검증 통과 시)
-- `npm run deploy:preview`
-  - 미리보기 배포(Render-only)
 
 ## 검증 속도 참고 (로컬 측정)
 - preflight 병렬: 약 9.4초

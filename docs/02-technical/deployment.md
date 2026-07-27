@@ -16,13 +16,18 @@
 
 ## 배포 기준(필수)
 
-- 배포 플랫폼: **Render only**
-- 배포 실행은 `node scripts/deploy/deploy-policy.js`를 통과해야 함.
-- 렌더 훅(`RENDER_DEPLOY_HOOK_URL` 또는 `RENDER_DEPLOY_HOOK`)이 필수.
-- `.vercel` 연동이 남아 있으면 배포 전 차단 (`ALLOW_VERCEL_LINK=true`로 예외 허용).
-- 배포 전 `.vercel` 폴더를 삭제한다.
-- 요청 반영 후 배포 전에는 `npm run deploy:local` 또는 동등한 로컬 사전검증을 반드시 성공해야 한다.
-- 로컬 검증 실패는 배포 블록 처리한다.
+- 배포 플랫폼: **Vercel only** (2026-07-27 확정)
+- **배포 명령은 없다.** Vercel Git 연동이 수행한다 — `main` 푸시 = 프로덕션, PR = 프리뷰.
+- 빌드 설정의 정본은 `vercel.json` (`framework: nextjs`, `installCommand: npm ci`).
+- GitHub Actions는 품질 검사(Quality)만 담당하고 배포를 트리거하지 않는다.
+- 푸시 전 `npm run deploy:local` 또는 동등한 로컬 사전검증을 반드시 성공해야 한다.
+- 로컬 검증 실패는 푸시 블록 처리한다.
+
+> 배경: 이전에는 Render 전용 정책(`deploy-policy.js`)이 `render.yaml`과 배포 훅을
+> 요구하고 `.vercel` 존재 시 배포를 차단했습니다. 그런데 훅 시크릿이 설정된 적이
+> 없어 **`main` 푸시마다 CI가 실패**했고, 정작 실제 배포는 Vercel이 하고 있었습니다.
+> Render 경로(`render.yaml`, `deploy-policy.js`, `render-deploy.js`, `auto-deploy.js`,
+> `npm run deploy*` 계열)를 전부 제거해 배포 대상을 하나로 정리했습니다.
 
 ## 로컬 기준 빠른 배포 검증
 
@@ -58,27 +63,26 @@
 - 직렬 preflight: 약 **23.4초**
 - 병렬이 빠르므로 기본값으로 유지
 
-## 배포 명령 사용 가이드
+## 배포 전 점검 명령
 
-- `npm run deploy:fast`
-  - `--parallel-checks` 기반으로 빠른 검사 경로 사용
-- `npm run deploy`
-  - 기본 전체 배포 흐름(표준 경로)
-- `npm run deploy:preview`
-  - Preview 배포
+배포를 실행하는 명령은 없습니다. 아래는 **푸시 전에 로컬에서 돌리는 점검**입니다.
+
+- `npm run deploy:local`
+  - `preflight:local` + `pre-deploy --skip-build --skip-tests`
+- `npm run predeploy:check`
+  - `scripts/deploy/deploy.sh` — 설치 + 사전 점검 일괄 실행
 - `npm run pre-deploy`
-  - 배포 전 기본 사전 처리 수행
+  - 사전 점검 기본 경로
 - `npm run pre-deploy:parallel`
-  - pre-deploy 내부에서 build/test 단계를 병렬로 처리
+  - build/test 단계를 병렬 처리
 
 ## 빠른 반복 배포 지침(최소 변경 모드)
 
-- 수정 범위는 사전 영향도 3단계만 허용: 워크플로(`.github/workflows/deploy.yml`), 배포 스크립트(`scripts/deploy/deploy.sh`, `scripts/deploy/wait-for-health.js`), 배포 명령(`package.json`).
+- 수정 범위는 사전 영향도 3단계만 허용: 워크플로(`.github/workflows/deploy.yml`), 점검 스크립트(`scripts/deploy/deploy.sh`, `scripts/deploy/pre-deploy.js`), 빌드 설정(`vercel.json`, `package.json`).
 - 이 범위를 벗어나는 수정은 `수락 필요`로 간주하고 즉시 중단.
 - 실행은 항상 병렬 확인 후 일괄 반영:
   - `npm run pre-deploy:parallel`
-  - `npm run deploy:fast`
-  - `npm run deploy:ci`
+  - `npm run predeploy:check`
 - 실패 지점은 첫 실패 항목만 수정하고 재실행, 성공 항목은 건너뛰기(`SKIP_*` 플래그로 최소 재실행).
 - 병목 완화 우선순위: 템플릿 수정보다 설정 누락 제거, 문서 갱신보다 배포 체인 안정성 우선.
 
@@ -90,11 +94,12 @@
    - `npm run smoke:auth` (인증/회원가입 UI 수정 시 필수)
    - `npm run deploy:local`
    - 실패 시 에러 로그 우선 확인 후 관련 스크립트 개별 실행
-3. Git Push / PR 상태 확인
-   - `main`은 운영(Production), `dev` 또는 PR은 Preview 기준
-4. 배포 실행
-   - 운영: `npm run deploy` 또는 `npm run deploy:fast`
-   - 미리보기: `npm run deploy:preview` (Preview도 Render 훅 기반으로만 실행)
+3. Git Push / PR
+   - `main` 푸시 → Vercel 프로덕션 배포 자동 시작
+   - PR 생성 → Vercel 프리뷰 배포 자동 시작
+4. 배포 확인
+   - PR 코멘트의 Vercel 상태(Building → Ready)와 프리뷰 링크로 확인
+   - 프로덕션은 Vercel 대시보드에서 확인
 5. 배포 후 검증
    - `/api/saju/calculate` 스모크 확인
    - 결제 관련 확인(`/api/payment/verify` 스모크, 결제/웹훅 경로)은 `NEXT_PUBLIC_FREE_LAUNCH`가 `false`로 유료 전환된 배포에서만 필수. 무료 오픈 런칭(기본값, `FREE_LAUNCH` ON) 상태에서는 결제 키 자체가 설정되지 않으므로 해당 스모크는 생략하고 프리미엄/시크릿 콘텐츠가 잠금 없이 노출되는지만 확인(`docs/02-technical/FREE_LAUNCH_RUNBOOK.md` 참고)
@@ -143,9 +148,9 @@
 - `docs/02-technical/DEPLOYMENT_CHECKLIST.md` (스키마/OAuth/롤백 요약 체크리스트)
 - `docs/02-technical/FREE_LAUNCH_RUNBOOK.md` (무료 오픈 런칭 배포 계획 — 결제 키 불요 사유)
 
-**Last Updated**: 2026-07-13  
+**Last Updated**: 2026-07-27  
 **Owner**: DevOps + Engineering Lead  
-**Next Review**: 2026-07-20
+**Next Review**: 2026-08-03
 
 ## Release Approval Checklist Update
 - Approval step 1: build/test + core smoke + secret review logged
