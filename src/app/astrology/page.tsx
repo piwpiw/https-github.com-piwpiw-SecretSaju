@@ -88,9 +88,7 @@ export default function AstrologyPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_5%,rgba(99,102,241,0.2),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.2),transparent_48%)] pointer-events-none" />
       <div className="max-w-5xl mx-auto relative z-10 space-y-8">
         <div className="flex items-center justify-between">
-          <Link href="/" className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 inline-flex items-center justify-center">
-            <ArrowLeft className="w-5 h-5 text-slate-300" />
-          </Link>
+          <Link href="/" className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 inline-flex items-center justify-center" aria-label="뒤로 가기"><ArrowLeft className="w-5 h-5 text-slate-300" /></Link>
           <p className="text-xs text-slate-400 tracking-[0.3em]">별자리 연구소</p>
         </div>
 

@@ -48,8 +48,7 @@ export default function DestinyCalendar() {
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => setCurrentDate(subMonths(currentDate, 1))}
-                        className="p-2 hover:bg-white/10 rounded-xl transition-colors"
-                    >
+                        className="p-2 hover:bg-white/10 rounded-xl transition-colors" aria-label="이전">
                         <ChevronLeft className="w-5 h-5 text-slate-400" />
                     </button>
                     <span className="text-lg font-black italic text-white min-w-[120px] text-center uppercase tracking-tight">
@@ -57,8 +56,7 @@ export default function DestinyCalendar() {
                     </span>
                     <button
                         onClick={() => setCurrentDate(addMonths(currentDate, 1))}
-                        className="p-2 hover:bg-white/10 rounded-xl transition-colors"
-                    >
+                        className="p-2 hover:bg-white/10 rounded-xl transition-colors" aria-label="다음">
                         <ChevronRight className="w-5 h-5 text-slate-400" />
                     </button>
                 </div>

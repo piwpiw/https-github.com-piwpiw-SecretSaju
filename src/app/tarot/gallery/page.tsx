@@ -35,9 +35,7 @@ export default function TarotGalleryPage() {
             <div className="max-w-7xl mx-auto px-0 sm:px-6 py-12 relative z-10">
                 <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div className="flex items-center gap-4">
-                        <Link href="/tarot" className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
-                            <ArrowLeft className="w-5 h-5 text-slate-400" />
-                        </Link>
+                        <Link href="/tarot" className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all" aria-label="뒤로 가기"><ArrowLeft className="w-5 h-5 text-slate-400" /></Link>
                         <div>
                             <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-[0.24em] border border-indigo-500/20 mb-2">
                                 <Library className="w-3 h-3" /> 타로 아카이브

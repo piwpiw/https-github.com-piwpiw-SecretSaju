@@ -190,9 +190,7 @@ export default function TojeongPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(168,85,247,0.12),transparent_45%),radial-gradient(circle_at_80%_10%,rgba(14,165,233,0.12),transparent_40%)] pointer-events-none" />
       <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
         <div className="flex items-center justify-between mb-8">
-          <Link href="/" className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 inline-flex items-center justify-center">
-            <ArrowLeft className="w-5 h-5 text-slate-300" />
-          </Link>
+          <Link href="/" className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 inline-flex items-center justify-center" aria-label="뒤로 가기"><ArrowLeft className="w-5 h-5 text-slate-300" /></Link>
           <JellyBalance />
         </div>
 

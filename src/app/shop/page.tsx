@@ -18,8 +18,7 @@ export default function ShopPage() {
         <header className="flex items-center justify-between mb-16">
           <button
             onClick={() => router.back()}
-            className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition-all"
-          >
+            className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition-all" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-200" />
           </button>
           <div className="px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex items-center gap-3">

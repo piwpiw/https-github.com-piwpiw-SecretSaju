@@ -71,7 +71,7 @@ export default function PsychologyPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_20%,rgba(234,179,8,0.16),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(139,92,246,0.16),transparent_50%)]" />
       <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
         <div className="flex items-center justify-between mb-8">
-          <button onClick={() => router.back()} className="w-10 h-10 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center">
+          <button onClick={() => router.back()} className="w-10 h-10 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-200" />
           </button>
           <button onClick={() => setDone((v) => !v)} className="text-xs px-4 py-2 rounded-full border border-white/10 bg-white/10">

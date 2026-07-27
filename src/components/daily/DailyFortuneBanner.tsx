@@ -93,8 +93,7 @@ export function DailyFortuneBanner() {
             <button
               onClick={() => setRefreshKey((k) => k + 1)}
               className="p-1.5 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0 mt-0.5"
-              title="다른 운세 보기"
-            >
+              title="다른 운세 보기" aria-label="새로고침">
               <RefreshCw className="w-3.5 h-3.5 text-slate-400" />
             </button>
           </div>

@@ -159,7 +159,7 @@ export default function DailyFortunePage() {
         {/* Nav */}
         <div className="flex items-center justify-between mb-10">
           <button onClick={() => router.back()}
-            className="w-11 h-11 rounded-2xl bg-white/5 border border-white/8 flex items-center justify-center hover:bg-white/10 transition-all group">
+            className="w-11 h-11 rounded-2xl bg-white/5 border border-white/8 flex items-center justify-center hover:bg-white/10 transition-all group" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-300 group-hover:-translate-x-0.5 transition-transform" />
           </button>
           <div className="text-center">

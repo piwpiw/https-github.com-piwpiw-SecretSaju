@@ -29,9 +29,7 @@ export default function AppOnlyModal({ isOpen, onClose, title }: AppOnlyModalPro
                     >
                         <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl -mr-20 -mt-20" />
 
-                        <button onClick={onClose} className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors">
-                            <X className="w-6 h-6" />
-                        </button>
+                        <button onClick={onClose} className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors" aria-label="닫기"><X className="w-6 h-6" /></button>
 
                         <div className="text-center space-y-6 relative z-10">
                             <div className="w-20 h-20 bg-indigo-500/10 rounded-3xl flex items-center justify-center mx-auto border border-indigo-500/20 shadow-inner">

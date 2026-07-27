@@ -192,7 +192,7 @@ function CompatibilityContent() {
       <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
         {/* Header */}
         <header className="flex items-center justify-between mb-16">
-          <button onClick={() => router.back()} className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
+          <button onClick={() => router.back()} className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-400" />
           </button>
           <div className="text-center space-y-2">

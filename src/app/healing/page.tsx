@@ -73,8 +73,7 @@ export default function HealingPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="w-10 h-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center hover:bg-white/10"
-          >
+            className="w-10 h-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center hover:bg-white/10" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="text-center">
