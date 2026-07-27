@@ -15,6 +15,7 @@ export default defineConfig({
             'tests/logic/saju-engine.test.ts',
             'tests/logic/gangyak-scoring.test.ts',
             'tests/logic/pillar-element.test.ts',
+            'tests/logic/calendar-standard.test.ts',
             'tests/logic/ai-routing.test.ts',
             'tests/logic/auth-callback-message.test.ts',
             'tests/logic/payment-flow.test.ts',

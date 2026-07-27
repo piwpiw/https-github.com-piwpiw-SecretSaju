@@ -20,7 +20,7 @@ import {
     koreaWallClockToUTC,
 } from '../astronomy/timezone';
 import { isBeforeLichun } from '../astronomy/solar-terms';
-import { getYearPillar, getMonthPillar, getDayPillar, getHourPillar, FourPillars, GanJi } from '../calendar/ganji';
+import { getYearPillar, getMonthPillar, getDayPillar, getHourPillar, FourPillars, GanJi, HourBoundaryMode } from '../calendar/ganji';
 import { handleJasiLogic } from '../calendar/yajasi';
 import { solarToLunar } from '../calendar/lunar-solar';
 import { SCORING_MODEL, analyzeElements, type ElementAnalysisResult } from '../myeongni/elements';
@@ -263,9 +263,13 @@ export class SajuEngine {
         const dayJasiResult = handleJasiLogic(dayBaseTime, strictYajasi);
         const hourJasiResult = handleJasiLogic(hourStemBaseTime, strictYajasi);
         const dayPillar = isTimeUnknown ? getDayPillar(baseDateKST) : dayJasiResult.dayPillar;
+        // 시지 경계는 위에서 고른 기준 시계에 맞춰 잘라야 한다. 진태양시로 이미
+        // 환산한 시각에 KST 30분 관례를 또 얹으면 보정이 두 번 들어간다.
+        const hourBoundary: HourBoundaryMode =
+            hourBranchBaseTime === trueSolarTime ? 'true-solar' : 'kst-civil';
         const hourPillar = isTimeUnknown
-            ? getHourPillar(baseDateKST, dayPillar.stemIndex)
-            : getHourPillar(hourBranchBaseTime, hourJasiResult.hourStemStemIndexUsed);
+            ? getHourPillar(baseDateKST, dayPillar.stemIndex, 'kst-civil')
+            : getHourPillar(hourBranchBaseTime, hourJasiResult.hourStemStemIndexUsed, hourBoundary);
 
         if (
             !isTimeUnknown
