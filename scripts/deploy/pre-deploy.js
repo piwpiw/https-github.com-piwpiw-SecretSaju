@@ -47,9 +47,9 @@ function checkMigrations() {
 function checkConfigFiles() {
   console.log('[pre-deploy] checking required config files...');
 
+  // 배포 대상은 Vercel 하나다. Render 설정(render.yaml)은 제거됐다.
   const requiredFiles = [
-    'render.yaml',
-    'Dockerfile',
+    'vercel.json',
     '.github/workflows/deploy.yml',
     'package.json',
   ];

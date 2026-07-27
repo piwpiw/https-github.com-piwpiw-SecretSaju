@@ -1,6 +1,9 @@
 ﻿#!/usr/bin/env pwsh
 
-# deploy.ps1 - SecretSaju deployment helper for Render
+# deploy.ps1 - SecretSaju 배포 헬퍼 (Vercel)
+#
+# 배포는 Vercel Git 연동이 수행합니다. main 에 푸시하면 프로덕션 배포가
+# 자동으로 시작되므로, 이 스크립트는 빌드 확인 + 커밋 + 푸시까지만 합니다.
 
 param(
     [string]$Message = "update: $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
@@ -31,17 +34,7 @@ if (-not $status) {
     Write-Host "✅ GitHub push succeeded" -ForegroundColor Green
 }
 
-Write-Host "`n🚀 Trigger Render deploy..." -ForegroundColor Cyan
-if ($env:RENDER_DEPLOY_HOOK_URL) {
-    try {
-        Invoke-RestMethod -Method Post -Uri $env:RENDER_DEPLOY_HOOK_URL | Out-Null
-        Write-Host "✅ Render deploy hook sent" -ForegroundColor Green
-    } catch {
-        Write-Host "⚠️ Failed to call Render deploy hook: $($_.Exception.Message)" -ForegroundColor Yellow
-        Write-Host "💡 Render auto-deploy from main branch may still proceed." -ForegroundColor Cyan
-    }
-} else {
-    Write-Host "💡 RENDER_DEPLOY_HOOK_URL is not set. Render auto-deploy from main branch is used." -ForegroundColor Cyan
-}
+Write-Host "`n🚀 Vercel 프로덕션 배포가 자동으로 시작됩니다 (main 푸시 감지)." -ForegroundColor Cyan
+Write-Host "   진행 상황은 Vercel 대시보드에서 확인하세요." -ForegroundColor Cyan
 
 Write-Host "`n🎉 Done at $(Get-Date -Format 'HH:mm:ss')" -ForegroundColor Magenta

@@ -70,7 +70,7 @@
 
 - 현재 저장소가 Cloudflare Workers Git 연동에 물려 있어 **매 커밋 빌드가 실패**합니다 (이 앱은 Workers용이 아님, 저장소에 wrangler 설정 없음 = 대시보드 연동).
 - Cloudflare 대시보드 → Workers & Pages → 해당 프로젝트 → Git 연동 **해제** 또는 프로젝트 삭제.
-- (Render를 안 쓸 경우 `render.yaml` autoDeploy도 필요 시 비활성화.)
+- Render 경로는 2026-07-27에 제거되었습니다(`render.yaml`·`deploy-policy.js`·`render-deploy.js`). 배포 대상은 Vercel 하나입니다.
 
 ---
 

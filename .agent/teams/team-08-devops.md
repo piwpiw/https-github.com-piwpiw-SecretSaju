@@ -9,7 +9,7 @@
 3. `.agent/AGENT_PROTOCOLS.md`
 
 ## Write Zones
-- scripts/deploy/, scripts/dev/, render.yaml, vercel.json
+- scripts/deploy/, scripts/dev/, vercel.json
 
 ## Rules
 - Stay inside the assigned boundary unless the task clearly crosses domains.
