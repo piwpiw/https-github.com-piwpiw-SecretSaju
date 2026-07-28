@@ -290,7 +290,7 @@ function CompatibilityContent() {
           </div>
 
           {error && (
-            <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 flex items-center gap-4 text-xs font-black uppercase tracking-widest italic animate-bounce">
+            <div role="alert" className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 flex items-center gap-4 text-xs font-black uppercase tracking-widest italic animate-bounce">
               <AlertTriangle className="w-4 h-4" /> {error}
             </div>
           )}

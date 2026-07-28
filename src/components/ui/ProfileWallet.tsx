@@ -93,7 +93,7 @@ export default function ProfileWallet({ onSelectProfile }: Props) {
                                 </div>
                             )}
                             {error && (
-                                <div className="text-center py-4 text-[11px] text-rose-400">{error}</div>
+                                <div role="alert" className="text-center py-4 text-[11px] text-rose-400">{error}</div>
                             )}
                             {!loading && !error && profiles.length === 0 && (
                                 <div className="text-center py-6 text-[11px] text-slate-500">

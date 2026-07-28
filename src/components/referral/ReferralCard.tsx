@@ -137,7 +137,7 @@ export default function ReferralCard({ className = '' }: ReferralCardProps) {
         </div>
       )}
 
-      {error && <p className="mt-4 text-sm text-rose-400 text-center">{error}</p>}
+      {error && <p role="alert" className="mt-4 text-sm text-rose-400 text-center">{error}</p>}
 
       <p className="mt-6 text-xs text-secondary/60 text-center leading-relaxed">초대 코드는 신규 사용자 1회만 유효하며, 본인 초대는 제외됩니다.</p>
     </motion.div>

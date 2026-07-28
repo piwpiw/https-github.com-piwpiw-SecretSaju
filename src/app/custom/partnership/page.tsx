@@ -246,7 +246,7 @@ export default function PartnershipPage() {
                 />
               </div>
 
-              {formError ? <p className="text-xs text-rose-300">{formError}</p> : null}
+              {formError ? <p role="alert" className="text-xs text-rose-300">{formError}</p> : null}
 
               <button
                 type="submit"

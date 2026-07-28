@@ -164,6 +164,49 @@ await browser.close();
 // 이게 실제로 홈 검색창(테두리도 링도 없이 outline-none 만 걸린 input)을 잡았다.
 scanOutlineSuppression();
 
+// 소스 스캔: 화면에만 뜨고 읽어주지는 않는 오류·검증 문구.
+scanUnannouncedErrors();
+
+/**
+ * 오류/검증 문구를 렌더하는 줄에 role="alert" 또는 aria-live 가 있는지 본다.
+ *
+ * /saju 에서 이름 없이 제출하면 "이름을 먼저 입력해 주세요."가 눈에는 보이는데
+ * 읽어주는 표시가 없었다. 스크린리더 사용자는 큰 버튼을 눌러도 왜 아무 일이
+ * 없는지 알 수 없다. 오류 문구는 뜨는 순간 알려져야 한다.
+ */
+function scanUnannouncedErrors() {
+  const files = [];
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (/\.(tsx|jsx)$/.test(entry.name)) files.push(full);
+    }
+  };
+  if (fs.existsSync('src')) walk('src');
+
+  // {error} / {notice} / {errorMessage} 같은 값을 그대로 그리는 줄
+  const RENDERS_ERROR = /\{\s*(error|notice|errorMessage|formError|validationError)\s*\}/;
+
+  for (const file of files) {
+    const lines = fs.readFileSync(file, 'utf8').split('\n');
+    lines.forEach((line, i) => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('//') || trimmed.startsWith('*')) return;
+      if (!RENDERS_ERROR.test(line)) return;
+      // JSX 로 그리는 줄만 본다. `const { error } = await ...` 같은 구조 분해가
+      // 걸려들었었다.
+      if (!/<[a-zA-Z]/.test(line)) return;
+
+      // 알림 표시는 같은 줄이나 바로 위 열림 태그에 있을 수 있다
+      const context = lines.slice(Math.max(0, i - 6), i + 1).join('\n');
+      if (/role=["']alert["']|aria-live=/.test(context)) return;
+
+      add(`${file}:${i + 1}`, 'error-not-announced', trimmed.slice(0, 70));
+    });
+  }
+}
+
 /**
  * `outline-none` / `outline: none` 이 붙은 줄에 포커스 시 보이는 대체 표시가
  * 같이 있는지 본다. 대체 표시는 focus:ring / focus:border / focus:shadow /

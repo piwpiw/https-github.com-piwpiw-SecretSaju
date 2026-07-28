@@ -101,7 +101,7 @@ export default function ShinsalPage() {
             {run ? "분석 중..." : FREE_LAUNCH ? "전체 신살 요약 받기 (무료)" : "5젤리로 전체 신살 요약 받기"}
           </button>
           {errorMessage && (
-            <p className="mt-3 text-sm text-center text-rose-300 font-medium">{errorMessage}</p>
+            <p role="alert" className="mt-3 text-sm text-center text-rose-300 font-medium">{errorMessage}</p>
           )}
         </section>
 

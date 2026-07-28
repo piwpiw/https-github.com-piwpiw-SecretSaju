@@ -210,7 +210,7 @@ export default function HistoryPage() {
                 </div>
 
                 <div className="space-y-2">
-                    {error ? <p className="text-rose-300 text-sm border border-rose-500/40 bg-rose-500/10 rounded-xl px-4 py-2">{error}</p> : null}
+                    {error ? <p role="alert" className="text-rose-300 text-sm border border-rose-500/40 bg-rose-500/10 rounded-xl px-4 py-2">{error}</p> : null}
                     {loading ? <p className="text-sm text-slate-500">데이터를 불러오는 중입니다...</p> : null}
                     {!loading && filteredLogs.length === 0 && (
                         <p className="text-slate-400 text-sm leading-relaxed break-keep">표시할 분석 결과가 없습니다. 프로필 분석을 먼저 실행해 보세요.</p>

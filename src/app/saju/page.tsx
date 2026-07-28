@@ -368,7 +368,9 @@ function SajuPageContent() {
               {loading ? "사주 분석 중..." : FREE_LAUNCH ? "사주 분석 시작 (무료)" : "3젤리로 사주 실행"}
             </button>
 
-            {notice && <p className="text-sm text-center text-rose-300 font-medium">{notice}</p>}
+            {/* 눈으로는 보였지만 읽어주는 표시가 없어서, 스크린리더 사용자는
+                버튼을 눌러도 왜 아무 일이 없는지 알 수 없었다. */}
+            {notice && <p role="alert" className="text-sm text-center text-rose-300 font-medium">{notice}</p>}
           </div>
         </section>
 

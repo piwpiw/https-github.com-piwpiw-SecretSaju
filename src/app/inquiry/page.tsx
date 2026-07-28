@@ -171,7 +171,7 @@ export default function InquiryPage() {
             </div>
 
             {fieldError ? <div className="p-3 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-100 text-sm">{fieldError}</div> : null}
-            {error ? <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-400/50 text-rose-100 text-sm">{error}</div> : null}
+            {error ? <div role="alert" className="p-3 rounded-xl bg-rose-500/20 border border-rose-400/50 text-rose-100 text-sm">{error}</div> : null}
 
             <button
               type="submit"
