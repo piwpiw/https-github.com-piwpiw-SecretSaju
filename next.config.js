@@ -62,15 +62,22 @@ const withPWA = require("next-pwa")({
   register: true,
   skipWaiting: true,
 
-  // 배포해도 사용자 화면이 안 바뀌던 문제.
+  // ⚠️ 아래 runtimeCaching 은 현재 **동작하지 않는다**.
   //
-  // next-pwa 기본 runtimeCaching은 페이지·RSC 응답까지 StaleWhileRevalidate로
-  // 캐시한다. 그래서 새 버전을 배포해도 **첫 방문에는 캐시에 있던 옛 화면**이
-  // 그대로 뜨고, 두 번째 로드에야 반영된다. 고쳤다고 알린 뒤에도 사용자가
-  // "안 고쳐졌는데?" 를 보게 되는 원인이었다.
+  // 서비스워커가 한 번도 등록되지 않기 때문이다. next-pwa v5 는 등록 스크립트를
+  // pages/_document 에 주입하는데 이 프로젝트에는 _document 가 없다. 실제로
+  // 프로덕션 standalone 빌드를 띄우고 확인해도 navigator.serviceWorker
+  // .getRegistrations() 가 비어 있고, 응답 HTML 어디에도 sw.js 참조가 없다.
+  // 그래서 sw.js 는 생성·제공되지만 아무도 그걸 등록하지 않는다.
   //
-  // 해시가 붙어 불변인 정적 자산(/_next/static/...)만 캐시에서 바로 주고,
-  // 문서·데이터·API는 항상 네트워크를 먼저 본다. 오프라인일 때만 캐시로 떨어진다.
+  // 한때 "배포해도 옛 화면이 보이는" 문제의 원인을 next-pwa 의 기본
+  // StaleWhileRevalidate 로 지목하고 아래 설정을 넣었는데, 그 진단은 틀렸다.
+  // 등록조차 안 되는 워커가 캐시를 할 수는 없다. 실제 원인은 CDN 이나 브라우저
+  // 캐시 쪽으로 다시 봐야 한다.
+  //
+  // 설정을 지우지 않고 두는 이유: 서비스워커를 켜기로 결정하면 이 정책이
+  // 그대로 필요하다(정적 자산만 CacheFirst, 문서·API 는 NetworkFirst).
+  // 켤 때는 _document 추가 또는 직접 등록 코드가 함께 있어야 한다.
   runtimeCaching: [
     {
       urlPattern: /^https?:\/\/[^/]+\/_next\/static\/.*/i,
