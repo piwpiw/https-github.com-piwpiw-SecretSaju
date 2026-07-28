@@ -84,7 +84,7 @@ export default function PsychologyPage() {
             <Brain className="w-4 h-4" /> 심리 성향 진단
           </div>
           <h1 className="text-3xl md:text-4xl font-black italic mt-2 break-keep">간단 심리 체크</h1>
-          <p className="text-slate-300 mt-2 break-keep">3문항으로 오늘의 판단 성향과 실행 전략을 추천합니다.</p>
+          <p className="text-slate-300 mt-2 break-keep">세 가지만 답하면 오늘 어떤 방식이 잘 맞는지 알려드려요.</p>
 
           <div className="mt-7 grid gap-5">
             {QUESTIONS.map((item) => (
@@ -101,7 +101,7 @@ export default function PsychologyPage() {
 
           <div className="mt-7 bg-black/40 rounded-xl p-4 border border-white/10">
             <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-slate-400 font-black">
-              <span>응답 진행률</span>
+              <span>답한 개수</span>
               <span>{answered ? '3/3' : `${Object.values(answers).filter(Boolean).length}/3`}</span>
             </div>
             <div className="mt-2 h-2 bg-white/10 rounded-full overflow-hidden">

@@ -103,7 +103,7 @@ export default function PalmistryPage() {
             <Hand className="w-4 h-4" /> 손금 분석
           </div>
           <h1 className="text-3xl md:text-4xl font-black italic mt-3">손금 유형 플로우</h1>
-          <p className="text-slate-300 mt-2">손금 기반 성향을 빠르게 매핑하고 즉시 실행할 체크리스트를 생성합니다.</p>
+          <p className="text-slate-300 mt-2">나와 가까운 유형을 고르면, 오늘 바로 해볼 일을 알려드려요.</p>
 
           <form onSubmit={run} className="mt-6 space-y-4" aria-label="손금 분석 폼">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">

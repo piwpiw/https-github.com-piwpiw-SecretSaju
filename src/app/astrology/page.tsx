@@ -99,7 +99,7 @@ export default function AstrologyPage() {
           </div>
           <h1 className="text-3xl md:text-4xl font-black mt-4 tracking-tight">일일 별자리 스냅샷</h1>
           <p className="text-slate-300 mt-2 max-w-2xl">
-            날짜와 이름을 입력하면 별자리 점수표, 흐름 데이터, 근거 노트를 제공합니다.
+            이름과 날짜만 넣으면, 그날 어떤 기운인지 점수와 함께 알려드려요.
           </p>
 
           <div className="mt-6 grid md:grid-cols-2 gap-3">
@@ -154,7 +154,7 @@ export default function AstrologyPage() {
 
         {!report ? (
           <section className="rounded-3xl border border-indigo-300/20 bg-indigo-500/10 p-6 text-sm text-indigo-100">
-            리포트를 생성하면 월간 흐름과 근거 로그가 표시됩니다.
+            ‘리포트 생성’을 누르면 한 달 흐름을 볼 수 있어요.
           </section>
         ) : null}
 
@@ -170,7 +170,7 @@ export default function AstrologyPage() {
                   <p className="text-sm text-slate-300 mt-1">
                     {report.profile.dateRange} / {report.profile.lord} / {report.profile.element} / {report.profile.modality}
                   </p>
-                  <p className="text-xs text-slate-400 mt-2">프로필 신뢰도: {report.profile.quality}</p>
+                  <p className="text-xs text-slate-400 mt-2">입력 정보 충실도: {report.profile.quality}</p>
                 </div>
                 <div className="text-right">
                   <div className="text-xs tracking-[0.3em] text-indigo-200">평균</div>
@@ -223,7 +223,7 @@ export default function AstrologyPage() {
                   ))}
                 </div>
                 <p className="mt-3 text-xs text-slate-300">
-                  근거 포인트: {report.evidence.length} / 근거 로그: {report.evidence.length}
+                  이 결과가 나온 근거 {report.evidence.length}가지
                 </p>
               </article>
             </section>
