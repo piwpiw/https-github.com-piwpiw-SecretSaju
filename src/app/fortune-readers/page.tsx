@@ -136,13 +136,31 @@ export default function FortuneReadersPage() {
                   ))}
                 </div>
 
-                <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 p-4">
-                  <div className="grid grid-cols-2 gap-2 text-[11px]">
-                    <div>온기 {reader.warmth}</div>
-                    <div>직설 {reader.directness}</div>
-                    <div>전문도 {reader.jargonDensity}</div>
-                    <div>쉬운설명 {reader.easyBias}</div>
-                  </div>
+                {/*
+                  예전에는 "온기 45 / 직설 85" 처럼 숫자만 늘어놨다. 45 가 높은
+                  건지 낮은 건지 알 수 없어서 비교가 안 됐다. 막대로 바꿔
+                  한눈에 어떤 리더가 어떤 성향인지 보이게 한다.
+                */}
+                <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 p-4 space-y-2.5">
+                  {[
+                    { label: '따뜻함', value: reader.warmth, bar: 'bg-rose-400' },
+                    { label: '직설적', value: reader.directness, bar: 'bg-amber-400' },
+                    { label: '전문 용어', value: reader.jargonDensity, bar: 'bg-indigo-400' },
+                    { label: '쉬운 설명', value: reader.easyBias, bar: 'bg-emerald-400' },
+                  ].map((stat) => (
+                    <div key={stat.label} className="flex items-center gap-3">
+                      <span className="w-[52px] shrink-0 text-[11px] font-bold text-slate-300">{stat.label}</span>
+                      <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
+                        <span
+                          className={`block h-full rounded-full ${stat.bar}`}
+                          style={{ width: `${Math.max(0, Math.min(100, stat.value))}%` }}
+                        />
+                      </span>
+                      <span className="w-7 shrink-0 text-right text-[11px] font-black tabular-nums text-slate-200">
+                        {stat.value}
+                      </span>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="mt-5 flex items-center justify-between gap-3">
