@@ -144,7 +144,11 @@ const CHECK = () => {
       size: Math.round(size),
       color: style.color,
     });
-    if (out.length >= 6) break;
+    // 라우트당 상한. 6 으로 두었더니 모든 라우트가 상한에 걸려서, 총합이
+    // "실제 결함 수"가 아니라 "상한 × 라우트 수"가 됐다. 고쳐도 숫자가 안
+    // 움직이거나, 하나 고치면 가려져 있던 게 튀어나와 신규로 잡혔다.
+    // 색·크기 조합으로 이미 중복을 걸러내므로 넉넉히 둬도 폭발하지 않는다.
+    if (out.length >= 40) break;
   }
   return out;
 };
