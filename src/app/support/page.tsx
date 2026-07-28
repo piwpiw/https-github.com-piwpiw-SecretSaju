@@ -90,7 +90,7 @@ export default function SupportPage() {
 
           <motion.div
             variants={itemVariants}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-pink-400"
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-4 py-2 text-[13px] font-black uppercase tracking-[0.24em] text-pink-400"
           >
             <HeartHandshake className="h-3 w-3" /> 고객 지원
           </motion.div>
@@ -135,7 +135,7 @@ export default function SupportPage() {
                   <h3 className="mb-3 text-xl font-black tracking-tight text-white">{item.title}</h3>
                   <p className="mb-8 text-sm leading-relaxed text-slate-400">{item.description}</p>
 
-                  <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-300 transition-colors group-hover:text-white">
+                  <div className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-slate-300 transition-colors group-hover:text-white">
                     {item.cta}
                     <ExternalLink className="h-3 w-3 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
                   </div>

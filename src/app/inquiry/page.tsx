@@ -101,7 +101,7 @@ export default function InquiryPage() {
                 <RefreshCw className="inline w-4 h-4 mr-2" /> 환불/결제
               </button>
             </fieldset>
-            <p id="category-help" className="text-xs text-slate-400 -mt-2">
+            <p id="category-help" className="text-sm text-slate-400 -mt-2">
               원하는 상담 유형을 선택하면 담당 라우팅이 달라집니다.
             </p>
 
@@ -122,7 +122,7 @@ export default function InquiryPage() {
                 required
               />
               {!isSubjectValid && touched.subject ? (
-                <p id="subject-feedback" className="mt-2 text-xs text-rose-300">
+                <p id="subject-feedback" className="mt-2 text-sm text-rose-300">
                   제목은 1~80자로 입력해 주세요.
                 </p>
               ) : null}
@@ -145,11 +145,11 @@ export default function InquiryPage() {
                 required
               />
               {!isMessageValid && touched.message ? (
-                <p id="message-feedback" className="mt-2 text-xs text-rose-300">
+                <p id="message-feedback" className="mt-2 text-sm text-rose-300">
                   문의 내용은 최소 10자 이상 입력해 주세요.
                 </p>
               ) : null}
-              <p className="text-xs text-slate-500 mt-2">현재 글자 수: {message.length}</p>
+              <p className="text-sm text-slate-500 mt-2">현재 글자 수: {message.length}</p>
             </div>
 
             <div>
@@ -164,7 +164,7 @@ export default function InquiryPage() {
                 className="w-full px-4 py-4 rounded-2xl bg-slate-950 border border-white/10"
               />
               {email.length > 0 && !isEmailValid ? (
-                <p className="mt-2 text-xs text-rose-300">
+                <p className="mt-2 text-sm text-rose-300">
                   올바른 이메일 형식을 입력해 주세요.
                 </p>
               ) : null}

@@ -113,7 +113,7 @@ export default function OracleBall({
                                     className="flex flex-col items-center gap-3"
                                 >
                                     <Zap className="w-14 h-14 text-white fill-current animate-pulse" />
-                                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/50">동기화 중...</span>
+                                    <span className="text-[13px] font-black uppercase tracking-[0.4em] text-white/50">동기화 중...</span>
                                 </motion.div>
                             ) : (
                                 <motion.div

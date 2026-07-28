@@ -186,7 +186,7 @@ export default function SelectionPage() {
                                     <item.icon className="w-8 h-8 text-muted group-hover:text-primary transition-colors" />
                                 </div>
                                 {item.badge && (
-                                    <span className="absolute -top-2 -right-2 px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white animate-bounce shadow-md">
+                                    <span className="absolute -top-2 -right-2 px-2 py-0.5 rounded-full text-[13px] font-black bg-rose-500 text-white animate-bounce shadow-md">
                                         {item.badge}
                                     </span>
                                 )}

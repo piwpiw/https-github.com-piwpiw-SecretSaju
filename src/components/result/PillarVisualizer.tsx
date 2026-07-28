@@ -30,7 +30,7 @@ export default function PillarVisualizer({ pillars }: { pillars: Pillar[] }) {
           transition={{ delay: i * 0.15 }}
           className="flex flex-col items-center gap-4 group relative z-10"
         >
-          <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{p.name}</span>
+          <span className="text-[13px] font-black text-slate-500 uppercase tracking-widest">{p.name}</span>
           <div className="flex flex-col items-center p-4 rounded-2xl bg-white/[0.02] border border-white/10 group-hover:border-white/20 transition-all shadow-2xl">
             <span className={`text-4xl md:text-5xl font-serif font-black ${p.color} leading-none mb-2`}>{p.kan}</span>
             <span className={`text-4xl md:text-5xl font-serif font-black ${p.color} leading-none`}>{p.ji}</span>

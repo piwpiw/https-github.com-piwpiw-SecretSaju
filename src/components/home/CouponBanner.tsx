@@ -16,20 +16,20 @@ export default function CouponBanner() {
               <Gift className="w-9 h-9 sm:w-10 sm:h-10 text-white relative z-10" />
             </div>
             <div className="space-y-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-[9px] font-black tracking-widest border border-amber-500/20 shadow-inner">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-[13px] font-black tracking-widest border border-amber-500/20 shadow-inner">
                 <Zap className="w-3 h-3 fill-amber-400" />
                 지금 바로 시작하기
               </div>
               <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-none mb-1">
                 당일 운세 <span className="text-indigo-400">프리미엄 패스</span>
               </h3>
-              <p className="text-xs sm:text-sm text-slate-300 font-bold tracking-wide leading-relaxed">
+              <p className="text-sm sm:text-sm text-slate-300 font-bold tracking-wide leading-relaxed">
                 오늘의 컨디션과 질문 성향을 반영한 맞춤 메시지로 정확도를 높였습니다.
               </p>
             </div>
           </div>
 
-          <button className="w-full sm:w-auto px-7 py-4 sm:px-8 sm:py-5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs md:text-[11px] font-black uppercase tracking-[0.26em] hover:scale-105 transition-all shadow-xl shadow-indigo-950/40 flex items-center justify-center gap-3 active:scale-95 group/btn">
+          <button className="w-full sm:w-auto px-7 py-4 sm:px-8 sm:py-5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm md:text-[13px] font-black uppercase tracking-[0.26em] hover:scale-105 transition-all shadow-xl shadow-indigo-950/40 flex items-center justify-center gap-3 active:scale-95 group/btn">
             지금 확인
             <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
           </button>

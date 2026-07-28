@@ -15,7 +15,7 @@ export default function DailyWaveChart() {
 
     return (
         <div className="relative w-full h-[150px] bg-white/5 rounded-3xl p-4 overflow-hidden border border-white/5">
-            <div className="absolute top-4 left-6 text-[10px] font-black text-indigo-400/60 uppercase tracking-widest">에너지 흐름 지수</div>
+            <div className="absolute top-4 left-6 text-[13px] font-black text-indigo-400/60 uppercase tracking-widest">에너지 흐름 지수</div>
             <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full mt-2">
                 <defs>
                     <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="1">

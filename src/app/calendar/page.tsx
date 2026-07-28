@@ -124,13 +124,13 @@ export default function CalendarPage() {
             </button>
           </div>
           <h1 className="font-black text-xl">{title}</h1>
-          <span className="text-xs text-slate-400 inline-flex items-center gap-1">
+          <span className="text-sm text-slate-400 inline-flex items-center gap-1">
             <CalendarIcon className="w-4 h-4" />
             {locale === "en" ? "만세력 일진 달력" : "만세력 일진 달력"}
           </span>
         </div>
 
-        <div className="grid grid-cols-7 gap-2 mb-3 text-xs text-slate-300 font-bold">
+        <div className="grid grid-cols-7 gap-2 mb-3 text-sm text-slate-300 font-bold">
           {weeks.map((w) => (
             <div key={w} className="text-center">{w}</div>
           ))}
@@ -154,11 +154,11 @@ export default function CalendarPage() {
               >
                 <div className="flex justify-between items-start">
                   <div className="text-sm font-black">{day.getDate()}</div>
-                  <div className="text-[9px] font-black text-fuchsia-400 opacity-80">
+                  <div className="text-[13px] font-black text-fuchsia-400 opacity-80">
                     {getPillarNameKo(getDayPillarIndex(day))}
                   </div>
                 </div>
-                <div className="text-[10px] text-slate-400 mt-1">{isToday ? "오늘" : ""}</div>
+                <div className="text-[13px] text-slate-400 mt-1">{isToday ? "오늘" : ""}</div>
               </button>
             );
           })}
@@ -166,12 +166,12 @@ export default function CalendarPage() {
 
         <section className="mt-8 border border-white/10 rounded-2xl p-6 bg-gradient-to-br from-indigo-900/20 to-slate-900/60 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/10 blur-2xl rounded-full" />
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">오늘의 일진 상세 브리핑</p>
+          <p className="text-sm font-black uppercase tracking-[0.2em] text-fuchsia-300">오늘의 일진 상세 브리핑</p>
           <div className="flex items-end gap-3 mt-2">
             <h2 className="text-3xl font-black text-white">{selectedLabel}</h2>
             <div className="flex-1" />
             <div className="text-right">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest block">행운 지수</span>
+              <span className="text-[13px] text-slate-400 font-bold uppercase tracking-widest block">행운 지수</span>
               <span className="text-2xl font-black text-fuchsia-400">{selectedFortune?.luckyScore ?? todayFortune?.luckyScore}<span className="text-sm font-normal text-slate-500 ml-1">/ 100</span></span>
             </div>
           </div>
@@ -189,15 +189,15 @@ export default function CalendarPage() {
 
           <div className="mt-6 grid grid-cols-3 gap-3">
             <div className="bg-black/30 rounded-xl p-3 border border-white/5 text-center">
-              <p className="text-[10px] text-slate-500 font-bold tracking-widest uppercase mb-1">행운의 컬러</p>
+              <p className="text-[13px] text-slate-500 font-bold tracking-widest uppercase mb-1">행운의 컬러</p>
               <p className="text-sm font-black text-emerald-300">{selectedFortune?.luckyColor || todayFortune?.luckyColor || "-"}</p>
             </div>
             <div className="bg-black/30 rounded-xl p-3 border border-white/5 text-center">
-              <p className="text-[10px] text-slate-500 font-bold tracking-widest uppercase mb-1">행운의 숫자</p>
+              <p className="text-[13px] text-slate-500 font-bold tracking-widest uppercase mb-1">행운의 숫자</p>
               <p className="text-sm font-black text-cyan-300">{selectedFortune?.luckyNumber ?? todayFortune?.luckyNumber ?? "-"}</p>
             </div>
             <div className="bg-black/30 rounded-xl p-3 border border-white/5 text-center">
-              <p className="text-[10px] text-slate-500 font-bold tracking-widest uppercase mb-1">오늘의 기운</p>
+              <p className="text-[13px] text-slate-500 font-bold tracking-widest uppercase mb-1">오늘의 기운</p>
               <p className="text-sm font-black text-amber-300">{selectedFortune?.element || todayFortune?.element || "-"}</p>
             </div>
           </div>

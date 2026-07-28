@@ -71,7 +71,7 @@ export default function PsychologyModulePage({ params }: Props) {
         </Link>
 
         <div className="bg-surface border border-border-color rounded-4xl p-8 md:p-5 sm:p-8 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black text-rose-300 bg-rose-500/10 border border-rose-500/20">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-black text-rose-300 bg-rose-500/10 border border-rose-500/20">
             <BrainCircuit className="w-4 h-4" />
             모듈 진단 화면
           </div>
@@ -116,13 +116,13 @@ export default function PsychologyModulePage({ params }: Props) {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 mt-6">
-            <button className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-rose-600/90 text-white font-black uppercase tracking-widest text-[11px] gap-2">
+            <button className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-rose-600/90 text-white font-black uppercase tracking-widest text-[13px] gap-2">
               <Play className="w-4 h-4" />
               지금 실행하기
             </button>
             <Link
               href={`/support?feature=${encodeURIComponent(moduleLabel)}`}
-              className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-white/10 border border-white/20 text-slate-200 font-black uppercase tracking-widest text-[11px]"
+              className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-white/10 border border-white/20 text-slate-200 font-black uppercase tracking-widest text-[13px]"
             >
               실행 문의하기
             </Link>

@@ -74,13 +74,13 @@ export default function PsychologyPage() {
           <button onClick={() => router.back()} className="w-10 h-10 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-200" />
           </button>
-          <button onClick={() => setDone((v) => !v)} className="text-xs px-4 py-2 rounded-full border border-white/10 bg-white/10">
+          <button onClick={() => setDone((v) => !v)} className="text-sm px-4 py-2 rounded-full border border-white/10 bg-white/10">
             결과 토글
           </button>
         </div>
 
         <section className="bg-slate-900/55 border border-white/10 rounded-[2.5rem] p-8 md:p-6 sm:p-9">
-          <div className="inline-flex items-center gap-2 text-indigo-300 font-black tracking-[0.2em] uppercase text-xs">
+          <div className="inline-flex items-center gap-2 text-indigo-300 font-black tracking-[0.2em] uppercase text-sm">
             <Brain className="w-4 h-4" /> 심리 성향 진단
           </div>
           <h1 className="text-3xl md:text-4xl font-black mt-2 break-keep">간단 심리 체크</h1>
@@ -100,7 +100,7 @@ export default function PsychologyPage() {
           </div>
 
           <div className="mt-7 bg-black/40 rounded-xl p-4 border border-white/10">
-            <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-slate-400 font-black">
+            <div className="flex items-center justify-between text-sm uppercase tracking-[0.2em] text-slate-400 font-black">
               <span>답한 개수</span>
               <span>{answered ? '3/3' : `${Object.values(answers).filter(Boolean).length}/3`}</span>
             </div>
@@ -150,14 +150,14 @@ export default function PsychologyPage() {
               <div className="rounded-2xl border border-white/10 bg-black/20 p-4 flex items-center gap-3">
                 <BarChart3 className="w-5 h-5 text-indigo-300" />
                 <div>
-                  <p className="text-xs text-slate-400 uppercase tracking-widest">오늘의 집중 모드</p>
+                  <p className="text-sm text-slate-400 uppercase tracking-widest">오늘의 집중 모드</p>
                   <p className="text-lg font-black text-white">{result.score >= 65 ? '집중 집중' : result.score >= 40 ? '균형 모드' : '관계 모드'}</p>
                 </div>
               </div>
               <div className="rounded-2xl border border-white/10 bg-black/20 p-4 flex items-center gap-3">
                 <Clock3 className="w-5 h-5 text-emerald-300" />
                 <div>
-                  <p className="text-xs text-slate-400 uppercase tracking-widest">다음 액션</p>
+                  <p className="text-sm text-slate-400 uppercase tracking-widest">다음 액션</p>
                   <p className="text-lg font-black text-white">15분 복기 루틴 실행</p>
                 </div>
               </div>

@@ -51,7 +51,7 @@ function toneToColor(tone: TojeongScore) {
 function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
   return (
     <div className={`rounded-3xl border p-5 ${tone}`}>
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-white/80">{title}</p>
+      <p className="text-sm font-black uppercase tracking-[0.2em] text-white/80">{title}</p>
       <p className="mt-2 text-sm leading-relaxed text-slate-100">{body}</p>
     </div>
   );
@@ -195,7 +195,7 @@ export default function TojeongPage() {
         </div>
 
         <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-8 md:p-5 sm:p-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-slate-800/70 text-xs font-black uppercase tracking-[0.3em] text-amber-300">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-slate-800/70 text-sm font-black uppercase tracking-[0.3em] text-amber-300">
             <CalendarDays className="w-4 h-4" />
             토정비결
           </div>
@@ -220,7 +220,7 @@ export default function TojeongPage() {
             ))}
             <button
               onClick={() => setOpenAll((v) => !v)}
-              className="ml-auto px-4 py-3 rounded-2xl border border-cyan-300/50 text-cyan-200 text-xs"
+              className="ml-auto px-4 py-3 rounded-2xl border border-cyan-300/50 text-cyan-200 text-sm"
             >
               카드 {openAll ? "전체 접기" : "전체 펼치기"}
             </button>
@@ -252,14 +252,14 @@ export default function TojeongPage() {
             <section className="mt-8 bg-slate-900/55 border border-white/10 rounded-[2rem] p-8">
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="text-xs text-amber-300 font-black tracking-[0.2em]">신뢰도 점수</div>
+                  <div className="text-sm text-amber-300 font-black tracking-[0.2em]">신뢰도 점수</div>
                   <h2 className="text-3xl mt-2 font-black">{report.trustScore} / 100</h2>
                   <p className="text-sm text-slate-300 mt-1">{report.oneLineSummary}</p>
                 </div>
                 <div className="text-right">
                   <div className="text-3xl font-black">{report.mainScore}</div>
-                  <div className="text-xs text-slate-400">기준등급 {report.mainGrade}</div>
-                  <div className="text-xs text-slate-400 mt-2">{monthSummary?.source}</div>
+                  <div className="text-sm text-slate-400">기준등급 {report.mainGrade}</div>
+                  <div className="text-sm text-slate-400 mt-2">{monthSummary?.source}</div>
                 </div>
               </div>
 
@@ -269,7 +269,7 @@ export default function TojeongPage() {
                   style={{ width: `${report.mainScore}%` }}
                 />
               </div>
-              <p className="text-xs text-slate-400 mt-2">월평균 점수: {monthSummary?.avgMonthly}점</p>
+              <p className="text-sm text-slate-400 mt-2">월평균 점수: {monthSummary?.avgMonthly}점</p>
             </section>
 
             <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -297,7 +297,7 @@ export default function TojeongPage() {
                   <div className="px-5 pb-5">
                     <div className="flex items-center justify-between">
                       <div className="text-2xl font-black">{item.score}</div>
-                      <span className="text-xs px-2 py-1 rounded-full bg-slate-800">{item.tone}</span>
+                      <span className="text-sm px-2 py-1 rounded-full bg-slate-800">{item.tone}</span>
                     </div>
                     <div className="mt-2 h-2 bg-white/10 rounded-full overflow-hidden">
                       <div
@@ -306,7 +306,7 @@ export default function TojeongPage() {
                       />
                     </div>
                     <p className="mt-3 text-sm text-slate-100 leading-relaxed">{item.reason}</p>
-                    <p className="mt-2 text-xs text-slate-300">실행: {item.action}</p>
+                    <p className="mt-2 text-sm text-slate-300">실행: {item.action}</p>
                   </div>
                 </details>
               ))}
@@ -349,10 +349,10 @@ export default function TojeongPage() {
                   <article key={month.month} className="rounded-3xl border border-white/10 bg-slate-900/60 p-4">
                     <div className="flex justify-between items-center">
                       <div className="text-sm font-black text-amber-300">{month.month}월 · {month.title}</div>
-                      <span className="text-xs px-2 py-1 rounded-full bg-white/10">{month.score}점</span>
+                      <span className="text-sm px-2 py-1 rounded-full bg-white/10">{month.score}점</span>
                     </div>
                     <p className="mt-2 text-sm text-slate-300">{month.summary}</p>
-                    <ul className="mt-3 text-xs text-slate-400 space-y-1">
+                    <ul className="mt-3 text-sm text-slate-400 space-y-1">
                       {month.tips.map((tip) => (
                         <li key={tip} className="flex items-start gap-2">
                           <ChevronRight className="w-3 h-3 mt-0.5 text-amber-300" />

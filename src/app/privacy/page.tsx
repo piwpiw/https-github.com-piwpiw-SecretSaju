@@ -66,7 +66,7 @@ export default function PrivacyPage() {
               <span className="text-sm text-muted font-bold tracking-widest break-keep">보호 절차</span>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/20">
                 <ShieldCheck className="w-5 h-5 text-muted" />
-                <span className="text-xs font-black text-muted tracking-widest break-keep">보안 우선</span>
+                <span className="text-sm font-black text-muted tracking-widest break-keep">보안 우선</span>
               </div>
             </div>
           </div>

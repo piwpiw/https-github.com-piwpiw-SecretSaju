@@ -181,10 +181,10 @@ export default function DestinyNetwork({ mainProfile, relationships, onNodeClick
                                         <div className="absolute inset-0 bg-cyan-400/5 group-hover:bg-cyan-400/20 transition-colors" />
                                         {node.profile.gender === 'male' ? '남성' : '여성'}
                                     </div>
-                                    <h4 className="text-[11px] sm:text-[10px] font-black text-white tracking-tighter uppercase mb-1">{node.profile.name}</h4>
+                                    <h4 className="text-[13px] sm:text-[13px] font-black text-white tracking-tighter uppercase mb-1">{node.profile.name}</h4>
                                     <div className="flex items-center justify-center gap-2">
-                                        <p className="text-[10px] sm:text-[8px] text-slate-500 font-black tracking-widest uppercase">{node.profile.relationship}</p>
-                                        <div className={`text-[10px] font-black drop-shadow-[0_0_8px_rgba(34,211,238,0.5)] ${node.analysis && node.analysis.score >= 80 ? 'text-cyan-400' : node.analysis && node.analysis.score >= 50 ? 'text-yellow-400' : 'text-slate-600'}`}>
+                                        <p className="text-[13px] sm:text-[13px] text-slate-500 font-black tracking-widest uppercase">{node.profile.relationship}</p>
+                                        <div className={`text-[13px] font-black drop-shadow-[0_0_8px_rgba(34,211,238,0.5)] ${node.analysis && node.analysis.score >= 80 ? 'text-cyan-400' : node.analysis && node.analysis.score >= 50 ? 'text-yellow-400' : 'text-slate-600'}`}>
                                             {node.analysis?.score}%
                                         </div>
                                     </div>
@@ -194,7 +194,7 @@ export default function DestinyNetwork({ mainProfile, relationships, onNodeClick
                                         className="absolute -bottom-12 left-1/2 -translate-x-1/2 whitespace-nowrap opacity-0 scale-50 group-hover:opacity-100 group-focus-within:opacity-100 group-hover:scale-100 group-focus-within:scale-100 transition-all duration-300 group-hover:-translate-y-0.5"
                                         animate={{ y: 0 }}
                                     >
-                                        <div className="px-3 py-1 bg-cyan-500 text-black text-[8px] font-black rounded-full uppercase tracking-widest shadow-lg">
+                                        <div className="px-3 py-1 bg-cyan-500 text-black text-[13px] font-black rounded-full uppercase tracking-widest shadow-lg">
                                             상세 보기
                                         </div>
                                     </motion.div>
@@ -228,7 +228,7 @@ export default function DestinyNetwork({ mainProfile, relationships, onNodeClick
                         <span className="text-6xl relative z-10 drop-shadow-2xl">⚷</span>
                     </div>
                     <h2 className="text-3xl font-black text-white tracking-tighter mb-2 uppercase">{mainProfile.name}</h2>
-                    <div className="inline-flex px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-[9px] font-black text-cyan-400 uppercase tracking-[0.3em]">
+                    <div className="inline-flex px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-[13px] font-black text-cyan-400 uppercase tracking-[0.3em]">
                         The Primary Source
                     </div>
 
@@ -240,9 +240,9 @@ export default function DestinyNetwork({ mainProfile, relationships, onNodeClick
                             transition={{ duration: 2, repeat: Infinity }}
                         >
                             <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,1)]" />
-                            <span className="text-[9px] font-black text-cyan-300 uppercase tracking-widest">실시간 연결 상태</span>
+                            <span className="text-[13px] font-black text-cyan-300 uppercase tracking-widest">실시간 연결 상태</span>
                         </motion.div>
-                        <span className="text-[11px] font-black text-slate-500 uppercase">{relationships.length} NODE CONNECTED</span>
+                        <span className="text-[13px] font-black text-slate-500 uppercase">{relationships.length} NODE CONNECTED</span>
                     </div>
                 </div>
             </motion.div>

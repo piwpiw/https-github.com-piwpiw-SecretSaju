@@ -30,7 +30,7 @@ export default function RelationshipMap({ members = [] }: RelationshipMapProps) 
             <div className="relative w-full aspect-square max-w-md mx-auto bg-white/[0.02] border border-white/5 rounded-[2rem] overflow-hidden flex flex-col items-center justify-center text-center px-10">
                 <span className="text-4xl">🧭</span>
                 <p className="mt-4 text-sm font-black text-white">아직 연결된 인연이 없습니다</p>
-                <p className="mt-2 text-xs leading-6 text-slate-400">
+                <p className="mt-2 text-sm leading-6 text-slate-400">
                     프로필을 2명 이상 등록하면 이곳에 실제 인연 네트워크가 그려집니다.
                 </p>
                 <div className="noise-texture opacity-[0.03]" />
@@ -72,7 +72,7 @@ export default function RelationshipMap({ members = [] }: RelationshipMapProps) 
                     className="relative z-10 w-24 h-24 rounded-full bg-indigo-600 border-4 border-white/20 shadow-[0_0_30px_rgba(99,102,241,0.4)] flex flex-col items-center justify-center"
                 >
                     <span className="text-3xl">🐯</span>
-                    <span className="text-[10px] font-black uppercase tracking-widest mt-1">Me</span>
+                    <span className="text-[13px] font-black uppercase tracking-widest mt-1">Me</span>
                 </motion.div>
 
                 {/* Satellite Nodes */}
@@ -94,7 +94,7 @@ export default function RelationshipMap({ members = [] }: RelationshipMapProps) 
                             >
                                 <span className="text-xl" aria-hidden="true">{m.animal}</span>
                                 <div className="absolute -bottom-5 whitespace-nowrap">
-                                    <p className="text-[9px] font-black text-white">{m.name}</p>
+                                    <p className="text-[13px] font-black text-white">{m.name}</p>
                                 </div>
                             </motion.div>
                         );
@@ -102,7 +102,7 @@ export default function RelationshipMap({ members = [] }: RelationshipMapProps) 
                 </div>
             </div>
 
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[9px] font-black text-indigo-300 uppercase tracking-[0.2em]">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[13px] font-black text-indigo-300 uppercase tracking-[0.2em]">
                 Destiny Alignment Web
             </div>
 

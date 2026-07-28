@@ -211,14 +211,14 @@ function SajuPageContent() {
             </div>
             <div>
               <h1 className="text-3xl font-black tracking-tighter uppercase text-white">사주 분석</h1>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">프로필 기반 + 직접 입력 하이브리드</p>
+              <p className="text-sm text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">프로필 기반 + 직접 입력 하이브리드</p>
             </div>
           </div>
 
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
             {STEPS.map((step, i) => (
               <div key={step.key} className="rounded-2xl border border-white/10 bg-black/30 p-4">
-                <p className="text-[10px] text-indigo-300 uppercase tracking-[0.2em] font-black">{step.title}</p>
+                <p className="text-[13px] text-indigo-300 uppercase tracking-[0.2em] font-black">{step.title}</p>
                 <p className="mt-2 text-sm text-slate-200">{step.hint}</p>
                 <div className={`mt-3 h-1.5 rounded-full bg-white/10 overflow-hidden ${i === 2 && result ? 'ring-1 ring-indigo-300/40' : ''}`}>
                   <div className={`h-full transition-all duration-700 ${result && i < 2 ? 'w-full' : i === 2 && result ? 'w-full' : i === 1 && (result || manualName) ? 'w-1/2' : i === 0 && ((manualName || selectedProfileId) || !useManualInput) ? 'w-3/4' : 'w-0'} ${i === 2 && result ? 'bg-emerald-400' : 'bg-indigo-400'}`} />
@@ -228,7 +228,7 @@ function SajuPageContent() {
           </div>
 
           <div className="space-y-6 relative z-10 mt-10">
-            <div className="flex items-center justify-center gap-3 text-xs">
+            <div className="flex items-center justify-center gap-3 text-sm">
               <button
                 type="button"
                 onClick={() => setUseManualInput(false)}
@@ -325,7 +325,7 @@ function SajuPageContent() {
                     시간 미상
                   </button>
                 </div>
-                <p className="text-xs text-slate-400">시간이 불확실하면 `시간 미상`을 켜면 12:00로 계산합니다.</p>
+                <p className="text-sm text-slate-400">시간이 불확실하면 `시간 미상`을 켜면 12:00로 계산합니다.</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -352,9 +352,9 @@ function SajuPageContent() {
             )}
 
             <div className="flex gap-2 flex-wrap">
-              <span className="text-xs bg-indigo-500/20 text-indigo-200 px-3 py-1 rounded-full border border-indigo-500/30">젤리 3개 소모</span>
-              <span className="text-xs bg-white/10 text-slate-300 px-3 py-1 rounded-full border border-white/10">관계 분석 포함</span>
-              <span className="text-xs bg-white/10 text-slate-300 px-3 py-1 rounded-full border border-white/10">히스토리 저장</span>
+              <span className="text-sm bg-indigo-500/20 text-indigo-200 px-3 py-1 rounded-full border border-indigo-500/30">젤리 3개 소모</span>
+              <span className="text-sm bg-white/10 text-slate-300 px-3 py-1 rounded-full border border-white/10">관계 분석 포함</span>
+              <span className="text-sm bg-white/10 text-slate-300 px-3 py-1 rounded-full border border-white/10">히스토리 저장</span>
             </div>
 
             <button
@@ -380,7 +380,7 @@ function SajuPageContent() {
           <motion.section initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="mt-16">
             <div className="flex items-center gap-4 mb-6 justify-center">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10" />
-              <div className="px-6 py-2 rounded-full border border-white/10 bg-white/5 text-xs font-black text-indigo-300 uppercase tracking-[0.3em] flex items-center gap-2 backdrop-blur-md">
+              <div className="px-6 py-2 rounded-full border border-white/10 bg-white/5 text-sm font-black text-indigo-300 uppercase tracking-[0.3em] flex items-center gap-2 backdrop-blur-md">
                 <Sparkles className="w-4 h-4" /> 분석 완료
               </div>
               <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10" />
@@ -469,7 +469,7 @@ export default function SajuPage() {
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             className="w-10 h-10 rounded-full border-2 border-indigo-500/30 border-t-indigo-500"
           />
-          <p className="text-slate-500 font-black tracking-[0.4em] uppercase text-[10px]">Loading...</p>
+          <p className="text-slate-500 font-black tracking-[0.4em] uppercase text-[13px]">Loading...</p>
         </div>
       </div>
     }>

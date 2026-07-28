@@ -55,7 +55,7 @@ export default function GiftResultPage({ params }: Props) {
 
           <div className="mt-8 rounded-2xl bg-white/5 border border-white/10 p-4 text-left">
             <p className="text-sm text-slate-400">선물 토큰</p>
-            <p className="mt-1 text-xs md:text-sm text-pink-200 break-all">{token}</p>
+            <p className="mt-1 text-sm md:text-sm text-pink-200 break-all">{token}</p>
           </div>
 
           <div className="mt-8 flex items-center justify-center gap-3">
@@ -67,19 +67,19 @@ export default function GiftResultPage({ params }: Props) {
               <Copy className="w-4 h-4 mr-2" />
               토큰 복사
             </button>
-            {copyState === "copied" && <span className="text-xs text-emerald-300">복사 완료</span>}
+            {copyState === "copied" && <span className="text-sm text-emerald-300">복사 완료</span>}
           </div>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/gift"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-pink-500 text-black font-black uppercase tracking-[0.2em] text-xs"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-pink-500 text-black font-black uppercase tracking-[0.2em] text-sm"
             >
               선물 보내기
             </Link>
             <a
               href="mailto:support@secretsaju.com?subject=%EC%84%9C%EB%B2%84%EA%B2%8C%EC%8A%A4%ED%8A%B8%EC%95%88"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/20 text-white/90 font-black uppercase tracking-[0.2em] text-xs"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/20 text-white/90 font-black uppercase tracking-[0.2em] text-sm"
             >
               <MessageCircle className="w-4 h-4 mr-2" />
               문의하기

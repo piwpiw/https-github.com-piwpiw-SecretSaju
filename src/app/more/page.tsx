@@ -172,7 +172,7 @@ export default function MorePage() {
           <div>
             <p className="text-sm font-black text-muted tracking-[0.2em] uppercase">Secret Saju</p>
             <h1 className="text-4xl font-black tracking-tighter mb-2">더 보기</h1>
-            <p className="text-xs font-bold text-muted tracking-widest uppercase">전체 메뉴를 빠르게 이동하세요</p>
+            <p className="text-sm font-bold text-muted tracking-widest uppercase">전체 메뉴를 빠르게 이동하세요</p>
           </div>
         </div>
 
@@ -201,13 +201,13 @@ export default function MorePage() {
                           <h3 className="font-bold text-lg mb-1 flex items-center gap-3">
                             {item.title}
                             {item.badge && (
-                              <span className="text-[9px] px-2 py-0.5 rounded-full bg-secondary/10 text-muted border border-secondary/20 tracking-widest uppercase">
+                              <span className="text-[13px] px-2 py-0.5 rounded-full bg-secondary/10 text-muted border border-secondary/20 tracking-widest uppercase">
                                 {item.badge}
                               </span>
                             )}
                           </h3>
-                          <p className="text-xs text-muted font-medium leading-relaxed">{item.desc}</p>
-                          <p className="text-[10px] text-slate-400 mt-1">도움말: {item.help}</p>
+                          <p className="text-sm text-muted font-medium leading-relaxed">{item.desc}</p>
+                          <p className="text-[13px] text-slate-400 mt-1">도움말: {item.help}</p>
                         </div>
                       </div>
                       <ChevronRight className="w-6 h-6 text-muted group-hover:text-foreground transition-colors group-hover:translate-x-1 shrink-0 ml-4" />
@@ -230,7 +230,7 @@ export default function MorePage() {
               <h2 className="text-sm font-black text-muted tracking-widest uppercase flex items-center gap-3">
                 <Compass className="w-4 h-4 text-primary" /> 전체 메뉴
               </h2>
-              <p className="mt-2 text-xs text-muted break-keep">
+              <p className="mt-2 text-sm text-muted break-keep">
                 구현된 모든 화면을 한곳에 모았습니다. 찾는 기능이 위에 없다면 여기서 확인하세요.
               </p>
             </div>
@@ -238,7 +238,7 @@ export default function MorePage() {
             <div className="space-y-6">
               {SITE_MENU.map((group) => (
                 <div key={group.title}>
-                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.24em] text-primary break-keep">
+                  <p className="mb-3 text-[13px] font-black uppercase tracking-[0.24em] text-primary break-keep">
                     {group.title}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -254,7 +254,7 @@ export default function MorePage() {
                         <span className="min-w-0">
                           <span className="block text-sm font-bold break-keep">{item.label}</span>
                           {item.desc ? (
-                            <span className="block text-[11px] leading-5 text-muted break-keep">
+                            <span className="block text-[13px] leading-5 text-muted break-keep">
                               {item.desc}
                             </span>
                           ) : null}

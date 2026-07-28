@@ -59,7 +59,7 @@ export default function LuckyScoreCard() {
                             </svg>
                             <div className="relative z-10 text-center space-y-1">
                                 <div className="text-4xl sm:text-5xl font-black text-white drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]">{score}</div>
-                                <div className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.24em] text-[color:var(--text-muted)]">조화 지수</div>
+                                <div className="text-[13px] sm:text-[13px] font-black uppercase tracking-[0.24em] text-[color:var(--text-muted)]">조화 지수</div>
                             </div>
                         </div>
                         <div className="absolute -bottom-2 -right-2 w-12 h-12 sm:w-14 sm:h-14 bg-indigo-600 rounded-[1.5rem] flex items-center justify-center text-white shadow-2xl shadow-indigo-950/40 border-4 border-slate-900 transform rotate-12 group-hover:rotate-0 transition-all">
@@ -69,12 +69,12 @@ export default function LuckyScoreCard() {
 
                     <div className="flex-1 text-center lg:text-left space-y-3 sm:space-y-5">
                         <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4">
-                            <div className="ui-chip text-xs sm:text-[10px]">
+                            <div className="ui-chip text-sm sm:text-[13px]">
                                 <Activity className="w-3.5 h-3.5" /> {activeProfile.name}의 운세 동조 확인
                             </div>
                             <div className="flex items-center gap-2 text-amber-400 group/help cursor-pointer">
                                 <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-                                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] opacity-70 hover:opacity-100 transition-opacity">현재 최적 채널 감지됨</span>
+                                <span className="text-[13px] sm:text-[13px] font-black uppercase tracking-[0.2em] opacity-70 hover:opacity-100 transition-opacity">현재 최적 채널 감지됨</span>
                             </div>
                         </div>
 
@@ -90,7 +90,7 @@ export default function LuckyScoreCard() {
                             ].map((stat, i) => (
                                 <div key={i} className={cn("flex items-center gap-2.5 px-3 py-2 rounded-2xl border border-white/10", stat.color)}>
                                     <stat.icon className="w-3.5 h-3.5" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest border-l border-white/10 pl-2.5">{stat.label}: <span className="text-white">{stat.val}</span></span>
+                                    <span className="text-[13px] font-black uppercase tracking-widest border-l border-white/10 pl-2.5">{stat.label}: <span className="text-white">{stat.val}</span></span>
                                 </div>
                             ))}
                         </div>
@@ -117,7 +117,7 @@ export default function LuckyScoreCard() {
                                     transition={{ duration: 2, repeat: Infinity }}
                                 />
                             </svg>
-                            <p className="text-[8px] font-black uppercase tracking-widest text-slate-500 mt-1">실시간 파동 동기화 중...</p>
+                            <p className="text-[13px] font-black uppercase tracking-widest text-slate-500 mt-1">실시간 파동 동기화 중...</p>
                         </div>
                     </div>
                 </div>

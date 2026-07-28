@@ -39,7 +39,7 @@ export default function LoveScoreCounter({ targetScore = 92 }: { targetScore?: n
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1 }}
-                className="mt-4 px-6 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] inline-block shadow-2xl"
+                className="mt-4 px-6 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[13px] font-black text-indigo-300 uppercase tracking-[0.3em] inline-block shadow-2xl"
             >
                 Ultimate Synergy Quotient
             </motion.div>

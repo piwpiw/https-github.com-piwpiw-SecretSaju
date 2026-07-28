@@ -130,14 +130,14 @@ export default function CharacterProfilePage() {
 
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
-                                        <div className="text-xs text-green-400 mb-1">강점</div>
-                                        <p className="text-xs text-slate-300">
+                                        <div className="text-sm text-green-400 mb-1">강점</div>
+                                        <p className="text-sm text-slate-300">
                                             {profile.personality_core.strength}
                                         </p>
                                     </div>
                                     <div>
-                                        <div className="text-xs text-red-400 mb-1">약점</div>
-                                        <p className="text-xs text-slate-300">
+                                        <div className="text-sm text-red-400 mb-1">약점</div>
+                                        <p className="text-sm text-slate-300">
                                             {profile.personality_core.weakness}
                                         </p>
                                     </div>
@@ -172,7 +172,7 @@ export default function CharacterProfilePage() {
                                                 <span className="text-2xl">{s.emoji}</span>
                                                 <div>
                                                     <div className="font-bold">{s.name}</div>
-                                                    <div className="text-xs text-slate-400">{s.effect}</div>
+                                                    <div className="text-sm text-slate-400">{s.effect}</div>
                                                 </div>
                                             </div>
                                             <p className="text-sm text-slate-300 mt-2">

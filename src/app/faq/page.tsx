@@ -61,7 +61,7 @@ export default function FAQPage() {
             <section key={section.id}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-xl font-bold">{section.title}</h2>
-                <Link href={section.route} className="text-xs text-indigo-300 hover:text-indigo-200">
+                <Link href={section.route} className="text-sm text-indigo-300 hover:text-indigo-200">
                   메뉴로 이동
                 </Link>
               </div>

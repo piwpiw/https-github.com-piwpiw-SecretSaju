@@ -67,7 +67,7 @@ export default function Error({
 
         {process.env.NODE_ENV === "development" && error.message && (
           <div className="mt-8 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-left">
-            <p className="text-red-400 text-xs font-mono break-all">{error.message}</p>
+            <p className="text-red-400 text-sm font-mono break-all">{error.message}</p>
           </div>
         )}
       </motion.div>

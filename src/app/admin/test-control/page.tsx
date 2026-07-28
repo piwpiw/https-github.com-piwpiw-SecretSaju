@@ -229,13 +229,13 @@ export default function AdminTestControlPage() {
                             </h4>
                             <div className="space-y-3">
                                 <div>
-                                    <div className="text-xs text-slate-500 mb-1">HOOK</div>
+                                    <div className="text-sm text-slate-500 mb-1">HOOK</div>
                                     <div className="text-lg font-semibold text-yellow-300">
                                         {archetype.displayHook}
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="text-xs text-slate-500 mb-1">
+                                    <div className="text-sm text-slate-500 mb-1">
                                         SECRET PREVIEW
                                     </div>
                                     <div className="text-base text-slate-200">
@@ -291,7 +291,7 @@ export default function AdminTestControlPage() {
                                     key={code}
                                     type="button"
                                     onClick={() => setSelectedIndex(idx)}
-                                    className={`aspect-square rounded-lg font-mono text-xs flex items-center justify-center transition-all ${selectedIndex === idx
+                                    className={`aspect-square rounded-lg font-mono text-sm flex items-center justify-center transition-all ${selectedIndex === idx
                                         ? "bg-cyan-500 text-white ring-2 ring-cyan-400 scale-110"
                                         : isComplete
                                             ? "bg-green-900/50 text-green-300 hover:bg-green-800/50"

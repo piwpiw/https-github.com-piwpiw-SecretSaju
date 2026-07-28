@@ -30,7 +30,7 @@ export default function FortuneReaderDetailPage() {
             <ArrowLeft className="w-5 h-5 text-slate-200" />
           </button>
           <div className="text-center">
-            <p className="text-[10px] uppercase tracking-[0.24em] font-black text-indigo-300">Reader Profile</p>
+            <p className="text-[13px] uppercase tracking-[0.24em] font-black text-indigo-300">Reader Profile</p>
             <h1 className="text-3xl font-black text-white">{reader.name}</h1>
           </div>
           <div className="w-11 h-11" />
@@ -44,7 +44,7 @@ export default function FortuneReaderDetailPage() {
               <p className="mt-3 text-sm leading-7 text-slate-200">{reader.description}</p>
             </div>
             <div className="min-w-[220px] rounded-3xl border border-white/10 bg-black/20 p-5">
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] text-slate-200">
+              <div className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.18em] text-slate-200">
                 {reader.tier === "signature" ? <Crown className="w-4 h-4 text-yellow-200" /> : <Sparkles className="w-4 h-4 text-indigo-200" />}
                 {reader.tier}
               </div>
@@ -77,7 +77,7 @@ export default function FortuneReaderDetailPage() {
             <p className="text-sm font-black text-white">이 리더가 특화된 영역</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {reader.specialties.map((item) => (
-                <span key={`${reader.id}-${item}`} className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[11px] text-slate-100">
+                <span key={`${reader.id}-${item}`} className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[13px] text-slate-100">
                   {item}
                 </span>
               ))}

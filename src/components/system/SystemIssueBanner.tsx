@@ -46,8 +46,8 @@ export default function SystemIssueBanner() {
           <Icon className="mt-0.5 h-5 w-5 shrink-0" />
           <div className="space-y-1">
             <p className="text-sm font-black leading-relaxed break-keep">{issue.summary}</p>
-            <p className="text-xs leading-relaxed break-keep">{issue.detail}</p>
-            <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold">
+            <p className="text-sm leading-relaxed break-keep">{issue.detail}</p>
+            <div className="flex flex-wrap items-center gap-3 text-[13px] font-semibold">
               {/* 진단 코드는 문의 대응에는 필요하지만 평소에는 보여줄 이유가 없다.
                   전에는 모든 화면에서 `code: PROFILE_LOCAL_MODE` / `scope: profile`이
                   그대로 노출돼, 정상 상태인데도 오류처럼 읽혔다. 접을 수 있게 두되
@@ -56,7 +56,7 @@ export default function SystemIssueBanner() {
                 <summary className="cursor-pointer underline underline-offset-2 marker:content-['']">
                   자세히
                 </summary>
-                <span className="mt-1 block font-mono text-[10px]">
+                <span className="mt-1 block font-mono text-[13px]">
                   {issue.code} · {issue.scope}
                 </span>
               </details>

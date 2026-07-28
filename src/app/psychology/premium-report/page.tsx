@@ -30,7 +30,7 @@ export default function PsychologyPremiumReportPage({
         </Link>
 
         <div className="bg-surface border border-border-color rounded-4xl p-5 sm:p-8 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black text-rose-300 bg-rose-500/10 border border-rose-500/20">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-black text-rose-300 bg-rose-500/10 border border-rose-500/20">
             <Sparkles className="w-3 h-3" />
             프리미엄 심리 리포트
           </div>
@@ -71,13 +71,13 @@ export default function PsychologyPremiumReportPage({
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/psychology"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-rose-600 text-white font-black uppercase tracking-widest text-xs shadow-lg"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-rose-600 text-white font-black uppercase tracking-widest text-sm shadow-lg"
               >
                 심리 분석으로 이동
               </Link>
               <Link
                 href={refreshHref}
-                className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-white/10 border border-white/20 text-slate-200 font-black uppercase tracking-widest text-xs gap-2"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-white/10 border border-white/20 text-slate-200 font-black uppercase tracking-widest text-sm gap-2"
               >
                 <RefreshCcw className="w-3 h-3" />
                 상태 새로 확인

@@ -75,12 +75,12 @@ function StatCard({ label, value, unit, color, icon: Icon, percent }: {
   return (
     <div className="rounded-[2rem] border border-white/8 bg-white/[0.03] p-5 flex flex-col gap-3 hover:border-white/15 transition-all group">
       <div className="flex items-center justify-between">
-        <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">{label}</p>
+        <p className="text-[13px] font-black uppercase tracking-[0.25em] text-slate-500">{label}</p>
         <Icon className={`w-4 h-4 ${color} opacity-60 group-hover:opacity-100 transition-opacity`} />
       </div>
       <div className="flex items-end gap-1.5">
         <span className={`text-3xl font-black ${color}`}>{value}</span>
-        <span className="text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">{unit}</span>
+        <span className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-widest">{unit}</span>
       </div>
       {percent !== undefined && (
         <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
@@ -165,7 +165,7 @@ export default function MyPage() {
             >
               로그인 하기
             </button>
-            <Link href="/" className="text-xs text-slate-500 hover:text-slate-300 mt-6 inline-block tracking-widest uppercase transition-colors">
+            <Link href="/" className="text-sm text-slate-500 hover:text-slate-300 mt-6 inline-block tracking-widest uppercase transition-colors">
               홈으로 돌아가기
             </Link>
           </div>
@@ -204,20 +204,20 @@ export default function MyPage() {
                 )}
               </div>
               {/* Level badge */}
-              <div className={`absolute -bottom-2 -right-2 px-2 py-0.5 rounded-xl ${level.bg} border ${level.border} text-[10px] font-black ${level.color}`}>
+              <div className={`absolute -bottom-2 -right-2 px-2 py-0.5 rounded-xl ${level.bg} border ${level.border} text-[13px] font-black ${level.color}`}>
                 {level.badge}
               </div>
             </div>
             {/* Name & greeting */}
             <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-0.5">{greeting} ·</p>
+              <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-0.5">{greeting} ·</p>
               <h1 className="text-2xl font-black text-white">{user.nickname}<span className="text-indigo-400">님</span></h1>
               <div className="flex items-center gap-2 mt-1">
-                <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full ${level.bg} border ${level.border} ${level.color}`}>
+                <span className={`text-[13px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full ${level.bg} border ${level.border} ${level.color}`}>
                   {level.name}
                 </span>
                 {user.auth_provider && (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-indigo-400/70 bg-indigo-500/5 px-2 py-0.5 rounded-full border border-indigo-500/10">
+                  <span className="text-[13px] font-black uppercase tracking-widest text-indigo-400/70 bg-indigo-500/5 px-2 py-0.5 rounded-full border border-indigo-500/10">
                     {user.auth_provider === "mcp" ? "MCP" : user.auth_provider}
                   </span>
                 )}
@@ -280,7 +280,7 @@ export default function MyPage() {
           className="mb-8"
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-500">주요 메뉴</h2>
+            <h2 className="text-sm font-black uppercase tracking-[0.25em] text-slate-500">주요 메뉴</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {MAIN_ACTIONS.map((item) => {
@@ -291,7 +291,7 @@ export default function MyPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-black text-white text-sm">{item.label}</p>
-                    <p className="text-[11px] text-slate-500 mt-0.5 truncate">{item.desc}</p>
+                    <p className="text-[13px] text-slate-500 mt-0.5 truncate">{item.desc}</p>
                   </div>
                   <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                 </div>
@@ -313,7 +313,7 @@ export default function MyPage() {
           transition={{ delay: 0.3 }}
           className="mb-8"
         >
-          <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-500 mb-4">빠른 바로가기</h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.25em] text-slate-500 mb-4">빠른 바로가기</h2>
           <div className="grid grid-cols-4 gap-3">
             {QUICK_LINKS.map((item) => (
               <Link
@@ -322,7 +322,7 @@ export default function MyPage() {
                 className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl ${item.bg} border hover:scale-[1.03] transition-all`}
               >
                 <item.icon className={`w-5 h-5 ${item.color}`} />
-                <span className="text-[11px] font-black text-slate-300 text-center leading-tight">{item.label}</span>
+                <span className="text-[13px] font-black text-slate-300 text-center leading-tight">{item.label}</span>
               </Link>
             ))}
           </div>
@@ -335,7 +335,7 @@ export default function MyPage() {
           transition={{ delay: 0.34 }}
           className="mb-8"
         >
-          <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-500 mb-4">Account Standards</h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.25em] text-slate-500 mb-4">Account Standards</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Link
               href="/billing"
@@ -346,7 +346,7 @@ export default function MyPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-black text-white text-sm">결제 및 구독 관리</p>
-                <p className="text-[11px] text-slate-500 mt-0.5">결제, 환불, 멤버십 문의 경로를 확인합니다.</p>
+                <p className="text-[13px] text-slate-500 mt-0.5">결제, 환불, 멤버십 문의 경로를 확인합니다.</p>
               </div>
               <ChevronRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
             </Link>
@@ -359,7 +359,7 @@ export default function MyPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-black text-white text-sm">회원 탈퇴 요청</p>
-                <p className="text-[11px] text-slate-500 mt-0.5">삭제 전 안내와 요청 절차를 확인합니다.</p>
+                <p className="text-[13px] text-slate-500 mt-0.5">삭제 전 안내와 요청 절차를 확인합니다.</p>
               </div>
               <ChevronRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
             </Link>
@@ -368,7 +368,7 @@ export default function MyPage() {
 
         <div className="flex items-center justify-center gap-2 pt-4 border-t border-white/5">
           <Orbit className="w-3 h-3 text-indigo-500/50" />
-          <p className="text-[10px] uppercase tracking-[0.35em] text-slate-600 font-black">Secret Saju</p>
+          <p className="text-[13px] uppercase tracking-[0.35em] text-slate-600 font-black">Secret Saju</p>
           <Orbit className="w-3 h-3 text-indigo-500/50" />
         </div>
       </div>

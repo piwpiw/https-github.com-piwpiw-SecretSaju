@@ -163,7 +163,7 @@ export default function AddSajuPage() {
               className="w-full rounded-xl bg-black/30 border border-white/10 px-4 py-3"
               placeholder="이름 입력"
             />
-            <p id="profile-name-help" className="text-xs text-slate-400 mt-2">
+            <p id="profile-name-help" className="text-sm text-slate-400 mt-2">
               2자 이상 입력하면 이후 변경 시 유의미한 오차를 줄일 수 있습니다.
             </p>
           </div>
@@ -208,7 +208,7 @@ export default function AddSajuPage() {
                 aria-invalid={isBirthDateEmpty}
                 className="w-full rounded-xl bg-black/30 border border-white/10 px-4 py-3"
               />
-              <p id="birthdate-help" className="text-xs text-slate-400 mt-2">
+              <p id="birthdate-help" className="text-sm text-slate-400 mt-2">
                 실제 생년월일을 기준으로 사주 계산 정확도가 높아집니다.
               </p>
             </div>

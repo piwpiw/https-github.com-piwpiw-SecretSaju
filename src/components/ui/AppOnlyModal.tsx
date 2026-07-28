@@ -37,7 +37,7 @@ export default function AppOnlyModal({ isOpen, onClose, title }: AppOnlyModalPro
                             </div>
 
                             <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-[10px] font-black uppercase tracking-widest mb-3">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-[13px] font-black uppercase tracking-widest mb-3">
                                     <Sparkles className="w-3 h-3" /> 앱 전용
                                 </div>
                                 <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-2">
@@ -52,14 +52,14 @@ export default function AppOnlyModal({ isOpen, onClose, title }: AppOnlyModalPro
                                 <div className="bg-white p-2 rounded-xl shadow-lg">
                                     <QrCode className="w-24 h-24 text-slate-900" />
                                 </div>
-                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">설치 QR 코드</p>
+                                <p className="text-[13px] text-slate-400 font-bold uppercase tracking-widest">설치 QR 코드</p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
-                                <button className="flex items-center justify-center gap-2 py-4 bg-white text-slate-900 rounded-2xl text-xs font-black transition-all hover:bg-slate-200">
+                                <button className="flex items-center justify-center gap-2 py-4 bg-white text-slate-900 rounded-2xl text-sm font-black transition-all hover:bg-slate-200">
                                     <Download className="w-4 h-4" /> 앱스토어
                                 </button>
-                                <button className="flex items-center justify-center gap-2 py-4 bg-slate-800 text-white rounded-2xl text-xs font-black transition-all hover:bg-slate-700">
+                                <button className="flex items-center justify-center gap-2 py-4 bg-slate-800 text-white rounded-2xl text-sm font-black transition-all hover:bg-slate-700">
                                     <Download className="w-4 h-4" /> 플레이스토어
                                 </button>
                             </div>

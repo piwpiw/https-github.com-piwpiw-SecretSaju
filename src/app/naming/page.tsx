@@ -387,7 +387,7 @@ export default function NamingPage() {
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3">
             <label className="space-y-2">
-              <span className="text-[11px] uppercase tracking-[0.2em] text-slate-500">이름</span>
+              <span className="text-[13px] uppercase tracking-[0.2em] text-slate-500">이름</span>
               <input
                 id="naming-name"
                 aria-label="이름 입력"
@@ -400,15 +400,15 @@ export default function NamingPage() {
                 // 들어오면 어느 칸에 커서가 있는지 알 수 없었다.
                 className="w-full bg-black/45 border border-white/10 rounded-2xl px-5 py-4 text-white text-2xl font-black focus:outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20"
               />
-              <p id="naming-name-help" className="text-[11px] text-slate-400 break-keep">
+              <p id="naming-name-help" className="text-[13px] text-slate-400 break-keep">
                 분석을 위해 2자 이상의 한글 이름이 필요합니다.
               </p>
-              <p id="naming-name-error" className="text-xs text-rose-400 min-h-[18px]">
+              <p id="naming-name-error" className="text-sm text-rose-400 min-h-[18px]">
                 {nameError}
               </p>
             </label>
             <label className="space-y-2">
-              <span className="text-[11px] uppercase tracking-[0.2em] text-slate-500">한자(선택)</span>
+              <span className="text-[13px] uppercase tracking-[0.2em] text-slate-500">한자(선택)</span>
               <input
                 id="naming-hanja"
                 aria-label="한자 입력(선택)"
@@ -419,10 +419,10 @@ export default function NamingPage() {
                 placeholder="예: 정宇"
                 className="w-full bg-black/45 border border-white/10 rounded-2xl px-5 py-4 text-cyan-100 text-lg font-bold focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20"
               />
-              <p id="naming-hanja-help" className="text-[11px] text-slate-400 break-keep">
+              <p id="naming-hanja-help" className="text-[13px] text-slate-400 break-keep">
                 한자가 없다면 빈칸으로 둬도 됩니다. 한글/영문 혼합은 피해주세요.
               </p>
-              <p id="naming-hanja-error" className="text-xs text-rose-400 min-h-[18px]">
+              <p id="naming-hanja-error" className="text-sm text-rose-400 min-h-[18px]">
                 {hanjaError}
               </p>
             </label>
@@ -430,7 +430,7 @@ export default function NamingPage() {
 
           {profiles.length > 0 ? (
             <div className="mt-4 flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-slate-400">프로필에서 불러오기</span>
+              <span className="text-sm text-slate-400">프로필에서 불러오기</span>
               {profiles.slice(0, 5).map((profile) => (
                 <button
                   key={profile.id}
@@ -472,7 +472,7 @@ export default function NamingPage() {
               <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-7">
                 <div className="flex flex-wrap items-end justify-between gap-4">
                   <div>
-                    <div className="text-xs tracking-[0.3em] text-slate-500">결과 요약</div>
+                    <div className="text-sm tracking-[0.3em] text-slate-500">결과 요약</div>
                     <h2 className="text-3xl font-black mt-1">{result.name}</h2>
                     <p className="text-slate-500">{result.hanja || "한자 미입력"}</p>
                   </div>
@@ -480,7 +480,7 @@ export default function NamingPage() {
                     <div className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500/30 to-violet-500/20 border border-cyan-300/40 flex items-center justify-center">
                       <span className="text-4xl font-black">{finalScore}</span>
                     </div>
-                    <div className="text-xs text-slate-500 mt-1">통합 점수</div>
+                    <div className="text-sm text-slate-500 mt-1">통합 점수</div>
                   </div>
                 </div>
 
@@ -489,7 +489,7 @@ export default function NamingPage() {
                 <div className="mt-5 grid md:grid-cols-3 gap-3">
                   {Object.entries(result.scoreSet).map(([key, value]) => (
                     <article key={key} className="p-4 rounded-2xl border border-white/10 bg-white/5">
-                      <div className="text-xs text-slate-400">{key.toUpperCase()}</div>
+                      <div className="text-sm text-slate-400">{key.toUpperCase()}</div>
                       <div className="text-2xl font-black mt-1">{value} pt</div>
                     </article>
                   ))}
@@ -508,7 +508,7 @@ export default function NamingPage() {
                           <div className="font-black">{item.ch}</div>
                           <div className="text-sm text-slate-400">{item.element}</div>
                         </div>
-                        <div className="text-xs text-slate-300 mt-1">
+                        <div className="text-sm text-slate-300 mt-1">
                           초성 {item.strokes.initial} / 중성 {item.strokes.medial} / 종성 {item.strokes.final} = {item.strokes.total}
                         </div>
                       </article>
@@ -523,7 +523,7 @@ export default function NamingPage() {
                       const percent = name.length ? Math.round((count / name.length) * 100) : 0;
                       return (
                         <div key={element}>
-                          <div className="flex justify-between text-xs text-slate-300">
+                          <div className="flex justify-between text-sm text-slate-300">
                             <span>{element}</span>
                             <span>
                               {count}개 ({percent}%)
@@ -541,7 +541,7 @@ export default function NamingPage() {
                       );
                     })}
                     <div className="mt-3 p-3 rounded-2xl bg-white/5 border border-white/10">
-                      <div className="text-xs text-slate-400">조화 지수</div>
+                      <div className="text-sm text-slate-400">조화 지수</div>
                       <div className="text-lg font-black">{result.harmonyScore} / 100</div>
                     </div>
                   </div>
@@ -555,7 +555,7 @@ export default function NamingPage() {
                     <button
                       key={item.key}
                       onClick={() => setScenario(item.key)}
-                      className={`px-3 py-2 rounded-full border text-xs ${
+                      className={`px-3 py-2 rounded-full border text-sm ${
                         scenario === item.key
                           ? "bg-cyan-500/20 border-cyan-400"
                           : "border-white/10"
@@ -586,7 +586,7 @@ export default function NamingPage() {
                   <summary className="font-black text-lg">성향 요약</summary>
                   <div className="grid md:grid-cols-2 gap-3">
                     <div className="rounded-2xl border border-white/10 p-4">
-                      <div className="text-xs text-cyan-300 mb-1">강점</div>
+                      <div className="text-sm text-cyan-300 mb-1">강점</div>
                       <div className="text-sm text-slate-200 space-y-1">
                         {result.personality.map((line) => (
                           <p key={line}>- {line}</p>
@@ -594,7 +594,7 @@ export default function NamingPage() {
                       </div>
                     </div>
                     <div className="rounded-2xl border border-white/10 p-4">
-                      <div className="text-xs text-rose-300 mb-1">주의점</div>
+                      <div className="text-sm text-rose-300 mb-1">주의점</div>
                       <div className="text-sm text-slate-200 space-y-1">
                         {result.warning.map((line) => (
                           <p key={line}>- {line}</p>

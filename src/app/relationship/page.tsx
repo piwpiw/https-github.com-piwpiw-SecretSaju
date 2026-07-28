@@ -45,7 +45,7 @@ export default function RelationshipPage() {
           </Link>
         </div>
 
-        <div className="mt-8 border-t border-white/10 pt-6 text-xs text-slate-400 flex items-center gap-2">
+        <div className="mt-8 border-t border-white/10 pt-6 text-sm text-slate-400 flex items-center gap-2">
           <ArrowLeft className="w-3 h-3" />
           <span>관계 분석 관련 페이지는 추후 상세 시나리오(메시지 교차검증, 이벤트 플로우)로 고도화 예정</span>
         </div>

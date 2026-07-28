@@ -89,11 +89,11 @@ export default function AstrologyPage() {
       <div className="max-w-5xl mx-auto relative z-10 space-y-6">
         <div className="flex items-center justify-between">
           <Link href="/" className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 inline-flex items-center justify-center" aria-label="뒤로 가기"><ArrowLeft className="w-5 h-5 text-slate-300" /></Link>
-          <p className="text-xs text-slate-400 tracking-[0.3em]">별자리 연구소</p>
+          <p className="text-sm text-slate-400 tracking-[0.3em]">별자리 연구소</p>
         </div>
 
         <section className="rounded-[2rem] border border-white/10 bg-slate-900/65 p-7 md:p-9">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-300/25 bg-indigo-500/10 text-[11px] text-indigo-200 font-black tracking-[0.3em]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-300/25 bg-indigo-500/10 text-[13px] text-indigo-200 font-black tracking-[0.3em]">
             <CalendarDays className="w-3.5 h-3.5" />
             별자리
           </div>
@@ -104,7 +104,7 @@ export default function AstrologyPage() {
 
           <div className="mt-6 grid md:grid-cols-2 gap-3">
             <label className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <span className="text-xs tracking-[0.25em] text-slate-300">프로필 이름</span>
+              <span className="text-sm tracking-[0.25em] text-slate-300">프로필 이름</span>
               <input
                 className="mt-2 w-full bg-transparent border border-white/15 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-300"
                 value={profileName}
@@ -113,7 +113,7 @@ export default function AstrologyPage() {
               />
             </label>
             <label className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <span className="text-xs tracking-[0.25em] text-slate-300">날짜</span>
+              <span className="text-sm tracking-[0.25em] text-slate-300">날짜</span>
               <input
                 type="date"
                   min="1900-01-01"
@@ -145,7 +145,7 @@ export default function AstrologyPage() {
               <button
                 type="button"
                 onClick={() => setOpenAll((value) => !value)}
-                className="ml-auto px-4 py-2 rounded-xl border border-white/20 text-xs text-slate-200"
+                className="ml-auto px-4 py-2 rounded-xl border border-white/20 text-sm text-slate-200"
               >
                 {openAll ? "카드 접기" : "카드 펼치기"}
               </button>
@@ -163,24 +163,24 @@ export default function AstrologyPage() {
             <section className="rounded-[1.8rem] border border-white/10 bg-black/35 p-7 space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
-                  <p className="text-xs text-slate-400">날짜: {report.selectedDate}</p>
+                  <p className="text-sm text-slate-400">날짜: {report.selectedDate}</p>
                   <h2 className="text-3xl font-black mt-1">
                     {report.profile.emoji} {report.profile.name}
                   </h2>
                   <p className="text-sm text-slate-300 mt-1">
                     {report.profile.dateRange} / {report.profile.lord} / {report.profile.element} / {report.profile.modality}
                   </p>
-                  <p className="text-xs text-slate-400 mt-2">입력 정보 충실도: {report.profile.quality}</p>
+                  <p className="text-sm text-slate-400 mt-2">입력 정보 충실도: {report.profile.quality}</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs tracking-[0.3em] text-indigo-200">평균</div>
+                  <div className="text-sm tracking-[0.3em] text-indigo-200">평균</div>
                   <div className="text-2xl font-black mt-1">{scoreAverage} / 100</div>
-                  <p className="text-xs text-slate-300">{ratingLabel(scoreAverage)}</p>
+                  <p className="text-sm text-slate-300">{ratingLabel(scoreAverage)}</p>
                 </div>
               </div>
 
               <div>
-                <div className="text-xs text-slate-400">달 위상</div>
+                <div className="text-sm text-slate-400">달 위상</div>
                 <div className="mt-2 text-lg font-black">
                   {report.moonPhase.symbol} {report.moonPhase.label}
                 </div>
@@ -188,20 +188,20 @@ export default function AstrologyPage() {
               </div>
 
               <article className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <div className="text-xs text-slate-400 flex items-center gap-2">
+                <div className="text-sm text-slate-400 flex items-center gap-2">
                   <Compass className="w-3.5 h-3.5" /> 행운 지표
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  <span className="px-3 py-1.5 rounded-full bg-slate-900 text-xs border border-emerald-300/20">
+                  <span className="px-3 py-1.5 rounded-full bg-slate-900 text-sm border border-emerald-300/20">
                     방향: {report.profile.luckyDirection}
                   </span>
-                  <span className="px-3 py-1.5 rounded-full bg-slate-900 text-xs border border-cyan-300/20">
+                  <span className="px-3 py-1.5 rounded-full bg-slate-900 text-sm border border-cyan-300/20">
                     행성: {report.profile.luckyPlanets.join(", ")}
                   </span>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {report.profile.luckyColors.map((color) => (
-                    <span key={color} className="px-2 py-1 rounded-md bg-indigo-300/10 border border-indigo-200/25 text-xs">
+                    <span key={color} className="px-2 py-1 rounded-md bg-indigo-300/10 border border-indigo-200/25 text-sm">
                       {color}
                     </span>
                   ))}
@@ -209,20 +209,20 @@ export default function AstrologyPage() {
               </article>
 
               <article className="rounded-2xl border border-white/10 bg-white/5 p-4 mt-4">
-                <div className="text-xs text-slate-400 flex items-center gap-2">
+                <div className="text-sm text-slate-400 flex items-center gap-2">
                   <Star className="w-3.5 h-3.5 text-fuchsia-300" /> 궁합 힌트
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {report.compatibility.map((item) => (
                     <span
                       key={item}
-                      className="px-3 py-1 rounded-full bg-fuchsia-500/10 border border-fuchsia-300/25 text-xs"
+                      className="px-3 py-1 rounded-full bg-fuchsia-500/10 border border-fuchsia-300/25 text-sm"
                     >
                       {item}
                     </span>
                   ))}
                 </div>
-                <p className="mt-3 text-xs text-slate-300">
+                <p className="mt-3 text-sm text-slate-300">
                   이 결과가 나온 근거 {report.evidence.length}가지
                 </p>
               </article>
@@ -242,8 +242,8 @@ export default function AstrologyPage() {
                       />
                     </div>
                     <p className="mt-3 text-sm text-slate-100">{cat.note}</p>
-                    <p className="text-[11px] text-slate-400 mt-1">{cat.score} / 100</p>
-                    <p className="text-xs text-slate-300 mt-2">{cat.emoji}</p>
+                    <p className="text-[13px] text-slate-400 mt-1">{cat.score} / 100</p>
+                    <p className="text-sm text-slate-300 mt-2">{cat.emoji}</p>
                   </div>
                 </details>
               ))}
@@ -269,14 +269,14 @@ export default function AstrologyPage() {
                 <div className="space-y-2 max-h-72 overflow-auto pr-1">
                   {report.monthTrend.map((item) => (
                     <article key={item.month} className="rounded-xl border border-white/10 bg-white/5 p-3">
-                      <div className="flex justify-between text-xs text-slate-300">
+                      <div className="flex justify-between text-sm text-slate-300">
                         <span>{item.month}</span>
                         <span>{item.value}점</span>
                       </div>
                       <div className="mt-2 h-1.5 rounded-full bg-white/10 overflow-hidden">
                         <div className="h-full bg-gradient-to-r from-cyan-300 to-indigo-300" style={{ width: `${item.value}%` }} />
                       </div>
-                      <p className="text-xs text-slate-200 mt-2">{item.reason}</p>
+                      <p className="text-sm text-slate-200 mt-2">{item.reason}</p>
                     </article>
                   ))}
                 </div>
@@ -289,8 +289,8 @@ export default function AstrologyPage() {
                 {report.evidence.map((item) => (
                   <div key={`${item.title}-${item.source}`} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                     <p className="text-sm text-indigo-200">{item.title}</p>
-                    <p className="text-[11px] text-slate-300 mt-1">{item.source}</p>
-                    <p className="text-xs text-slate-400 mt-2 whitespace-pre-wrap">{item.detail}</p>
+                    <p className="text-[13px] text-slate-300 mt-1">{item.source}</p>
+                    <p className="text-sm text-slate-400 mt-2 whitespace-pre-wrap">{item.detail}</p>
                   </div>
                 ))}
               </div>

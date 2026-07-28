@@ -92,10 +92,10 @@ export default function HistoryPage() {
                         className="flex items-center gap-3 text-slate-500 hover:text-white transition-all group"
                     >
                         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                        <span className="text-xs font-black tracking-widest">뒤로가기</span>
+                        <span className="text-sm font-black tracking-widest">뒤로가기</span>
                     </button>
                     <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-full">
-                        <span className="text-[10px] font-black tracking-widest text-slate-500">기록 보관함</span>
+                        <span className="text-[13px] font-black tracking-widest text-slate-500">기록 보관함</span>
                     </div>
                 </div>
 
@@ -117,19 +117,19 @@ export default function HistoryPage() {
 
                 <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                     <div className="rounded-2xl border border-white/10 bg-surface p-5">
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">전체</p>
+                        <p className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">전체</p>
                         <p className="text-3xl mt-2 font-black text-white">{logs.length}</p>
-                        <p className="text-xs text-slate-500 mt-2">전체 분석 이력</p>
+                        <p className="text-sm text-slate-500 mt-2">전체 분석 이력</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-surface p-5">
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">선택 기간</p>
+                        <p className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">선택 기간</p>
                         <p className="text-3xl mt-2 font-black text-white">최근 {dDayRange}일</p>
-                        <p className="text-xs text-slate-500 mt-2">필터 결과: {filteredLogs.length}건</p>
+                        <p className="text-sm text-slate-500 mt-2">필터 결과: {filteredLogs.length}건</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-surface p-5">
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">주요 타입</p>
+                        <p className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">주요 타입</p>
                         <p className="text-lg mt-2 font-black text-white">{Object.entries(typeStats).slice(0, 2).map(([k]) => renderCategoryLabel(k)).join(', ') || '기록 없음'}</p>
-                        <p className="text-xs text-slate-500 mt-2">분석 분포</p>
+                        <p className="text-sm text-slate-500 mt-2">분석 분포</p>
                     </div>
                 </section>
 
@@ -149,7 +149,7 @@ export default function HistoryPage() {
                         <button
                             onClick={() => setFilterOpen(!filterOpen)}
                             className={cn(
-                                "px-8 py-5 rounded-3xl border font-black text-xs uppercase tracking-widest transition-all flex items-center gap-3",
+                                "px-8 py-5 rounded-3xl border font-black text-sm uppercase tracking-widest transition-all flex items-center gap-3",
                                 filterOpen ? "bg-indigo-500 border-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.4)]" : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10"
                             )}
                         >
@@ -160,7 +160,7 @@ export default function HistoryPage() {
                         {(query || category !== 'ALL' || dDayRange !== 30) && (
                             <button
                                 onClick={() => { setQuery(''); setCategory('ALL'); setDDayRange(30); }}
-                                className="px-6 py-5 rounded-3xl bg-rose-500/10 border border-rose-500/20 text-rose-500 font-black text-[10px] tracking-widest hover:bg-rose-500/20 transition-all"
+                                className="px-6 py-5 rounded-3xl bg-rose-500/10 border border-rose-500/20 text-rose-500 font-black text-[13px] tracking-widest hover:bg-rose-500/20 transition-all"
                             >
                                 초기화
                             </button>
@@ -180,7 +180,7 @@ export default function HistoryPage() {
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <Clock className="w-4 h-4 text-indigo-400" />
-                                                <span className="text-[10px] font-black text-slate-500 tracking-widest">기간 범위 (D-Day)</span>
+                                                <span className="text-[13px] font-black text-slate-500 tracking-widest">기간 범위 (D-Day)</span>
                                             </div>
                                             <span className="text-sm font-black text-indigo-400">최근 {dDayRange}일</span>
                                         </div>
@@ -198,7 +198,7 @@ export default function HistoryPage() {
 
                                     <div className="flex flex-wrap gap-2">
                                         {['ALL', 'SAJU', 'DREAM', 'TAROT', 'ASTROLOGY', 'PALMISTRY', 'NAMING', 'TOJEONG'].map(cat => (
-                                            <button key={cat} onClick={() => setCategory(cat)} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border", category === cat ? 'bg-indigo-500 border-indigo-500 text-white' : 'bg-white/5 border-white/10 text-slate-500 hover:text-white hover:border-indigo-500/50')}>
+                                            <button key={cat} onClick={() => setCategory(cat)} className={cn("px-4 py-2 rounded-xl text-[13px] font-black uppercase tracking-widest transition-all border", category === cat ? 'bg-indigo-500 border-indigo-500 text-white' : 'bg-white/5 border-white/10 text-slate-500 hover:text-white hover:border-indigo-500/50')}>
                                                 {renderCategoryLabel(cat)}
                                             </button>
                                         ))}
@@ -241,12 +241,12 @@ export default function HistoryPage() {
                                                     {log.title}
                                                 </h3>
                                                 {log.profileName && (
-                                                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-md border border-white/5">
+                                                    <span className="text-[13px] font-black text-slate-600 uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-md border border-white/5">
                                                         {log.profileName}
                                                     </span>
                                                 )}
                                             </div>
-                                            <div className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest">
+                                            <div className="flex items-center gap-2 text-slate-500 text-sm font-bold uppercase tracking-widest">
                                                 <Clock className="w-3 h-3" /> {formatDate(log.timestamp)}
                                             </div>
                                         </div>
@@ -288,7 +288,7 @@ export default function HistoryPage() {
                     )}
                 </div>
 
-                <div className="mt-16 flex items-center justify-center gap-3 text-slate-300 text-xs tracking-widest">
+                <div className="mt-16 flex items-center justify-center gap-3 text-slate-300 text-sm tracking-widest">
                     <BarChart3 className="w-4 h-4" />
                     <span>
                         타입별 분포: {Object.entries(typeStats).map(([k, v]) => `${renderCategoryLabel(k)} ${v}건`).join(' · ')}

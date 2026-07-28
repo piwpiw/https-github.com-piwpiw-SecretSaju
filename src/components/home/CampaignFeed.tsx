@@ -57,7 +57,7 @@ export default function CampaignFeed() {
     <section className="w-full">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h3 className="text-sm font-black tracking-[0.16em] uppercase text-slate-100">실시간 이벤트</h3>
-        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">추천 확인</span>
+        <span className="text-[13px] text-slate-400 font-bold uppercase tracking-[0.2em]">추천 확인</span>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {campaigns.slice(0, 4).map((camp) => (
@@ -70,15 +70,15 @@ export default function CampaignFeed() {
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-amber-300">
+                <p className="text-[13px] font-bold uppercase tracking-[0.22em] text-amber-300">
                   {camp.source}
                   {camp.category ? ` · ${camp.category}` : ""}
                 </p>
                 <h4 className="mt-2 text-sm font-black leading-snug text-white">
                   {camp.title}
                 </h4>
-                {camp.description ? <p className="mt-1 text-xs text-slate-300 line-clamp-2">{camp.description}</p> : null}
-                {camp.reward ? <p className="mt-2 text-[11px] font-semibold text-amber-200">보상: {camp.reward}</p> : null}
+                {camp.description ? <p className="mt-1 text-sm text-slate-300 line-clamp-2">{camp.description}</p> : null}
+                {camp.reward ? <p className="mt-2 text-[13px] font-semibold text-amber-200">보상: {camp.reward}</p> : null}
               </div>
               <ArrowRight className="w-4 h-4 text-slate-300 flex-shrink-0 mt-1" />
             </div>

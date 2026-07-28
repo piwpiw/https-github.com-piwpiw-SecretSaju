@@ -62,14 +62,14 @@ export default function DestinyCalendar() {
                 </div>
                 <div className={cn("px-4 py-2 rounded-xl border flex items-center gap-3", energy.bg)}>
                     <Zap className={cn("w-4 h-4", energy.color)} />
-                    <span className={cn("text-xs font-black uppercase tracking-widest", energy.color)}>{energy.label} {score}</span>
+                    <span className={cn("text-sm font-black uppercase tracking-widest", energy.color)}>{energy.label} {score}</span>
                 </div>
             </div>
 
             <div className="grid grid-cols-7 gap-1">
                 {DAYS.map((d, i) => (
                     <div key={d} className={cn(
-                        "text-center text-[10px] font-black tracking-widest py-2",
+                        "text-center text-[13px] font-black tracking-widest py-2",
                         i === 0 ? "text-rose-500/70" : i === 6 ? "text-blue-400/70" : "text-slate-600"
                     )}>
                         {d}
@@ -90,7 +90,7 @@ export default function DestinyCalendar() {
                             key={idx}
                             onClick={() => setSelectedDate(day)}
                             className={cn(
-                                "aspect-square relative flex flex-col items-center justify-center rounded-xl border transition-all text-xs font-bold",
+                                "aspect-square relative flex flex-col items-center justify-center rounded-xl border transition-all text-sm font-bold",
                                 isSelected
                                     ? "bg-indigo-600 border-indigo-500 text-white shadow-lg"
                                     : isToday

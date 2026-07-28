@@ -86,7 +86,7 @@ export default function RelationshipRadar() {
                 return (
                     <div
                         key={d.label}
-                        className="absolute text-[9px] font-black text-slate-500 uppercase tracking-tighter"
+                        className="absolute text-[13px] font-black text-slate-500 uppercase tracking-tighter"
                         style={{ left: `${x / 2}%`, top: `${y / 2}%`, transform: 'translate(-50%, -50%)' }}
                     >
                         {d.label}

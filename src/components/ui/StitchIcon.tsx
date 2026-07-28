@@ -219,7 +219,7 @@ export function FiveElementsIcons({
                         delay={i * 0.15}
                     />
                     <span
-                        className="text-[10px] font-semibold"
+                        className="text-[13px] font-semibold"
                         style={{ color: VARIANT_COLORS[variant] }}
                     >
                         {labels[i]}

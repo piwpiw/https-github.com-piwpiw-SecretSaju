@@ -83,10 +83,10 @@ export function DailyFortuneBanner() {
             <div className="flex-1">
               <div className="flex items-center gap-1.5 mb-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                <span className="text-purple-400 font-bold text-xs tracking-wider uppercase">
+                <span className="text-purple-400 font-bold text-sm tracking-wider uppercase">
                   오늘의 운세
                 </span>
-                <span className="text-slate-500 text-xs">· {fortune.pillarName}</span>
+                <span className="text-slate-500 text-sm">· {fortune.pillarName}</span>
               </div>
               <p className="text-slate-200 text-sm leading-relaxed">{fortune.message}</p>
             </div>

@@ -70,7 +70,7 @@ export default function LuckySecretModal() {
                             </div>
 
                             <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-[13px] font-black uppercase tracking-widest mb-4">
                                     <Zap className="w-3 h-3" /> 운명 공개
                                 </div>
                                 <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-4">
@@ -87,13 +87,13 @@ export default function LuckySecretModal() {
                             <div className="flex flex-col gap-3">
                                 <button
                                     onClick={() => setIsOpen(false)}
-                                    className="w-full py-4 bg-indigo-600 border border-indigo-400/50 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-indigo-900 transition-all shadow-xl shadow-indigo-950/50"
+                                    className="w-full py-4 bg-indigo-600 border border-indigo-400/50 text-white rounded-2xl text-[13px] font-black uppercase tracking-widest hover:bg-white hover:text-indigo-900 transition-all shadow-xl shadow-indigo-950/50"
                                 >
                                     확인 후 닫기
                                 </button>
                                 <div className="flex items-center justify-center gap-2 opacity-30">
                                     <Shield className="w-3 h-3 text-slate-500" />
-                                    <span className="text-[8px] font-black uppercase tracking-tighter text-slate-500">개인 맞춤 운명 흐름</span>
+                                    <span className="text-[13px] font-black uppercase tracking-tighter text-slate-500">개인 맞춤 운명 흐름</span>
                                 </div>
                             </div>
                         </div>

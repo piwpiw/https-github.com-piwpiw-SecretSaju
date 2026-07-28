@@ -123,7 +123,7 @@ export default function UnlockPrompt({
 
                 {/* Helper Text */}
                 {!hasSufficientJellies && (
-                    <p className="text-xs text-red-400 mt-3">
+                    <p className="text-sm text-red-400 mt-3">
                         젤리가 부족해요. 충전 후 이용해주세요!
                     </p>
                 )}

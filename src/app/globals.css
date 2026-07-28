@@ -166,14 +166,14 @@ body {
 }
 
 .ui-chip {
-  @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] uppercase tracking-[0.32em] font-black;
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-[13px] uppercase tracking-[0.32em] font-black;
   background: linear-gradient(135deg, rgba(129, 140, 254, 0.15), rgba(168, 85, 247, 0.12));
   border: 1px solid rgba(129, 140, 254, 0.35);
   color: #c7d2fe;
 }
 
 .panel-shell {
-  @apply rounded-[3rem] backdrop-blur-[40px] border relative overflow-hidden transition-all duration-700;
+  @apply rounded-[2rem] backdrop-blur-[40px] border relative overflow-hidden transition-all duration-700;
   background: linear-gradient(150deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
   border-color: rgba(255, 255, 255, 0.08);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -261,7 +261,7 @@ body {
 
 .text-micro-copy {
   color: var(--text-muted);
-  @apply text-[11px] uppercase tracking-[0.28em] font-black;
+  @apply text-[13px] uppercase tracking-[0.28em] font-black;
 }
 
 .hero-kicker {
@@ -293,7 +293,7 @@ body {
 }
 
 .image-copy {
-  @apply absolute inset-0 flex items-end px-6 pb-5 text-[11px] uppercase tracking-[0.28em] font-black;
+  @apply absolute inset-0 flex items-end px-6 pb-5 text-[13px] uppercase tracking-[0.28em] font-black;
   background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.65));
   color: #f8fafc;
 }
@@ -327,7 +327,7 @@ body {
 }
 
 .image-overlay-title {
-  @apply text-[11px] font-black uppercase tracking-[0.28em] text-slate-200;
+  @apply text-[13px] font-black uppercase tracking-[0.28em] text-slate-200;
 }
 
 .image-overlay-copy {

@@ -119,7 +119,7 @@ export default function SajuListPage() {
               </button>
               <button
                 onClick={() => router.push('/my-saju/add')}
-                className="btn-neumorphic px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 text-indigo-400 group"
+                className="btn-neumorphic px-6 py-3 rounded-2xl text-[13px] font-black uppercase tracking-widest flex items-center gap-2 text-indigo-400 group"
                 aria-label="신규 프로필 추가"
               >
                 <UserPlus className="w-4 h-4 group-hover:scale-110 transition-transform" /> 신규 프로필 추가
@@ -134,7 +134,7 @@ export default function SajuListPage() {
               </div>
               <div>
                 <h1 className="ui-title-gradient text-3xl leading-none">인연 네트워크</h1>
-                <p className="text-[10px] font-black text-indigo-500/60 uppercase tracking-[0.2em] mt-1">사주 시너지 지도</p>
+                <p className="text-[13px] font-black text-indigo-500/60 uppercase tracking-[0.2em] mt-1">사주 시너지 지도</p>
               </div>
             </div>
             <RelationshipMap members={profiles.map((p) => ({ id: p.id, name: p.name }))} />
@@ -143,19 +143,19 @@ export default function SajuListPage() {
 
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="rounded-3xl border border-border-color bg-gradient-to-br from-slate-900/70 to-surface p-6">
-            <p className="text-xs font-black uppercase tracking-widest text-muted">프로필 커버리지</p>
+            <p className="text-sm font-black uppercase tracking-widest text-muted">프로필 커버리지</p>
             <div className="mt-4 h-2 rounded-full bg-black/30 border border-white/10">
               <div className="h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${completionRate}%` }} />
             </div>
             <p className="mt-3 text-sm text-muted">현재 {completionRate}%</p>
           </div>
           <div className="rounded-3xl border border-border-color bg-gradient-to-br from-indigo-900/20 to-surface p-6">
-            <p className="text-xs font-black uppercase tracking-widest text-muted">관계 맵 가동률</p>
+            <p className="text-sm font-black uppercase tracking-widest text-muted">관계 맵 가동률</p>
             <p className="mt-4 text-3xl font-black">{profiles.length > 1 ? `${profiles.length - 1}개` : "0개"}</p>
             <p className="mt-2 text-sm text-muted">연결 가능한 관계 후보군</p>
           </div>
           <div className="rounded-3xl border border-border-color bg-gradient-to-br from-rose-900/20 to-surface p-6">
-            <p className="text-xs font-black uppercase tracking-widest text-muted">다음 액션</p>
+            <p className="text-sm font-black uppercase tracking-widest text-muted">다음 액션</p>
             <p className="mt-4 text-xl font-black">프로필 점검 1회</p>
             <p className="mt-2 text-sm text-muted">오늘도 관계 분석 정확도 향상</p>
           </div>
@@ -163,7 +163,7 @@ export default function SajuListPage() {
 
         <ScrollReveal delay={0.2}>
           <div className="mb-6 bg-white/[0.02] border border-white/5 rounded-[2rem] p-5 sm:p-8 overflow-hidden">
-            <h4 className="text-[10px] font-black text-indigo-500 tracking-widest mb-2 break-keep">인생 흐름 에너지</h4>
+            <h4 className="text-[13px] font-black text-indigo-500 tracking-widest mb-2 break-keep">인생 흐름 에너지</h4>
             <LifeTimeline />
           </div>
         </ScrollReveal>
@@ -269,7 +269,7 @@ export default function SajuListPage() {
                         <h3 className="text-3xl font-black text-foreground tracking-tighter uppercase group-hover:text-primary transition-colors">
                           {profile.name}
                         </h3>
-                        <span className="inline-flex mt-3 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border bg-primary/10 text-primary border-primary/30">
+                        <span className="inline-flex mt-3 px-4 py-1.5 rounded-full text-sm font-black uppercase tracking-widest border bg-primary/10 text-primary border-primary/30">
                           {relationshipLabel[profile.relationship] || profile.relationship}
                         </span>
                       </div>
@@ -312,7 +312,7 @@ export default function SajuListPage() {
             <p className="mt-2 text-sm text-muted">
               <span className="text-foreground font-bold">{pendingDelete.name}</span> 프로필을 삭제할까요?
             </p>
-            <p className="mt-1 text-xs text-muted">삭제된 데이터는 되돌릴 수 없습니다.</p>
+            <p className="mt-1 text-sm text-muted">삭제된 데이터는 되돌릴 수 없습니다.</p>
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setPendingDelete(null)}

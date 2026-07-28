@@ -53,10 +53,10 @@ export default function FortuneReadersPage() {
             <ArrowLeft className="w-5 h-5 text-slate-200" />
           </button>
           <div className="text-center">
-            <p className="text-[10px] tracking-[0.24em] font-black text-indigo-300 break-keep">역술가 마켓</p>
+            <p className="text-[13px] tracking-[0.24em] font-black text-indigo-300 break-keep">역술가 마켓</p>
             <h1 className="text-3xl font-black text-white">역술가 선택 마켓</h1>
           </div>
-          <div className="text-right text-[11px] text-slate-300">
+          <div className="text-right text-[13px] text-slate-300">
             <div>{membershipActive ? "시그니처 멤버십 활성" : "시그니처 멤버십 비활성"}</div>
           </div>
         </header>
@@ -79,7 +79,7 @@ export default function FortuneReadersPage() {
                 key={item}
                 type="button"
                 onClick={() => setQueryType(item)}
-                className={`rounded-full px-4 py-2 text-xs font-black tracking-[0.18em] break-keep ${
+                className={`rounded-full px-4 py-2 text-sm font-black tracking-[0.18em] break-keep ${
                   queryType === item ? "bg-indigo-600 text-white" : "border border-white/10 bg-white/5 text-slate-300"
                 }`}
               >
@@ -117,20 +117,20 @@ export default function FortuneReadersPage() {
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[10px] font-black tracking-[0.16em] text-slate-200 break-keep">
+                  <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[13px] font-black tracking-[0.16em] text-slate-200 break-keep">
                     {toTierLabelKo(reader.tier)}
                   </span>
-                  <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[10px] font-black tracking-[0.16em] text-slate-200 break-keep">
+                  <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[13px] font-black tracking-[0.16em] text-slate-200 break-keep">
                     {toCategoryLabelKo(reader.category)}
                   </span>
                 </div>
 
                 <p className="mt-4 text-sm leading-7 text-slate-200">{reader.description}</p>
-                <p className="mt-3 text-[11px] text-indigo-100">{reader.curiosityPrompt}</p>
+                <p className="mt-3 text-[13px] text-indigo-100">{reader.curiosityPrompt}</p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   {reader.specialties.map((item) => (
-                    <span key={`${reader.id}-${item}`} className="rounded-full border border-white/10 bg-black/20 px-2.5 py-1 text-[10px] text-slate-200">
+                    <span key={`${reader.id}-${item}`} className="rounded-full border border-white/10 bg-black/20 px-2.5 py-1 text-[13px] text-slate-200">
                       {item}
                     </span>
                   ))}
@@ -149,14 +149,14 @@ export default function FortuneReadersPage() {
                     { label: '쉬운 설명', value: reader.easyBias, bar: 'bg-emerald-400' },
                   ].map((stat) => (
                     <div key={stat.label} className="flex items-center gap-3">
-                      <span className="w-[52px] shrink-0 text-[11px] font-bold text-slate-300">{stat.label}</span>
+                      <span className="w-[52px] shrink-0 text-[13px] font-bold text-slate-300">{stat.label}</span>
                       <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
                         <span
                           className={`block h-full rounded-full ${stat.bar}`}
                           style={{ width: `${Math.max(0, Math.min(100, stat.value))}%` }}
                         />
                       </span>
-                      <span className="w-7 shrink-0 text-right text-[11px] font-black tabular-nums text-slate-200">
+                      <span className="w-7 shrink-0 text-right text-[13px] font-black tabular-nums text-slate-200">
                         {stat.value}
                       </span>
                     </div>
@@ -164,7 +164,7 @@ export default function FortuneReadersPage() {
                 </div>
 
                 <div className="mt-5 flex items-center justify-between gap-3">
-                  <div className="text-[11px] text-slate-300">
+                  <div className="text-[13px] text-slate-300">
                     {unlocked
                       ? reader.tier === "signature"
                         ? "시그니처 멤버십으로 사용 가능"
@@ -173,7 +173,7 @@ export default function FortuneReadersPage() {
                         ? "시그니처 멤버십 필요"
                         : `${getReaderUnlockCost(reader)} 젤리 필요`}
                   </div>
-                  <Link href={`/fortune-readers/${reader.id}`} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white">
+                  <Link href={`/fortune-readers/${reader.id}`} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white">
                     <Wand2 className="w-3.5 h-3.5" />
                     상세 보기
                   </Link>

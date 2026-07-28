@@ -185,7 +185,7 @@ export default function GiftPage() {
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full bg-background border-2 border-border-color rounded-3xl px-8 py-6 text-foreground font-black text-3xl focus:outline-none focus:border-pink-500 transition-all placeholder:text-neutral-700"
                 />
-                <p id="gift-name-help" className="text-xs text-slate-400">2글자 이상 입력해 주세요.</p>
+                <p id="gift-name-help" className="text-sm text-slate-400">2글자 이상 입력해 주세요.</p>
               </div>
 
               <div className="space-y-6">
@@ -225,9 +225,9 @@ export default function GiftPage() {
                     className="w-full bg-background border-2 border-border-color rounded-3xl pl-20 pr-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-pink-500 transition-all placeholder:text-neutral-700"
                   />
                   {formData.email.length > 0 && !hasEmail ? (
-                    <p id="gift-email-help" className="text-xs text-rose-300 mt-2">올바른 이메일 형식을 입력해 주세요.</p>
+                    <p id="gift-email-help" className="text-sm text-rose-300 mt-2">올바른 이메일 형식을 입력해 주세요.</p>
                   ) : (
-                    <p id="gift-email-help" className="text-xs text-slate-500 mt-2">이메일은 영문+숫자 + @ + 도메인 형식이 필요합니다.</p>
+                    <p id="gift-email-help" className="text-sm text-slate-500 mt-2">이메일은 영문+숫자 + @ + 도메인 형식이 필요합니다.</p>
                   )}
                 </div>
               </div>
@@ -253,7 +253,7 @@ export default function GiftPage() {
                   )}
                 </button>
                 <div className="flex items-center justify-center gap-2 mt-4 text-emerald-400 font-bold text-base bg-emerald-500/10 py-3 rounded-2xl">
-                  <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center text-xs">J</span>
+                  <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center text-sm">J</span>
                   {locale === 'ko' ? '젤리 3개 소모' : 'Consumes 3 Jellies'}
                 </div>
               </div>

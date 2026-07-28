@@ -37,14 +37,14 @@ export default function TarotGalleryPage() {
                     <div className="flex items-center gap-4">
                         <Link href="/tarot" className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all" aria-label="뒤로 가기"><ArrowLeft className="w-5 h-5 text-slate-400" /></Link>
                         <div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-[0.24em] border border-indigo-500/20 mb-2">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[13px] font-black uppercase tracking-[0.24em] border border-indigo-500/20 mb-2">
                                 <Library className="w-3 h-3" /> 타로 아카이브
                             </div>
                             <h1 className="text-3xl font-black tracking-tighter text-white leading-none break-keep">타로 카드 갤러리</h1>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs font-bold font-mono text-slate-400 bg-slate-900/50 px-4 py-2 rounded-xl border border-white/10">
+                    <div className="flex items-center gap-2 text-sm font-bold font-mono text-slate-400 bg-slate-900/50 px-4 py-2 rounded-xl border border-white/10">
                         <Target className="w-4 h-4 text-indigo-400" />
                         전체 {stats.total}장 (메이저 {stats.major} · 마이너 {stats.minor})
                     </div>
@@ -63,7 +63,7 @@ export default function TarotGalleryPage() {
                                     setActiveTab(tab.id as any);
                                     if (tab.id !== "MINOR") setActiveSuit("ALL");
                                 }}
-                                className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/25" : "text-slate-400 hover:text-slate-200"}`}
+                                className={`px-5 py-2.5 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/25" : "text-slate-400 hover:text-slate-200"}`}
                             >
                                 {tab.label}
                             </button>
@@ -71,11 +71,11 @@ export default function TarotGalleryPage() {
                     </div>
 
                     <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <span className="text-[10px] font-black tracking-widest text-slate-500 break-keep shrink-0">테마</span>
+                        <span className="text-[13px] font-black tracking-widest text-slate-500 break-keep shrink-0">테마</span>
                         <select
                             value={activeTheme}
                             onChange={(e) => setActiveTheme(e.target.value as TarotTheme)}
-                            className="min-w-0 flex-1 sm:flex-none bg-slate-900 border border-white/10 text-xs font-bold text-slate-300 rounded-xl px-3 py-2 outline-none focus:border-indigo-500/50 transition-colors tracking-wider"
+                            className="min-w-0 flex-1 sm:flex-none bg-slate-900 border border-white/10 text-sm font-bold text-slate-300 rounded-xl px-3 py-2 outline-none focus:border-indigo-500/50 transition-colors tracking-wider"
                         >
                             <option value="standard">기본 (라이더-웨이트)</option>
                             <option value="svg_fallback">벡터 (대체 이미지)</option>
@@ -95,7 +95,7 @@ export default function TarotGalleryPage() {
                             <button
                                 key={suit.id}
                                 onClick={() => setActiveSuit(suit.id as any)}
-                                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all border ${activeSuit === suit.id ? "bg-white/10 border-white/20 text-white" : "bg-transparent border-transparent text-slate-500 hover:bg-white/5"}`}
+                                className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all border ${activeSuit === suit.id ? "bg-white/10 border-white/20 text-white" : "bg-transparent border-transparent text-slate-500 hover:bg-white/5"}`}
                             >
                                 <span className="text-base">{suit.icon}</span> {suit.label}
                             </button>
@@ -113,7 +113,7 @@ export default function TarotGalleryPage() {
                                     {/* The actual Artwork container */}
                                     <div className="relative flex-1 rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
                                         <div className="absolute inset-0 flex items-center justify-center p-4">
-                                            <p className="text-[9px] text-slate-600 font-mono text-center opacity-50">
+                                            <p className="text-[13px] text-slate-600 font-mono text-center opacity-50">
                                                 이미지 준비 중<br />{card.code}
                                             </p>
                                         </div>
@@ -134,15 +134,15 @@ export default function TarotGalleryPage() {
                                     {/* The Card Footer (Korean Name) */}
                                     <div className="mt-2 text-center h-[3.5rem] flex flex-col justify-center border-t border-slate-800 pt-1">
                                         <h3 className="text-sm font-black text-amber-500 tracking-widest">{card.name_kr}</h3>
-                                        <div className="text-[8px] font-black text-slate-500 uppercase tracking-widest mt-0.5">{card.code}</div>
+                                        <div className="text-[13px] font-black text-slate-500 uppercase tracking-widest mt-0.5">{card.code}</div>
                                     </div>
 
                                     {/* Minimal shiny overlay when hovered */}
                                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-[1.5rem]" />
                                 </div>
                                 <div className="mt-4 text-center px-2">
-                                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest truncate w-full">{card.name_en}</p>
-                                    <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">{card.meaning_upright}</p>
+                                    <p className="text-[13px] text-slate-400 font-bold uppercase tracking-widest truncate w-full">{card.name_en}</p>
+                                    <p className="text-sm text-slate-500 mt-1 line-clamp-2 leading-relaxed">{card.meaning_upright}</p>
                                 </div>
                             </article>
                         );

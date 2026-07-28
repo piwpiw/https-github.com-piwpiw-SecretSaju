@@ -67,7 +67,7 @@ export default function ShinsalPage() {
         </div>
 
         <section className="bg-slate-900/60 border border-white/10 rounded-[2.3rem] p-8 md:p-6 sm:p-9">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fuchsia-500/10 border border-fuchsia-400/30 text-fuchsia-200 font-black uppercase tracking-[0.2em] text-xs">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fuchsia-500/10 border border-fuchsia-400/30 text-fuchsia-200 font-black uppercase tracking-[0.2em] text-sm">
             <Shield className="w-4 h-4" /> 신살 진단
           </div>
           <h1 className="text-4xl font-black mt-4">신살 운세 지도</h1>
@@ -84,10 +84,10 @@ export default function ShinsalPage() {
               >
                 <div className="flex items-center justify-between">
                   <div className="font-bold text-white">{item.name}</div>
-                  <span className={`text-[11px] px-2 py-1 rounded-full border ${badgeClass(item.risk)}`}>{item.risk}</span>
+                  <span className={`text-[13px] px-2 py-1 rounded-full border ${badgeClass(item.risk)}`}>{item.risk}</span>
                 </div>
                 <p className="mt-3 text-sm text-slate-300">{item.note}</p>
-                <p className="mt-4 text-xs text-slate-400">권장: {item.tip}</p>
+                <p className="mt-4 text-sm text-slate-400">권장: {item.tip}</p>
               </motion.button>
             ))}
           </div>

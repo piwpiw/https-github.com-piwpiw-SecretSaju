@@ -63,7 +63,7 @@ export default function DreamsPage() {
           <button type="button" onClick={() => router.back()} aria-label="뒤로 가기" className="w-10 h-10 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center">
             <ArrowLeft className="w-5 h-5 text-slate-200" />
           </button>
-          <div className="text-xs px-4 py-2 rounded-full border border-white/10 bg-white/10 text-slate-300">꿈해몽 정밀 도우미</div>
+          <div className="text-sm px-4 py-2 rounded-full border border-white/10 bg-white/10 text-slate-300">꿈해몽 정밀 도우미</div>
         </div>
 
         <ScrollReveal>
@@ -81,7 +81,7 @@ export default function DreamsPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-black text-white uppercase tracking-widest leading-none">AI 꿈 해몽 비서</h1>
-                <p className="text-[10px] font-black text-emerald-500/60 uppercase tracking-[0.2em] mt-1">심층 상징 추출 엔진</p>
+                <p className="text-[13px] font-black text-emerald-500/60 uppercase tracking-[0.2em] mt-1">심층 상징 추출 엔진</p>
               </div>
             </div>
 
@@ -89,7 +89,7 @@ export default function DreamsPage() {
 
             <AIDreamParser />
 
-            {status ? <p className="mt-4 text-xs text-emerald-300 text-center font-bold tracking-widest uppercase animate-pulse">{status}</p> : null}
+            {status ? <p className="mt-4 text-sm text-emerald-300 text-center font-bold tracking-widest uppercase animate-pulse">{status}</p> : null}
           </section>
         </ScrollReveal>
 

@@ -23,7 +23,7 @@ export default function ShopPage() {
           </button>
           <div className="px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex items-center gap-3">
             <Sparkles className="w-4 h-4 text-indigo-400" />
-            <span className="text-[10px] font-black uppercase tracking-widest">시크릿사주 젤리 공방</span>
+            <span className="text-[13px] font-black uppercase tracking-widest">시크릿사주 젤리 공방</span>
           </div>
         </header>
 
@@ -39,7 +39,7 @@ export default function ShopPage() {
             </p>
             {FREE_LAUNCH ? (
               <div className="mx-auto mt-8 max-w-2xl rounded-[2rem] border border-emerald-400/30 bg-emerald-500/10 p-6">
-                <p className="text-[10px] font-black tracking-[0.25em] text-emerald-200 break-keep">무료 오픈</p>
+                <p className="text-[13px] font-black tracking-[0.25em] text-emerald-200 break-keep">무료 오픈</p>
                 <h2 className="mt-3 text-2xl font-black text-white break-keep">지금은 모든 기능이 무료입니다</h2>
                 <p className="mt-3 text-sm leading-7 text-emerald-50/90 break-keep">
                   무료 오픈 기간 동안에는 젤리를 구매하지 않아도 사주·타로·궁합을 비롯한 모든 분석과
@@ -85,13 +85,13 @@ export default function ShopPage() {
           <section className="mt-16 rounded-[2rem] border border-white/10 bg-white/[0.04] p-8">
             <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div className="max-w-2xl">
-                <p className="text-[10px] font-black tracking-[0.25em] text-fuchsia-200 break-keep">시그니처 리더 멤버십</p>
+                <p className="text-[13px] font-black tracking-[0.25em] text-fuchsia-200 break-keep">시그니처 리더 멤버십</p>
                 <h2 className="mt-3 text-3xl font-black text-white break-keep">시그니처 리더 멤버십</h2>
                 <p className="mt-4 text-sm leading-7 text-slate-200 break-keep">
                   단건 해금보다 더 깊은 해설을 원하면 시그니처 리더 멤버십이 맞습니다.
                   30일 동안 시그니처 마스터를 열고, 롱폼 브리핑과 통합 조언형 결과를 바로 확인할 수 있습니다.
                 </p>
-                <p className="mt-3 text-xs font-bold uppercase tracking-[0.18em] text-amber-200 break-keep">
+                <p className="mt-3 text-sm font-bold uppercase tracking-[0.18em] text-amber-200 break-keep">
                   추천 진입가: 5 젤리 / 30일 활성
                 </p>
               </div>
@@ -115,7 +115,7 @@ export default function ShopPage() {
 
         <section className="mt-24 text-center">
           <div className="inline-flex flex-col items-center">
-            <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.5em] mb-4 break-keep">
+            <p className="text-[13px] font-black text-slate-600 uppercase tracking-[0.5em] mb-4 break-keep">
               {FREE_LAUNCH ? '무료 오픈 기간 · 결제 정보를 받지 않습니다' : '신경망 암호화로 결제 데이터 보호'}
             </p>
             <div className="flex gap-4 opacity-30 grayscale hover:grayscale-0 transition-all">

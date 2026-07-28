@@ -133,7 +133,7 @@ export default function SvgChart({
         <div ref={ref} className={`flex flex-col items-center gap-2 ${className}`}>
             {title && (
                 <motion.p
-                    className="text-xs font-semibold tracking-widest text-white/40 uppercase"
+                    className="text-sm font-semibold tracking-widest text-white/40 uppercase"
                     initial={{ opacity: 0, y: -6 }}
                     animate={shouldAnimate ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.5, delay: animDelay }}
@@ -304,7 +304,7 @@ export default function SvgChart({
                     return (
                         <motion.div
                             key={`label-${i}`}
-                            className="absolute text-[11px] font-bold pointer-events-none whitespace-nowrap"
+                            className="absolute text-[13px] font-bold pointer-events-none whitespace-nowrap"
                             style={{
                                 left: pt.x,
                                 top: pt.y,

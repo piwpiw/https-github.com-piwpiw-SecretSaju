@@ -163,7 +163,7 @@ export default function RelationshipDetailPage() {
                                 <div className="absolute inset-0 bg-cyan-400/10 animate-pulse" />
                             </div>
                             <h3 className="text-lg sm:text-3xl font-black text-white tracking-tighter uppercase mb-2">{mainProfile.name}</h3>
-                            <div className="px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-[10px] font-black text-cyan-400 uppercase tracking-widest">
+                            <div className="px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-[13px] font-black text-cyan-400 uppercase tracking-widest">
                                 나
                             </div>
                         </motion.div>
@@ -180,7 +180,7 @@ export default function RelationshipDetailPage() {
                                 <div className="absolute inset-0 bg-purple-400/10 animate-pulse" />
                             </div>
                             <h3 className="text-lg sm:text-3xl font-black text-white tracking-tighter uppercase mb-2">{targetProfile.name}</h3>
-                            <div className="px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-[10px] font-black text-purple-400 uppercase tracking-widest">
+                            <div className="px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-[13px] font-black text-purple-400 uppercase tracking-widest">
                                 상대
                             </div>
                         </motion.div>
@@ -267,8 +267,8 @@ export default function RelationshipDetailPage() {
                         className="bg-slate-900/40 backdrop-blur-2xl rounded-4xl p-5 sm:p-8 border border-white/5 mb-8"
                     >
                         <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">대운 타임라인 (Life Cycle)</h3>
-                            <div className="px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[8px] font-black tracking-widest uppercase border border-indigo-500/20">
+                            <h3 className="text-[13px] font-black text-slate-500 uppercase tracking-[0.4em]">대운 타임라인 (Life Cycle)</h3>
+                            <div className="px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[13px] font-black tracking-widest uppercase border border-indigo-500/20">
                                 10년 주기 변화
                             </div>
                         </div>
@@ -276,16 +276,16 @@ export default function RelationshipDetailPage() {
                         <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar snap-x">
                             {[...Array(10)].map((_, i) => (
                                 <div key={i} className="flex-shrink-0 w-32 p-6 rounded-[2.5rem] bg-white/5 border border-white/5 text-center snap-center hover:bg-white/10 transition-all group">
-                                    <p className="text-[10px] font-black text-slate-500 mb-3">{i * 10}세 ~</p>
+                                    <p className="text-[13px] font-black text-slate-500 mb-3">{i * 10}세 ~</p>
                                     <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
                                         <TrendingUp className="w-6 h-6" />
                                     </div>
                                     <p className="text-sm font-black text-white">기운 {i + 1}</p>
-                                    <p className="text-[9px] font-bold text-slate-500 mt-1 uppercase tracking-widest">분석 중</p>
+                                    <p className="text-[13px] font-bold text-slate-500 mt-1 uppercase tracking-widest">분석 중</p>
                                 </div>
                             ))}
                         </div>
-                        <p className="mt-4 text-[10px] text-slate-600 text-center">※ 대운의 변화는 인생의 큰 방향성을 결정짓는 10개 마디입니다.</p>
+                        <p className="mt-4 text-[13px] text-slate-600 text-center">※ 대운의 변화는 인생의 큰 방향성을 결정짓는 10개 마디입니다.</p>
                     </motion.div>
                 )}
 
@@ -424,13 +424,13 @@ export default function RelationshipDetailPage() {
                             <div className="flex gap-4">
                                 <button
                                     onClick={() => setShowConfirm(false)}
-                                    className="flex-1 py-4 rounded-xl border border-white/10 text-slate-500 font-black text-xs uppercase tracking-widest hover:bg-white/5 transition-all"
+                                    className="flex-1 py-4 rounded-xl border border-white/10 text-slate-500 font-black text-sm uppercase tracking-widest hover:bg-white/5 transition-all"
                                 >
                                     취소
                                 </button>
                                 <button
                                     onClick={confirmUnlock}
-                                    className="flex-1 py-4 rounded-xl bg-yellow-400 text-black font-black text-xs uppercase tracking-widest shadow-lg shadow-yellow-500/20 hover:scale-105 transition-all"
+                                    className="flex-1 py-4 rounded-xl bg-yellow-400 text-black font-black text-sm uppercase tracking-widest shadow-lg shadow-yellow-500/20 hover:scale-105 transition-all"
                                 >
                                     확인
                                 </button>

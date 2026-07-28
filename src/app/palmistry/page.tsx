@@ -91,7 +91,7 @@ export default function PalmistryPage() {
           <button
             onClick={resetForm}
             aria-label="선택 항목 초기화"
-            className="text-xs px-4 py-2 rounded-full border border-white/10 bg-white/10 inline-flex items-center gap-2"
+            className="text-sm px-4 py-2 rounded-full border border-white/10 bg-white/10 inline-flex items-center gap-2"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             초기화
@@ -124,7 +124,7 @@ export default function PalmistryPage() {
                     className={`w-full p-4 rounded-2xl text-left border ${choice === key ? "border-emerald-300 bg-emerald-500/10" : "border-white/10"} transition`}
                   >
                     <div className="font-black">{value.title}</div>
-                    <p className="mt-2 text-xs text-slate-300">{value.description}</p>
+                    <p className="mt-2 text-sm text-slate-300">{value.description}</p>
                   </button>
                 </label>
               ))}
@@ -156,7 +156,7 @@ export default function PalmistryPage() {
             </div>
             {choice ? (
               <div className="mt-5 rounded-2xl border border-emerald-700/30 bg-emerald-950/40 p-4">
-                <p className="text-xs text-emerald-300 font-black uppercase tracking-[0.2em] mb-3">실행 루틴</p>
+                <p className="text-sm text-emerald-300 font-black uppercase tracking-[0.2em] mb-3">실행 루틴</p>
                 <ul className="space-y-2 text-sm">
                   {TYPES[choice].plan.map((step) => (
                     <li key={step} className="flex items-start gap-2">
@@ -180,7 +180,7 @@ export default function PalmistryPage() {
             <ul className="space-y-3 text-sm">
               {history.map((item, idx) => (
                 <li key={`${item.type}-${item.createdAt}-${idx}`} className="rounded-xl border border-white/10 bg-slate-800/50 p-3">
-                  <p className="text-xs text-slate-400 mb-1">{item.createdAt}</p>
+                  <p className="text-sm text-slate-400 mb-1">{item.createdAt}</p>
                   <p>
                     <span className="text-cyan-300 font-black">[{TYPES[item.type].title}] </span>
                     {item.content}

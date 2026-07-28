@@ -3,6 +3,7 @@
 import { useId, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import TarotCardArt from "@/components/tarot/TarotCardArt";
 import {
   ArrowLeft,
   RefreshCw,
@@ -101,7 +102,7 @@ function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard
             <div className="w-16 h-16 rounded-full border border-indigo-500/30 flex items-center justify-center animate-spin-slow">
               <Orbit className="w-8 h-8 text-indigo-400 opacity-50" />
             </div>
-            <div className="text-[10px] font-black tracking-[0.4em] text-indigo-300 opacity-60 break-keep">눌러서 펼치기</div>
+            <div className="text-[13px] font-black tracking-[0.4em] text-indigo-300 opacity-60 break-keep">눌러서 펼치기</div>
             <div className="absolute top-6 left-6 w-8 h-8 border-t-2 border-l-2 border-indigo-500/20 rounded-tl-xl" />
             <div className="absolute bottom-6 right-6 w-8 h-8 border-b-2 border-r-2 border-indigo-500/20 rounded-br-xl" />
           </div>
@@ -113,7 +114,7 @@ function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard
             <div className={`absolute inset-0 bg-gradient-to-br ${effect.bg} opacity-20 rounded-[2.5rem]`} />
 
             <div className="flex items-center justify-between relative z-10 mb-1">
-              <div className={`px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[8px] font-black uppercase tracking-widest ${effect.color}`}>
+              <div className={`px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[13px] font-black uppercase tracking-widest ${effect.color}`}>
                 {card.position}
               </div>
               <Icon className={`w-4 h-4 ${effect.color} opacity-40`} />
@@ -122,17 +123,24 @@ function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard
             <div className="relative z-10">
               <h4 className="text-xl font-black text-white tracking-tight truncate">{card.name_kr}</h4>
               <div className="flex items-center gap-2">
-                <span className={`text-[9px] font-black uppercase tracking-widest ${card.isReversed ? "text-rose-400" : "text-emerald-400"}`}>
+                <span className={`text-[13px] font-black uppercase tracking-widest ${card.isReversed ? "text-rose-400" : "text-emerald-400"}`}>
                   {card.isReversed ? "역방향" : "정방향"}
                 </span>
               </div>
             </div>
 
             <div className="relative flex-1 min-h-[200px] mt-2 mb-2 rounded-xl overflow-hidden border border-slate-700/50 bg-slate-950">
-              <div className="absolute inset-0 flex items-center justify-center p-4">
-                <p className="text-[10px] text-slate-600 font-mono text-center opacity-50">
-                  이미지 준비 중<br />{card.code}
-                </p>
+              {/* 그림 파일 없이 SVG 로 직접 그린다. 예전에는 "이미지 준비 중"
+                  글자만 떠서 카드를 뽑아도 뽑은 느낌이 안 났다. */}
+              <div className="absolute inset-0">
+                <TarotCardArt
+                  suit={card.suit}
+                  number={card.number}
+                  rank={card.rank}
+                  arcana={card.arcana}
+                  sequence={card.sequence}
+                  isReversed={card.isReversed}
+                />
               </div>
               {card.imageUrl ? (
                 <Image
@@ -148,12 +156,12 @@ function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard
               ) : null}
             </div>
 
-            <p className="text-[11px] text-slate-300 leading-relaxed font-medium relative z-10 line-clamp-3">
+            <p className="text-[13px] text-slate-300 leading-relaxed font-medium relative z-10 line-clamp-3">
               {card.meaning}
             </p>
 
             <div className="pt-2 border-t border-white/5 flex items-center justify-between mt-auto">
-              <div className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">
+              <div className="text-[13px] text-slate-500 font-bold uppercase tracking-widest">
                 {toSuitLabelKo(card.suit)}
               </div>
               <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
@@ -196,7 +204,7 @@ function ResultSummaryCard({ title, body, icon: Icon, tone }: { title: string; b
         <div className="p-2 rounded-xl bg-white/10">
           <Icon className="w-5 h-5 text-white" />
         </div>
-        <h3 className="text-xs font-black tracking-[0.2em] uppercase text-white/90">{title}</h3>
+        <h3 className="text-sm font-black tracking-[0.2em] uppercase text-white/90">{title}</h3>
       </div>
       <p className="text-sm leading-7 text-slate-200 font-medium">{body}</p>
     </article>
@@ -367,7 +375,7 @@ export default function TarotPage() {
           </button>
 
           <div className="text-center space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-[0.24em] border border-indigo-500/20">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[13px] font-black uppercase tracking-[0.24em] border border-indigo-500/20">
               <Compass className="w-3 h-3" /> Tarot Oracle v1.0
             </div>
             <h1 className="text-4xl font-black tracking-tighter uppercase text-white leading-none break-keep">타로 인사이트</h1>
@@ -387,7 +395,7 @@ export default function TarotPage() {
             </div>
             <div>
               <h2 className="text-2xl font-black tracking-tight uppercase text-white break-keep">과거/현재/미래 스프레드</h2>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1 break-keep">심층 심리 및 운 흐름 분석</p>
+              <p className="text-[13px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1 break-keep">심층 심리 및 운 흐름 분석</p>
             </div>
           </div>
 
@@ -398,15 +406,15 @@ export default function TarotPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <article className="p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
-              <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">변칙성</div>
+              <div className="text-[13px] text-slate-500 font-black uppercase tracking-widest mb-1">변칙성</div>
               <div className="text-xl font-black text-rose-300">역방향 {spreadPulse.reversedRate}</div>
             </article>
             <article className="p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
-              <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">에너지 밀도</div>
+              <div className="text-[13px] text-slate-500 font-black uppercase tracking-widest mb-1">에너지 밀도</div>
               <div className="text-xl font-black text-indigo-300">메이저 {spreadPulse.majorCount}장</div>
             </article>
             <article className="p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
-              <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">흐름 성향</div>
+              <div className="text-[13px] text-slate-500 font-black uppercase tracking-widest mb-1">흐름 성향</div>
               <div className={`text-xl font-black ${toneColor(spreadPulse.flowTone)}`}>{spreadPulse.flowTone}</div>
             </article>
           </div>
@@ -442,7 +450,7 @@ export default function TarotPage() {
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="mt-6 text-center text-xs text-indigo-300 font-bold uppercase tracking-widest"
+              className="mt-6 text-center text-sm text-indigo-300 font-bold uppercase tracking-widest"
             >
               {status}
             </motion.p>
@@ -453,7 +461,7 @@ export default function TarotPage() {
           <>
             <div className="mt-16 flex items-center gap-4 justify-center">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-indigo-500/30" />
-              <div className="px-6 py-2 rounded-full border border-indigo-500/20 bg-indigo-500/5 text-[10px] font-black text-indigo-300 uppercase tracking-[0.4em] flex items-center gap-2 backdrop-blur-xl shadow-lg shadow-indigo-500/10">
+              <div className="px-6 py-2 rounded-full border border-indigo-500/20 bg-indigo-500/5 text-[13px] font-black text-indigo-300 uppercase tracking-[0.4em] flex items-center gap-2 backdrop-blur-xl shadow-lg shadow-indigo-500/10">
                 <Eye className="w-3.5 h-3.5" /> Ritual Revelation
               </div>
               <div className="h-px flex-1 bg-gradient-to-l from-transparent to-indigo-500/30" />
@@ -484,7 +492,7 @@ export default function TarotPage() {
                 >
                   <div className="flex items-center gap-4 justify-center">
                     <div className="h-px flex-1 bg-gradient-to-r from-transparent to-emerald-500/30" />
-                    <div className="px-6 py-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 text-[10px] font-black text-emerald-300 uppercase tracking-[0.4em] flex items-center gap-2 backdrop-blur-xl">
+                    <div className="px-6 py-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 text-[13px] font-black text-emerald-300 uppercase tracking-[0.4em] flex items-center gap-2 backdrop-blur-xl">
                       <Sparkles className="w-3.5 h-3.5" /> Insight & Analysis
                     </div>
                     <div className="h-px flex-1 bg-gradient-to-l from-transparent to-emerald-500/30" />
@@ -528,8 +536,8 @@ export default function TarotPage() {
                             className="group relative pl-6 py-2"
                           >
                             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-indigo-500 opacity-40 group-hover:opacity-100 transition-opacity" />
-                            <div className="text-xs font-black text-slate-100 group-hover:text-indigo-300 transition-colors uppercase tracking-wider">{entry.title}</div>
-                            <div className="text-[10px] text-slate-400 mt-1 font-medium">{entry.signal}</div>
+                            <div className="text-sm font-black text-slate-100 group-hover:text-indigo-300 transition-colors uppercase tracking-wider">{entry.title}</div>
+                            <div className="text-[13px] text-slate-400 mt-1 font-medium">{entry.signal}</div>
                           </motion.div>
                         ))}
                       </div>
@@ -548,7 +556,7 @@ export default function TarotPage() {
                       </p>
                       <div className="pt-4 flex flex-col gap-3">
                         <AIIntelligenceBadge model="TAROT_ENGINE_V2" isEnsemble={true} />
-                        <div className="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">Validated by High-Precision Oracle Logic</div>
+                        <div className="text-[13px] text-slate-500 font-bold uppercase tracking-[0.2em]">Validated by High-Precision Oracle Logic</div>
                       </div>
                     </div>
                   </section>
@@ -570,7 +578,7 @@ export default function TarotPage() {
               <p className="text-sm font-black uppercase tracking-[0.5em] text-slate-300">
                 의식을 기다리는 중
               </p>
-              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">
+              <p className="text-[13px] text-slate-500 font-bold uppercase tracking-[0.2em]">
                 신비로운 조언이 당신의 터치를 기다립니다
               </p>
             </div>

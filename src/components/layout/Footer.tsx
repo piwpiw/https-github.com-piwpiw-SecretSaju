@@ -31,7 +31,7 @@ export function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="font-black text-xs mb-4 uppercase tracking-[0.22em] text-foreground">서비스</h4>
+                        <h4 className="font-black text-sm mb-4 uppercase tracking-[0.22em] text-foreground">서비스</h4>
                         <ul className="grid grid-cols-2 gap-3 text-sm">
                             <li><Link href="/luck" className="text-slate-300 hover:text-white transition-colors">운세/부적</Link></li>
                             <li><Link href="/destiny" className="text-slate-300 hover:text-white transition-colors">사주/궁합</Link></li>
@@ -45,7 +45,7 @@ export function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="font-black text-xs mb-4 uppercase tracking-[0.22em] text-foreground">정보</h4>
+                        <h4 className="font-black text-sm mb-4 uppercase tracking-[0.22em] text-foreground">정보</h4>
                         <ul className="space-y-3 text-sm">
                             <li><Link href="/faq" className="text-slate-300 hover:text-white transition-colors">{t('footer.faq') || '자주 묻는 질문'}</Link></li>
                             <li><Link href="/terms" className="text-slate-300 hover:text-white transition-colors">{t('footer.terms') || '이용약관'}</Link></li>
@@ -57,7 +57,7 @@ export function Footer() {
                 </div>
 
                 <div className="flex flex-col gap-2 border-t border-white/10 pt-5">
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-black text-muted tracking-[0.12em]">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-black text-muted tracking-[0.12em]">
                         <Link href="/terms" className="hover:text-white transition-colors">이용약관</Link>
                         <span className="w-1 h-1 rounded-full bg-slate-500/60"></span>
                         <Link href="/privacy" className="hover:text-white transition-colors">개인정보처리방침</Link>
@@ -67,7 +67,7 @@ export function Footer() {
                         <Link href="/custom/partnership" className="hover:text-white transition-colors">광고 및 제휴</Link>
                     </div>
 
-                <div className="text-[11px] leading-relaxed text-slate-400 break-keep">
+                <div className="text-[13px] leading-relaxed text-slate-400 break-keep">
                         <p className="font-black text-foreground mb-1">보헤미안 스튜디오 (Bohemian Studio)</p>
                         <p>대표: 박인혁 | 사업자등록번호: 123-45-67890 | 통신판매업신고: 2026-서울강남-0000호</p>
                         <p className="mt-1">주소: 서울특별시 강남구 테헤란로 123, 보헤미안 스튜디오</p>
@@ -79,7 +79,7 @@ export function Footer() {
                 </div>
 
                 <div className="text-right">
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md font-mono text-muted">v4.5.1 (시크릿사주)</span>
+                    <span className="text-sm px-2 py-1 bg-white/5 rounded-md font-mono text-muted">v4.5.1 (시크릿사주)</span>
                 </div>
             </div>
         </footer>

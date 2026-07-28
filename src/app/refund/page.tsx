@@ -87,11 +87,11 @@ export default function RefundPage() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
                 <div className="space-y-2">
-                  <p className="text-xs text-muted uppercase font-bold tracking-widest leading-none">문의 경로</p>
+                  <p className="text-sm text-muted uppercase font-bold tracking-widest leading-none">문의 경로</p>
                   <p className="text-primary font-black text-2xl break-all">/inquiry</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-xs text-muted uppercase font-bold tracking-widest leading-none">처리 시간</p>
+                  <p className="text-sm text-muted uppercase font-bold tracking-widest leading-none">처리 시간</p>
                   <p className="text-foreground font-black text-2xl">영업일 기준 순차 처리</p>
                 </div>
               </div>
@@ -101,7 +101,7 @@ export default function RefundPage() {
               <span className="text-sm text-muted font-bold tracking-widest break-keep">자산 보호</span>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/20">
                 <ShieldAlert className="w-5 h-5 text-muted" />
-                <span className="text-xs font-black text-muted tracking-widest break-keep">검증된 결제만</span>
+                <span className="text-sm font-black text-muted tracking-widest break-keep">검증된 결제만</span>
               </div>
             </div>
           </div>

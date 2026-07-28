@@ -87,7 +87,7 @@ export default function DestinyPage() {
           </button>
 
           <div className="text-center space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-[0.24em] border border-indigo-500/20">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[13px] font-black uppercase tracking-[0.24em] border border-indigo-500/20">
               <Compass className="w-3 h-3" /> 운명 연결도
             </div>
             <h1 className="text-4xl font-black tracking-tighter uppercase text-white leading-none">사주 & 운명</h1>
@@ -99,7 +99,7 @@ export default function DestinyPage() {
         <div className="space-y-16">
           <section className="space-y-6">
             <div className="flex items-center justify-between px-2">
-              <h3 className="text-xs font-black text-slate-500 tracking-[0.3em] break-keep">운명의 흐름</h3>
+              <h3 className="text-sm font-black text-slate-500 tracking-[0.3em] break-keep">운명의 흐름</h3>
               <LayoutGrid className="w-4 h-4 text-slate-700" />
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -115,7 +115,7 @@ export default function DestinyPage() {
                       <Icon className="w-6 h-6" />
                     </div>
                     <h4 className="text-sm font-black text-white mb-1">{item.label}</h4>
-                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">{item.desc}</p>
+                    <p className="text-[13px] text-slate-500 font-bold uppercase tracking-tighter">{item.desc}</p>
                   </Link>
                 );
               })}
@@ -124,7 +124,7 @@ export default function DestinyPage() {
 
           <section className="space-y-6">
             <div className="flex items-center justify-between px-2">
-              <h3 className="text-xs font-black text-slate-500 tracking-[0.3em] break-keep">관계 신호</h3>
+              <h3 className="text-sm font-black text-slate-500 tracking-[0.3em] break-keep">관계 신호</h3>
               <Heart className="w-4 h-4 text-rose-500/50" />
             </div>
             <div className="space-y-4">
@@ -147,13 +147,13 @@ export default function DestinyPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
                         <h4 className={cn("text-lg font-black", item.highlight ? "text-rose-400" : "text-white")}>{item.title}</h4>
-                        {item.highlight && <span className="px-2 py-0.5 bg-rose-600 text-white text-[8px] font-black rounded-full tracking-widest break-keep">프리미엄</span>}
+                        {item.highlight && <span className="px-2 py-0.5 bg-rose-600 text-white text-[13px] font-black rounded-full tracking-widest break-keep">프리미엄</span>}
                       </div>
-                      <p className="text-xs text-slate-400 font-medium leading-relaxed">{item.desc}</p>
+                      <p className="text-sm text-slate-400 font-medium leading-relaxed">{item.desc}</p>
                     </div>
                     <ArrowRight className="w-6 h-6 text-slate-600 group-hover:text-white transition-colors" />
                     {item.jelly && (
-                      <div className="absolute top-4 right-8 flex items-center gap-1.5 px-3 py-1 bg-black/40 rounded-full border border-white/5 text-[9px] font-black text-rose-400 uppercase">
+                      <div className="absolute top-4 right-8 flex items-center gap-1.5 px-3 py-1 bg-black/40 rounded-full border border-white/5 text-[13px] font-black text-rose-400 uppercase">
                         <Zap className="w-3 h-3 fill-rose-400" /> {item.jelly} Jelly
                       </div>
                     )}
@@ -166,7 +166,7 @@ export default function DestinyPage() {
 
         <div className="mt-24 p-5 sm:p-8 bg-indigo-600/5 rounded-[2rem] border border-indigo-500/10 text-center space-y-4">
           <Shield className="w-8 h-8 text-indigo-500 mx-auto" />
-          <p className="text-xs text-slate-500 font-bold uppercase tracking-[0.2em] leading-relaxed">
+          <p className="text-sm text-slate-500 font-bold uppercase tracking-[0.2em] leading-relaxed">
             운명은 예측이 아닌 준비와 행동을 통해 완성됩니다.<br />자신의 소신과 현명한 판단과 함께 하세요.
           </p>
         </div>

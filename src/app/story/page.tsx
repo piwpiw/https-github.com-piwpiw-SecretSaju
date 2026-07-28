@@ -50,7 +50,7 @@ export default function StoryPage() {
             <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
             <div className="w-full md:w-1/2 bg-surface/50 border-r border-border-color p-6 sm:p-9 flex flex-col justify-center relative z-10">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 rounded-full text-primary font-bold text-xs tracking-widest mb-6 w-fit break-keep">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 rounded-full text-primary font-bold text-sm tracking-widest mb-6 w-fit break-keep">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                 에디터 추천
               </div>
@@ -93,7 +93,7 @@ export default function StoryPage() {
                 className="flex flex-col h-full p-8 bg-background border border-border-color rounded-4xl hover:border-primary/50 hover:bg-surface transition-all group shadow-sm hover:shadow-xl"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <span className="text-xs font-black text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">
+                  <span className="text-sm font-black text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">
                     {story.category}
                   </span>
                   <ArrowLeft className="w-5 h-5 text-muted rotate-[135deg] group-hover:text-primary group-hover:scale-110 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />

@@ -26,7 +26,7 @@ export default async function AdminDashboardPage() {
           </div>
           <div>
           <h1 className="text-2xl font-black text-white tracking-widest uppercase">시크릿사주 // 코어</h1>
-          <p className="text-xs text-slate-500 mt-1">관리자 인증 허브 [v4.0.1]</p>
+          <p className="text-sm text-slate-500 mt-1">관리자 인증 허브 [v4.0.1]</p>
           </div>
         </div>
         <div className="text-right flex flex-col items-end">
@@ -37,7 +37,7 @@ export default async function AdminDashboardPage() {
             </span>
             <span className="text-emerald-400 font-bold text-sm">모든_시스템_정상</span>
           </div>
-            <span className="text-xs text-slate-600">지역: ap-northeast-2</span>
+            <span className="text-sm text-slate-600">지역: ap-northeast-2</span>
         </div>
       </div>
 
@@ -60,7 +60,7 @@ export default async function AdminDashboardPage() {
                 {node.icon}
               </div>
               <span
-                className={`text-xs px-2 py-1 rounded-full border ${
+                className={`text-sm px-2 py-1 rounded-full border ${
                   node.status === 'operational'
                     ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
                     : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
@@ -73,7 +73,7 @@ export default async function AdminDashboardPage() {
             <h3 className="text-sm font-bold text-white mb-1 group-hover:text-slate-200 transition-colors">
               {node.name}
             </h3>
-            <div className="flex items-center justify-between text-xs mt-4">
+            <div className="flex items-center justify-between text-sm mt-4">
               <span className="text-slate-500">Latency</span>
               <span className="font-bold text-slate-300">{node.ping}</span>
             </div>
@@ -86,7 +86,7 @@ export default async function AdminDashboardPage() {
         <div className="bg-black/40 border border-white/5 rounded-2xl overflow-hidden backdrop-blur-md">
           <table className="w-full text-left text-sm text-slate-400">
             <caption className="sr-only">System health event history list</caption>
-            <thead className="bg-white/5 text-xs uppercase text-slate-500 border-b border-white/5">
+            <thead className="bg-white/5 text-sm uppercase text-slate-500 border-b border-white/5">
               <tr>
                 <th scope="col" className="px-6 py-4 font-medium">시간</th>
                 <th scope="col" className="px-6 py-4 font-medium">등급</th>
@@ -95,18 +95,18 @@ export default async function AdminDashboardPage() {
             </thead>
             <tbody className="divide-y divide-white/5">
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 font-mono text-xs">2026-02-26 09:55:12</td>
-                <td className="px-6 py-4"><span className="text-sky-400 text-xs px-2 py-1 bg-sky-500/10 rounded border border-sky-500/20">정보</span></td>
+                <td className="px-6 py-4 font-mono text-sm">2026-02-26 09:55:12</td>
+                <td className="px-6 py-4"><span className="text-sky-400 text-sm px-2 py-1 bg-sky-500/10 rounded border border-sky-500/20">정보</span></td>
                 <td className="px-6 py-4">PWA 매니페스트 주입이 완료되었습니다.</td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 font-mono text-xs">2026-02-26 09:42:05</td>
-                <td className="px-6 py-4"><span className="text-amber-400 text-xs px-2 py-1 bg-amber-500/10 rounded border border-amber-500/20">경고</span></td>
+                <td className="px-6 py-4 font-mono text-sm">2026-02-26 09:42:05</td>
+                <td className="px-6 py-4"><span className="text-amber-400 text-sm px-2 py-1 bg-amber-500/10 rounded border border-amber-500/20">경고</span></td>
                 <td className="px-6 py-4">토스 결제 위젯 타임아웃(150ms). 대체 처리 실행.</td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 font-mono text-xs">2026-02-26 09:10:33</td>
-                <td className="px-6 py-4"><span className="text-emerald-400 text-xs px-2 py-1 bg-emerald-500/10 rounded border border-emerald-500/20">성공</span></td>
+                <td className="px-6 py-4 font-mono text-sm">2026-02-26 09:10:33</td>
+                <td className="px-6 py-4"><span className="text-emerald-400 text-sm px-2 py-1 bg-emerald-500/10 rounded border border-emerald-500/20">성공</span></td>
                 <td className="px-6 py-4">보석 최적화 시스템이 배포되었습니다.</td>
               </tr>
             </tbody>

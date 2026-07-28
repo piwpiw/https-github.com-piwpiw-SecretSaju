@@ -106,7 +106,7 @@ export default function ReferralCard({ className = '' }: ReferralCardProps) {
         <div className="space-y-4">
           <div className="flex items-center justify-between p-4 rounded-2xl bg-background border border-border-color">
             <div>
-              <p className="text-xs text-muted font-bold uppercase tracking-widest mb-1">초대 코드</p>
+              <p className="text-sm text-muted font-bold uppercase tracking-widest mb-1">초대 코드</p>
               <p className="text-3xl font-black text-primary tracking-[0.2em]">{code}</p>
             </div>
             <motion.button
@@ -139,7 +139,7 @@ export default function ReferralCard({ className = '' }: ReferralCardProps) {
 
       {error && <p role="alert" className="mt-4 text-sm text-rose-400 text-center">{error}</p>}
 
-      <p className="mt-6 text-xs text-muted/60 text-center leading-relaxed">초대 코드는 신규 사용자 1회만 유효하며, 본인 초대는 제외됩니다.</p>
+      <p className="mt-6 text-sm text-muted/60 text-center leading-relaxed">초대 코드는 신규 사용자 1회만 유효하며, 본인 초대는 제외됩니다.</p>
     </motion.div>
   );
 }

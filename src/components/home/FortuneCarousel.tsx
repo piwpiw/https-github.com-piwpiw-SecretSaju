@@ -91,7 +91,7 @@ export default function FortuneCarousel() {
                                             <Zap className="w-3.5 h-3.5 fill-indigo-500 text-indigo-500 animate-pulse" />
                                         )}
                                     </div>
-                                    <p className="text-xs text-slate-400 leading-relaxed font-medium transition-colors group-hover:text-slate-200">{item.desc}</p>
+                                    <p className="text-sm text-slate-400 leading-relaxed font-medium transition-colors group-hover:text-slate-200">{item.desc}</p>
                                 </div>
                             </div>
 

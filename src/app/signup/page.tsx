@@ -21,7 +21,7 @@ export default function SignupPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="relative z-10 max-w-md w-full rounded-3xl border border-white/10 bg-slate-900/60 backdrop-blur-xl p-7"
             >
-                <p className="text-[11px] font-black tracking-[0.18em] text-emerald-200 mb-2">가입 안내</p>
+                <p className="text-[13px] font-black tracking-[0.18em] text-emerald-200 mb-2">가입 안내</p>
                 <h1 className="text-3xl font-black leading-tight">회원가입</h1>
                 <p className="mt-2 text-sm text-slate-300">소셜 계정으로 바로 가입하고 사주 분석을 시작하세요.</p>
                 <div className="mt-5 text-sm text-slate-300">
@@ -31,7 +31,7 @@ export default function SignupPage() {
                 <button
                     type="button"
                     onClick={() => router.push('/')}
-                    className="mt-6 px-4 py-2 rounded-lg border border-white/15 text-xs font-bold text-slate-300 hover:text-white hover:bg-white/10"
+                    className="mt-6 px-4 py-2 rounded-lg border border-white/15 text-sm font-bold text-slate-300 hover:text-white hover:bg-white/10"
                 >
                     홈으로 이동
                 </button>

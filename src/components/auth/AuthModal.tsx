@@ -453,7 +453,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
 
                                 {authError && (
                                     <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 mb-6">
-                                        <p className="text-xs font-bold text-rose-400">{AUTH_ERROR_MESSAGES[authError] || AUTH_ERROR_MESSAGES.default}</p>
+                                        <p className="text-sm font-bold text-rose-400">{AUTH_ERROR_MESSAGES[authError] || AUTH_ERROR_MESSAGES.default}</p>
                                     </div>
                                 )}
 
@@ -491,7 +491,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
 
                                 <div className="flex items-center gap-2 my-5">
                                     <span className="h-px flex-1 bg-border-color" />
-                                    <span className="text-xs text-muted font-black">또는</span>
+                                    <span className="text-sm text-muted font-black">또는</span>
                                     <span className="h-px flex-1 bg-border-color" />
                                 </div>
 
@@ -529,12 +529,12 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
 
                                     <AnimatePresence mode="wait">
                                         {emailError && (
-                                            <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="text-xs text-rose-400 font-bold">
+                                            <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="text-sm text-rose-400 font-bold">
                                                 {emailError}
                                             </motion.p>
                                         )}
                                         {emailMessage && (
-                                            <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="text-xs text-emerald-400 font-bold">
+                                            <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="text-sm text-emerald-400 font-bold">
                                                 {emailMessage}
                                             </motion.p>
                                         )}

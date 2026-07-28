@@ -93,7 +93,7 @@ export default function AIDreamParser() {
                         {keywords.map((kw) => (
                             <div key={kw} className="px-4 py-3 rounded-2xl bg-white/5 border border-white/5 flex flex-col items-center justify-center group hover:bg-white/10 transition-colors">
                                 <Sparkles className="w-3.5 h-3.5 text-indigo-400 mb-2 opacity-50 group-hover:opacity-100" />
-                                <span className="text-[11px] font-black text-white">{kw}</span>
+                                <span className="text-[13px] font-black text-white">{kw}</span>
                             </div>
                         ))}
                     </motion.div>

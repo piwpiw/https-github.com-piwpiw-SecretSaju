@@ -207,7 +207,7 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
                                         })}
                                     </select>
                                 </div>
-                                <p className="text-[11px] text-slate-500 mt-2 text-center">시간이 모호하면 주변 사람의 기억 범위를 기준으로 입력하세요</p>
+                                <p className="text-[13px] text-slate-500 mt-2 text-center">시간이 모호하면 주변 사람의 기억 범위를 기준으로 입력하세요</p>
                             </motion.div>
                         )}
                     </AnimatePresence>

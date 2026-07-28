@@ -231,26 +231,26 @@ function DashboardContent() {
 
                 <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-20">
                     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-muted">연결 수</p>
+                        <p className="text-sm font-black uppercase tracking-[0.2em] text-muted">연결 수</p>
                         <p className="mt-3 text-4xl font-black text-foreground">{profiles.length}명</p>
                         <p className="text-sm text-muted mt-2">본인 포함 인연 관계 수</p>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-muted">평균 궁합</p>
+                        <p className="text-sm font-black uppercase tracking-[0.2em] text-muted">평균 궁합</p>
                         <p className="mt-3 text-4xl font-black text-foreground">{avgScore}%</p>
                         <div className="mt-4 h-2 bg-background rounded-full overflow-hidden border border-border/40">
                             <motion.div style={{ width: `${Math.max(avgScore, 5)}%` }} initial={{ width: 0 }} animate={{ width: `${Math.max(avgScore, 5)}%` }} className="h-full bg-gradient-to-r from-cyan-400 to-indigo-500" />
                         </div>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-muted">해금률</p>
+                        <p className="text-sm font-black uppercase tracking-[0.2em] text-muted">해금률</p>
                         <p className="mt-3 text-4xl font-black text-foreground">{unlockedRate}%</p>
                         <div className="mt-4 h-2 bg-background rounded-full overflow-hidden border border-border/40">
                             <div className={`h-full ${unlockedRate >= 70 ? 'bg-emerald-400' : unlockedRate >= 40 ? 'bg-yellow-400' : 'bg-rose-400'}`} style={{ width: `${unlockedRate}%` }} />
                         </div>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-muted">메인 프로필</p>
+                        <p className="text-sm font-black uppercase tracking-[0.2em] text-muted">메인 프로필</p>
                         <p className="mt-3 text-xl font-black text-foreground">{mainProfile.name}</p>
                         <p className="text-sm text-muted mt-2">관계 분석 기준점</p>
                     </motion.div>
@@ -403,7 +403,7 @@ export default function DashboardPage() {
             <div className="min-h-screen bg-[#050505] flex items-center justify-center">
                 <div className="text-center space-y-6">
                     <Loader2 className="w-16 h-16 animate-spin mx-auto text-primary" />
-                    <p className="text-slate-500 font-black tracking-widest uppercase text-xs">Synchronizing Destiny Web...</p>
+                    <p className="text-slate-500 font-black tracking-widest uppercase text-sm">Synchronizing Destiny Web...</p>
                 </div>
             </div>
         }>

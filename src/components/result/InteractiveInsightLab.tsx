@@ -136,7 +136,7 @@ export default function InteractiveInsightLab({ elements, tenGods, gangyak, focu
     <section aria-labelledby={`${baseId}-title`} className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-7">
       <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-200">Interactive Insight Lab</p>
+          <p className="text-sm font-black uppercase tracking-[0.28em] text-cyan-200">Interactive Insight Lab</p>
           <h3 id={`${baseId}-title`} className="mt-2 text-xl md:text-2xl font-black text-white">결과 차트 실험실</h3>
           <p className="mt-2 text-sm text-slate-200">
             같은 데이터라도 관점을 바꾸면 해석이 달라집니다. 연애, 재물, 직업 관점으로 다시 읽어보세요.
@@ -156,7 +156,7 @@ export default function InteractiveInsightLab({ elements, tenGods, gangyak, focu
                 aria-controls={`${baseId}-${item.key}-panel`}
                 onClick={() => setTab(item.key)}
                 className={cn(
-                  "rounded-full border px-4 py-2 text-xs font-black uppercase tracking-[0.22em] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950",
+                  "rounded-full border px-4 py-2 text-sm font-black uppercase tracking-[0.22em] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950",
                   selected
                     ? "border-cyan-300/50 bg-cyan-400/15 text-cyan-50"
                     : "border-white/15 bg-black/20 text-slate-200 hover:text-white",
@@ -180,7 +180,7 @@ export default function InteractiveInsightLab({ elements, tenGods, gangyak, focu
               aria-pressed={focus === item.key}
               onClick={() => onFocusChange(item.key)}
               className={cn(
-                "rounded-full border px-3 py-1.5 text-[12px] font-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950",
+                "rounded-full border px-3 py-1.5 text-[13px] font-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950",
                 focus === item.key
                   ? "border-indigo-300/50 bg-indigo-400/15 text-indigo-50"
                   : "border-white/15 bg-black/20 text-slate-200 hover:text-white",
@@ -245,7 +245,7 @@ export default function InteractiveInsightLab({ elements, tenGods, gangyak, focu
                         <div className="flex items-center justify-between gap-3">
                           <div>
                             <p className="text-sm font-black text-white">{item.label}</p>
-                            <p className="mt-1 text-xs text-slate-300">{item.meaning}</p>
+                            <p className="mt-1 text-sm text-slate-300">{item.meaning}</p>
                           </div>
                           <p className="text-lg font-black text-cyan-50">{item.score}</p>
                         </div>
@@ -265,7 +265,7 @@ export default function InteractiveInsightLab({ elements, tenGods, gangyak, focu
 
               {elementDetail ? (
                 <aside className="rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4" aria-live="polite">
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-100">{elementDetail.label} 집중 해설</p>
+                  <p className="text-sm font-black uppercase tracking-[0.2em] text-cyan-100">{elementDetail.label} 집중 해설</p>
                   <p className="mt-2 text-sm text-slate-100">
                     {getFocusComment(
                       focus,
@@ -327,8 +327,8 @@ export default function InteractiveInsightLab({ elements, tenGods, gangyak, focu
                             aria-hidden="true"
                           />
                           <div className="text-center">
-                            <p className={cn("text-[11px] font-black", active ? "text-white" : "text-slate-200")}>{item.label}</p>
-                            <p className="text-[11px] text-slate-300">{item.value}%</p>
+                            <p className={cn("text-[13px] font-black", active ? "text-white" : "text-slate-200")}>{item.label}</p>
+                            <p className="text-[13px] text-slate-300">{item.value}%</p>
                           </div>
                         </button>
                       );
@@ -337,7 +337,7 @@ export default function InteractiveInsightLab({ elements, tenGods, gangyak, focu
                 </figure>
 
                 <aside className="rounded-3xl border border-white/10 bg-black/20 p-5" aria-live="polite">
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-100">선택한 십성</p>
+                  <p className="text-sm font-black uppercase tracking-[0.2em] text-fuchsia-100">선택한 십성</p>
                   <p className="mt-2 text-2xl font-black text-white">{tenGodDetail?.label ?? "-"}</p>
                   <p className="mt-3 text-sm text-slate-100">
                     {getFocusComment(focus, "tenGods", tenGodDetail?.label ?? "-", tenGodDetail?.value ?? 0)}
@@ -419,7 +419,7 @@ export default function InteractiveInsightLab({ elements, tenGods, gangyak, focu
                 </div>
 
                 <aside className="rounded-3xl border border-white/10 bg-cyan-400/10 p-5" aria-live="polite">
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-50">선택한 요소</p>
+                  <p className="text-sm font-black uppercase tracking-[0.2em] text-cyan-50">선택한 요소</p>
                   <p className="mt-2 text-2xl font-black text-white">{gangyakDetail?.label ?? "-"}</p>
                   <p className="mt-3 text-sm text-slate-100">{gangyakDetail?.hint ?? "-"}</p>
                   <p className="mt-4 text-5xl font-black text-white">{gangyakDetail?.value ?? 0}</p>

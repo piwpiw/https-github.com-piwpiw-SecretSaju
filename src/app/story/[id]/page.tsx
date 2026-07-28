@@ -37,7 +37,7 @@ export default function StoryDetailPage({ params }: Props) {
             목록으로 돌아가기
           </Link>
 
-          <nav aria-label="스토리 내비게이션" className="text-xs text-muted flex items-center gap-2">
+          <nav aria-label="스토리 내비게이션" className="text-sm text-muted flex items-center gap-2">
             <Link href="/story" className="hover:text-foreground">
               스토리 목록
             </Link>
@@ -49,7 +49,7 @@ export default function StoryDetailPage({ params }: Props) {
         </header>
 
         <article>
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-black text-primary uppercase tracking-widest bg-primary/10">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-black text-primary uppercase tracking-widest bg-primary/10">
             {story.category}
           </span>
           <h1 className="mt-4 text-3xl md:text-5xl font-black leading-tight">{story.title}</h1>

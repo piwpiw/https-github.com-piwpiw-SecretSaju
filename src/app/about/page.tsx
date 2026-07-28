@@ -10,7 +10,7 @@ export default function AboutPage() {
             <div className="max-w-4xl mx-auto px-0 sm:px-6 pt-16 relative z-10">
                 <Link href="/" className="flex items-center gap-3 text-slate-500 hover:text-white transition-all group mb-16">
                     <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                    <span className="text-[10px] font-black tracking-[0.3em] uppercase">돌아가기</span>
+                    <span className="text-[13px] font-black tracking-[0.3em] uppercase">돌아가기</span>
                 </Link>
 
                 <div className="text-center mb-24">
@@ -19,7 +19,7 @@ export default function AboutPage() {
                         animate={{ opacity: 1, scale: 1 }}
                         className="inline-flex px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full mb-6"
                     >
-                        <span className="text-[8px] font-black tracking-[0.4em] text-cyan-400 uppercase">
+                        <span className="text-[13px] font-black tracking-[0.4em] text-cyan-400 uppercase">
                             프로토콜 암호화 활성
                         </span>
                     </motion.div>

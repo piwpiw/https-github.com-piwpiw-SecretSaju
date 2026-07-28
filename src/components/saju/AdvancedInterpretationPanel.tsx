@@ -212,10 +212,10 @@ export default function AdvancedInterpretationPanel({ result, profile, dayAnimal
           <p className="text-sm text-slate-300 mt-1">타 시스템 대비 누락되기 쉬운 만세력 핵심(한자·색상·용어 설명)을 통합했습니다.</p>
         </div>
         <div className="flex items-center rounded-full border border-white/10 bg-black/30 p-1">
-          <button onClick={() => setMode("easy")} className={`px-4 py-1.5 text-xs font-bold rounded-full transition ${mode === "easy" ? "bg-indigo-500 text-white" : "text-slate-300"}`}>
+          <button onClick={() => setMode("easy")} className={`px-4 py-1.5 text-sm font-bold rounded-full transition ${mode === "easy" ? "bg-indigo-500 text-white" : "text-slate-300"}`}>
             쉬운 해석
           </button>
-          <button onClick={() => setMode("expert")} className={`px-4 py-1.5 text-xs font-bold rounded-full transition ${mode === "expert" ? "bg-indigo-500 text-white" : "text-slate-300"}`}>
+          <button onClick={() => setMode("expert")} className={`px-4 py-1.5 text-sm font-bold rounded-full transition ${mode === "expert" ? "bg-indigo-500 text-white" : "text-slate-300"}`}>
             전문 근거
           </button>
         </div>
@@ -226,7 +226,7 @@ export default function AdvancedInterpretationPanel({ result, profile, dayAnimal
           <Sparkles className="w-4 h-4" />
           <p className="text-sm font-bold">프로필 요약</p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
           <div className="rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-slate-200">이름: {profile?.name ?? "-"}</div>
           <div className="rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-slate-200">생일: {formatBirthDate(profile?.birthdate)}</div>
           <div className="rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-slate-200">출생시각: {profile?.birthTime ?? "-"}</div>
@@ -243,23 +243,23 @@ export default function AdvancedInterpretationPanel({ result, profile, dayAnimal
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {normalizedPillars.map((item) => (
             <div key={item.pillar} className="rounded-xl border border-white/10 bg-slate-950/50 p-3">
-              <p className="text-xs font-bold text-slate-300">{item.label}</p>
-              <p className="text-xs text-slate-400 mt-1">천간 십성: {item.stemTenGod}</p>
+              <p className="text-sm font-bold text-slate-300">{item.label}</p>
+              <p className="text-sm text-slate-400 mt-1">천간 십성: {item.stemTenGod}</p>
               <div className={`mt-2 rounded-lg border p-2 ${elementTone(item.stem.element)}`}>
                 <p className="text-2xl font-black leading-none">{item.stem.hanja}</p>
-                <p className="text-xs mt-1">{item.stem.ko} · {item.stem.element}</p>
+                <p className="text-sm mt-1">{item.stem.ko} · {item.stem.element}</p>
               </div>
               <div className={`mt-2 rounded-lg border p-2 ${elementTone(item.branch.element)}`}>
                 <p className="text-2xl font-black leading-none">{item.branch.hanja}</p>
-                <p className="text-xs mt-1">{item.branch.ko} · {item.branch.element}</p>
+                <p className="text-sm mt-1">{item.branch.ko} · {item.branch.element}</p>
               </div>
-              <p className="text-xs text-slate-300 mt-2">지지 십성: {item.branchTenGod}</p>
-              <p className="text-xs text-slate-300">12운성: {item.phase}</p>
+              <p className="text-sm text-slate-300 mt-2">지지 십성: {item.branchTenGod}</p>
+              <p className="text-sm text-slate-300">12운성: {item.phase}</p>
             </div>
           ))}
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+        <div className="mt-3 flex flex-wrap gap-2 text-[13px]">
           {["목", "화", "토", "금", "수"].map((el) => (
             <span key={el} className={`px-2 py-1 rounded-full border ${elementTone(el)}`}>{el} 오행 색상 기준</span>
           ))}
@@ -278,7 +278,7 @@ export default function AdvancedInterpretationPanel({ result, profile, dayAnimal
                 <button
                   key={item.key}
                   onClick={() => setSelectedTerm(item.term)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-bold border transition ${selectedTerm === item.term ? "border-indigo-400 bg-indigo-500/20 text-indigo-100" : "border-white/15 bg-white/5 text-slate-300"}`}
+                  className={`px-3 py-1.5 rounded-full text-sm font-bold border transition ${selectedTerm === item.term ? "border-indigo-400 bg-indigo-500/20 text-indigo-100" : "border-white/15 bg-white/5 text-slate-300"}`}
                 >
                   {item.term}
                 </button>
@@ -287,9 +287,9 @@ export default function AdvancedInterpretationPanel({ result, profile, dayAnimal
             <div className="rounded-xl bg-slate-950/60 border border-white/10 p-3">
               <p className="text-sm font-black text-white">{termGuide.term}{termGuide.hanja ? ` (${termGuide.hanja})` : ""}</p>
               <p className="text-sm text-slate-300 mt-2">{termGuide.plain}</p>
-              <p className="text-xs text-emerald-300 mt-3">강점: {termGuide.strengths.join(", ")}</p>
-              <p className="text-xs text-amber-300 mt-1">주의: {termGuide.cautions.join(", ")}</p>
-              <p className="text-xs text-cyan-300 mt-1">행동 가이드: {termGuide.actionTip}</p>
+              <p className="text-sm text-emerald-300 mt-3">강점: {termGuide.strengths.join(", ")}</p>
+              <p className="text-sm text-amber-300 mt-1">주의: {termGuide.cautions.join(", ")}</p>
+              <p className="text-sm text-cyan-300 mt-1">행동 가이드: {termGuide.actionTip}</p>
             </div>
           </div>
 
@@ -310,11 +310,11 @@ export default function AdvancedInterpretationPanel({ result, profile, dayAnimal
               {sinsalTop.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {sinsalTop.map((item, idx) => (
-                    <span key={`${item.name}-${idx}`} className="px-3 py-1 text-xs rounded-full border border-pink-400/30 bg-pink-500/10 text-pink-100">{item.name ?? item.type}</span>
+                    <span key={`${item.name}-${idx}`} className="px-3 py-1 text-sm rounded-full border border-pink-400/30 bg-pink-500/10 text-pink-100">{item.name ?? item.type}</span>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-slate-400">표시할 신살 데이터가 없습니다.</p>
+                <p className="text-sm text-slate-400">표시할 신살 데이터가 없습니다.</p>
               )}
             </div>
           </div>
@@ -328,11 +328,11 @@ export default function AdvancedInterpretationPanel({ result, profile, dayAnimal
               <ShieldCheck className="w-4 h-4" />
               <p className="text-sm font-bold">해석 근거</p>
             </div>
-            <p className="text-xs text-slate-200 leading-relaxed">
+            <p className="text-sm text-slate-200 leading-relaxed">
               기준: 일간 기준 십성 산출, 지지 기반 12운성, 사주 4기둥 구조, 신살·귀인 패턴을 함께 사용합니다.
               용어는 정통 기준(예: 정재, 편인, 관대, 화개살)을 유지하고 설명만 사용자 친화적으로 제공합니다.
             </p>
-            <p className="text-[11px] text-slate-400 mt-2">엔진: {result.version ?? "-"} | 무결성: {(result.integrity ?? "-").slice(0, 20)}...</p>
+            <p className="text-[13px] text-slate-400 mt-2">엔진: {result.version ?? "-"} | 무결성: {(result.integrity ?? "-").slice(0, 20)}...</p>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
@@ -340,8 +340,8 @@ export default function AdvancedInterpretationPanel({ result, profile, dayAnimal
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {Object.entries(SIBIWOONSEONG_GUIDE).map(([name, desc]) => (
                 <div key={name} className="rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2">
-                  <p className="text-xs font-bold text-slate-100">{name}</p>
-                  <p className="text-xs text-slate-400 mt-1">{desc}</p>
+                  <p className="text-sm font-bold text-slate-100">{name}</p>
+                  <p className="text-sm text-slate-400 mt-1">{desc}</p>
                 </div>
               ))}
             </div>
@@ -356,14 +356,14 @@ export default function AdvancedInterpretationPanel({ result, profile, dayAnimal
                   const fallbackDesc = SINSAL_GUIDE[title] ?? "신살 해석은 관계 맥락과 함께 읽어야 정확합니다.";
                   return (
                     <div key={`sinsal-${idx}`} className="rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2">
-                      <p className="text-xs font-bold text-slate-100">{title} · {item.pillar ?? "-"}주</p>
-                      <p className="text-xs text-slate-300 mt-1">{item.description ?? fallbackDesc}</p>
+                      <p className="text-sm font-bold text-slate-100">{title} · {item.pillar ?? "-"}주</p>
+                      <p className="text-sm text-slate-300 mt-1">{item.description ?? fallbackDesc}</p>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <p className="text-xs text-slate-400">표시할 신살 데이터가 없습니다.</p>
+              <p className="text-sm text-slate-400">표시할 신살 데이터가 없습니다.</p>
             )}
           </div>
         </div>

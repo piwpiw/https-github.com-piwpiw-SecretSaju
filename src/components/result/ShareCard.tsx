@@ -10,13 +10,13 @@ export default function ShareCard({ name = "나의 운명" }: { name?: string })
                     <Sparkles className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-black text-white uppercase tracking-widest mb-2">{name}</h3>
-                <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-8">시크릿 AI 오라클에서 생성</p>
+                <p className="text-[13px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-8">시크릿 AI 오라클에서 생성</p>
 
                 <div className="grid grid-cols-2 gap-4">
-                    <button className="py-4 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-indigo-600 transition-all text-slate-300 hover:text-white group">
+                    <button className="py-4 rounded-xl bg-white/5 border border-white/5 text-[13px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-indigo-600 transition-all text-slate-300 hover:text-white group">
                         <Download className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" /> 이미지 저장
                     </button>
-                    <button className="py-4 rounded-xl bg-indigo-600 text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-indigo-950/40 hover:bg-indigo-700 transition-all">
+                    <button className="py-4 rounded-xl bg-indigo-600 text-[13px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-indigo-950/40 hover:bg-indigo-700 transition-all">
                         <Share2 className="w-3.5 h-3.5" /> 빠른 공유
                     </button>
                 </div>
