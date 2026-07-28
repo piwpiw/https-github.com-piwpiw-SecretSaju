@@ -16,7 +16,6 @@ import { isMockMode } from '@/lib/app/use-mock';
 import { SITE_MENU } from "@/config/site-menu";
 
 export function Nav() {
-  const themeStorageKey = "theme";
   const router = useRouter();
   const pathname = usePathname();
   const { churu, isFreeLaunch } = useWallet();
@@ -55,13 +54,12 @@ export function Nav() {
   const themeLabel = theme === "dark" ? "다크 모드" : "라이트 모드";
   const themeToggleNextLabel = theme === "dark" ? "라이트 모드로 전환" : "다크 모드로 전환";
 
-  useEffect(() => {
-    try {
-      if (typeof window !== "undefined") {
-        localStorage.setItem(themeStorageKey, theme);
-      }
-    } catch { }
-  }, [theme]);
+  // 여기서 테마를 저장하지 않는다.
+  //
+  // 이 effect 는 마운트 직후 ThemeProvider 의 초기값 'dark' 로 한 번 돈다.
+  // ThemeProvider 가 저장된 테마를 복원하기 *전* 이라, 사용자가 골라 둔
+  // 'light' 를 매번 'dark' 로 덮어썼다. 그래서 화이트 모드를 켜도 새로고침
+  // 한 번이면 다크로 돌아갔다. 저장은 ThemeProvider.setTheme 이 이미 한다.
 
   const handleThemeToggle = () => setTheme(theme === "dark" ? "light" : "dark");
 
