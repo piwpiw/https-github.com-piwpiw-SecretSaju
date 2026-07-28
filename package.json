@@ -27,6 +27,8 @@
     "start": "next start",
     "lint": "next lint",
     "qa": "node scripts/qa/zero-script-qa.mjs",
+    "qa:keyboard": "node scripts/qa/keyboard-audit.mjs",
+    "qa:state": "node scripts/qa/state-audit.mjs",
     "mcp:browser": "npx -y @playwright/mcp@latest --headless --isolated",
     "test": "vitest run --config vitest.config.ts",
     "test:watch": "vitest --config vitest.config.ts",

@@ -344,7 +344,11 @@ export default function HomePage() {
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="flex items-center gap-3 px-5 py-3.5 bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl shadow-black/50 group hover:border-indigo-500/30 transition-all active:scale-[0.98]"
+          // 안쪽 input 이 outline-none 이라 포커스 표시가 아예 없었다.
+          // 마우스 hover 만 테두리가 반응하고 키보드로 들어오면 아무 변화가
+          // 없어서, 어디에 커서가 있는지 알 수 없었다. focus-within 으로
+          // hover 와 같은 신호를 준다.
+          className="flex items-center gap-3 px-5 py-3.5 bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl shadow-black/50 group hover:border-indigo-500/30 focus-within:border-indigo-500/60 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all active:scale-[0.98]"
         >
             <form onSubmit={handleSearchSubmit} className="flex items-center gap-3 w-full">
               <Search className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform" />

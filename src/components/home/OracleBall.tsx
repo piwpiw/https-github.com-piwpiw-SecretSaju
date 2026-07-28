@@ -71,12 +71,25 @@ export default function OracleBall({
                 <p className="text-micro-copy opacity-80">{description}</p>
             </div>
 
+            {/*
+              role="button" 만 있고 tabindex 가 없어서 키보드로는 이 공을
+              아예 누를 수 없었다. 마우스 없이 홈에 들어오면 기능이 통째로
+              사라지는 셈이라 tabindex 와 Enter/Space 처리를 붙인다.
+            */}
             <motion.div
                 animate={controls}
                 onClick={handleConsult}
-                className="relative w-64 h-64 mx-auto cursor-pointer mb-12 select-none group/ball"
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        handleConsult();
+                    }
+                }}
+                className="relative w-64 h-64 mx-auto cursor-pointer mb-12 select-none group/ball rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400"
                 role="button"
+                tabIndex={0}
                 aria-label="운세 조언 뽑기"
+                aria-busy={isSpinning}
             >
                 {/* Orbital Rings */}
                 <div className="absolute -inset-4 border border-indigo-500/10 rounded-full animate-rotate-slow opacity-60" />

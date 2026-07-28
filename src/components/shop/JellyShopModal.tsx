@@ -30,6 +30,7 @@ export default function JellyShopModal({
   const titleId = useId();
   const descriptionId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const [selectedTier, setSelectedTier] = useState<string | null>(
     highlightTier || 'pro',
   );
@@ -91,14 +92,58 @@ export default function JellyShopModal({
     }
 
     document.body.style.overflow = 'hidden';
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
     closeButtonRef.current?.focus();
 
-    window.addEventListener('keydown', handleEscapeClose);
+    // Escape 는 있었지만 Tab 을 막는 게 없어서, 결제 모달이 떠 있는 채로
+    // 탭이 뒤 페이지의 버튼들로 새어 나갔다. 화면에는 모달만 보이는데
+    // 포커스는 안 보이는 곳에 가 있으니 키보드로는 쓸 수가 없다.
+    const focusableSelector = [
+      'a[href]', 'button:not([disabled])', 'input:not([disabled])',
+      'select:not([disabled])', 'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])',
+    ].join(',');
+
+    const focusables = () => {
+      const root = dialogRef.current;
+      if (!root) return [] as HTMLElement[];
+      return Array.from(root.querySelectorAll<HTMLElement>(focusableSelector)).filter(
+        (el) => el.offsetParent !== null || el === document.activeElement,
+      );
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const items = focusables();
+      if (items.length === 0) return;
+      const firstItem = items[0];
+      const lastItem = items[items.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      const outside = !dialogRef.current?.contains(active);
+
+      if (event.shiftKey && (active === firstItem || outside)) {
+        event.preventDefault();
+        lastItem.focus();
+      } else if (!event.shiftKey && (active === lastItem || outside)) {
+        event.preventDefault();
+        firstItem.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
     return () => {
       document.body.style.overflow = '';
-      window.removeEventListener('keydown', handleEscapeClose);
+      document.removeEventListener('keydown', onKeyDown);
+      // 닫힐 때 열었던 버튼으로 포커스를 되돌린다.
+      previouslyFocused?.focus?.();
     };
-  }, [handleEscapeClose, isOpen]);
+  }, [isOpen, onClose]);
 
   const handlePurchase = async (tier: PricingTier) => {
     trackPaymentClick(tier.id, tier.price);
@@ -171,6 +216,7 @@ export default function JellyShopModal({
             className="fixed inset-0 z-[71] flex items-center justify-center p-4 pointer-events-none"
           >
             <div
+              ref={dialogRef}
               className="bg-surface rounded-2xl shadow-2xl max-w-2xl w-full pointer-events-auto overflow-hidden border border-white/10"
               onClick={(e) => e.stopPropagation()}
               onKeyDown={handleEscapeClose}

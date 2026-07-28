@@ -396,7 +396,9 @@ export default function NamingPage() {
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 placeholder="예: 김진우"
-                className="w-full bg-black/45 border border-white/10 rounded-2xl px-5 py-4 text-white text-2xl font-black focus:outline-none"
+                // focus:outline-none 만 있고 대체 표시가 없어서, 키보드로
+                // 들어오면 어느 칸에 커서가 있는지 알 수 없었다.
+                className="w-full bg-black/45 border border-white/10 rounded-2xl px-5 py-4 text-white text-2xl font-black focus:outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20"
               />
               <p id="naming-name-help" className="text-[11px] text-slate-400 break-keep">
                 분석을 위해 2자 이상의 한글 이름이 필요합니다.
@@ -415,7 +417,7 @@ export default function NamingPage() {
                 value={hanja}
                 onChange={(event) => setHanja(event.target.value)}
                 placeholder="예: 정宇"
-                className="w-full bg-black/45 border border-white/10 rounded-2xl px-5 py-4 text-cyan-100 text-lg font-bold focus:outline-none"
+                className="w-full bg-black/45 border border-white/10 rounded-2xl px-5 py-4 text-cyan-100 text-lg font-bold focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20"
               />
               <p id="naming-hanja-help" className="text-[11px] text-slate-400 break-keep">
                 한자가 없다면 빈칸으로 둬도 됩니다. 한글/영문 혼합은 피해주세요.
