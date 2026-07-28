@@ -511,7 +511,7 @@ export default function HomePage() {
                     <Compass className="w-3 h-3" /> 핵심 분석 엔진
                   </div>
                   <h3 className="ui-title text-white text-2xl sm:text-3xl font-black italic uppercase tracking-tighter"><span className="text-indigo-500">핵심</span> 사주 분석</h3>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">정확한 태어난 시간에 가까울수록 엔진 정밀도가 수직 상승합니다</p>
+                  <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">정확한 태어난 시간에 가까울수록 엔진 정밀도가 수직 상승합니다</p>
                 </div>
                 <div className="max-w-xl mx-auto space-y-4">
                   <BirthInputRetro onSubmit={handleBirthSubmit} />
