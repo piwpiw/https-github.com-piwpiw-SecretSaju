@@ -66,7 +66,11 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
     const [emailError, setEmailError] = useState('');
     const [authError, setAuthError] = useState<string | null>(null);
 
-    const isOtherLoading = (provider: string): boolean => !!isLoading && isLoading !== provider;
+    // 소셜 버튼들이 `isOtherLoading(provider)` 로 스피너를 그리고 있었다.
+    // 이건 "다른 버튼이 로딩 중"이라는 뜻이라 판정이 뒤집혀 있었다. 구글을
+    // 누르면 구글만 글자를 유지하고 카카오·네이버·MCP 세 개가 동시에 스피너로
+    // 바뀌어서, 로그인이 멈춘 것처럼 보였다. 지금은 각 버튼이 자기 로딩만
+    // 표시한다(isLoading === provider). 나머지는 disabled 로만 잠긴다.
     const isSignupMode = authMode === 'signup';
 
     const AUTH_ERROR_MESSAGES: Record<string, string> = {
@@ -459,21 +463,21 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
                                         disabled={!!isLoading}
                                         className="w-full min-h-[52px] rounded-xl bg-[#FEE500] text-black font-black flex items-center justify-center gap-3"
                                     >
-                                        {isOtherLoading('kakao') ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>카카오 로그인</span>}
+                                        {isLoading === 'kakao' ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>카카오 로그인</span>}
                                     </button>
                                     <button
                                         onClick={handleGoogleLogin}
                                         disabled={!!isLoading}
                                         className="w-full min-h-[52px] rounded-xl bg-white text-black font-black flex items-center justify-center gap-3 border border-border-color"
                                     >
-                                        {isOtherLoading('google') ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>구글 로그인</span>}
+                                        {isLoading === 'google' ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>구글 로그인</span>}
                                     </button>
                                     <button
                                         onClick={handleNaverLogin}
                                         disabled={!!isLoading}
                                         className="w-full min-h-[52px] rounded-xl bg-[#03C75A] text-white font-black flex items-center justify-center gap-3"
                                     >
-                                        {isOtherLoading('naver') ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>네이버 로그인 (준비 중)</span>}
+                                        {isLoading === 'naver' ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>네이버 로그인 (준비 중)</span>}
                                     </button>
                                     <button
                                         onClick={handleMcpLogin}
@@ -481,7 +485,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
                                         className="w-full min-h-[52px] rounded-xl bg-indigo-600 text-white font-black flex items-center justify-center gap-3"
                                     >
                                         <ShieldCheck className="w-5 h-5" />
-                                        {isOtherLoading('mcp') ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>MCP 로그인</span>}
+                                        {isLoading === 'mcp' ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>MCP 로그인</span>}
                                     </button>
                                 </div>
 
