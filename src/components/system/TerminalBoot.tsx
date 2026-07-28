@@ -35,6 +35,10 @@ export default function TerminalBoot({ onComplete }: { onComplete: () => void })
                 <motion.div
                     initial={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
+                    // 이 부트 스플래시는 테마와 무관하게 항상 어둡다(의도된 연출).
+                    // 그래서 글자에 테마 토큰을 쓰면 안 된다 — 가독성 테마의
+                    // text-muted(#374151)를 얹었더니 1.85:1 로 안 보였다.
+                    // 고정 배경에는 고정 밝은 색(slate-400, 7.42:1)을 쓴다.
                     className="fixed inset-0 z-[200] bg-[#0f0f1a] flex flex-col items-center justify-center p-8 overflow-hidden"
                 >
                     <div className="max-w-md w-full text-center">
@@ -47,7 +51,7 @@ export default function TerminalBoot({ onComplete }: { onComplete: () => void })
                                 <span className="text-white text-2xl font-bold">SC</span>
                             </div>
                             <h1 className="text-2xl font-bold text-white">시크릿사주 터미널</h1>
-                            <p className="text-sm text-slate-500 mt-1">운세 분석 부트스트랩</p>
+                            <p className="text-sm text-slate-400 mt-1">운세 분석 부트스트랩</p>
                         </motion.div>
 
                         <div className="space-y-2 text-left mb-8">
@@ -69,13 +73,13 @@ export default function TerminalBoot({ onComplete }: { onComplete: () => void })
                                     className="flex items-center gap-3 text-sm"
                                 >
                                     <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0" />
-                                    <span className="text-slate-500">진행 중...</span>
+                                    <span className="text-slate-400">진행 중...</span>
                                 </motion.div>
                             )}
                         </div>
 
                         <div className="w-full">
-                            <div className="flex justify-between text-xs text-muted mb-2">
+                            <div className="flex justify-between text-xs text-slate-400 mb-2">
                                 <span>진행률</span>
                                 <span>{Math.floor((lineIndex / BOOT_LINES.length) * 100)}%</span>
                             </div>
