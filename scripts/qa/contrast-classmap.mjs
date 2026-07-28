@@ -1,4 +1,4 @@
-// 라이트 테마에서 저대비인 요소를 "어떤 Tailwind 클래스 때문인지"로 집계한다.
+// 저대비 요소를 "어떤 클래스·어떤 배경 때문인지"로 집계하는 진단 도구.
 // 648건을 하나씩 고칠 수는 없으니, 반복되는 원인 클래스를 찾아 거기서 고친다.
 import { chromium } from 'playwright';
 import fs from 'node:fs';
@@ -62,7 +62,31 @@ const COLLECT = () => {
     // 글자색을 정하는 Tailwind 클래스만 골라낸다
     const cls = (typeof el.className === 'string' ? el.className : '').split(/\s+/)
       .filter((c) => /^(text-|placeholder:text-)/.test(c) && !/^text-(xs|sm|base|lg|xl|\[|left|right|center|justify)/.test(c));
-    out.push({ cls: cls.join(' ') || '(클래스 없음)', ratio: Math.round(ratio * 100) / 100, color: s.color });
+
+    // 배경이 밝은지 어두운지가 고칠 대상을 가른다.
+    // - 밝은 배경 + 밝은 글자 → 글자를 토큰으로 바꾼다
+    // - 어두운 배경 + 어두운 글자 → 배경이 테마를 안 따르는 것이다(배경을 고친다)
+    const bgLum = L(b);
+    const bgKind = bgLum > 0.5 ? '밝은배경' : '어두운배경';
+    // 배경을 칠한 조상의 클래스도 남긴다
+    let owner = el; let bgCls = '(?)';
+    while (owner && owner !== document.documentElement.parentElement) {
+      const lay = pc(getComputedStyle(owner).backgroundColor);
+      if (lay && lay.a > 0.5) {
+        bgCls = (typeof owner.className === 'string' ? owner.className : '')
+          .split(/\s+/).filter((c) => /^(bg-|from-|to-)/.test(c)).join(' ') || '(인라인/상속)';
+        break;
+      }
+      owner = owner.parentElement;
+    }
+
+    out.push({
+      cls: cls.join(' ') || '(클래스 없음)',
+      ratio: Math.round(ratio * 100) / 100,
+      color: s.color,
+      bgKind,
+      bgCls,
+    });
   }
   return out;
 };
@@ -79,17 +103,25 @@ for (const route of ROUTES) {
   } catch { continue; }
   await page.waitForTimeout(1200);
   for (const item of await page.evaluate(COLLECT)) {
-    const cur = byClass.get(item.cls) || { n: 0, worst: 99, color: item.color };
+    const key = `${item.bgKind} | ${item.cls}`;
+    const cur = byClass.get(key) || { n: 0, worst: 99, color: item.color, bgs: new Map() };
     cur.n += 1;
     cur.worst = Math.min(cur.worst, item.ratio);
-    byClass.set(item.cls, cur);
+    cur.bgs.set(item.bgCls, (cur.bgs.get(item.bgCls) || 0) + 1);
+    byClass.set(key, cur);
   }
 }
 await browser.close();
 
 const rows = [...byClass.entries()].sort((a, b) => b[1].n - a[1].n);
-console.log(`테마 ${THEME} — 저대비 원인 클래스 (상위 25개)\n`);
-for (const [cls, v] of rows.slice(0, 25)) {
-  console.log(`${String(v.n).padStart(4)}회  최악 ${String(v.worst).padStart(5)}:1  ${v.color.padEnd(20)} ${cls}`);
+console.log(`테마 ${THEME} — 저대비 원인 (상위 20개)\n`);
+for (const [key, v] of rows.slice(0, 20)) {
+  const topBg = [...v.bgs.entries()].sort((a, b) => b[1] - a[1])[0];
+  console.log(`${String(v.n).padStart(4)}회 최악 ${String(v.worst).padStart(5)}:1  ${key}`);
+  console.log(`        글자 ${v.color} / 배경클래스 ${topBg ? topBg[0].slice(0, 60) : '?'}`);
 }
-console.log(`\n총 ${rows.reduce((s, [, v]) => s + v.n, 0)}건 / 서로 다른 클래스 조합 ${rows.length}개`);
+
+const dark = rows.filter(([k]) => k.startsWith('어두운배경')).reduce((s, [, v]) => s + v.n, 0);
+const light = rows.filter(([k]) => k.startsWith('밝은배경')).reduce((s, [, v]) => s + v.n, 0);
+console.log(`\n밝은 배경 위(글자를 고칠 것): ${light}건`);
+console.log(`어두운 배경 위(배경이 테마를 안 따름): ${dark}건`);
