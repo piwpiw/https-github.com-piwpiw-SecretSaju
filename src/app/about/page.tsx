@@ -45,7 +45,7 @@ export default function AboutPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className="premium-card p-10 group bg-white/[0.01] border-white/5"
+                            className="premium-card p-5 sm:p-8 group bg-white/[0.01] border-white/5"
                         >
                             <div className={`mystic-glow ${feature.bg} opacity-0 group-hover:opacity-100 transition-opacity`} />
                             <div className="relative z-10">
@@ -64,7 +64,7 @@ export default function AboutPage() {
                     transition={{ delay: 0.6 }}
                     className="premium-card p-1 border-white/5 bg-white/[0.01]"
                 >
-                    <div className="p-12 text-center relative overflow-hidden">
+                    <div className="p-6 sm:p-9 text-center relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[80px] -mr-32 -mt-32" />
                         <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase mb-4">동기화 시작하기</h2>
                         <p className="text-slate-500 mb-8 max-w-md mx-auto">지금 바로 당신의 고유 주파수를 측정하고 운명의 타래를 분석하세요.</p>

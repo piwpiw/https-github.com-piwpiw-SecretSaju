@@ -161,7 +161,7 @@ function FortuneContent() {
 
       <div className="max-w-3xl mx-auto px-5 py-10 relative z-10">
         {/* Header */}
-        <header className="flex items-center justify-between mb-10">
+        <header className="flex items-center justify-between mb-6">
           <button onClick={() => router.back()}
             className="w-11 h-11 rounded-2xl bg-white/5 border border-white/8 flex items-center justify-center hover:bg-white/10 transition-all group" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-300 group-hover:-translate-x-0.5 transition-transform" />
@@ -181,7 +181,7 @@ function FortuneContent() {
         >
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
 
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Year Selector */}
             <div>
               <label className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-slate-500 mb-4" htmlFor="year-selector">

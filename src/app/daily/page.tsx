@@ -157,7 +157,7 @@ export default function DailyFortunePage() {
       <div className="max-w-2xl mx-auto px-5 py-10 relative z-10">
 
         {/* Nav */}
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex items-center justify-between mb-6">
           <button onClick={() => router.back()}
             className="w-11 h-11 rounded-2xl bg-white/5 border border-white/8 flex items-center justify-center hover:bg-white/10 transition-all group" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-300 group-hover:-translate-x-0.5 transition-transform" />
@@ -208,7 +208,7 @@ export default function DailyFortunePage() {
         <AnimatePresence mode="wait">
           {isLoading ? (
             <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="rounded-[2.5rem] border border-white/8 bg-white/[0.03] p-10 flex flex-col items-center gap-6">
+              className="rounded-[2.5rem] border border-white/8 bg-white/[0.03] p-5 sm:p-8 flex flex-col items-center gap-6">
               <div className="space-y-3 w-full">
                 {[1, 2, 3].map(i => (
                   <div key={i} className={`h-4 bg-white/5 rounded-full animate-pulse ${i === 3 ? "w-2/3" : "w-full"}`} />
@@ -224,7 +224,7 @@ export default function DailyFortunePage() {
               <div className="rounded-[2.5rem] border border-white/10 bg-slate-900/60 backdrop-blur-xl p-5 sm:p-8 relative overflow-hidden">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-0.5 bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent rounded-full" />
 
-                <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-8">
+                <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-6">
                   {/* Score Ring */}
                   <ScoreRing score={scoreVal} />
 

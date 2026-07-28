@@ -58,7 +58,7 @@ export default function ShinsalPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-28">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(168,85,247,0.14),transparent_40%),radial-gradient(circle_at_80%_40%,rgba(236,72,153,0.12),transparent_45%)]" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <div className="flex items-center justify-between mb-8">
           <button onClick={() => router.back()} className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-200" />
@@ -66,7 +66,7 @@ export default function ShinsalPage() {
           <JellyBalance />
         </div>
 
-        <section className="bg-slate-900/60 border border-white/10 rounded-[2.3rem] p-8 md:p-12">
+        <section className="bg-slate-900/60 border border-white/10 rounded-[2.3rem] p-8 md:p-6 sm:p-9">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fuchsia-500/10 border border-fuchsia-400/30 text-fuchsia-200 font-black uppercase tracking-[0.2em] text-xs">
             <Shield className="w-4 h-4" /> 신살 진단
           </div>

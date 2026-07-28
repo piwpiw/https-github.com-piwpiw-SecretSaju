@@ -69,7 +69,7 @@ export default function PsychologyPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-28">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_20%,rgba(234,179,8,0.16),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(139,92,246,0.16),transparent_50%)]" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <div className="flex items-center justify-between mb-8">
           <button onClick={() => router.back()} className="w-10 h-10 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-200" />
@@ -79,7 +79,7 @@ export default function PsychologyPage() {
           </button>
         </div>
 
-        <section className="bg-slate-900/55 border border-white/10 rounded-[2.5rem] p-8 md:p-12">
+        <section className="bg-slate-900/55 border border-white/10 rounded-[2.5rem] p-8 md:p-6 sm:p-9">
           <div className="inline-flex items-center gap-2 text-indigo-300 font-black tracking-[0.2em] uppercase text-xs">
             <Brain className="w-4 h-4" /> 심리 성향 진단
           </div>

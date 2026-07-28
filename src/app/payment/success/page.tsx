@@ -94,7 +94,7 @@ function SuccessContent() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-surface p-8 md:p-12 rounded-4xl shadow-2xl max-w-md w-full text-center border border-border-color"
+        className="bg-surface p-8 md:p-6 sm:p-9 rounded-4xl shadow-2xl max-w-md w-full text-center border border-border-color"
         role="status"
         aria-live="polite"
       >

@@ -11,13 +11,13 @@ export default function RefundPage() {
   return (
     <main className="min-h-screen relative overflow-hidden pb-40">
       <div className="max-w-4xl mx-auto px-0 sm:px-6 pt-16 relative z-10">
-        <Link href="/mypage" className="flex items-center gap-3 text-muted hover:text-foreground transition-all group mb-12">
+        <Link href="/mypage" className="flex items-center gap-3 text-muted hover:text-foreground transition-all group mb-8">
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-bold tracking-widest uppercase">뒤로가기</span>
         </Link>
 
-        <div className="bg-surface border border-border-color rounded-5xl p-10 sm:p-16 relative z-10 shadow-2xl">
-          <div className="flex items-center gap-6 mb-12 pb-12 border-b border-border-color">
+        <div className="bg-surface border border-border-color rounded-5xl p-5 sm:p-8 sm:p-16 relative z-10 shadow-2xl">
+          <div className="flex items-center gap-6 mb-8 pb-12 border-b border-border-color">
             <div className="w-20 h-20 rounded-3xl bg-secondary/10 border border-secondary/20 flex items-center justify-center">
               <RefreshCw className="w-10 h-10 text-muted" />
             </div>
@@ -67,7 +67,7 @@ export default function RefundPage() {
                   { s: "02", t: "결제 검증", d: "결제 기록, 사용 기록, 중복 여부를 확인합니다." },
                   { s: "03", t: "승인 또는 반려", d: "승인 시 환불 처리, 반려 시 사유를 안내합니다." },
                 ].map((step) => (
-                  <div key={step.s} className="flex gap-8 items-center bg-background p-6 rounded-2xl border border-border-color">
+                  <div key={step.s} className="flex gap-6 items-center bg-background p-6 rounded-2xl border border-border-color">
                     <span className="text-muted font-black text-4xl leading-none">{step.s}</span>
                     <div>
                       <h3 className="text-foreground font-black mb-1 text-lg">{step.t}</h3>
@@ -78,14 +78,14 @@ export default function RefundPage() {
               </div>
             </section>
 
-            <section className="bg-background rounded-3xl p-10 border border-border-color relative overflow-hidden">
+            <section className="bg-background rounded-3xl p-5 sm:p-8 border border-border-color relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-5">
                 <Mail className="w-32 h-32 text-primary" />
               </div>
               <h2 className="text-foreground font-black mb-8 flex items-center gap-3 text-lg relative z-10">
                 <Mail className="w-6 h-6 text-primary" /> 고객지원
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 relative z-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
                 <div className="space-y-2">
                   <p className="text-xs text-muted uppercase font-bold tracking-widest leading-none">문의 경로</p>
                   <p className="text-primary font-black text-2xl break-all">/inquiry</p>

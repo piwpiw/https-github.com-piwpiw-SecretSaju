@@ -85,7 +85,7 @@ export default function HistoryPage() {
         <main className="min-h-screen bg-[#050505] text-foreground relative overflow-hidden pb-40">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(99,102,241,0.05)_0%,transparent_50%)]" />
 
-            <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+            <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
                 <div className="flex items-center justify-between mb-16">
                     <button
                         onClick={() => router.back()}
@@ -115,7 +115,7 @@ export default function HistoryPage() {
                     </p>
                 </div>
 
-                <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
+                <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                     <div className="rounded-2xl border border-white/10 bg-surface p-5">
                         <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">전체</p>
                         <p className="text-3xl mt-2 font-black text-white">{logs.length}</p>
@@ -175,7 +175,7 @@ export default function HistoryPage() {
                                 exit={{ height: 0, opacity: 0 }}
                                 className="overflow-hidden"
                             >
-                                <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] space-y-8">
+                                <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] space-y-6">
                                     <div className="space-y-6">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
@@ -231,7 +231,7 @@ export default function HistoryPage() {
                                     transition={{ delay: i * 0.05 }}
                                     className="bg-surface rounded-[2.5rem] p-5 border border-white/5 hover:border-indigo-500/30 transition-all group flex items-center justify-between shadow-xl"
                                 >
-                                    <div className="flex items-center gap-4 sm:gap-8">
+                                    <div className="flex items-center gap-4 sm:gap-6">
                                         <div className={`w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform ${info.color}`}>
                                             <span className="text-3xl">{info.icon}</span>
                                         </div>
@@ -277,7 +277,7 @@ export default function HistoryPage() {
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="text-center py-40 border-2 border-dashed border-white/5 rounded-[3rem]"
+                            className="text-center py-40 border-2 border-dashed border-white/5 rounded-[2rem]"
                         >
                             <Database className="w-16 h-16 text-slate-800 mx-auto mb-6 opacity-30" />
                             <p className="text-slate-600 font-black uppercase tracking-widest italic">표시할 데이터가 없습니다.</p>

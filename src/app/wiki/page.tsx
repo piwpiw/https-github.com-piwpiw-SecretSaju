@@ -44,8 +44,8 @@ export default function WikiPage() {
     return (
         <main className="min-h-screen relative overflow-hidden pb-40 text-foreground">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,var(--primary)_0%,transparent_30%)] opacity-5" />
-            <div className="max-w-5xl mx-auto px-0 sm:px-6 py-16 relative z-10">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 border-b border-border-color pb-16">
+            <div className="max-w-5xl mx-auto px-0 sm:px-6 py-10 relative z-10">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-20 border-b border-border-color pb-16">
                     <div>
                         <button
                             onClick={() => router.push('/')}
@@ -71,7 +71,7 @@ export default function WikiPage() {
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-8 bg-surface p-6 rounded-3xl border border-border-color shadow-lg">
+                    <div className="flex items-center gap-6 bg-surface p-6 rounded-3xl border border-border-color shadow-lg">
                         <div className="text-right border-r border-border-color pr-6">
                             <div className="text-sm font-bold text-muted uppercase tracking-widest mb-1">{locale === 'ko' ? '최종 갱신' : 'Last Updated'}</div>
                             <div className="text-xl font-black">2026.02.26</div>
@@ -93,7 +93,7 @@ export default function WikiPage() {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.1, duration: 0.5 }}
-                            className="space-y-8"
+                            className="space-y-6"
                         >
                             <div className="flex items-center gap-6 border-b-2 border-border-color pb-4">
                                 <div className="w-3 h-10 bg-primary rounded-full" />
@@ -125,7 +125,7 @@ export default function WikiPage() {
                                         </Link>
                                     ))
                                 ) : (
-                                    <div className="col-span-full p-12 rounded-4xl bg-surface border border-dashed border-border-color flex flex-col items-center justify-center gap-4">
+                                    <div className="col-span-full p-6 sm:p-9 rounded-4xl bg-surface border border-dashed border-border-color flex flex-col items-center justify-center gap-4">
                                         <Sparkles className="w-10 h-10 text-muted opacity-50" />
                                         <span className="text-xl font-bold text-muted uppercase tracking-widest">{locale === 'ko' ? '문서 없음' : 'No Documents'}</span>
                                     </div>
@@ -135,7 +135,7 @@ export default function WikiPage() {
                     ))}
                 </div>
 
-                <div className="mt-32 p-10 rounded-4xl bg-background border-2 border-border-color backdrop-blur-xl shadow-xl flex items-center justify-between">
+                <div className="mt-32 p-5 sm:p-8 rounded-4xl bg-background border-2 border-border-color backdrop-blur-xl shadow-xl flex items-center justify-between">
                     <div className="flex items-center gap-6">
                         <div className="flex gap-3">
                             <div className="w-4 h-4 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]" />

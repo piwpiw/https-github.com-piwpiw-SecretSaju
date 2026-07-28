@@ -61,7 +61,7 @@ export default function CharacterProfilePage() {
                 </div>
 
                 {/* Main Profile */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Left: Basic Info */}
                     <div className="space-y-6">
                         {/* Animal Card */}

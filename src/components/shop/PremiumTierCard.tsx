@@ -36,7 +36,7 @@ export default function PremiumTierCard({ name, jellies, price, isPro, features 
                     </div>
                 </div>
 
-                <div className="space-y-4 mb-10">
+                <div className="space-y-4 mb-6">
                     {features.map((f, i) => (
                         <div key={i} className="flex items-center gap-3">
                             <div className={`w-5 h-5 rounded-full flex items-center justify-center border ${isPro ? 'bg-indigo-500/20 border-indigo-400/30' : 'bg-white/5 border-white/10'}`}>

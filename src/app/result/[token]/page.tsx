@@ -36,13 +36,13 @@ export default function GiftResultPage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-slate-950 text-white relative overflow-hidden pb-28">
-      <div className="max-w-3xl mx-auto px-0 sm:px-6 py-16 relative z-10">
-        <Link href="/" className="inline-flex items-center gap-3 text-slate-400 hover:text-white mb-10">
+      <div className="max-w-3xl mx-auto px-0 sm:px-6 py-10 relative z-10">
+        <Link href="/" className="inline-flex items-center gap-3 text-slate-400 hover:text-white mb-6">
           <ArrowLeft className="w-4 h-4" />
           홈으로
         </Link>
 
-        <section className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-10 text-center">
+        <section className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-5 sm:p-8 text-center">
           <div className="mx-auto mb-8 w-16 h-16 rounded-2xl bg-pink-500/20 border border-pink-400/20 flex items-center justify-center">
             <Gift className="w-8 h-8 text-pink-300" />
           </div>

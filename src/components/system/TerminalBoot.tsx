@@ -45,7 +45,7 @@ export default function TerminalBoot({ onComplete }: { onComplete: () => void })
                         <motion.div
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            className="mb-10"
+                            className="mb-6"
                         >
                             <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg mb-4">
                                 <span className="text-white text-2xl font-bold">SC</span>

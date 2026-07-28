@@ -10,7 +10,7 @@ export default function NotFound() {
           404
         </h1>
         <h2 className="text-2xl font-bold text-white mb-3">페이지를 찾을 수 없습니다.</h2>
-        <p className="text-slate-400 text-sm mb-10 leading-relaxed">
+        <p className="text-slate-400 text-sm mb-6 leading-relaxed">
           요청하신 경로가 존재하지 않거나 이동이 완료되지 않았습니다.<br />
           아래 버튼으로 다른 주요 화면으로 빠르게 이동해 주세요.
         </p>

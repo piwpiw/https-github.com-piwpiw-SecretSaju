@@ -49,7 +49,7 @@ function FailContent() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-surface p-6 sm:p-8 md:p-12 rounded-4xl shadow-2xl max-w-md w-full text-center border border-border-color"
+        className="bg-surface p-6 sm:p-8 md:p-6 sm:p-9 rounded-4xl shadow-2xl max-w-md w-full text-center border border-border-color"
       >
         <div className="flex flex-col items-center">
           <XCircle className="w-16 h-16 sm:w-20 sm:h-20 text-rose-500 mb-6" />

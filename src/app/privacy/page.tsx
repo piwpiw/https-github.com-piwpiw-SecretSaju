@@ -5,13 +5,13 @@ export default function PrivacyPage() {
   return (
     <main className="min-h-screen relative overflow-hidden pb-40">
       <div className="max-w-4xl mx-auto px-0 sm:px-6 pt-16 relative z-10">
-        <Link href="/mypage" className="flex items-center gap-3 text-muted hover:text-foreground transition-all group mb-12">
+        <Link href="/mypage" className="flex items-center gap-3 text-muted hover:text-foreground transition-all group mb-8">
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-bold tracking-widest break-keep">돌아가기</span>
         </Link>
 
-        <div className="bg-surface border border-border-color rounded-5xl p-10 sm:p-16 relative z-10 shadow-2xl">
-          <div className="flex items-center gap-6 mb-12 pb-12 border-b border-border-color">
+        <div className="bg-surface border border-border-color rounded-5xl p-5 sm:p-8 sm:p-16 relative z-10 shadow-2xl">
+          <div className="flex items-center gap-6 mb-8 pb-12 border-b border-border-color">
             <div className="w-20 h-20 rounded-3xl bg-secondary/10 border border-secondary/20 flex items-center justify-center">
               <Lock className="w-10 h-10 text-muted" />
             </div>

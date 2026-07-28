@@ -9,7 +9,7 @@ export default function ComingSoon({ title, desc }: { title: string; desc?: stri
 
   return (
     <main className="min-h-[80dvh] flex flex-col items-center justify-center px-6 py-20 bg-background">
-      <div className="max-w-md w-full bg-surface p-12 text-center space-y-8 rounded-5xl border border-border-color shadow-2xl relative overflow-hidden">
+      <div className="max-w-md w-full bg-surface p-6 sm:p-9 text-center space-y-6 rounded-5xl border border-border-color shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/20 rounded-full blur-3xl" />
 

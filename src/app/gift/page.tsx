@@ -144,12 +144,12 @@ export default function GiftPage() {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="w-full max-w-2xl bg-surface rounded-5xl border border-border-color p-12 md:p-16 relative shadow-2xl overflow-hidden z-10"
+        className="w-full max-w-2xl bg-surface rounded-5xl border border-border-color p-6 sm:p-9 md:p-16 relative shadow-2xl overflow-hidden z-10"
       >
         <div className="absolute top-0 right-0 w-64 h-64 bg-pink-500/10 blur-3xl rounded-full opacity-50" />
 
         {!isAuthenticated && !isAdmin ? (
-          <div className="relative z-10 mb-10">
+          <div className="relative z-10 mb-6">
             <AuthRequiredNotice
               compact
               nextPath="/gift"
@@ -274,9 +274,9 @@ export default function GiftPage() {
               key="success"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="py-16 text-center relative z-10 flex flex-col items-center"
+              className="py-10 text-center relative z-10 flex flex-col items-center"
             >
-              <div className="w-40 h-40 bg-emerald-500/10 rounded-full flex items-center justify-center mb-10 border-2 border-emerald-500/30">
+              <div className="w-40 h-40 bg-emerald-500/10 rounded-full flex items-center justify-center mb-6 border-2 border-emerald-500/30">
                 <motion.div
                   initial={{ scale: 0, rotate: -45 }}
                   animate={{ scale: 1, rotate: 0 }}
@@ -289,7 +289,7 @@ export default function GiftPage() {
               <h3 className="text-4xl md:text-5xl font-black italic tracking-tight text-foreground mb-6 uppercase">
                 {locale === 'ko' ? '발송 완료' : 'Transmission Complete'}
               </h3>
-              <p className="text-2xl text-muted mb-12 font-medium">
+              <p className="text-2xl text-muted mb-8 font-medium">
                 {locale === 'ko'
                   ? '선물이 성공적으로 등록되었습니다.'
                   : 'The gift has been successfully registered.'}

@@ -55,7 +55,7 @@ export default function LuckySecretModal() {
                         initial={{ opacity: 0, scale: 0.8, y: 50, rotate: -2 }}
                         animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
                         exit={{ opacity: 0, scale: 0.8, y: 50 }}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-sm bg-gradient-to-br from-indigo-900 to-slate-900 border border-indigo-500/30 rounded-[3rem] p-10 z-[301] shadow-[0_0_100px_rgba(99,102,241,0.3)] overflow-hidden"
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-sm bg-gradient-to-br from-indigo-900 to-slate-900 border border-indigo-500/30 rounded-[2rem] p-5 sm:p-8 z-[301] shadow-[0_0_100px_rgba(99,102,241,0.3)] overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px] -mr-32 -mt-32" />
 
@@ -63,7 +63,7 @@ export default function LuckySecretModal() {
                             <X className="w-6 h-6" />
                         </button>
 
-                        <div className="text-center space-y-8 relative z-10">
+                        <div className="text-center space-y-6 relative z-10">
                             <div className="w-24 h-24 bg-white/5 backdrop-blur-xl rounded-[2.5rem] flex items-center justify-center mx-auto border border-white/10 shadow-2xl relative group">
                                 <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-xl animate-pulse" />
                                 <Star className="w-12 h-12 text-amber-400 fill-current group-hover:scale-125 transition-transform duration-700" />

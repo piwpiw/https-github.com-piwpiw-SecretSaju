@@ -55,8 +55,8 @@ export default async function DocPage({
 
   return (
     <main className="relative min-h-screen overflow-hidden pb-32 text-white">
-      <div className="relative z-10 mx-auto max-w-4xl px-6 py-12">
-        <div className="mb-12 flex items-center justify-between">
+      <div className="relative z-10 mx-auto max-w-4xl px-6 py-8">
+        <div className="mb-8 flex items-center justify-between">
           <Link
             href="/wiki"
             className="group flex items-center gap-3 text-slate-500 transition-all hover:text-white"
@@ -97,9 +97,9 @@ export default async function DocPage({
           </div>
         </div>
 
-        <div className="premium-card group relative mb-12 border-white/5 bg-white/[0.01] p-1 sm:p-1">
+        <div className="premium-card group relative mb-8 border-white/5 bg-white/[0.01] p-1 sm:p-1">
           <div className="premium-card-border" />
-          <div className="relative z-10 p-8 sm:p-12">
+          <div className="relative z-10 p-8 sm:p-6 sm:p-9">
             <article
               className="prose prose-invert prose-slate max-w-none
                 prose-headings:font-bold prose-headings:text-white

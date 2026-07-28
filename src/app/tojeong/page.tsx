@@ -188,13 +188,13 @@ export default function TojeongPage() {
     <main className="min-h-screen bg-slate-950 text-slate-200 relative overflow-hidden pb-32 font-sans">
       <LuxuryToast message={toastMsg} isVisible={showToast} />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(168,85,247,0.12),transparent_45%),radial-gradient(circle_at_80%_10%,rgba(14,165,233,0.12),transparent_40%)] pointer-events-none" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <div className="flex items-center justify-between mb-8">
           <Link href="/" className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 inline-flex items-center justify-center" aria-label="뒤로 가기"><ArrowLeft className="w-5 h-5 text-slate-300" /></Link>
           <JellyBalance />
         </div>
 
-        <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-8 md:p-10">
+        <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-8 md:p-5 sm:p-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-slate-800/70 text-xs font-black uppercase tracking-[0.3em] text-amber-300">
             <CalendarDays className="w-4 h-4" />
             토정비결

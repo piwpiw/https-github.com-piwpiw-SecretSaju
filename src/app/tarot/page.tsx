@@ -360,8 +360,8 @@ export default function TarotPage() {
       <AmbientSoundPortal />
       <MysticBackground />
 
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
-        <header className="flex items-center justify-between mb-12">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
+        <header className="flex items-center justify-between mb-8">
           <button type="button" onClick={() => router.back()} aria-label="뒤로 가기" className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
             <ArrowLeft className="w-5 h-5 text-slate-400" />
           </button>
@@ -376,12 +376,12 @@ export default function TarotPage() {
           <JellyBalance onClick={() => setShopOpen(true)} />
         </header>
 
-        {/* 좁은 화면에서 p-10(좌우 80px)은 320px 뷰포트의 콘텐츠 폭을 238px까지 깎아
+        {/* 좁은 화면에서 p-5 sm:p-8(좌우 80px)은 320px 뷰포트의 콘텐츠 폭을 238px까지 깎아
             카드 내용이 잘렸습니다. 모바일에서는 여백을 줄이고 sm 이상에서 원래 값으로 복귀. */}
-        <section className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 sm:rounded-[3rem] sm:p-10 md:p-14 relative overflow-hidden group">
+        <section className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 sm:rounded-[2rem] sm:p-5 sm:p-8 md:p-5 sm:p-8 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px] -mr-48 -mt-48 pointer-events-none group-hover:bg-indigo-600/20 transition-all duration-1000" />
 
-          <div className="flex items-center gap-4 mb-10 relative z-10">
+          <div className="flex items-center gap-4 mb-6 relative z-10">
             <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
               <Orbit className="w-6 h-6 text-indigo-400" />
             </div>
@@ -391,12 +391,12 @@ export default function TarotPage() {
             </div>
           </div>
 
-          <p className="text-slate-300 mb-10 leading-relaxed max-w-2xl px-2 break-keep">
+          <p className="text-slate-300 mb-6 leading-relaxed max-w-2xl px-2 break-keep">
             3장의 카드로 당신의 무의식과 현실의 교차점을 읽어냅니다.<br />
             위치별 핵심 신호를 분석하고, 당신의 다음 액션을 위한 직관적 가이드를 생성합니다.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <article className="p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
               <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">변칙성</div>
               <div className="text-xl font-black text-rose-300">역방향 {spreadPulse.reversedRate}</div>
@@ -462,7 +462,7 @@ export default function TarotPage() {
             <motion.section
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8"
+              className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6"
             >
               {spreadCards.map((card, index) => (
                 <TarotCardFlip
@@ -511,7 +511,7 @@ export default function TarotPage() {
                     />
                   </section>
 
-                  <section className="grid md:grid-cols-2 gap-8 items-start">
+                  <section className="grid md:grid-cols-2 gap-6 items-start">
                     <div className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-8 space-y-6">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
@@ -560,7 +560,7 @@ export default function TarotPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.4 }}
-            className="mt-40 flex flex-col items-center justify-center space-y-8"
+            className="mt-40 flex flex-col items-center justify-center space-y-6"
           >
             <div className="relative">
               <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-3xl animate-pulse" />

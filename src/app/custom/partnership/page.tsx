@@ -102,7 +102,7 @@ export default function PartnershipPage() {
 
       <LuxuryToast isVisible={toastVisible} message={toastMessage} />
 
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <header className="flex items-center gap-4 mb-20">
           <button
             onClick={() => router.back()}
@@ -117,7 +117,7 @@ export default function PartnershipPage() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-6">
           <div className="space-y-10">
             <div className="space-y-4">
               <h2 className="text-4xl font-black italic leading-none tracking-tighter text-white">
@@ -155,7 +155,7 @@ export default function PartnershipPage() {
             </div>
           </div>
 
-          <div className="p-8 sm:p-10 bg-gradient-to-br from-slate-900/60 to-indigo-950/20 rounded-[3rem] border border-white/10 shadow-[0_0_40px_rgba(79,70,229,0.1)] relative overflow-hidden backdrop-blur-md">
+          <div className="p-8 sm:p-5 sm:p-8 bg-gradient-to-br from-slate-900/60 to-indigo-950/20 rounded-[2rem] border border-white/10 shadow-[0_0_40px_rgba(79,70,229,0.1)] relative overflow-hidden backdrop-blur-md">
             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none" />
 
             <form onSubmit={handleSubmit} className="space-y-6 relative z-10">

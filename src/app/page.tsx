@@ -444,7 +444,7 @@ export default function HomePage() {
       <div className="relative z-10 container mx-auto px-0 sm:px-6 pt-28 pb-20">
         {/* Dashboard Portal */}
         {(flowState === "boot" || flowState === "input") && (
-          <div className="max-w-5xl mx-auto flex flex-col gap-8 sm:gap-16">
+          <div className="max-w-5xl mx-auto flex flex-col gap-6 sm:gap-16">
             {/* Hero Section (Banner) */}
             <motion.div className="order-1" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: "easeOut" }}>
               <CouponBanner />
@@ -503,7 +503,7 @@ export default function HomePage() {
             <ScrollReveal direction="down">
               <motion.div
                 id="saju-input"
-                className="order-2 panel-shell py-12 sm:py-20 px-4 sm:px-10"
+                className="order-2 panel-shell py-8 sm:py-20 px-4 sm:px-10"
               >
                 <div className="absolute top-0 right-10 w-48 h-1 bg-gradient-to-l from-indigo-500/50 to-transparent" />
                 <div className="text-center mb-6 space-y-3">

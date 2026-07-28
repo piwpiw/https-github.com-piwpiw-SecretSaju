@@ -163,8 +163,8 @@ export default function MorePage() {
   return (
     <main className="min-h-[100dvh] relative overflow-hidden pb-40 bg-background text-foreground">
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.05]" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
-        <div className="flex items-center gap-6 mb-12 pb-8 border-b border-border-color">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
+        <div className="flex items-center gap-6 mb-8 pb-8 border-b border-border-color">
           <div className="w-20 h-20 rounded-3xl bg-surface border border-border-color flex items-center justify-center shadow-2xl relative overflow-hidden group">
             <div className="absolute inset-0 bg-primary/20 animate-pulse group-hover:scale-150 transition-transform duration-700" />
             <Settings className="w-10 h-10 text-primary relative z-10 sm:animate-[spin_6s_linear_infinite]" />
@@ -235,7 +235,7 @@ export default function MorePage() {
               </p>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-6">
               {SITE_MENU.map((group) => (
                 <div key={group.title}>
                   <p className="mb-3 text-[11px] font-black uppercase tracking-[0.24em] text-primary break-keep">

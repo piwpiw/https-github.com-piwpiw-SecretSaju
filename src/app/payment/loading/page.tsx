@@ -36,7 +36,7 @@ function PaymentLoadingContent() {
 
   if (isTimeout) {
     return (
-      <main className="min-h-screen bg-background flex items-center justify-center px-4 py-16">
+      <main className="min-h-screen bg-background flex items-center justify-center px-4 py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -70,11 +70,11 @@ function PaymentLoadingContent() {
   }
 
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center px-4 py-16">
+    <main className="min-h-screen bg-background flex items-center justify-center px-4 py-10">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-surface border border-border-color rounded-4xl p-10 max-w-md w-full text-center"
+        className="bg-surface border border-border-color rounded-4xl p-5 sm:p-8 max-w-md w-full text-center"
       >
         <Loader2 className="w-16 h-16 text-primary animate-spin mx-auto mb-8" />
         <h1 className="text-2xl font-black text-foreground mb-6">결제 진행 중</h1>

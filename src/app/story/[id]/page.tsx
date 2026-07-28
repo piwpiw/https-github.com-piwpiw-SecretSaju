@@ -26,8 +26,8 @@ export default function StoryDetailPage({ params }: Props) {
     <main className="min-h-[100dvh] bg-background text-foreground relative pb-32">
       <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
-        <header className="mb-12">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
+        <header className="mb-8">
           <Link
             href="/story"
             className="inline-flex items-center gap-3 text-muted hover:text-foreground mb-6 transition-all group"
@@ -68,7 +68,7 @@ export default function StoryDetailPage({ params }: Props) {
         </article>
 
         <section
-          className="mt-8 bg-surface border border-border-color rounded-4xl p-8 md:p-10 shadow-xl leading-relaxed whitespace-pre-line text-base md:text-lg"
+          className="mt-8 bg-surface border border-border-color rounded-4xl p-8 md:p-5 sm:p-8 shadow-xl leading-relaxed whitespace-pre-line text-base md:text-lg"
           aria-label={`${story.title} 본문`}
         >
           {story.content}

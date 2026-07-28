@@ -137,7 +137,7 @@ export default function HistoryResultPage() {
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100" aria-live="polite">
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 space-y-6">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 space-y-6">
         <div className="flex items-center justify-between">
           <button
             onClick={() => router.back()}

@@ -31,13 +31,13 @@ export default function LuckyScoreCard() {
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative group mb-8 sm:mb-10"
+            className="relative group mb-8 sm:mb-6"
         >
-            <div className="panel-shell p-6 sm:p-8 md:p-10 transition-all hover:shadow-[0_20px_55px_-35px_rgba(129,140,254,0.65)]">
+            <div className="panel-shell p-6 sm:p-8 md:p-5 sm:p-8 transition-all hover:shadow-[0_20px_55px_-35px_rgba(129,140,254,0.65)]">
                 <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] -mr-40 -mt-40 group-hover:bg-indigo-500/20 transition-all duration-1000" />
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/8 rounded-full blur-[80px] -ml-32 -mb-32 pointer-events-none" />
 
-                <div className="flex flex-col lg:flex-row items-center gap-6 sm:gap-8 relative z-10">
+                <div className="flex flex-col lg:flex-row items-center gap-6 sm:gap-6 relative z-10">
                     <div className="flex-shrink-0 relative">
                         <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-full border border-white/15 flex items-center justify-center relative overflow-hidden group/gauge">
                             <svg className="absolute inset-0 w-full h-full -rotate-90 drop-shadow-2xl" viewBox="0 0 128 128" aria-hidden>

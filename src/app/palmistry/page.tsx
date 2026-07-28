@@ -79,7 +79,7 @@ export default function PalmistryPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-28">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_0%,rgba(20,184,166,0.18),transparent_45%)]" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <div className="flex items-center justify-between mb-8">
           <button
             onClick={() => router.back()}
@@ -98,7 +98,7 @@ export default function PalmistryPage() {
           </button>
         </div>
 
-        <section className="bg-slate-900/60 border border-white/10 rounded-[2.3rem] p-8 md:p-12">
+        <section className="bg-slate-900/60 border border-white/10 rounded-[2.3rem] p-8 md:p-6 sm:p-9">
           <div className="inline-flex items-center gap-2 text-emerald-300 font-black text-sm tracking-[0.2em]">
             <Hand className="w-4 h-4" /> 손금 분석
           </div>

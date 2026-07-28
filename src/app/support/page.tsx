@@ -69,13 +69,13 @@ export default function SupportPage() {
       />
       <div className="pointer-events-none absolute left-0 top-0 h-[40vh] w-full bg-gradient-to-b from-pink-900/10 via-slate-950/50 to-transparent" />
 
-      <div className="relative z-10 mx-auto max-w-4xl px-6 py-12">
+      <div className="relative z-10 mx-auto max-w-4xl px-6 py-8">
         <motion.button
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => router.back()}
           aria-label="뒤로 가기"
-          className="group mb-10 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
+          className="group mb-6 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
         >
           <ArrowLeft className="h-5 w-5 text-slate-400 transition-colors group-hover:-translate-x-1 group-hover:text-white" />
         </motion.button>
@@ -84,7 +84,7 @@ export default function SupportPage() {
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="relative overflow-hidden rounded-[3rem] border border-white/10 bg-slate-900/40 p-10 shadow-2xl backdrop-blur-2xl md:p-14"
+          className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/40 p-5 sm:p-8 shadow-2xl backdrop-blur-2xl md:p-5 sm:p-8"
         >
           <div className="pointer-events-none absolute right-0 top-0 -mr-40 -mt-40 h-[400px] w-[400px] rounded-full bg-pink-500/10 blur-[100px]" />
 
@@ -106,7 +106,7 @@ export default function SupportPage() {
 
           <motion.p
             variants={itemVariants}
-            className="mb-12 max-w-2xl text-sm font-medium leading-relaxed text-slate-300 md:text-base"
+            className="mb-8 max-w-2xl text-sm font-medium leading-relaxed text-slate-300 md:text-base"
           >
             Secret Saju는 결제, 젤리 충전, 멤버십 활성화를 클라이언트 화면에서 직접 처리하지
             않습니다. 실제 구매와 크레딧 반영은{" "}

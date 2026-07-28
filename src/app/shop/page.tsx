@@ -14,7 +14,7 @@ export default function ShopPage() {
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-28">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(99,102,241,0.15),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(244,114,182,0.1),transparent_45%)]" />
 
-      <div className="max-w-5xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-5xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <header className="flex items-center justify-between mb-16">
           <button
             onClick={() => router.back()}

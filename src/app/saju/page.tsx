@@ -190,8 +190,8 @@ function SajuPageContent() {
   return (
     <main className="min-h-[100dvh] bg-slate-950 text-slate-100 relative overflow-hidden pb-32">
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
-        <div className="flex items-center justify-between mb-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
+        <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => router.back()}
             className="flex items-center gap-3 text-slate-300 hover:text-white transition-colors"
@@ -202,7 +202,7 @@ function SajuPageContent() {
           <JellyBalance />
         </div>
 
-        <section className="bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-[3rem] p-10 md:p-14 shadow-2xl relative overflow-hidden group">
+        <section className="bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-[2rem] p-5 sm:p-8 md:p-5 sm:p-8 shadow-2xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px] -mr-48 -mt-48 pointer-events-none group-hover:bg-indigo-600/20 transition-all duration-1000" />
 
           <div className="flex items-center gap-4 mb-6 relative z-10">
@@ -227,7 +227,7 @@ function SajuPageContent() {
             ))}
           </div>
 
-          <div className="space-y-8 relative z-10 mt-10">
+          <div className="space-y-6 relative z-10 mt-10">
             <div className="flex items-center justify-center gap-3 text-xs">
               <button
                 type="button"
@@ -378,7 +378,7 @@ function SajuPageContent() {
 
         {result && archetype && !loading && (
           <motion.section initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="mt-16">
-            <div className="flex items-center gap-4 mb-10 justify-center">
+            <div className="flex items-center gap-4 mb-6 justify-center">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10" />
               <div className="px-6 py-2 rounded-full border border-white/10 bg-white/5 text-xs font-black text-indigo-300 uppercase tracking-[0.3em] flex items-center gap-2 backdrop-blur-md">
                 <Sparkles className="w-4 h-4" /> 분석 완료

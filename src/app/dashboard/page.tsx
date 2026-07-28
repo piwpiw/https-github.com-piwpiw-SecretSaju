@@ -192,11 +192,11 @@ function DashboardContent() {
         return (
             <main className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center px-6 pb-32 text-center">
                 <div className="bg-surface p-16 rounded-5xl border border-border-color max-w-2xl relative">
-                    <Users className="w-24 h-24 mx-auto mb-10 text-muted opacity-50" />
+                    <Users className="w-24 h-24 mx-auto mb-6 text-muted opacity-50" />
                     <h1 className="text-4xl font-black mb-6 text-foreground">
                         {locale === 'ko' ? '연결된 프로필이 없습니다' : 'No Profiles Found'}
                     </h1>
-                    <p className="text-xl text-muted leading-relaxed mb-12">
+                    <p className="text-xl text-muted leading-relaxed mb-8">
                         {locale === 'ko' ? '내 프로필을 먼저 만들고 인연 분석을 시작해 주세요.' : 'Start by creating your own Saju profile.'}
                     </p>
                     <Link
@@ -212,9 +212,9 @@ function DashboardContent() {
 
     return (
         <main className="min-h-screen relative overflow-hidden">
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16 pb-32">
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-10 pb-32">
 
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-10 mb-12 sm:mb-20 text-center md:text-left">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-10 mb-8 sm:mb-20 text-center md:text-left">
                     <div>
                         <h1 className="text-3xl sm:text-5xl font-black text-foreground italic tracking-tighter uppercase mb-2 sm:mb-3">
                             {locale === 'ko' ? '운명 대시보드 (Destiny Web)' : 'Dashboard'}
@@ -229,7 +229,7 @@ function DashboardContent() {
                     </div>
                 </div>
 
-                <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12 sm:mb-20">
+                <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-20">
                     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
                         <p className="text-xs font-black uppercase tracking-[0.2em] text-muted">연결 수</p>
                         <p className="mt-3 text-4xl font-black text-foreground">{profiles.length}명</p>
@@ -256,10 +256,10 @@ function DashboardContent() {
                     </motion.div>
                 </section>
 
-                <div className="mb-12 sm:mb-20">
+                <div className="mb-8 sm:mb-20">
                     <Link href="/daily" className="group relative block w-full overflow-hidden rounded-3xl sm:rounded-4xl bg-gradient-to-br from-primary/20 via-surface to-background p-6 sm:p-8 border border-primary/30 shadow-2xl hover:border-primary/60 transition-all">
                         <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-primary/10 rounded-full blur-3xl -mr-16 sm:-mr-20 -mt-16 sm:-mt-20 group-hover:bg-primary/20 transition-colors" />
-                        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8">
+                        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-6">
                             <div className="flex items-center gap-4 sm:gap-6">
                                 <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-primary/20 border border-primary/40 flex items-center justify-center">
                                     <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
@@ -276,7 +276,7 @@ function DashboardContent() {
                     </Link>
                 </div>
 
-                <div className="mb-16 sm:mb-24 bg-surface rounded-3xl sm:rounded-5xl p-6 sm:p-10 border border-border-color shadow-2xl overflow-hidden min-h-[400px] sm:min-h-[500px] flex items-center justify-center relative">
+                <div className="mb-16 sm:mb-24 bg-surface rounded-3xl sm:rounded-5xl p-6 sm:p-5 sm:p-8 border border-border-color shadow-2xl overflow-hidden min-h-[400px] sm:min-h-[500px] flex items-center justify-center relative">
                     <DestinyNetwork
                         mainProfile={mainProfile}
                         relationships={relationships}
@@ -284,7 +284,7 @@ function DashboardContent() {
                     />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 xl:gap-9 2xl:gap-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-6 xl:gap-9 2xl:gap-10">
                     {relationships.map((rel, idx) => (
                         <motion.div
                             key={rel.profile.id}
@@ -292,9 +292,9 @@ function DashboardContent() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.1 }}
                             onClick={() => router.push(`/relationship/${rel.profile.id}`)}
-                            className="bg-surface rounded-3xl sm:rounded-4xl p-6 sm:p-10 border border-border-color hover:border-primary/40 transition-all cursor-pointer shadow-xl group hover:scale-[1.02]"
+                            className="bg-surface rounded-3xl sm:rounded-4xl p-6 sm:p-5 sm:p-8 border border-border-color hover:border-primary/40 transition-all cursor-pointer shadow-xl group hover:scale-[1.02]"
                         >
-                            <div className="flex items-center justify-between mb-10">
+                            <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-6">
                                     <div className="w-20 h-20 rounded-3xl bg-background border border-border-color flex items-center justify-center text-4xl shadow-inner group-hover:scale-110 transition-transform">
                                         <User className="w-10 h-10 text-primary" />
@@ -310,7 +310,7 @@ function DashboardContent() {
                             </div>
 
                             {rel.analysis && (
-                                <div className="space-y-8">
+                                <div className="space-y-6">
                                     <div className="h-2 bg-background rounded-full overflow-hidden border border-border-color mt-4">
                                         <motion.div
                                             initial={{ width: 0 }}
@@ -359,7 +359,7 @@ function DashboardContent() {
 
                     <Link
                         href="/my-saju/add"
-                        className="bg-surface rounded-4xl p-10 border-2 border-dashed border-border-color flex flex-col items-center justify-center gap-10 group hover:border-primary/50 hover:bg-primary/5 transition-all text-center min-h-[350px] shadow-sm hover:shadow-xl"
+                        className="bg-surface rounded-4xl p-5 sm:p-8 border-2 border-dashed border-border-color flex flex-col items-center justify-center gap-10 group hover:border-primary/50 hover:bg-primary/5 transition-all text-center min-h-[350px] shadow-sm hover:shadow-xl"
                     >
                         <div className="w-24 h-24 rounded-full bg-background border border-border-color flex items-center justify-center group-hover:scale-110 transition-transform">
                             <Plus className="w-12 h-12 text-muted group-hover:text-primary transition-colors" />
@@ -378,7 +378,7 @@ function DashboardContent() {
                         className="mt-16 sm:mt-24 bg-surface rounded-3xl sm:rounded-5xl p-8 sm:p-16 border border-primary/20 relative overflow-hidden"
                     >
                         <div className="absolute top-0 left-0 w-2 h-full bg-primary" />
-                        <div className="flex items-center gap-4 sm:gap-6 mb-8 sm:mb-12">
+                        <div className="flex items-center gap-4 sm:gap-6 mb-8 sm:mb-8">
                             <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
                             <h3 className="text-xl sm:text-3xl font-black text-foreground italic uppercase tracking-tight">인사이트 리빌 (Insight Reveal)</h3>
                         </div>

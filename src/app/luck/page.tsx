@@ -146,7 +146,7 @@ export default function LuckPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.12),transparent_60%)] pointer-events-none" />
       {showToast && <LuxuryToast message={toastMsg} isVisible={showToast} />}
 
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <header className="flex items-center justify-between mb-16">
           <button
             type="button"
@@ -219,7 +219,7 @@ export default function LuckPage() {
                   <button
                     key={t.id}
                     onClick={() => handleSelect(t)}
-                    className="p-8 rounded-[3rem] bg-slate-900/40 backdrop-blur-xl border border-white/5 hover:border-indigo-500/40 transition-all group flex items-center gap-8 text-left relative overflow-hidden"
+                    className="p-8 rounded-[2rem] bg-slate-900/40 backdrop-blur-xl border border-white/5 hover:border-indigo-500/40 transition-all group flex items-center gap-6 text-left relative overflow-hidden"
                   >
                     <div className={cn(
                       "w-20 h-24 rounded-2xl bg-gradient-to-br flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform",
@@ -274,7 +274,7 @@ export default function LuckPage() {
                   transition={{ duration: 3, ease: "easeInOut" }}
                   onClick={handleBurn}
                   className={cn(
-                    "w-full h-full rounded-[2.5rem] bg-gradient-to-br shadow-[0_0_80px_rgba(0,0,0,0.55)] border border-white/10 flex flex-col items-center justify-center p-10 relative cursor-pointer",
+                    "w-full h-full rounded-[2.5rem] bg-gradient-to-br shadow-[0_0_80px_rgba(0,0,0,0.55)] border border-white/10 flex flex-col items-center justify-center p-5 sm:p-8 relative cursor-pointer",
                     selectedTalisman.color
                   )}
                 >
@@ -316,7 +316,7 @@ export default function LuckPage() {
               key="result"
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-[4rem] p-10 md:p-12 text-center relative overflow-hidden shadow-2xl"
+              className="bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-[4rem] p-5 sm:p-8 md:p-6 sm:p-9 text-center relative overflow-hidden shadow-2xl"
             >
               <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
               <div className="absolute -top-40 -left-40 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px]" />

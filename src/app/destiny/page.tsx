@@ -78,7 +78,7 @@ export default function DestinyPage() {
       <div className="absolute inset-x-0 top-0 h-[50dvh] bg-gradient-to-b from-indigo-900/10 via-slate-900/5 to-transparent pointer-events-none" />
       <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-indigo-600/5 rounded-full blur-[150px] pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <header className="flex items-center justify-between mb-16">
           <button
             onClick={() => router.back()}
@@ -97,7 +97,7 @@ export default function DestinyPage() {
         </header>
 
         <div className="space-y-16">
-          <section className="space-y-8">
+          <section className="space-y-6">
             <div className="flex items-center justify-between px-2">
               <h3 className="text-xs font-black text-slate-500 tracking-[0.3em] italic break-keep">운명의 흐름</h3>
               <LayoutGrid className="w-4 h-4 text-slate-700" />
@@ -122,7 +122,7 @@ export default function DestinyPage() {
             </div>
           </section>
 
-          <section className="space-y-8">
+          <section className="space-y-6">
             <div className="flex items-center justify-between px-2">
               <h3 className="text-xs font-black text-slate-500 tracking-[0.3em] italic break-keep">관계 신호</h3>
               <Heart className="w-4 h-4 text-rose-500/50" />
@@ -135,7 +135,7 @@ export default function DestinyPage() {
                     key={i}
                     href={item.href}
                     className={cn(
-                      "flex items-center p-8 rounded-[3rem] border transition-all hover:scale-[1.02] relative overflow-hidden group",
+                      "flex items-center p-8 rounded-[2rem] border transition-all hover:scale-[1.02] relative overflow-hidden group",
                       item.highlight
                         ? "bg-gradient-to-br from-rose-900/20 to-indigo-900/20 border-rose-500/20"
                         : "bg-slate-900/40 border-white/5",
@@ -164,7 +164,7 @@ export default function DestinyPage() {
           </section>
         </div>
 
-        <div className="mt-24 p-10 bg-indigo-600/5 rounded-[3rem] border border-indigo-500/10 text-center space-y-4">
+        <div className="mt-24 p-5 sm:p-8 bg-indigo-600/5 rounded-[2rem] border border-indigo-500/10 text-center space-y-4">
           <Shield className="w-8 h-8 text-indigo-500 mx-auto" />
           <p className="text-xs text-slate-500 font-bold uppercase tracking-[0.2em] leading-relaxed">
             운명은 예측이 아닌 준비와 행동을 통해 완성됩니다.<br />자신의 소신과 현명한 판단과 함께 하세요.

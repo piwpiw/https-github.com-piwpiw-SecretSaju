@@ -59,11 +59,11 @@ export default function OracleBall({
     };
 
     return (
-        <div className={cn("max-w-md mx-auto panel-shell p-12 text-center relative overflow-hidden group", className)}>
+        <div className={cn("max-w-md mx-auto panel-shell p-6 sm:p-9 text-center relative overflow-hidden group", className)}>
             <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent" />
             <div className="absolute bottom-0 right-0 w-52 h-52 bg-indigo-500/12 rounded-full blur-[80px] -mr-28 -mb-24 opacity-80 pointer-events-none" />
 
-            <div className="mb-12 relative z-10">
+            <div className="mb-8 relative z-10">
                 <div className="ui-chip mb-6">
                     <Sparkles className="w-3.5 h-3.5 animate-pulse" /> 채널링 공명
                 </div>
@@ -85,7 +85,7 @@ export default function OracleBall({
                         handleConsult();
                     }
                 }}
-                className="relative w-64 h-64 mx-auto cursor-pointer mb-12 select-none group/ball rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400"
+                className="relative w-64 h-64 mx-auto cursor-pointer mb-8 select-none group/ball rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400"
                 role="button"
                 tabIndex={0}
                 aria-label="운세 조언 뽑기"

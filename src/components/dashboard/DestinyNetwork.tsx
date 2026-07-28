@@ -217,7 +217,7 @@ export default function DestinyNetwork({ mainProfile, relationships, onNodeClick
                 <div className="absolute -inset-16 bg-cyan-400/5 border border-cyan-400/10 rounded-full animate-[spin_20s_linear_infinite]" />
                 <div className="absolute -inset-10 bg-black/60 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 shadow-2xl" />
 
-                <div className="relative p-10 text-center min-w-[220px]">
+                <div className="relative p-5 sm:p-8 text-center min-w-[220px]">
                     <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-cyan-400/10 to-indigo-600/10 border border-cyan-500/20 mx-auto mb-6 flex items-center justify-center shadow-[0_0_40px_rgba(34,211,238,0.2)] overflow-hidden relative">
                         <div className="absolute inset-0 bg-cyan-400/20 animate-pulse" />
                         <motion.div

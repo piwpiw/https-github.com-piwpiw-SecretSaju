@@ -45,18 +45,18 @@ export default function FAQPage() {
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 pb-24">
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8">
         <Link href="/mypage" className="inline-flex items-center gap-2 text-slate-400 hover:text-white">
           <ArrowLeft className="w-4 h-4" />
           마이페이지
         </Link>
 
-        <header className="mt-8 mb-10">
+        <header className="mt-8 mb-6">
           <h1 className="text-3xl font-black">FAQ</h1>
           <p className="text-sm text-slate-400 mt-2">핵심 메뉴 사용법과 문제 해결 가이드를 제공합니다.</p>
         </header>
 
-        <div className="space-y-8">
+        <div className="space-y-6">
           {FAQ_SECTIONS.map((section) => (
             <section key={section.id}>
               <div className="flex items-center justify-between mb-3">

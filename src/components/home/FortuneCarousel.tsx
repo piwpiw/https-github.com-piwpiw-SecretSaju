@@ -30,7 +30,7 @@ export default function FortuneCarousel() {
     };
 
     return (
-        <section className="py-10 sm:py-12 md:py-14 relative">
+        <section className="py-10 sm:py-8 md:py-14 relative">
             <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_15%_15%,rgba(129,140,254,0.16),transparent_52%),radial-gradient(circle_at_85%_80%,rgba(168,85,247,0.12),transparent_58%)]" />
             <div className="flex items-center justify-between mb-6 sm:mb-8 px-4 sm:px-6">
                 <div className="flex items-center gap-3 sm:gap-4 min-w-0">

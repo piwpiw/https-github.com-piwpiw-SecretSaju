@@ -69,7 +69,7 @@ export default function HealingPage() {
       <div className="absolute -left-32 top-40 w-96 h-96 rounded-full bg-indigo-700/10 blur-3xl pointer-events-none" />
 
       <div className="max-w-3xl mx-auto px-5 py-10 relative z-10">
-        <header className="flex items-center justify-between mb-10">
+        <header className="flex items-center justify-between mb-6">
           <button
             type="button"
             onClick={() => router.back()}

@@ -85,7 +85,7 @@ export default function SelectionPage() {
 
     return (
         <main className="min-h-screen relative overflow-hidden pb-40">
-            <div className="max-w-5xl mx-auto px-0 sm:px-6 py-16 relative z-10">
+            <div className="max-w-5xl mx-auto px-0 sm:px-6 py-10 relative z-10">
                 {/* Header */}
                 <div className="text-center md:text-left mb-20 border-b border-border-color pb-16">
                     <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-flex px-4 py-2 rounded-full mb-6 bg-surface border border-border-color">
@@ -127,7 +127,7 @@ export default function SelectionPage() {
                 {profiles.length === 0 && <div className="h-10" />}
 
                 {/* Premium Service Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <AnimatePresence>
                         {services.map((svc, i) => (
                             <motion.div
@@ -137,7 +137,7 @@ export default function SelectionPage() {
                                 transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" }}
                             >
                                 <Link href={selectedProfile ? `${svc.href}?profileId=${selectedProfile}` : svc.href} className="block group h-full">
-                                    <div className="bg-surface rounded-5xl p-10 border border-border-color h-full flex flex-col relative overflow-hidden transition-all duration-500 hover:border-primary/50 shadow-xl hover:shadow-primary/10 group-hover:-translate-y-2">
+                                    <div className="bg-surface rounded-5xl p-5 sm:p-8 border border-border-color h-full flex flex-col relative overflow-hidden transition-all duration-500 hover:border-primary/50 shadow-xl hover:shadow-primary/10 group-hover:-translate-y-2">
                                         <div className={`absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br ${svc.bgGlow} rounded-full blur-3xl opacity-30 group-hover:opacity-70 transition-opacity duration-700`} />
 
                                         <div className="flex items-start justify-between mb-8 relative z-10">
@@ -201,13 +201,13 @@ export default function SelectionPage() {
                     <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-16 bg-surface rounded-5xl p-16 text-center border-2 border-dashed border-primary/30 relative overflow-hidden group">
                         <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors duration-700" />
                         <div className="relative z-10">
-                            <div className="w-24 h-24 bg-primary/10 rounded-4xl flex items-center justify-center mx-auto mb-10 border border-primary/20">
+                            <div className="w-24 h-24 bg-primary/10 rounded-4xl flex items-center justify-center mx-auto mb-6 border border-primary/20">
                                 <Sparkles className="w-12 h-12 text-primary animate-pulse" />
                             </div>
                             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
                                 {locale === 'ko' ? '아직 등록된 사주 노드가 없습니다' : '아직 등록된 사주 노드가 없습니다'}
                             </h2>
-                            <p className="text-xl text-muted mb-10 font-medium">
+                            <p className="text-xl text-muted mb-6 font-medium">
                                 {locale === 'ko' ? '분석을 시작하려면 당신의 프로필을 먼저 만들어주세요.' : '분석을 시작하려면 프로필을 먼저 만들어주세요.'}
                             </p>
                             <Link href="/my-saju/add" className="inline-flex items-center gap-4 px-10 py-6 rounded-4xl bg-primary text-white font-black text-xl hover:scale-105 transition-all shadow-xl shadow-primary/20 uppercase tracking-widest">

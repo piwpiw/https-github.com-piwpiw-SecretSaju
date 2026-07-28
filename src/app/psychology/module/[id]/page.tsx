@@ -64,13 +64,13 @@ export default function PsychologyModulePage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-slate-950 text-white relative overflow-hidden pb-32">
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
-        <Link href="/psychology" className="inline-flex items-center gap-3 text-slate-400 hover:text-white transition-all mb-12">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
+        <Link href="/psychology" className="inline-flex items-center gap-3 text-slate-400 hover:text-white transition-all mb-8">
           <ArrowLeft className="w-5 h-5" />
           심리 분석으로 돌아가기
         </Link>
 
-        <div className="bg-surface border border-border-color rounded-4xl p-8 md:p-10 space-y-6">
+        <div className="bg-surface border border-border-color rounded-4xl p-8 md:p-5 sm:p-8 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black text-rose-300 bg-rose-500/10 border border-rose-500/20">
             <BrainCircuit className="w-4 h-4" />
             모듈 진단 화면

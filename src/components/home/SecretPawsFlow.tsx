@@ -184,7 +184,7 @@ export function SecretPawsFlow() {
 
       {result && (
         <>
-          <section className="py-12 px-4">
+          <section className="py-8 px-4">
             <ResultCard
               archetype={{
                 code: result.code,

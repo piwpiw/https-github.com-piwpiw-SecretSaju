@@ -125,9 +125,9 @@ export default function RelationshipDetailPage() {
 
     return (
         <main className="min-h-screen relative overflow-hidden pb-40">
-            <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+            <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-12">
+                <div className="flex items-center justify-between mb-8">
                     <button
                         onClick={() => router.back()}
                         className="flex items-center gap-3 text-slate-500 hover:text-white transition-all group"
@@ -155,7 +155,7 @@ export default function RelationshipDetailPage() {
                         <motion.div
                             initial={{ x: -30, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                            className="premium-card p-6 sm:p-10 flex flex-col items-center group bg-cyan-950/5 border-cyan-500/20"
+                            className="premium-card p-6 sm:p-5 sm:p-8 flex flex-col items-center group bg-cyan-950/5 border-cyan-500/20"
                         >
                             <div className="mystic-glow from-cyan-500/10" />
                             <div className="w-20 h-20 sm:w-28 sm:h-28 bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-white/10 shadow-2xl relative overflow-hidden group-hover:scale-110 transition-transform duration-700">
@@ -172,7 +172,7 @@ export default function RelationshipDetailPage() {
                         <motion.div
                             initial={{ x: 30, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                            className="premium-card p-6 sm:p-10 flex flex-col items-center group bg-purple-950/5 border-purple-500/20"
+                            className="premium-card p-6 sm:p-5 sm:p-8 flex flex-col items-center group bg-purple-950/5 border-purple-500/20"
                         >
                             <div className="mystic-glow from-purple-500/10" />
                             <div className="w-20 h-20 sm:w-28 sm:h-28 bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-white/10 shadow-2xl relative overflow-hidden group-hover:scale-110 transition-transform duration-700">
@@ -191,7 +191,7 @@ export default function RelationshipDetailPage() {
                 <motion.div
                     initial={{ y: 40, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="bg-surface rounded-5xl p-12 text-center mb-12 group border-2 border-yellow-500/30 overflow-hidden shadow-2xl relative"
+                    className="bg-surface rounded-5xl p-6 sm:p-9 text-center mb-8 group border-2 border-yellow-500/30 overflow-hidden shadow-2xl relative"
                 >
                     <div className="premium-card-border" />
                     <div className="mystic-glow from-yellow-500/10" />
@@ -222,7 +222,7 @@ export default function RelationshipDetailPage() {
                     </div>
                 </motion.div>
 
-                <section className="grid gap-4 md:grid-cols-3 mb-12">
+                <section className="grid gap-4 md:grid-cols-3 mb-8">
                     <ResultSummaryCard
                         title="💞 지금의 우리"
                         tone="border-cyan-400/30 bg-cyan-500/10"
@@ -244,7 +244,7 @@ export default function RelationshipDetailPage() {
                 <Link href={`/relationship/${profileId}/vs`}>
                     <motion.div
                         whileHover={{ scale: 1.02, y: -5 }}
-                        className="premium-card p-8 mb-12 border-cyan-400/30 bg-cyan-900/10 flex items-center justify-between group"
+                        className="premium-card p-8 mb-8 border-cyan-400/30 bg-cyan-900/10 flex items-center justify-between group"
                     >
                         <div className="flex items-center gap-6 relative z-10">
                             <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-2xl flex items-center justify-center font-black italic text-white text-2xl shadow-lg ring-4 ring-white/5">
@@ -264,7 +264,7 @@ export default function RelationshipDetailPage() {
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="bg-slate-900/40 backdrop-blur-2xl rounded-4xl p-10 border border-white/5 mb-12"
+                        className="bg-slate-900/40 backdrop-blur-2xl rounded-4xl p-5 sm:p-8 border border-white/5 mb-8"
                     >
                         <div className="flex items-center justify-between mb-8">
                             <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] italic">대운 타임라인 (Life Cycle)</h3>
@@ -290,7 +290,7 @@ export default function RelationshipDetailPage() {
                 )}
 
                 {/* Analysis Sections */}
-                <div className="space-y-8">
+                <div className="space-y-6">
                     {analysis.tension && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.98 }}
@@ -309,11 +309,11 @@ export default function RelationshipDetailPage() {
                     )}
 
                     {unlocked ? (
-                        <div className="space-y-8">
+                        <div className="space-y-6">
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="bg-surface border border-border-color rounded-4xl p-10 flex flex-col gap-10 shadow-xl"
+                                className="bg-surface border border-border-color rounded-4xl p-5 sm:p-8 flex flex-col gap-10 shadow-xl"
                             >
                                 <div>
                                     <div className="flex items-center gap-4 mb-6">
@@ -346,7 +346,7 @@ export default function RelationshipDetailPage() {
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="premium-card p-10 border-purple-500/20 bg-purple-950/5"
+                                    className="premium-card p-5 sm:p-8 border-purple-500/20 bg-purple-950/5"
                                 >
                                     <div className="flex items-start gap-6">
                                         <Sparkles className="w-8 h-8 text-purple-400 flex-shrink-0" />
@@ -365,7 +365,7 @@ export default function RelationshipDetailPage() {
                             animate={{ opacity: 1, y: 0 }}
                             className="relative group"
                         >
-                            <div className="premium-card p-12 blur-lg opacity-20 pointer-events-none border-white/5 shadow-none space-y-8">
+                            <div className="premium-card p-6 sm:p-9 blur-lg opacity-20 pointer-events-none border-white/5 shadow-none space-y-6">
                                 <div className="h-6 w-1/3 bg-white/10 rounded-full" />
                                 <div className="h-20 bg-white/10 rounded-3xl" />
                                 <div className="grid grid-cols-2 gap-4">
@@ -375,7 +375,7 @@ export default function RelationshipDetailPage() {
                             </div>
 
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="premium-card p-10 sm:p-12 max-w-md text-center bg-black/40 backdrop-blur-xl border-yellow-500/30">
+                                <div className="premium-card p-5 sm:p-8 sm:p-6 sm:p-9 max-w-md text-center bg-black/40 backdrop-blur-xl border-yellow-500/30">
                                     <div className="w-20 h-20 bg-yellow-400/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-yellow-400/20">
                                         <Lock className="w-10 h-10 text-yellow-400" />
                                     </div>
@@ -414,7 +414,7 @@ export default function RelationshipDetailPage() {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="premium-card p-10 max-w-sm w-full text-center border-yellow-500/30"
+                            className="premium-card p-5 sm:p-8 max-w-sm w-full text-center border-yellow-500/30"
                         >
                             <h3 className="text-xl font-bold mb-3" style={{ color: 'var(--text-foreground)' }}>잠금 해제 확인</h3>
                             <p className="text-sm mb-8" style={{ color: 'var(--text-muted)' }}>

@@ -52,7 +52,7 @@ export default function CharacterAnalysisPage() {
                 </div>
 
                 {/* Main Analysis */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Column 1: Summary */}
                     <div className="space-y-6">
                         {/* Animal Card */}

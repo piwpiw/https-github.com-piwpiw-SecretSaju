@@ -27,7 +27,7 @@ export default function RelationshipMap({ members = [] }: RelationshipMapProps) 
 
     if (satellites.length === 0) {
         return (
-            <div className="relative w-full aspect-square max-w-md mx-auto bg-white/[0.02] border border-white/5 rounded-[3rem] overflow-hidden flex flex-col items-center justify-center text-center px-10">
+            <div className="relative w-full aspect-square max-w-md mx-auto bg-white/[0.02] border border-white/5 rounded-[2rem] overflow-hidden flex flex-col items-center justify-center text-center px-10">
                 <span className="text-4xl">🧭</span>
                 <p className="mt-4 text-sm font-black text-white">아직 연결된 인연이 없습니다</p>
                 <p className="mt-2 text-xs leading-6 text-slate-400">
@@ -39,7 +39,7 @@ export default function RelationshipMap({ members = [] }: RelationshipMapProps) 
     }
 
     return (
-        <div className="relative w-full aspect-square max-w-md mx-auto bg-white/[0.02] border border-white/5 rounded-[3rem] overflow-hidden group">
+        <div className="relative w-full aspect-square max-w-md mx-auto bg-white/[0.02] border border-white/5 rounded-[2rem] overflow-hidden group">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.1)_0%,transparent_70%)]" />
 
             {/* Connection Lines (SVG) */}

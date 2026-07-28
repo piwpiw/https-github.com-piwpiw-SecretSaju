@@ -97,7 +97,7 @@ export default function SajuListPage() {
 
   return (
     <main className="min-h-screen relative overflow-hidden pb-40">
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-16 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-10 relative z-10">
         <ScrollReveal>
           <div className="flex items-center justify-between mb-8">
             <button
@@ -127,7 +127,7 @@ export default function SajuListPage() {
             </div>
           </div>
 
-          <div className="mb-12">
+          <div className="mb-8">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
                 <Users className="w-6 h-6 text-indigo-400" />
@@ -141,7 +141,7 @@ export default function SajuListPage() {
           </div>
         </ScrollReveal>
 
-        <div className="mb-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="rounded-3xl border border-border-color bg-gradient-to-br from-slate-900/70 to-surface p-6">
             <p className="text-xs font-black uppercase tracking-widest text-muted">프로필 커버리지</p>
             <div className="mt-4 h-2 rounded-full bg-black/30 border border-white/10">
@@ -162,7 +162,7 @@ export default function SajuListPage() {
         </div>
 
         <ScrollReveal delay={0.2}>
-          <div className="mb-10 bg-white/[0.02] border border-white/5 rounded-[3rem] p-10 overflow-hidden">
+          <div className="mb-6 bg-white/[0.02] border border-white/5 rounded-[2rem] p-5 sm:p-8 overflow-hidden">
             <h4 className="text-[10px] font-black text-indigo-500 tracking-widest italic mb-2 break-keep">인생 흐름 에너지</h4>
             <LifeTimeline />
           </div>
@@ -224,7 +224,7 @@ export default function SajuListPage() {
                   <Plus className="w-12 h-12 text-muted group-hover:text-primary transition-colors" />
                 </div>
                 <h3 className="text-3xl font-black text-foreground mb-4">등록된 프로필이 없습니다.</h3>
-                <p className="text-xl text-muted font-medium mb-12">
+                <p className="text-xl text-muted font-medium mb-8">
                   첫 프로필을 저장하면 바로 분석과 궁합 진단을 이어서 볼 수 있습니다.
                 </p>
                 <Link
@@ -237,7 +237,7 @@ export default function SajuListPage() {
               </div>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <AnimatePresence>
                 {visibleProfiles.map((profile, index) => (
                   <motion.div
@@ -246,7 +246,7 @@ export default function SajuListPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-surface rounded-4xl p-10 border border-border-color hover:border-primary/40 transition-all shadow-xl group hover:scale-[1.02] flex flex-col justify-between"
+                    className="bg-surface rounded-4xl p-5 sm:p-8 border border-border-color hover:border-primary/40 transition-all shadow-xl group hover:scale-[1.02] flex flex-col justify-between"
                     aria-label={`${profile.name} 프로필 카드`}
                   >
                     <div>
@@ -274,7 +274,7 @@ export default function SajuListPage() {
                         </span>
                       </div>
 
-                      <div className="space-y-4 mb-10">
+                      <div className="space-y-4 mb-6">
                         <div className="flex items-center gap-4 text-sm font-bold text-muted uppercase tracking-widest">
                           <Calendar className="w-5 h-5 text-primary" />
                           {String(profile.birthdate).split('T')[0]} ({calendarLabel[profile.calendarType] || profile.calendarType})

@@ -189,7 +189,7 @@ function CompatibilityContent() {
       <div className="absolute inset-x-0 top-0 h-[60dvh] bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.15)_0%,transparent_70%)] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-600/5 rounded-full blur-[150px] pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         {/* Header */}
         <header className="flex items-center justify-between mb-16">
           <button onClick={() => router.back()} className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all" aria-label="뒤로 가기">
@@ -206,7 +206,7 @@ function CompatibilityContent() {
 
         <form onSubmit={handleSubmit} className="space-y-16">
           {/* Selectors */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Person A */}
             <div className="space-y-6">
               <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic flex items-center gap-3">
@@ -267,7 +267,7 @@ function CompatibilityContent() {
           </div>
 
           {/* Relation Presets */}
-          <div className="bg-slate-900/60 backdrop-blur-2xl border border-white/5 rounded-[4rem] p-10 shadow-2xl">
+          <div className="bg-slate-900/60 backdrop-blur-2xl border border-white/5 rounded-[4rem] p-5 sm:p-8 shadow-2xl">
             <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-8 text-center italic">관계 타입 선택</h3>
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
               {RELATIONSHIP_PRESETS.map((preset) => (
@@ -364,18 +364,18 @@ function CompatibilityContent() {
 
               {/* Detailed Analysis */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-slate-900/40 backdrop-blur-xl p-10 rounded-[3rem] border border-white/5 space-y-4">
+                <div className="bg-slate-900/40 backdrop-blur-xl p-5 sm:p-8 rounded-[2rem] border border-white/5 space-y-4">
                   <h4 className="text-[10px] font-black text-indigo-500 uppercase tracking-widest border-b border-white/10 pb-2 italic">힘의 흐름</h4>
                   <p className="text-xl font-black text-white italic">{result.powerDynamic}</p>
                 </div>
-                <div className="bg-slate-900/40 backdrop-blur-xl p-10 rounded-[3rem] border border-white/5 space-y-4">
+                <div className="bg-slate-900/40 backdrop-blur-xl p-5 sm:p-8 rounded-[2rem] border border-white/5 space-y-4">
                   <h4 className="text-[10px] font-black text-purple-500 uppercase tracking-widest border-b border-white/10 pb-2 italic">화합 포인트</h4>
                   <p className="text-lg font-bold text-slate-300 italic">{result.advice}</p>
                 </div>
               </div>
 
               {sajuA && sajuB && (
-                <div className="bg-slate-900/40 backdrop-blur-2xl rounded-[4rem] p-12 border border-white/5 space-y-12">
+                <div className="bg-slate-900/40 backdrop-blur-2xl rounded-[4rem] p-6 sm:p-9 border border-white/5 space-y-12">
                   <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] text-center italic">오행 공명 분석</h4>
 
                   {/* Pinpoint HD resonance Bridge & Radar overlay */}
@@ -441,7 +441,7 @@ function CompatibilityContent() {
 
                   {/* 6.1 Compatibility Radar Chart (Combined) */}
                   <div className="pt-12 border-t border-white/5 text-center">
-                    <h5 className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.4em] mb-12 italic">Ultimate Synergy Radar</h5>
+                    <h5 className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.4em] mb-8 italic">Ultimate Synergy Radar</h5>
                     <RelationshipRadar />
                   </div>
                 </div>

@@ -144,14 +144,14 @@ export default function MyPage() {
 
   if (!user) {
     return (
-      <main className="min-h-screen relative overflow-hidden flex items-center justify-center px-6 py-16 bg-slate-950">
+      <main className="min-h-screen relative overflow-hidden flex items-center justify-center px-6 py-10 bg-slate-950">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.08),transparent_70%)]" />
         <motion.div
           initial={{ opacity: 0, y: 24, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           className="max-w-sm w-full relative z-10"
         >
-          <div className="rounded-[3rem] border border-white/10 bg-slate-900/60 backdrop-blur-2xl p-10 text-center shadow-2xl">
+          <div className="rounded-[2rem] border border-white/10 bg-slate-900/60 backdrop-blur-2xl p-5 sm:p-8 text-center shadow-2xl">
             <div className="w-20 h-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-6">
               <Crown className="w-10 h-10 text-indigo-400" />
             </div>
@@ -189,7 +189,7 @@ export default function MyPage() {
         <motion.div
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start justify-between mb-10"
+          className="flex items-start justify-between mb-6"
         >
           <div className="flex items-center gap-5">
             {/* Avatar */}

@@ -16,8 +16,8 @@ export function Footer() {
 
     return (
         <footer className="mt-auto border-t border-white/10" style={{ backgroundColor: "var(--background)" }}>
-            <div className="max-w-6xl mx-auto px-4 py-10 space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="max-w-6xl mx-auto px-4 py-10 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="md:col-span-2 space-y-4">
                         <Link href="/" className="inline-flex items-center gap-3 group">
                             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-black tracking-tighter">

@@ -18,8 +18,8 @@ export default async function AdminDashboardPage() {
   const healthData = await fetchSystemHealth();
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-300 p-6 sm:p-12 font-mono">
-        <div className="max-w-5xl mx-auto flex items-center justify-between mb-12 border-b border-white/10 pb-6">
+    <div className="min-h-screen bg-slate-950 text-slate-300 p-6 sm:p-6 sm:p-9 font-mono">
+        <div className="max-w-5xl mx-auto flex items-center justify-between mb-8 border-b border-white/10 pb-6">
           <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-indigo-500/10 rounded-xl flex items-center justify-center border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
             <Settings className="w-6 h-6 text-indigo-400" />

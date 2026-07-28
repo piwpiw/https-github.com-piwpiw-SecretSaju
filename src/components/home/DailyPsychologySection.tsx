@@ -21,8 +21,8 @@ export default function DailyPsychologySection() {
     }, []);
 
     return (
-        <section className="py-12 sm:py-14 relative px-4 sm:px-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between mb-8 sm:mb-10 gap-4 sm:gap-8">
+        <section className="py-8 sm:py-14 relative px-4 sm:px-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between mb-8 sm:mb-6 gap-4 sm:gap-6">
                 <div className="flex items-center gap-4 sm:gap-5">
                     <div className="p-3 sm:p-4 bg-rose-500/10 rounded-[1.5rem] sm:rounded-[2rem] border border-rose-500/20 shadow-inner">
                         <BrainCircuit className="w-7 h-7 sm:w-8 sm:h-8 text-rose-400" />

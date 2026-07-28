@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 
 export function GlobalCompliance() {
     return (
-        <footer className="w-full py-12 px-6 border-t border-white/5 bg-background/50 backdrop-blur-sm mt-20">
-            <div className="max-w-md mx-auto space-y-8">
+        <footer className="w-full py-8 px-6 border-t border-white/5 bg-background/50 backdrop-blur-sm mt-20">
+            <div className="max-w-md mx-auto space-y-6">
                 {/* Important Disclaimer */}
                 <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
                     <p className="text-[10px] text-zinc-400 leading-relaxed text-center">

@@ -259,7 +259,7 @@ export default function VSModePage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground pb-24">
-      <div className="max-w-6xl mx-auto px-5 py-8 space-y-8">
+      <div className="max-w-6xl mx-auto px-5 py-8 space-y-6">
         <header className="flex items-center justify-between">
           <button onClick={() => router.back()} className="inline-flex items-center gap-2 text-slate-400 hover:text-white">
             <ArrowLeft className="w-4 h-4" />
