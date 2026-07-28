@@ -75,7 +75,7 @@ export default function TerminalBoot({ onComplete }: { onComplete: () => void })
                         </div>
 
                         <div className="w-full">
-                            <div className="flex justify-between text-xs text-slate-600 mb-2">
+                            <div className="flex justify-between text-xs text-secondary mb-2">
                                 <span>진행률</span>
                                 <span>{Math.floor((lineIndex / BOOT_LINES.length) * 100)}%</span>
                             </div>

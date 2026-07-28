@@ -246,7 +246,7 @@ export default function DailyFortunePage() {
                   <div className="mt-6 pt-5 border-t border-white/5 grid grid-cols-3 gap-3">
                     {fortune.luckyColor && (
                       <div className="text-center">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-600 mb-1">럭키 컬러</p>
+                        <p className="text-[9px] font-black uppercase tracking-widest text-secondary mb-1">럭키 컬러</p>
                         <p className="text-sm font-black text-slate-200">{fortune.luckyColor}</p>
                       </div>
                     )}
