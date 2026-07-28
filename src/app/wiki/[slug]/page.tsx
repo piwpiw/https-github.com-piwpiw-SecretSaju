@@ -69,7 +69,7 @@ export default async function DocPage({
               className="rounded-full px-3 py-1 text-xs font-medium"
               style={{
                 backgroundColor: "var(--surface)",
-                color: "var(--text-secondary)",
+                color: "var(--text-muted)",
                 border: "1px solid var(--border-color)",
               }}
             >
@@ -90,7 +90,7 @@ export default async function DocPage({
           >
             {title}
           </h1>
-          <div className="flex items-center gap-3 text-xs" style={{ color: "var(--text-secondary)" }}>
+          <div className="flex items-center gap-3 text-xs" style={{ color: "var(--text-muted)" }}>
             <span>문서: {params.slug}</span>
             <span className="opacity-20">|</span>
             <span>사주 사전</span>
@@ -139,7 +139,7 @@ export default async function DocPage({
         </div>
 
         <div className="mt-20 text-center opacity-30">
-          <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
             본 문서는 시크릿사주의 자산이며 무단 복제를 금지합니다.
           </p>
         </div>

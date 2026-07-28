@@ -25,7 +25,7 @@ export function Footer() {
                             </div>
                             <span className="text-lg font-black text-foreground uppercase tracking-tight">시크릿사주</span>
                         </Link>
-                        <p className="text-sm max-w-sm leading-relaxed text-secondary break-keep">
+                        <p className="text-sm max-w-sm leading-relaxed text-muted break-keep">
                             {t('home.feature.desc') || '프리미엄 사주 분석 및 운세 플랫폼'}
                         </p>
                     </div>
@@ -57,7 +57,7 @@ export function Footer() {
                 </div>
 
                 <div className="flex flex-col gap-2 border-t border-white/10 pt-5">
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-black text-secondary tracking-[0.12em]">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-black text-muted tracking-[0.12em]">
                         <Link href="/terms" className="hover:text-white transition-colors">이용약관</Link>
                         <span className="w-1 h-1 rounded-full bg-slate-500/60"></span>
                         <Link href="/privacy" className="hover:text-white transition-colors">개인정보처리방침</Link>
@@ -79,7 +79,7 @@ export function Footer() {
                 </div>
 
                 <div className="text-right">
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md font-mono text-secondary">v4.5.1 (시크릿사주)</span>
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md font-mono text-muted">v4.5.1 (시크릿사주)</span>
                 </div>
             </div>
         </footer>

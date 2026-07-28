@@ -9,8 +9,21 @@
   --background: #0f0f1a;
   --surface: rgba(255, 255, 255, 0.03);
   --text-foreground: #f1f5f9;
-  --text-secondary: #94a3b8;
+  --text-muted: #94a3b8;
   --border-color: rgba(255, 255, 255, 0.1);
+
+  /* 위 값들의 RGB 채널 형태.
+     Tailwind 는 `rgb(var(--x) / <alpha-value>)` 로 색을 만드는데, 이 문법은
+     변수가 "15 23 42" 같은 채널 숫자일 때만 동작한다. hex 를 넣으면
+     `rgb(#0f172a / 1)` 이 되어 브라우저가 통째로 버리고, 그 결과
+     text-foreground·text-primary 는 상속색으로, bg-surface 는 완전 투명으로
+     렌더됐다. 직접 var() 로 쓰는 곳이 많아 hex 쪽은 그대로 두고 채널 형태를
+     따로 둔다. ThemeProvider 가 테마를 바꿀 때 둘 다 갱신한다. */
+  --primary-rgb: 99 102 241;
+  --secondary-rgb: 168 85 247;
+  --background-rgb: 15 15 26;
+  --text-foreground-rgb: 241 245 249;
+  --text-muted-rgb: 148 163 184;
   --accent-ink: #f59e0b;
   --font-sans: "Pretendard Variable", Pretendard, "Noto Sans KR", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-display: "Noto Sans KR", "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -247,7 +260,7 @@ body {
 }
 
 .text-micro-copy {
-  color: var(--text-secondary);
+  color: var(--text-muted);
   @apply text-[11px] uppercase tracking-[0.28em] font-black;
 }
 

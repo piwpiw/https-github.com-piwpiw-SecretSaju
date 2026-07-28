@@ -133,7 +133,7 @@ export default function AuthCallback() {
                     {isError ? '로그인 실패' : '로그인 확인 중'}
                 </h1>
 
-                <p className={`text-lg ${isError ? 'text-secondary opacity-80' : 'text-secondary'} font-bold`}>{message}</p>
+                <p className={`text-lg ${isError ? 'text-muted opacity-80' : 'text-muted'} font-bold`}>{message}</p>
             </motion.div>
         </main>
     );

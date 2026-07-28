@@ -44,7 +44,7 @@ function PaymentLoadingContent() {
         >
           <AlertTriangle className="w-12 h-12 text-rose-400 mx-auto mb-6" />
           <h1 className="text-2xl font-black text-foreground mb-4">결제 처리 지연</h1>
-          <p className="text-sm text-secondary mb-8">
+          <p className="text-sm text-muted mb-8">
             결제 응답이 오지 않아 상태 확인이 지연되고 있습니다. 잠시 후 결제 내역을 직접 확인해 주세요.
           </p>
           <div className="flex flex-col gap-3">
@@ -56,7 +56,7 @@ function PaymentLoadingContent() {
             </button>
             <button
               onClick={() => router.push('/shop')}
-              className="w-full py-4 bg-background border border-border-color text-secondary font-bold text-base rounded-2xl hover:text-foreground transition-all"
+              className="w-full py-4 bg-background border border-border-color text-muted font-bold text-base rounded-2xl hover:text-foreground transition-all"
             >
               결제 다시 시도
             </button>
@@ -87,7 +87,7 @@ function PaymentLoadingContent() {
                 opacity: index === activeStep ? 1 : 0.35,
               }}
               className={`text-sm leading-relaxed ${
-                index === activeStep ? 'text-primary font-bold' : 'text-secondary'
+                index === activeStep ? 'text-primary font-bold' : 'text-muted'
               }`}
             >
               {index + 1}. {step}

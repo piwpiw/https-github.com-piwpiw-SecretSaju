@@ -235,7 +235,7 @@ export default function JellyShopModal({
                   type="button"
                   onClick={onClose}
                   className="absolute top-4 right-4 rounded-full p-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-                  style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)' }}
+                  style={{ backgroundColor: 'var(--surface)', color: 'var(--text-muted)' }}
                   aria-label="젤리 구매 모달 닫기"
                 >
                   <X className="w-5 h-5" />
@@ -247,7 +247,7 @@ export default function JellyShopModal({
                     젤리 구매
                   </h2>
                 </div>
-                <p id={descriptionId} className="text-sm break-keep" style={{ color: 'var(--text-secondary)' }}>
+                <p id={descriptionId} className="text-sm break-keep" style={{ color: 'var(--text-muted)' }}>
                   {FREE_LAUNCH
                     ? '무료 오픈 기간에는 모든 기능이 무료라 충전하지 않아도 됩니다. 아래는 정식 오픈 후 가격 안내입니다.'
                     : '내 지갑 잔액을 간편하게 충전하세요.'}

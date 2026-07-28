@@ -28,7 +28,7 @@ export default function StoryPage() {
         <div className="flex items-center justify-between mb-16">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-3 text-secondary hover:text-foreground transition-all group"
+            className="flex items-center gap-3 text-muted hover:text-foreground transition-all group"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             <span className="text-sm font-bold tracking-widest uppercase">뒤로</span>
@@ -40,7 +40,7 @@ export default function StoryPage() {
           <h1 className="text-4xl sm:text-6xl font-black italic tracking-tighter uppercase mb-4 text-foreground">
             운명 이야기 아카이브
           </h1>
-          <p className="text-xl text-secondary font-medium max-w-2xl leading-relaxed">
+          <p className="text-xl text-muted font-medium max-w-2xl leading-relaxed">
             하루의 분위기와 마음의 결을 읽어보는 사주 에세이를 모았습니다.
           </p>
         </div>
@@ -57,10 +57,10 @@ export default function StoryPage() {
               <h2 className="text-3xl md:text-5xl font-black mb-6 leading-tight group-hover:text-primary transition-colors duration-300">
                 {featuredStory.title}
               </h2>
-              <p className="text-lg text-secondary mb-8 line-clamp-3 leading-relaxed">
+              <p className="text-lg text-muted mb-8 line-clamp-3 leading-relaxed">
                 {featuredStory.description}
               </p>
-              <div className="flex items-center gap-4 text-sm font-bold text-secondary uppercase tracking-wider mt-auto pt-8 border-t border-border-color/50">
+              <div className="flex items-center gap-4 text-sm font-bold text-muted uppercase tracking-wider mt-auto pt-8 border-t border-border-color/50">
                 <span>{featuredStory.category}</span>
                 <span className="w-1 h-1 rounded-full bg-border-color" />
                 <span className="flex items-center gap-1.5">
@@ -96,15 +96,15 @@ export default function StoryPage() {
                   <span className="text-xs font-black text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">
                     {story.category}
                   </span>
-                  <ArrowLeft className="w-5 h-5 text-secondary rotate-[135deg] group-hover:text-primary group-hover:scale-110 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />
+                  <ArrowLeft className="w-5 h-5 text-muted rotate-[135deg] group-hover:text-primary group-hover:scale-110 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />
                 </div>
                 <h3 className="text-2xl font-black mb-3 group-hover:text-primary transition-colors leading-snug">
                   {story.title}
                 </h3>
-                <p className="text-secondary leading-relaxed font-medium mb-8 flex-1">
+                <p className="text-muted leading-relaxed font-medium mb-8 flex-1">
                   {story.description}
                 </p>
-                <div className="flex items-center justify-between text-sm font-bold text-secondary uppercase tracking-wider pt-6 border-t border-border-color mt-auto">
+                <div className="flex items-center justify-between text-sm font-bold text-muted uppercase tracking-wider pt-6 border-t border-border-color mt-auto">
                   <span>{story.date}</span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="w-4 h-4" />

@@ -118,7 +118,7 @@ export default function RelationshipDetailPage() {
         return (
             <main className="min-h-screen bg-background flex flex-col items-center justify-center space-y-6">
                 <Loader2 className="w-12 h-12 animate-spin text-primary" />
-                <p className="text-xl font-bold text-secondary">궁합 분석 중...</p>
+                <p className="text-xl font-bold text-muted">궁합 분석 중...</p>
             </main>
         );
     }
@@ -252,7 +252,7 @@ export default function RelationshipDetailPage() {
                             </div>
                             <div>
                                 <h4 className="text-xl font-bold" style={{ color: 'var(--text-foreground)' }}>VS 비교 분석</h4>
-                                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>속성별 상세 비교</p>
+                                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>속성별 상세 비교</p>
                             </div>
                         </div>
                         <ChevronRight className="w-8 h-8 text-cyan-500 group-hover:translate-x-2 transition-transform" />
@@ -380,7 +380,7 @@ export default function RelationshipDetailPage() {
                                         <Lock className="w-10 h-10 text-yellow-400" />
                                     </div>
                                     <h3 className="text-xl font-bold mb-3" style={{ color: 'var(--text-foreground)' }}>잠금된 콘텐츠</h3>
-                                    <p className="text-sm mb-8" style={{ color: 'var(--text-secondary)' }}>
+                                    <p className="text-sm mb-8" style={{ color: 'var(--text-muted)' }}>
                                         상세 조언과 실행 계획은 잠금되어 있습니다.<br />
                                         젤리 1개를 사용하여 잠금을 해제하세요.
                                     </p>
@@ -417,7 +417,7 @@ export default function RelationshipDetailPage() {
                             className="premium-card p-10 max-w-sm w-full text-center border-yellow-500/30"
                         >
                             <h3 className="text-xl font-bold mb-3" style={{ color: 'var(--text-foreground)' }}>잠금 해제 확인</h3>
-                            <p className="text-sm mb-8" style={{ color: 'var(--text-secondary)' }}>
+                            <p className="text-sm mb-8" style={{ color: 'var(--text-muted)' }}>
                                 <span className="font-bold" style={{ color: 'var(--primary)' }}>1 🐟</span>를 소모하여 {targetProfile?.name}님과의<br />
                                 상세 분석을 확인하시겠습니까?
                             </p>

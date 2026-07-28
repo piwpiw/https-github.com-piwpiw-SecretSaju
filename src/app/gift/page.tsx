@@ -110,7 +110,7 @@ export default function GiftPage() {
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-border-color">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-3 text-lg font-bold text-secondary hover:text-foreground transition-all"
+            className="flex items-center gap-3 text-lg font-bold text-muted hover:text-foreground transition-all"
           >
             <ArrowLeft className="w-6 h-6" />
             {t('common.back')}
@@ -131,7 +131,7 @@ export default function GiftPage() {
             <h1 className="text-5xl md:text-7xl font-black text-foreground italic tracking-tighter uppercase mb-4">
               {locale === 'ko' ? '행운' : 'Destiny'} <span className="text-pink-500 italic">{locale === 'ko' ? '선물' : 'Gift'}</span>
             </h1>
-            <p className="text-xl md:text-2xl text-secondary font-medium italic opacity-70">
+            <p className="text-xl md:text-2xl text-muted font-medium italic opacity-70">
               {locale === 'ko'
                 ? '특별한 사람에게 운세 선물을 보내보세요.'
                 : 'Gift a comprehensive destiny report to someone special.'}
@@ -170,7 +170,7 @@ export default function GiftPage() {
               className="space-y-12 relative z-10"
             >
               <div className="space-y-6">
-                <label className="text-xl font-bold flex items-center gap-4 text-secondary">
+                <label className="text-xl font-bold flex items-center gap-4 text-muted">
                   <span className="w-2 h-8 rounded-full bg-pink-500" />
                   {locale === 'ko' ? '받는 사람 이름' : 'Recipient Name'}
                 </label>
@@ -189,7 +189,7 @@ export default function GiftPage() {
               </div>
 
               <div className="space-y-6">
-                <label className="text-xl font-bold flex items-center gap-4 text-secondary">
+                <label className="text-xl font-bold flex items-center gap-4 text-muted">
                   <span className="w-2 h-8 rounded-full bg-pink-500" />
                   {locale === 'ko' ? '생년월일' : 'Birthdate'}
                 </label>
@@ -205,7 +205,7 @@ export default function GiftPage() {
               </div>
 
               <div className="space-y-6">
-                <label className="text-xl font-bold flex items-center gap-4 text-secondary">
+                <label className="text-xl font-bold flex items-center gap-4 text-muted">
                   <span className="w-2 h-8 rounded-full bg-pink-500" />
                   {locale === 'ko' ? '이메일' : 'Email Address'}
                 </label>
@@ -287,7 +287,7 @@ export default function GiftPage() {
               <h3 className="text-4xl md:text-5xl font-black italic tracking-tight text-foreground mb-6 uppercase">
                 {locale === 'ko' ? '발송 완료' : 'Transmission Complete'}
               </h3>
-              <p className="text-2xl text-secondary mb-12 font-medium">
+              <p className="text-2xl text-muted mb-12 font-medium">
                 {locale === 'ko'
                   ? '선물이 성공적으로 등록되었습니다.'
                   : 'The gift has been successfully registered.'}

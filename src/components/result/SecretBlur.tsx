@@ -37,7 +37,7 @@ export function SecretBlur({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          <p className="text-secondary font-medium mb-2">해제된 비밀 콘텐츠</p>
+          <p className="text-muted font-medium mb-2">해제된 비밀 콘텐츠</p>
           <p className="text-zinc-300 text-sm">{secretPreview}</p>
         </motion.div>
       ) : (

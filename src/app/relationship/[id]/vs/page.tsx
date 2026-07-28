@@ -250,7 +250,7 @@ export default function VSModePage() {
     return (
       <main className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
         <Loader2 className="w-10 h-10 animate-spin text-primary" />
-        <p className="text-sm font-bold text-secondary">궁합 비교를 불러오는 중...</p>
+        <p className="text-sm font-bold text-muted">궁합 비교를 불러오는 중...</p>
       </main>
     );
   }

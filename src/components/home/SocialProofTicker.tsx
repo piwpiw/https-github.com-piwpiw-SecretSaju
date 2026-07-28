@@ -26,7 +26,7 @@ export default function SocialProofTicker() {
                         </span>
                         {/* text-slate-600 은 다크 배경에서 2.62:1 이라 사실상 안 읽힌다.
                             테마 토큰을 쓰면 다크·라이트·가독성 모두 AA 를 넘는다. */}
-                        <span className="text-[8px] font-bold text-secondary uppercase tracking-widest">{u.time}</span>
+                        <span className="text-[8px] font-bold text-muted uppercase tracking-widest">{u.time}</span>
                     </div>
                 ))}
             </motion.div>

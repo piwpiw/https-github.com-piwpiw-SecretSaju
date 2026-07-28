@@ -49,7 +49,7 @@ export default function WikiPage() {
                     <div>
                         <button
                             onClick={() => router.push('/')}
-                            className="flex items-center gap-3 text-lg font-bold text-secondary hover:text-foreground transition-all group mb-8"
+                            className="flex items-center gap-3 text-lg font-bold text-muted hover:text-foreground transition-all group mb-8"
                         >
                             <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
                             {t('common.back')}
@@ -66,18 +66,18 @@ export default function WikiPage() {
                         <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase mb-2">
                             {locale === 'ko' ? '사주' : 'Saju'} <span className="text-primary italic">{locale === 'ko' ? '백과사전' : 'Wiki'}</span>
                         </h1>
-                        <p className="text-xl md:text-2xl text-secondary font-medium italic opacity-70">
+                        <p className="text-xl md:text-2xl text-muted font-medium italic opacity-70">
                             {locale === 'ko' ? '사주 도메인 전체 문서·기술 명세를 정리한 지식 공간입니다.' : 'Comprehensive technical specifications & docs'}
                         </p>
                     </div>
 
                     <div className="flex items-center gap-8 bg-surface p-6 rounded-3xl border border-border-color shadow-lg">
                         <div className="text-right border-r border-border-color pr-6">
-                            <div className="text-sm font-bold text-secondary uppercase tracking-widest mb-1">{locale === 'ko' ? '최종 갱신' : 'Last Updated'}</div>
+                            <div className="text-sm font-bold text-muted uppercase tracking-widest mb-1">{locale === 'ko' ? '최종 갱신' : 'Last Updated'}</div>
                             <div className="text-xl font-black">2026.02.26</div>
                         </div>
                         <div className="text-right">
-                            <div className="text-sm font-bold text-secondary uppercase tracking-widest mb-1">{locale === 'ko' ? '상태' : 'Status'}</div>
+                            <div className="text-sm font-bold text-muted uppercase tracking-widest mb-1">{locale === 'ko' ? '상태' : 'Status'}</div>
                             <div className="text-xl font-black text-emerald-500 flex items-center gap-2">
                                 <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse" />
                                 {locale === 'ko' ? '활성' : 'Active'}
@@ -116,7 +116,7 @@ export default function WikiPage() {
                                                     <doc.icon className={`w-8 h-8 ${doc.color}`} />
                                                 </div>
                                                 <div className="flex items-end justify-between mt-auto">
-                                                    <span className="text-2xl font-black tracking-tight text-secondary group-hover:text-foreground transition-colors">
+                                                    <span className="text-2xl font-black tracking-tight text-muted group-hover:text-foreground transition-colors">
                                                         {locale === 'ko' ? doc.titleKo : doc.titleEn}
                                                     </span>
                                                     <ChevronRight className="w-8 h-8 text-border-color group-hover:text-primary group-hover:translate-x-2 transition-all" />
@@ -126,8 +126,8 @@ export default function WikiPage() {
                                     ))
                                 ) : (
                                     <div className="col-span-full p-12 rounded-4xl bg-surface border border-dashed border-border-color flex flex-col items-center justify-center gap-4">
-                                        <Sparkles className="w-10 h-10 text-secondary opacity-50" />
-                                        <span className="text-xl font-bold text-secondary uppercase tracking-widest">{locale === 'ko' ? '문서 없음' : 'No Documents'}</span>
+                                        <Sparkles className="w-10 h-10 text-muted opacity-50" />
+                                        <span className="text-xl font-bold text-muted uppercase tracking-widest">{locale === 'ko' ? '문서 없음' : 'No Documents'}</span>
                                     </div>
                                 )}
                             </div>
@@ -143,7 +143,7 @@ export default function WikiPage() {
                             <div className="w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                         </div>
                         <div className="h-2 w-24 bg-border-color rounded-full hidden sm:block" />
-                        <span className="text-xl font-black text-secondary tracking-widest uppercase hidden sm:block">Secret Node</span>
+                        <span className="text-xl font-black text-muted tracking-widest uppercase hidden sm:block">Secret Node</span>
                     </div>
                     <div className="text-right text-lg">
                         <p className="font-black text-primary italic">&gt; LOAD_COMPLETE_</p>

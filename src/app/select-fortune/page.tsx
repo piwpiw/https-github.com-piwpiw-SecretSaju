@@ -94,13 +94,13 @@ export default function SelectionPage() {
         <h1 className="text-5xl md:text-7xl font-black text-foreground italic tracking-tighter uppercase mb-4">
                         {locale === 'ko' ? '운명' : '운명'} <span className="text-primary italic">{locale === 'ko' ? '서비스' : '서비스'}</span>
                     </h1>
-                    <p className="text-xl md:text-2xl text-secondary font-medium italic opacity-70 max-w-2xl">{t('select.desc')}</p>
+                    <p className="text-xl md:text-2xl text-muted font-medium italic opacity-70 max-w-2xl">{t('select.desc')}</p>
                 </div>
 
                 {/* Profile Selector */}
                 {profiles.length > 0 && (
                     <div className="mb-16">
-                        <label className="text-xl font-bold flex items-center gap-4 text-secondary mb-6 pl-2">
+                        <label className="text-xl font-bold flex items-center gap-4 text-muted mb-6 pl-2">
                             <Star className="w-6 h-6 text-primary" /> {locale === 'ko' ? '서비스 대상 변경' : '서비스 대상 변경'}
                         </label>
                         <div className="relative group max-w-md">
@@ -117,7 +117,7 @@ export default function SelectionPage() {
                                 ))}
                             </select>
                             <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none w-10 h-10 rounded-full bg-background flex items-center justify-center border border-border-color shadow-sm group-hover:bg-primary/10 group-hover:border-primary/30 transition-all">
-                                <ChevronDown className="w-6 h-6 text-secondary group-hover:text-primary transition-colors" />
+                                <ChevronDown className="w-6 h-6 text-muted group-hover:text-primary transition-colors" />
                             </div>
                         </div>
                     </div>
@@ -144,15 +144,15 @@ export default function SelectionPage() {
                                             <div className={`w-20 h-20 rounded-4xl bg-gradient-to-br ${svc.color} flex items-center justify-center shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
                                                 <svc.icon className="w-10 h-10 text-white" />
                                             </div>
-                                    <span className="px-5 py-2 rounded-full text-sm font-black bg-background border border-border-color tracking-widest uppercase text-secondary group-hover:text-foreground transition-colors">
+                                    <span className="px-5 py-2 rounded-full text-sm font-black bg-background border border-border-color tracking-widest uppercase text-muted group-hover:text-foreground transition-colors">
                                                 {svc.badge}
                                             </span>
                                         </div>
 
                                         <div className="flex-1 relative z-10">
                                             <h3 className="text-3xl font-black text-foreground mb-2 tracking-tight group-hover:text-primary transition-colors">{svc.title}</h3>
-                                            <p className="text-lg font-bold text-secondary italic opacity-80 mb-6">{svc.subtitle}</p>
-                                            <p className="text-lg text-secondary leading-relaxed opacity-90 font-medium">
+                                            <p className="text-lg font-bold text-muted italic opacity-80 mb-6">{svc.subtitle}</p>
+                                            <p className="text-lg text-muted leading-relaxed opacity-90 font-medium">
                                                 {svc.description}
                                             </p>
                                         </div>
@@ -162,7 +162,7 @@ export default function SelectionPage() {
                                             {locale === 'ko' ? '자세히 보기' : '자세히 보기'}
                                             </span>
                                             <div className="w-12 h-12 rounded-full bg-background border border-border-color flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all shadow-sm">
-                                                <ChevronRight className="w-6 h-6 text-secondary group-hover:text-white transition-colors" />
+                                                <ChevronRight className="w-6 h-6 text-muted group-hover:text-white transition-colors" />
                                             </div>
                                         </div>
                                     </div>
@@ -183,7 +183,7 @@ export default function SelectionPage() {
                         <Link key={i} href={item.href} className="bg-surface rounded-4xl p-8 border border-border-color flex flex-col items-center justify-center text-center gap-4 group hover:border-primary/30 transition-all hover:bg-background shadow-md hover:shadow-lg">
                             <div className="relative">
                                 <div className="w-16 h-16 rounded-3xl bg-background border border-border-color flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
-                                    <item.icon className="w-8 h-8 text-secondary group-hover:text-primary transition-colors" />
+                                    <item.icon className="w-8 h-8 text-muted group-hover:text-primary transition-colors" />
                                 </div>
                                 {item.badge && (
                                     <span className="absolute -top-2 -right-2 px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white animate-bounce shadow-md">
@@ -191,7 +191,7 @@ export default function SelectionPage() {
                                     </span>
                                 )}
                             </div>
-                            <span className="text-lg font-black tracking-tight text-secondary group-hover:text-foreground">{item.label}</span>
+                            <span className="text-lg font-black tracking-tight text-muted group-hover:text-foreground">{item.label}</span>
                         </Link>
                     ))}
                 </div>
@@ -207,7 +207,7 @@ export default function SelectionPage() {
                             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
                                 {locale === 'ko' ? '아직 등록된 사주 노드가 없습니다' : '아직 등록된 사주 노드가 없습니다'}
                             </h2>
-                            <p className="text-xl text-secondary mb-10 font-medium">
+                            <p className="text-xl text-muted mb-10 font-medium">
                                 {locale === 'ko' ? '분석을 시작하려면 당신의 프로필을 먼저 만들어주세요.' : '분석을 시작하려면 프로필을 먼저 만들어주세요.'}
                             </p>
                             <Link href="/my-saju/add" className="inline-flex items-center gap-4 px-10 py-6 rounded-4xl bg-primary text-white font-black text-xl hover:scale-105 transition-all shadow-xl shadow-primary/20 uppercase tracking-widest">

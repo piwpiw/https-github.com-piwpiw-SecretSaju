@@ -30,14 +30,14 @@ export default function StoryDetailPage({ params }: Props) {
         <header className="mb-12">
           <Link
             href="/story"
-            className="inline-flex items-center gap-3 text-secondary hover:text-foreground mb-6 transition-all group"
+            className="inline-flex items-center gap-3 text-muted hover:text-foreground mb-6 transition-all group"
             aria-label="목록으로 돌아가기"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             목록으로 돌아가기
           </Link>
 
-          <nav aria-label="스토리 내비게이션" className="text-xs text-secondary flex items-center gap-2">
+          <nav aria-label="스토리 내비게이션" className="text-xs text-muted flex items-center gap-2">
             <Link href="/story" className="hover:text-foreground">
               스토리 목록
             </Link>
@@ -53,9 +53,9 @@ export default function StoryDetailPage({ params }: Props) {
             {story.category}
           </span>
           <h1 className="mt-4 text-3xl md:text-5xl font-black leading-tight">{story.title}</h1>
-          <p className="mt-4 text-secondary leading-relaxed">{story.description}</p>
+          <p className="mt-4 text-muted leading-relaxed">{story.description}</p>
 
-          <div className="mt-6 flex items-center gap-6 text-sm font-bold text-secondary uppercase tracking-wider">
+          <div className="mt-6 flex items-center gap-6 text-sm font-bold text-muted uppercase tracking-wider">
             <span className="flex items-center gap-1.5">
               <Calendar className="w-4 h-4" />
               {story.date}
@@ -81,10 +81,10 @@ export default function StoryDetailPage({ params }: Props) {
             aria-label="이전 글 보기"
           >
             <span>
-              <span className="text-secondary">이전 글</span>
+              <span className="text-muted">이전 글</span>
               <span className="block mt-1 text-foreground">{prevStory.title}</span>
             </span>
-            <ArrowLeft className="w-5 h-5 text-secondary" />
+            <ArrowLeft className="w-5 h-5 text-muted" />
           </Link>
           <Link
             href={`/story/${nextStory.id}`}
@@ -92,10 +92,10 @@ export default function StoryDetailPage({ params }: Props) {
             aria-label="다음 글 보기"
           >
             <span className="text-right">
-              <span className="text-secondary">다음 글</span>
+              <span className="text-muted">다음 글</span>
               <span className="block mt-1 text-foreground">{nextStory.title}</span>
             </span>
-            <ArrowRight className="w-5 h-5 text-secondary" />
+            <ArrowRight className="w-5 h-5 text-muted" />
           </Link>
         </div>
       </div>

@@ -143,21 +143,21 @@ export default function SajuListPage() {
 
         <div className="mb-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="rounded-3xl border border-border-color bg-gradient-to-br from-slate-900/70 to-surface p-6">
-            <p className="text-xs font-black uppercase tracking-widest text-secondary">프로필 커버리지</p>
+            <p className="text-xs font-black uppercase tracking-widest text-muted">프로필 커버리지</p>
             <div className="mt-4 h-2 rounded-full bg-black/30 border border-white/10">
               <div className="h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${completionRate}%` }} />
             </div>
-            <p className="mt-3 text-sm text-secondary">현재 {completionRate}%</p>
+            <p className="mt-3 text-sm text-muted">현재 {completionRate}%</p>
           </div>
           <div className="rounded-3xl border border-border-color bg-gradient-to-br from-indigo-900/20 to-surface p-6">
-            <p className="text-xs font-black uppercase tracking-widest text-secondary">관계 맵 가동률</p>
+            <p className="text-xs font-black uppercase tracking-widest text-muted">관계 맵 가동률</p>
             <p className="mt-4 text-3xl font-black">{profiles.length > 1 ? `${profiles.length - 1}개` : "0개"}</p>
-            <p className="mt-2 text-sm text-secondary">연결 가능한 관계 후보군</p>
+            <p className="mt-2 text-sm text-muted">연결 가능한 관계 후보군</p>
           </div>
           <div className="rounded-3xl border border-border-color bg-gradient-to-br from-rose-900/20 to-surface p-6">
-            <p className="text-xs font-black uppercase tracking-widest text-secondary">다음 액션</p>
+            <p className="text-xs font-black uppercase tracking-widest text-muted">다음 액션</p>
             <p className="mt-4 text-xl font-black">프로필 점검 1회</p>
-            <p className="mt-2 text-sm text-secondary">오늘도 관계 분석 정확도 향상</p>
+            <p className="mt-2 text-sm text-muted">오늘도 관계 분석 정확도 향상</p>
           </div>
         </div>
 
@@ -221,10 +221,10 @@ export default function SajuListPage() {
             >
               <div className="relative z-10 flex flex-col items-center">
                 <div className="w-24 h-24 rounded-full bg-background border border-border-color flex items-center justify-center mb-8 group-hover:scale-110 transition-transform group-hover:bg-primary/5">
-                  <Plus className="w-12 h-12 text-secondary group-hover:text-primary transition-colors" />
+                  <Plus className="w-12 h-12 text-muted group-hover:text-primary transition-colors" />
                 </div>
                 <h3 className="text-3xl font-black text-foreground mb-4">등록된 프로필이 없습니다.</h3>
-                <p className="text-xl text-secondary font-medium mb-12">
+                <p className="text-xl text-muted font-medium mb-12">
                   첫 프로필을 저장하면 바로 분석과 궁합 진단을 이어서 볼 수 있습니다.
                 </p>
                 <Link
@@ -259,7 +259,7 @@ export default function SajuListPage() {
                           disabled={deletingId === profile.id}
                           onClick={() => setPendingDelete({ id: profile.id, name: profile.name })}
                           aria-label={`${profile.name} 삭제`}
-                          className="p-3 text-secondary hover:text-rose-500 hover:bg-rose-500/10 rounded-2xl transition-all border border-transparent hover:border-rose-500/20 disabled:opacity-50"
+                          className="p-3 text-muted hover:text-rose-500 hover:bg-rose-500/10 rounded-2xl transition-all border border-transparent hover:border-rose-500/20 disabled:opacity-50"
                         >
                           {deletingId === profile.id ? <Loader2 className="w-6 h-6 animate-spin" /> : <Trash2 className="w-6 h-6" />}
                         </button>
@@ -275,11 +275,11 @@ export default function SajuListPage() {
                       </div>
 
                       <div className="space-y-4 mb-10">
-                        <div className="flex items-center gap-4 text-sm font-bold text-secondary uppercase tracking-widest">
+                        <div className="flex items-center gap-4 text-sm font-bold text-muted uppercase tracking-widest">
                           <Calendar className="w-5 h-5 text-primary" />
                           {String(profile.birthdate).split('T')[0]} ({calendarLabel[profile.calendarType] || profile.calendarType})
                         </div>
-                        <div className="flex items-center gap-4 text-sm font-bold text-secondary uppercase tracking-widest">
+                        <div className="flex items-center gap-4 text-sm font-bold text-muted uppercase tracking-widest">
                           <User className="w-5 h-5 text-primary" />
                           {genderLabel[profile.gender] || profile.gender}
                         </div>
@@ -307,12 +307,12 @@ export default function SajuListPage() {
           <div className="w-full max-w-md rounded-3xl border border-border-color bg-surface p-6">
             <div className="flex items-start justify-between mb-2">
               <h3 className="text-xl font-black">프로필 삭제</h3>
-              <Sparkles className="w-5 h-5 text-secondary" />
+              <Sparkles className="w-5 h-5 text-muted" />
             </div>
-            <p className="mt-2 text-sm text-secondary">
+            <p className="mt-2 text-sm text-muted">
               <span className="text-foreground font-bold">{pendingDelete.name}</span> 프로필을 삭제할까요?
             </p>
-            <p className="mt-1 text-xs text-secondary">삭제된 데이터는 되돌릴 수 없습니다.</p>
+            <p className="mt-1 text-xs text-muted">삭제된 데이터는 되돌릴 수 없습니다.</p>
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setPendingDelete(null)}

@@ -433,14 +433,14 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
                             <button
                                 onClick={handleClose}
                                 disabled={!!isLoading}
-                                className="absolute top-5 right-5 p-2 rounded-full hover:bg-background transition-colors border border-transparent hover:border-border-color disabled:opacity-30" aria-label="닫기"><X className="w-5 h-5 text-secondary" /></button>
+                                className="absolute top-5 right-5 p-2 rounded-full hover:bg-background transition-colors border border-transparent hover:border-border-color disabled:opacity-30" aria-label="닫기"><X className="w-5 h-5 text-muted" /></button>
 
                             <div className="px-7 py-8">
                                 <div className="mb-8 text-center">
                                     <h2 className="text-2xl font-black uppercase tracking-wider text-foreground">
                                         {locale === 'ko' ? (isSignupMode ? '회원가입' : '로그인') : isSignupMode ? 'Sign up' : 'Login'}
                                     </h2>
-                                    <p className="text-sm text-secondary mt-2">
+                                    <p className="text-sm text-muted mt-2">
                                         {locale === 'ko'
                                             ? '소셜 로그인 또는 이메일로 빠르게 시작하세요'
                                             : 'Sign in quickly with social or email'}
@@ -487,7 +487,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
 
                                 <div className="flex items-center gap-2 my-5">
                                     <span className="h-px flex-1 bg-border-color" />
-                                    <span className="text-xs text-secondary font-black">또는</span>
+                                    <span className="text-xs text-muted font-black">또는</span>
                                     <span className="h-px flex-1 bg-border-color" />
                                 </div>
 
@@ -546,7 +546,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
                                     {isLoading === 'email' ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>{isSignupMode ? '이메일로 회원가입' : '이메일로 로그인'}</span>}
                                 </button>
 
-                                <p className="mt-5 text-sm text-secondary">
+                                <p className="mt-5 text-sm text-muted">
                                     {isSignupMode ? '이미 계정이 있나요?' : '처음이신가요?'}
                                     <button
                                         type="button"

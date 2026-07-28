@@ -19,7 +19,7 @@ export default function ComingSoon({ title, desc }: { title: string; desc?: stri
           transition={{ type: "spring" }}
           className="w-24 h-24 mx-auto rounded-3xl bg-secondary/10 border border-secondary/20 flex items-center justify-center relative z-10"
         >
-          <Clock className="w-12 h-12 text-secondary" />
+          <Clock className="w-12 h-12 text-muted" />
         </motion.div>
 
         <motion.div
@@ -29,7 +29,7 @@ export default function ComingSoon({ title, desc }: { title: string; desc?: stri
           className="space-y-4 relative z-10"
         >
           <h1 className="text-4xl font-black text-foreground italic tracking-tighter uppercase">{title}</h1>
-          <p className="text-secondary text-lg font-medium leading-relaxed">
+          <p className="text-muted text-lg font-medium leading-relaxed">
             {desc || "이 기능은 현재 준비 중입니다.\n곧 사용할 수 있도록 고도화하여 빠르게 다시 제공합니다."}
           </p>
         </motion.div>
@@ -42,7 +42,7 @@ export default function ComingSoon({ title, desc }: { title: string; desc?: stri
         >
           <button
             onClick={() => router.back()}
-            className="inline-flex items-center gap-3 px-10 py-5 bg-background border border-border-color rounded-2xl transition-all shadow-sm hover:shadow-xl hover:text-foreground text-secondary font-bold text-lg"
+            className="inline-flex items-center gap-3 px-10 py-5 bg-background border border-border-color rounded-2xl transition-all shadow-sm hover:shadow-xl hover:text-foreground text-muted font-bold text-lg"
           >
             <ArrowLeft className="w-6 h-6" />
             이전으로 돌아가기

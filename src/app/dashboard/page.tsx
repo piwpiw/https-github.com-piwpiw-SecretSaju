@@ -192,11 +192,11 @@ function DashboardContent() {
         return (
             <main className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center px-6 pb-32 text-center">
                 <div className="bg-surface p-16 rounded-5xl border border-border-color max-w-2xl relative">
-                    <Users className="w-24 h-24 mx-auto mb-10 text-secondary opacity-50" />
+                    <Users className="w-24 h-24 mx-auto mb-10 text-muted opacity-50" />
                     <h1 className="text-4xl font-black mb-6 text-foreground">
                         {locale === 'ko' ? '연결된 프로필이 없습니다' : 'No Profiles Found'}
                     </h1>
-                    <p className="text-xl text-secondary leading-relaxed mb-12">
+                    <p className="text-xl text-muted leading-relaxed mb-12">
                         {locale === 'ko' ? '내 프로필을 먼저 만들고 인연 분석을 시작해 주세요.' : 'Start by creating your own Saju profile.'}
                     </p>
                     <Link
@@ -219,7 +219,7 @@ function DashboardContent() {
                         <h1 className="text-3xl sm:text-5xl font-black text-foreground italic tracking-tighter uppercase mb-2 sm:mb-3">
                             {locale === 'ko' ? '운명 대시보드 (Destiny Web)' : 'Dashboard'}
                         </h1>
-                        <p className="text-lg sm:text-2xl text-secondary font-medium">
+                        <p className="text-lg sm:text-2xl text-muted font-medium">
                             {locale === 'ko' ? '관계 에너지와 궁합을 한 번에 점검하세요.' : 'Your web of cosmic connections'}
                         </p>
                     </div>
@@ -231,28 +231,28 @@ function DashboardContent() {
 
                 <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12 sm:mb-20">
                     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-secondary">연결 수</p>
+                        <p className="text-xs font-black uppercase tracking-[0.2em] text-muted">연결 수</p>
                         <p className="mt-3 text-4xl font-black text-foreground">{profiles.length}명</p>
-                        <p className="text-sm text-secondary mt-2">본인 포함 인연 관계 수</p>
+                        <p className="text-sm text-muted mt-2">본인 포함 인연 관계 수</p>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-secondary">평균 궁합</p>
+                        <p className="text-xs font-black uppercase tracking-[0.2em] text-muted">평균 궁합</p>
                         <p className="mt-3 text-4xl font-black text-foreground">{avgScore}%</p>
                         <div className="mt-4 h-2 bg-background rounded-full overflow-hidden border border-border/40">
                             <motion.div style={{ width: `${Math.max(avgScore, 5)}%` }} initial={{ width: 0 }} animate={{ width: `${Math.max(avgScore, 5)}%` }} className="h-full bg-gradient-to-r from-cyan-400 to-indigo-500" />
                         </div>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-secondary">해금률</p>
+                        <p className="text-xs font-black uppercase tracking-[0.2em] text-muted">해금률</p>
                         <p className="mt-3 text-4xl font-black text-foreground">{unlockedRate}%</p>
                         <div className="mt-4 h-2 bg-background rounded-full overflow-hidden border border-border/40">
                             <div className={`h-full ${unlockedRate >= 70 ? 'bg-emerald-400' : unlockedRate >= 40 ? 'bg-yellow-400' : 'bg-rose-400'}`} style={{ width: `${unlockedRate}%` }} />
                         </div>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-secondary">메인 프로필</p>
+                        <p className="text-xs font-black uppercase tracking-[0.2em] text-muted">메인 프로필</p>
                         <p className="mt-3 text-xl font-black text-foreground">{mainProfile.name}</p>
-                        <p className="text-sm text-secondary mt-2">관계 분석 기준점</p>
+                        <p className="text-sm text-muted mt-2">관계 분석 기준점</p>
                     </motion.div>
                 </section>
 
@@ -266,7 +266,7 @@ function DashboardContent() {
                                 </div>
                                 <div>
                                     <h3 className="text-2xl sm:text-3xl font-black text-foreground mb-1 sm:mb-2 italic tracking-tight">{t('nav.daily')}</h3>
-                                    <p className="text-base sm:text-lg text-secondary font-medium">오늘의 흐름을 한 번에 점검하세요.</p>
+                                    <p className="text-base sm:text-lg text-muted font-medium">오늘의 흐름을 한 번에 점검하세요.</p>
                                 </div>
                             </div>
                             <div className="w-full sm:w-auto px-10 py-3 sm:py-4 bg-primary text-white font-black text-lg sm:text-xl rounded-xl sm:rounded-2xl shadow-xl group-hover:scale-105 transition-all min-h-[48px] sm:min-h-[52px] flex items-center justify-center">
@@ -301,7 +301,7 @@ function DashboardContent() {
                                     </div>
                                     <div>
                                         <h4 className="text-2xl font-black text-foreground">{rel.profile.name}</h4>
-                                        <p className="text-lg text-secondary font-medium">{t(`common.relation.${rel.profile.relationship}`)}</p>
+                                        <p className="text-lg text-muted font-medium">{t(`common.relation.${rel.profile.relationship}`)}</p>
                                     </div>
                                 </div>
                                 <div className={`text-4xl font-black italic tracking-tighter ${rel.analysis ? getCompColor(rel.analysis.score) : 'text-slate-700'}`}>
@@ -319,7 +319,7 @@ function DashboardContent() {
                                             className={`h-full bg-gradient-to-r ${rel.analysis.score >= 80 ? 'from-cyan-400 to-indigo-500' : 'from-yellow-400 to-rose-500'}`}
                                         />
                                     </div>
-                                    <p className="text-sm text-secondary font-medium leading-relaxed line-clamp-2 italic opacity-80 mt-4 mb-6">
+                                    <p className="text-sm text-muted font-medium leading-relaxed line-clamp-2 italic opacity-80 mt-4 mb-6">
                                         &ldquo;{rel.analysis.chemistry}&rdquo;
                                     </p>
 
@@ -362,11 +362,11 @@ function DashboardContent() {
                         className="bg-surface rounded-4xl p-10 border-2 border-dashed border-border-color flex flex-col items-center justify-center gap-10 group hover:border-primary/50 hover:bg-primary/5 transition-all text-center min-h-[350px] shadow-sm hover:shadow-xl"
                     >
                         <div className="w-24 h-24 rounded-full bg-background border border-border-color flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <Plus className="w-12 h-12 text-secondary group-hover:text-primary transition-colors" />
+                            <Plus className="w-12 h-12 text-muted group-hover:text-primary transition-colors" />
                         </div>
                         <div>
                             <p className="text-2xl font-black text-foreground mb-2">인연 추가</p>
-                            <p className="text-lg text-secondary font-medium">1 Jelly로 즉시 시작</p>
+                            <p className="text-lg text-muted font-medium">1 Jelly로 즉시 시작</p>
                         </div>
                     </Link>
                 </div>

@@ -36,7 +36,7 @@ export function CelebrityCard({ celebrity, index = 0 }: CelebrityCardProps) {
                     <h3 className="font-display text-xl text-foreground font-bold">
                         {celebrity.name}
                     </h3>
-                    <p className="text-secondary text-sm flex items-center gap-1">
+                    <p className="text-muted text-sm flex items-center gap-1">
                         <span>{categoryEmojis[celebrity.category] || '✨'}</span>
                         {celebrity.category}
                     </p>

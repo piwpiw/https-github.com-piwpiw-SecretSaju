@@ -67,7 +67,7 @@ export function CelebritySection({ pillarCode }: CelebritySectionProps) {
                 >
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-4">
                         <Users className="w-4 h-4 text-primary" />
-                        <span className="text-sm text-secondary">Social Proof</span>
+                        <span className="text-sm text-muted">Social Proof</span>
                     </div>
 
                     <h2 className="font-display text-3xl md:text-4xl text-foreground mb-3">

@@ -68,13 +68,13 @@ function FailContent() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full mt-10">
             <button
               onClick={() => router.push(getPrimaryRoute())}
-              className="py-4 sm:py-5 bg-background border border-border-color text-secondary font-black text-base sm:text-lg rounded-2xl hover:text-foreground transition-all min-h-[48px] flex items-center justify-center"
+              className="py-4 sm:py-5 bg-background border border-border-color text-muted font-black text-base sm:text-lg rounded-2xl hover:text-foreground transition-all min-h-[48px] flex items-center justify-center"
             >
               {getPrimaryLabel()}
             </button>
             <button
               onClick={() => router.push('/mypage')}
-              className="py-4 sm:py-5 bg-background border border-border-color text-secondary font-black text-base sm:text-lg rounded-2xl hover:text-foreground transition-all min-h-[48px] flex items-center justify-center"
+              className="py-4 sm:py-5 bg-background border border-border-color text-muted font-black text-base sm:text-lg rounded-2xl hover:text-foreground transition-all min-h-[48px] flex items-center justify-center"
             >
               마이페이지
             </button>
