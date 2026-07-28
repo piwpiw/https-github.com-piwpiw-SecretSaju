@@ -199,6 +199,8 @@ export default function AddSajuPage() {
               <input
                 id="birth-date"
                 type="date"
+                  min="1900-01-01"
+                  max="2100-12-31"
                 value={birthdate}
                 onChange={(e) => setBirthdate(e.target.value)}
                 aria-label="생년월일 입력"

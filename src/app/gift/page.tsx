@@ -196,6 +196,8 @@ export default function GiftPage() {
                 <input
                   required
                   type="date"
+                  min="1900-01-01"
+                  max="2100-12-31"
                   aria-label="받는 분 생년월일"
                   aria-required="true"
                   value={formData.birthDate}

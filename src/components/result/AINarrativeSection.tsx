@@ -56,6 +56,25 @@ interface Props {
   categoryFocus?: string;
 }
 
+/**
+ * AI 가 돌려주는 텍스트에서 마크다운 기호를 걷어낸다.
+ *
+ * 화면에 `**Easy Explanation:**` 이 그대로 찍히고 있었다. 우리는 이 문자열을
+ * 그냥 <p> 에 넣고 있어서 별표가 글자로 보인다. 굵게 표시할 방법이 없으니
+ * 기호만 없앤다. 영문 소제목(Easy Explanation 등)도 같이 지운다 — 한국어
+ * 서비스인데 AI 가 가끔 영문 라벨을 붙여서 내려준다.
+ */
+function cleanNarrative(raw: string): string {
+  return (raw || '')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/^\s*#{1,6}\s*/gm, '')
+    .replace(/`{1,3}/g, '')
+    .replace(/^\s*[-*]\s+/gm, '· ')
+    .replace(/\b(Easy Explanation|Expert Explanation|Action|Summary)\s*:\s*/gi, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 function NarrativeCard({
   title,
   body,
@@ -66,9 +85,16 @@ function NarrativeCard({
   tone: string;
 }) {
   return (
-    <article className={`rounded-3xl border p-4 ${tone}`}>
-      <h4 className="text-xs font-black uppercase tracking-[0.22em] text-white">{title}</h4>
-      <p className="mt-3 text-sm leading-7 text-slate-100 break-keep">{body}</p>
+    <article className={`rounded-3xl border p-5 sm:p-6 ${tone}`}>
+      <h4 className="text-[13px] font-black tracking-[0.06em] text-white">{title}</h4>
+      {/*
+        예전에는 text-sm + tracking 넓힘이었는데, 3단으로 좁아진 칸에서 한 줄에
+        여덟 글자쯤밖에 안 들어가 글이 토막났다. 글자를 키우고 자간을 정상으로
+        되돌린다. break-keep 은 한국어 단어가 중간에 끊기지 않게 해 준다.
+      */}
+      <p className="mt-3 whitespace-pre-line text-[15px] leading-[1.85] text-slate-100 break-keep">
+        {cleanNarrative(body)}
+      </p>
     </article>
   );
 }
@@ -356,7 +382,7 @@ export default function AINarrativeSection({
             </div>
           ) : null}
 
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {availableReaders.map((reader) => {
               const selected = reader.id === selectedReaderId;
               const recommended = reader.id === recommendedReader.id;
@@ -516,7 +542,7 @@ export default function AINarrativeSection({
                   <span>{activeReader.heroEmoji}</span>
                   <span>{activeReader.name}</span>
                 </div>
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 xl:grid-cols-3">
                   <NarrativeCard title="쉬운 설명" body={dualNarrative.easy} tone="border-cyan-300/20 bg-cyan-500/10" />
                   <NarrativeCard title="전문 해설" body={dualNarrative.expert} tone="border-indigo-300/20 bg-indigo-500/10" />
                   <NarrativeCard title="바로 할 일" body={dualNarrative.action} tone="border-emerald-300/20 bg-emerald-500/10" />
@@ -529,7 +555,7 @@ export default function AINarrativeSection({
                     <span>{compareReader.heroEmoji}</span>
                     <span>{compareReader.name}</span>
                   </div>
-                  <div className="grid gap-4 md:grid-cols-3">
+                  <div className="grid gap-4 xl:grid-cols-3">
                     <NarrativeCard title="쉬운 설명" body={compareNarrative.easy} tone="border-fuchsia-300/20 bg-fuchsia-500/10" />
                     <NarrativeCard title="전문 해설" body={compareNarrative.expert} tone="border-purple-300/20 bg-purple-500/10" />
                     <NarrativeCard title="바로 할 일" body={compareNarrative.action} tone="border-amber-300/20 bg-amber-500/10" />

@@ -116,6 +116,8 @@ export default function AstrologyPage() {
               <span className="text-xs tracking-[0.25em] text-slate-300">날짜</span>
               <input
                 type="date"
+                  min="1900-01-01"
+                  max="2100-12-31"
                 className="mt-2 w-full bg-slate-900 border border-white/15 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-300"
                 value={selectedDate}
                 onChange={(event) => setSelectedDate(event.target.value)}

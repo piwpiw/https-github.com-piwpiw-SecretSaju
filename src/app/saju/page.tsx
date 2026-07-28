@@ -263,6 +263,8 @@ function SajuPageContent() {
                 <label className="text-sm font-black flex items-center gap-2 text-slate-300 uppercase tracking-widest">생년월일</label>
                 <input
                   type="date"
+                  min="1900-01-01"
+                  max="2100-12-31"
                   aria-label="생년월일"
                   value={manualBirthDate}
                   onChange={(e) => setManualBirthDate(e.target.value)}
