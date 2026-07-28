@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
+import TarotCardArt from "@/components/tarot/TarotCardArt";
 import Link from "next/link";
 import { ArrowLeft, Library, Target, LayoutGrid } from "lucide-react";
 import { getTarotDeckRows, TarotDeckCard, TarotArcanaType, TarotSuit, DEFAULT_TAROT_THEME, TarotTheme } from "@/data/tarotDeck";
@@ -112,10 +113,16 @@ export default function TarotGalleryPage() {
                                 <div className="relative w-full aspect-[2/3.2] rounded-[1.5rem] bg-slate-900 border-2 border-slate-700 overflow-hidden shadow-xl group-hover:shadow-indigo-500/30 group-hover:border-indigo-400 transition-all duration-300 group-hover:-translate-y-2 flex flex-col p-2">
                                     {/* The actual Artwork container */}
                                     <div className="relative flex-1 rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
-                                        <div className="absolute inset-0 flex items-center justify-center p-4">
-                                            <p className="text-[13px] text-slate-600 font-mono text-center opacity-50">
-                                                이미지 준비 중<br />{card.code}
-                                            </p>
+                                        {/* 그림 파일이 아직 없는 카드는 SVG 로 그려 채운다.
+                                            "이미지 준비 중" 글자만 뜨면 빈 칸으로 보인다. */}
+                                        <div className="absolute inset-0">
+                                            <TarotCardArt
+                                                suit={card.suit}
+                                                number={card.number}
+                                                rank={card.rank}
+                                                arcana={card.arcana}
+                                                sequence={card.sequence}
+                                            />
                                         </div>
                                         {imageUrl ? (
                                             <Image
