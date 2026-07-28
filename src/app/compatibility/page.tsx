@@ -165,14 +165,14 @@ function CompatibilityContent() {
             <Users className="w-12 h-12 text-indigo-400" />
           </div>
           <div className="space-y-4">
-            <h2 className="text-3xl font-black italic tracking-tighter text-white uppercase break-keep">{t("compat.noProfiles")}</h2>
+            <h2 className="text-3xl font-black tracking-tighter text-white uppercase break-keep">{t("compat.noProfiles")}</h2>
             <p className="text-sm text-slate-500 font-bold leading-relaxed break-keep">{t("compat.noProfilesDesc")}</p>
           </div>
           <div className="space-y-4 pt-8">
-            <Link href="/my-saju/add" className="w-full py-5 rounded-2xl bg-indigo-600 text-white font-black uppercase italic tracking-widest text-xs shadow-xl shadow-indigo-950/20 hover:scale-105 transition-all flex items-center justify-center gap-3">
+            <Link href="/my-saju/add" className="w-full py-5 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-indigo-950/20 hover:scale-105 transition-all flex items-center justify-center gap-3">
               <UserPlus className="w-5 h-5" /> {t("compat.addProfile")}
             </Link>
-            <button onClick={() => router.back()} className="w-full py-5 rounded-2xl bg-white/5 text-slate-400 border border-white/10 font-black uppercase italic tracking-widest text-[10px] hover:bg-white/10 transition-all">
+            <button onClick={() => router.back()} className="w-full py-5 rounded-2xl bg-white/5 text-slate-400 border border-white/10 font-black uppercase tracking-widest text-[10px] hover:bg-white/10 transition-all">
               {t("common.back")}
             </button>
           </div>
@@ -209,8 +209,8 @@ function CompatibilityContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Person A */}
             <div className="space-y-6">
-              <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic flex items-center gap-3">
-                <span className="w-5 h-5 rounded bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-[8px] font-black italic shadow-inner">01</span>
+              <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] flex items-center gap-3">
+                <span className="w-5 h-5 rounded bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-[8px] font-black shadow-inner">01</span>
                 {t("compat.person1")}
               </h3>
               <div className="flex gap-3 overflow-x-auto pb-6 no-scrollbar snap-x">
@@ -229,7 +229,7 @@ function CompatibilityContent() {
                     <div className={cn("w-12 h-12 rounded-2xl mx-auto mb-4 flex items-center justify-center", personAId === p.id ? "bg-indigo-500 text-white" : "bg-white/10 text-slate-500")}>
                       <UserIcon className="w-6 h-6" />
                     </div>
-                    <p className="text-sm font-black italic text-white truncate">{p.name}</p>
+                    <p className="text-sm font-black text-white truncate">{p.name}</p>
                     <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">{t(`common.relation.${p.relationship}`)}</p>
                   </button>
                 ))}
@@ -238,8 +238,8 @@ function CompatibilityContent() {
 
             {/* Person B */}
             <div className="space-y-6">
-              <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic flex items-center gap-3">
-                <span className="w-5 h-5 rounded bg-purple-500/20 text-purple-400 flex items-center justify-center text-[8px] font-black italic shadow-inner">02</span>
+              <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] flex items-center gap-3">
+                <span className="w-5 h-5 rounded bg-purple-500/20 text-purple-400 flex items-center justify-center text-[8px] font-black shadow-inner">02</span>
                 {t("compat.person2")}
               </h3>
               <div className="flex gap-3 overflow-x-auto pb-6 no-scrollbar snap-x">
@@ -258,7 +258,7 @@ function CompatibilityContent() {
                     <div className={cn("w-12 h-12 rounded-2xl mx-auto mb-4 flex items-center justify-center", personBId === p.id ? "bg-purple-500 text-white" : "bg-white/10 text-slate-500")}>
                       <UserIcon className="w-6 h-6" />
                     </div>
-                    <p className="text-sm font-black italic text-white truncate">{p.name}</p>
+                    <p className="text-sm font-black text-white truncate">{p.name}</p>
                     <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">{t(`common.relation.${p.relationship}`)}</p>
                   </button>
                 ))}
@@ -268,7 +268,7 @@ function CompatibilityContent() {
 
           {/* Relation Presets */}
           <div className="bg-slate-900/60 backdrop-blur-2xl border border-white/5 rounded-[4rem] p-5 sm:p-8 shadow-2xl">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-8 text-center italic">관계 타입 선택</h3>
+            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-8 text-center">관계 타입 선택</h3>
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
               {RELATIONSHIP_PRESETS.map((preset) => (
                 <button
@@ -283,14 +283,14 @@ function CompatibilityContent() {
                   )}
                 >
                   <span className="text-2xl">{preset.icon}</span>
-                  <span className="text-[10px] font-black uppercase tracking-tighter italic">{t(preset.labelKey)}</span>
+                  <span className="text-[10px] font-black uppercase tracking-tighter">{t(preset.labelKey)}</span>
                 </button>
               ))}
             </div>
           </div>
 
           {error && (
-            <div role="alert" className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 flex items-center gap-4 text-xs font-black uppercase tracking-widest italic animate-bounce">
+            <div role="alert" className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 flex items-center gap-4 text-xs font-black uppercase tracking-widest animate-bounce">
               <AlertTriangle className="w-4 h-4" /> {error}
             </div>
           )}
@@ -298,7 +298,7 @@ function CompatibilityContent() {
           <button
             type="submit"
             disabled={loading || !personAId || !personBId}
-            className="w-full py-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase italic tracking-[0.3em] text-sm shadow-xl shadow-indigo-950/20 transition-all flex items-center justify-center gap-4 disabled:opacity-40 active:scale-95"
+            className="w-full py-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-[0.3em] text-sm shadow-xl shadow-indigo-950/20 transition-all flex items-center justify-center gap-4 disabled:opacity-40 active:scale-95"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Zap className="w-5 h-5" /> {FREE_LAUNCH ? "궁합 계산하기 (무료)" : "30젤리로 궁합 계산"}</>}
           </button>
@@ -312,10 +312,10 @@ function CompatibilityContent() {
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
 
                 <div className="space-y-4 mb-16">
-                  <div className={cn("inline-flex items-center gap-3 px-6 py-2 rounded-full text-xs font-black italic tracking-widest border border-white/5 shadow-lg shadow-black/20 uppercase", gradeInfo.color, gradeInfo.bg)}>
+                  <div className={cn("inline-flex items-center gap-3 px-6 py-2 rounded-full text-xs font-black tracking-widest border border-white/5 shadow-lg shadow-black/20 uppercase", gradeInfo.color, gradeInfo.bg)}>
                     <Sparkles className="w-4 h-4" /> {gradeInfo.label}
                   </div>
-                  <h2 className="text-2xl font-black text-slate-500 uppercase tracking-[0.4em] italic">시너지 지수</h2>
+                  <h2 className="text-2xl font-black text-slate-500 uppercase tracking-[0.4em]">시너지 지수</h2>
                 </div>
 
                 <div className="mb-16">
@@ -323,8 +323,8 @@ function CompatibilityContent() {
                 </div>
 
                 <div className="space-y-6 max-w-2xl mx-auto">
-                  <p className="text-3xl font-black text-white tracking-tighter italic leading-tight">&ldquo;{result.message}&rdquo;</p>
-                  <p className="text-lg font-bold text-slate-400 italic leading-relaxed">{result.chemistry}</p>
+                  <p className="text-3xl font-black text-white tracking-tighter leading-tight">&ldquo;{result.message}&rdquo;</p>
+                  <p className="text-lg font-bold text-slate-400 leading-relaxed">{result.chemistry}</p>
                 </div>
               </div>
 
@@ -365,18 +365,18 @@ function CompatibilityContent() {
               {/* Detailed Analysis */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-slate-900/40 backdrop-blur-xl p-5 sm:p-8 rounded-[2rem] border border-white/5 space-y-4">
-                  <h4 className="text-[10px] font-black text-indigo-500 uppercase tracking-widest border-b border-white/10 pb-2 italic">힘의 흐름</h4>
-                  <p className="text-xl font-black text-white italic">{result.powerDynamic}</p>
+                  <h4 className="text-[10px] font-black text-indigo-500 uppercase tracking-widest border-b border-white/10 pb-2">힘의 흐름</h4>
+                  <p className="text-xl font-black text-white">{result.powerDynamic}</p>
                 </div>
                 <div className="bg-slate-900/40 backdrop-blur-xl p-5 sm:p-8 rounded-[2rem] border border-white/5 space-y-4">
-                  <h4 className="text-[10px] font-black text-purple-500 uppercase tracking-widest border-b border-white/10 pb-2 italic">화합 포인트</h4>
-                  <p className="text-lg font-bold text-slate-300 italic">{result.advice}</p>
+                  <h4 className="text-[10px] font-black text-purple-500 uppercase tracking-widest border-b border-white/10 pb-2">화합 포인트</h4>
+                  <p className="text-lg font-bold text-slate-300">{result.advice}</p>
                 </div>
               </div>
 
               {sajuA && sajuB && (
                 <div className="bg-slate-900/40 backdrop-blur-2xl rounded-[4rem] p-6 sm:p-9 border border-white/5 space-y-12">
-                  <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] text-center italic">오행 공명 분석</h4>
+                  <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] text-center">오행 공명 분석</h4>
 
                   {/* Pinpoint HD resonance Bridge & Radar overlay */}
                   <div className="flex flex-col md:flex-row items-center justify-around gap-16 relative z-10">
@@ -392,7 +392,7 @@ function CompatibilityContent() {
                           size={220}
                         />
                       </div>
-                      <p className="text-xs font-black text-indigo-400 uppercase tracking-widest italic">{selectedPersonA?.name}</p>
+                      <p className="text-xs font-black text-indigo-400 uppercase tracking-widest">{selectedPersonA?.name}</p>
                     </motion.div>
 
                     <div className="relative w-full md:w-32 h-20 md:h-auto flex items-center justify-center">
@@ -435,13 +435,13 @@ function CompatibilityContent() {
                           size={220}
                         />
                       </div>
-                      <p className="text-xs font-black text-purple-400 uppercase tracking-widest italic">{selectedPersonB?.name}</p>
+                      <p className="text-xs font-black text-purple-400 uppercase tracking-widest">{selectedPersonB?.name}</p>
                     </motion.div>
                   </div>
 
                   {/* 6.1 Compatibility Radar Chart (Combined) */}
                   <div className="pt-12 border-t border-white/5 text-center">
-                    <h5 className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.4em] mb-8 italic">Ultimate Synergy Radar</h5>
+                    <h5 className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.4em] mb-8">Ultimate Synergy Radar</h5>
                     <RelationshipRadar />
                   </div>
                 </div>
@@ -456,13 +456,13 @@ function CompatibilityContent() {
                     setShowToast(true);
                     setTimeout(() => setShowToast(false), 2000);
                   }}
-                  className="py-6 rounded-2xl bg-white/5 border border-white/5 text-slate-400 font-black uppercase italic tracking-widest text-[10px] hover:bg-white/10 hover:text-white transition-all flex items-center justify-center gap-3"
+                  className="py-6 rounded-2xl bg-white/5 border border-white/5 text-slate-400 font-black uppercase tracking-widest text-[10px] hover:bg-white/10 hover:text-white transition-all flex items-center justify-center gap-3"
                 >
                   <Copy className="w-4 h-4" /> 결과 복사
                 </button>
                 <button
                   onClick={() => { setResult(null); setPersonAId(""); setPersonBId(""); }}
-                  className="py-6 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 font-black uppercase italic tracking-widest text-[10px] hover:bg-indigo-600/20 transition-all flex items-center justify-center gap-3"
+                  className="py-6 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 font-black uppercase tracking-widest text-[10px] hover:bg-indigo-600/20 transition-all flex items-center justify-center gap-3"
                 >
                   <RefreshCw className="w-4 h-4" /> 다시 분석
                 </button>

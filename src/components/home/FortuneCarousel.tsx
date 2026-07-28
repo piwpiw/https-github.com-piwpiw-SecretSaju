@@ -86,7 +86,7 @@ export default function FortuneCarousel() {
 
                                 <div className="space-y-2">
                                     <div className="flex items-center gap-2">
-                                        <h4 className="text-base sm:text-lg font-black text-white italic tracking-tight">{item.label}</h4>
+                                        <h4 className="text-base sm:text-lg font-black text-white tracking-tight">{item.label}</h4>
                                         {item.highlight && (
                                             <Zap className="w-3.5 h-3.5 fill-indigo-500 text-indigo-500 animate-pulse" />
                                         )}

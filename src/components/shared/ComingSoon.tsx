@@ -28,7 +28,7 @@ export default function ComingSoon({ title, desc }: { title: string; desc?: stri
           transition={{ delay: 0.2 }}
           className="space-y-4 relative z-10"
         >
-          <h1 className="text-4xl font-black text-foreground italic tracking-tighter uppercase">{title}</h1>
+          <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase">{title}</h1>
           <p className="text-muted text-lg font-medium leading-relaxed">
             {desc || "이 기능은 현재 준비 중입니다.\n곧 사용할 수 있도록 고도화하여 빠르게 다시 제공합니다."}
           </p>

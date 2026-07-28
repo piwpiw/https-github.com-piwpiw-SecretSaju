@@ -80,7 +80,7 @@ export default function HealingPage() {
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300 mb-1">
               힐링 모드
             </p>
-            <h1 className="text-3xl font-black italic tracking-tight">마음 회복 스테이션</h1>
+            <h1 className="text-3xl font-black tracking-tight">마음 회복 스테이션</h1>
           </div>
           <JellyBalance />
         </header>

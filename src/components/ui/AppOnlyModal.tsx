@@ -40,7 +40,7 @@ export default function AppOnlyModal({ isOpen, onClose, title }: AppOnlyModalPro
                                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-[10px] font-black uppercase tracking-widest mb-3">
                                     <Sparkles className="w-3 h-3" /> 앱 전용
                                 </div>
-                                <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase mb-2">
+                                <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-2">
                                     [{title}]<br />앱에서만 이용 가능
                                 </h3>
                                 <p className="text-sm text-slate-500 font-medium leading-relaxed">

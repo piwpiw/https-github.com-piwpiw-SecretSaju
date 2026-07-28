@@ -21,7 +21,7 @@ export default function SocialProofTicker() {
                 {[...USERS, ...USERS, ...USERS].map((u, i) => (
                     <div key={i} className="flex items-center gap-3">
                         <div className="w-1 h-1 rounded-full bg-indigo-500 animate-pulse" />
-                        <span className="text-[10px] font-black text-slate-300 italic tracking-tighter">
+                        <span className="text-[10px] font-black text-slate-300 tracking-tighter">
                             {u.name}님이 <span className="text-indigo-400">{u.action}</span>
                         </span>
                         {/* 이 티커는 bg-slate-950 위에 있고 그 배경은 테마를 따르지 않는다.

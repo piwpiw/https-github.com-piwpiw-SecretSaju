@@ -26,7 +26,7 @@ export default function PremiumWalletCard({ jellies, isFreeLaunch = false, onCli
                             <Gem className="w-5 h-5 text-indigo-400" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] italic">시크릿 멤버십</p>
+                            <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">시크릿 멤버십</p>
                             <p className="text-xs font-bold text-white uppercase tracking-widest opacity-60">젤리 지갑</p>
                         </div>
                     </div>
@@ -36,16 +36,16 @@ export default function PremiumWalletCard({ jellies, isFreeLaunch = false, onCli
                 </div>
 
                 <div className="space-y-1">
-                    <p className="text-xs font-black text-slate-500 tracking-widest italic break-keep">
+                    <p className="text-xs font-black text-slate-500 tracking-widest break-keep">
                         {isFreeLaunch ? '이용 상태' : '현재 잔액'}
                     </p>
                     <div className="flex items-end gap-3">
                         {isFreeLaunch ? (
-                            <span className="text-4xl font-black italic text-white tracking-tighter break-keep">전체 무료</span>
+                            <span className="text-4xl font-black text-white tracking-tighter break-keep">전체 무료</span>
                         ) : (
                             <>
-                                <span className="text-5xl font-black italic text-white tracking-tighter">{jellies.toLocaleString('ko-KR')}</span>
-                                <span className="text-2xl font-black italic text-indigo-400 mb-1 tracking-tighter">젤리</span>
+                                <span className="text-5xl font-black text-white tracking-tighter">{jellies.toLocaleString('ko-KR')}</span>
+                                <span className="text-2xl font-black text-indigo-400 mb-1 tracking-tighter">젤리</span>
                             </>
                         )}
                     </div>

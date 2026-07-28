@@ -40,7 +40,7 @@ export default function TarotGalleryPage() {
                             <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-[0.24em] border border-indigo-500/20 mb-2">
                                 <Library className="w-3 h-3" /> 타로 아카이브
                             </div>
-                            <h1 className="text-3xl font-black italic tracking-tighter text-white leading-none break-keep">타로 카드 갤러리</h1>
+                            <h1 className="text-3xl font-black tracking-tighter text-white leading-none break-keep">타로 카드 갤러리</h1>
                         </div>
                     </div>
 

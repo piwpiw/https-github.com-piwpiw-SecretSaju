@@ -111,7 +111,7 @@ function SuccessContent() {
             <CheckCircle className="w-20 h-20 text-emerald-500 mb-6" />
             <h2 className="text-3xl font-black text-foreground uppercase tracking-tight mb-4">결제 완료</h2>
             <p className="text-primary font-bold text-xl mb-8">{message}</p>
-            <p className="text-sm text-muted font-medium italic mb-2">마이페이지로 이동합니다.</p>
+            <p className="text-sm text-muted font-medium mb-2">마이페이지로 이동합니다.</p>
             <button
               onClick={() => router.push('/mypage')}
               className="mt-6 w-full py-5 bg-gradient-to-r from-primary to-indigo-600 text-white font-black text-lg rounded-2xl hover:scale-105 transition-all shadow-xl"

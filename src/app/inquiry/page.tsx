@@ -84,7 +84,7 @@ export default function InquiryPage() {
 
         {step === "form" ? (
           <form onSubmit={submit} className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-8 md:p-6 sm:p-9 space-y-6">
-            <h1 className="text-4xl font-black italic">문의하기</h1>
+            <h1 className="text-4xl font-black">문의하기</h1>
             <p className="text-slate-300">요청 성격에 맞는 항목을 고른 뒤 문의를 남겨 주세요.</p>
 
             <fieldset className="grid grid-cols-2 gap-3" aria-describedby="category-help">

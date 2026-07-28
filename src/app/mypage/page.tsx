@@ -79,7 +79,7 @@ function StatCard({ label, value, unit, color, icon: Icon, percent }: {
         <Icon className={`w-4 h-4 ${color} opacity-60 group-hover:opacity-100 transition-opacity`} />
       </div>
       <div className="flex items-end gap-1.5">
-        <span className={`text-3xl font-black italic ${color}`}>{value}</span>
+        <span className={`text-3xl font-black ${color}`}>{value}</span>
         <span className="text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">{unit}</span>
       </div>
       {percent !== undefined && (

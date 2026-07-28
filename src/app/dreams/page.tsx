@@ -80,8 +80,8 @@ export default function DreamsPage() {
                 <Sparkles className="w-5 h-5 text-emerald-400" />
               </div>
               <div>
-                <h1 className="text-2xl font-black italic text-white uppercase tracking-widest leading-none">AI 꿈 해몽 비서</h1>
-                <p className="text-[10px] font-black text-emerald-500/60 uppercase tracking-[0.2em] mt-1 italic">심층 상징 추출 엔진</p>
+                <h1 className="text-2xl font-black text-white uppercase tracking-widest leading-none">AI 꿈 해몽 비서</h1>
+                <p className="text-[10px] font-black text-emerald-500/60 uppercase tracking-[0.2em] mt-1">심층 상징 추출 엔진</p>
               </div>
             </div>
 

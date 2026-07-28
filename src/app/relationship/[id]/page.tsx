@@ -144,7 +144,7 @@ export default function RelationshipDetailPage() {
                         <motion.div
                             initial={{ scale: 0, rotate: -45 }}
                             animate={{ scale: 1, rotate: 12 }}
-                            className="w-20 h-20 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-3xl flex items-center justify-center font-black italic text-white text-2xl shadow-[0_0_50px_rgba(34,211,238,0.5)] border border-white/30 backdrop-blur-xl"
+                            className="w-20 h-20 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-3xl flex items-center justify-center font-black text-white text-2xl shadow-[0_0_50px_rgba(34,211,238,0.5)] border border-white/30 backdrop-blur-xl"
                         >
                             VS
                         </motion.div>
@@ -162,7 +162,7 @@ export default function RelationshipDetailPage() {
                                 <span className="text-4xl sm:text-6xl relative z-10">👑</span>
                                 <div className="absolute inset-0 bg-cyan-400/10 animate-pulse" />
                             </div>
-                            <h3 className="text-lg sm:text-3xl font-black text-white italic tracking-tighter uppercase mb-2">{mainProfile.name}</h3>
+                            <h3 className="text-lg sm:text-3xl font-black text-white tracking-tighter uppercase mb-2">{mainProfile.name}</h3>
                             <div className="px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-[10px] font-black text-cyan-400 uppercase tracking-widest">
                                 나
                             </div>
@@ -179,7 +179,7 @@ export default function RelationshipDetailPage() {
                                 <span className="text-4xl sm:text-6xl relative z-10">👤</span>
                                 <div className="absolute inset-0 bg-purple-400/10 animate-pulse" />
                             </div>
-                            <h3 className="text-lg sm:text-3xl font-black text-white italic tracking-tighter uppercase mb-2">{targetProfile.name}</h3>
+                            <h3 className="text-lg sm:text-3xl font-black text-white tracking-tighter uppercase mb-2">{targetProfile.name}</h3>
                             <div className="px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-[10px] font-black text-purple-400 uppercase tracking-widest">
                                 상대
                             </div>
@@ -198,14 +198,14 @@ export default function RelationshipDetailPage() {
 
                     <div className="relative z-10">
                         <div className="inline-block relative mb-6">
-                            <div className={`text-9xl font-black drop-shadow-[0_0_40px_rgba(250,204,21,0.2)] tracking-tighter italic ${analysis.score >= 80 ? 'text-cyan-400' :
+                            <div className={`text-9xl font-black drop-shadow-[0_0_40px_rgba(250,204,21,0.2)] tracking-tighter ${analysis.score >= 80 ? 'text-cyan-400' :
                                 analysis.score >= 60 ? 'text-yellow-400' :
                                     analysis.score >= 40 ? 'text-orange-400' : 'text-rose-500'
                                 }`}>
                                 {analysis.score}<span className="text-4xl opacity-50 ml-1">%</span>
                             </div>
                         </div>
-                        <h2 className="text-3xl sm:text-4xl font-black text-white italic tracking-tighter uppercase mb-4 leading-tight">{analysis.message}</h2>
+                        <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tighter uppercase mb-4 leading-tight">{analysis.message}</h2>
                         <p className="text-xl text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed tracking-wide">{analysis.chemistry}</p>
 
                         <div className="mt-12 max-w-md mx-auto h-2 bg-white/5 rounded-full border border-white/5 shadow-inner overflow-hidden">
@@ -247,7 +247,7 @@ export default function RelationshipDetailPage() {
                         className="premium-card p-8 mb-8 border-cyan-400/30 bg-cyan-900/10 flex items-center justify-between group"
                     >
                         <div className="flex items-center gap-6 relative z-10">
-                            <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-2xl flex items-center justify-center font-black italic text-white text-2xl shadow-lg ring-4 ring-white/5">
+                            <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-2xl flex items-center justify-center font-black text-white text-2xl shadow-lg ring-4 ring-white/5">
                                 VS
                             </div>
                             <div>
@@ -267,7 +267,7 @@ export default function RelationshipDetailPage() {
                         className="bg-slate-900/40 backdrop-blur-2xl rounded-4xl p-5 sm:p-8 border border-white/5 mb-8"
                     >
                         <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] italic">대운 타임라인 (Life Cycle)</h3>
+                            <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">대운 타임라인 (Life Cycle)</h3>
                             <div className="px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[8px] font-black tracking-widest uppercase border border-indigo-500/20">
                                 10년 주기 변화
                             </div>
@@ -285,7 +285,7 @@ export default function RelationshipDetailPage() {
                                 </div>
                             ))}
                         </div>
-                        <p className="mt-4 text-[10px] text-slate-600 italic text-center">※ 대운의 변화는 인생의 큰 방향성을 결정짓는 10개 마디입니다.</p>
+                        <p className="mt-4 text-[10px] text-slate-600 text-center">※ 대운의 변화는 인생의 큰 방향성을 결정짓는 10개 마디입니다.</p>
                     </motion.div>
                 )}
 
@@ -334,7 +334,7 @@ export default function RelationshipDetailPage() {
                                                 key={i}
                                                 className="p-6 rounded-2xl bg-background border border-border-color flex gap-4 shadow-sm"
                                             >
-                                                <span className="text-primary font-black italic">0{i + 1}</span>
+                                                <span className="text-primary font-black">0{i + 1}</span>
                                                 <p className="text-foreground text-sm font-medium tracking-wide leading-relaxed">{item}</p>
                                             </div>
                                         ))}

@@ -120,7 +120,7 @@ function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard
             </div>
 
             <div className="relative z-10">
-              <h4 className="text-xl font-black text-white italic tracking-tight truncate">{card.name_kr}</h4>
+              <h4 className="text-xl font-black text-white tracking-tight truncate">{card.name_kr}</h4>
               <div className="flex items-center gap-2">
                 <span className={`text-[9px] font-black uppercase tracking-widest ${card.isReversed ? "text-rose-400" : "text-emerald-400"}`}>
                   {card.isReversed ? "역방향" : "정방향"}
@@ -370,7 +370,7 @@ export default function TarotPage() {
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-[0.24em] border border-indigo-500/20">
               <Compass className="w-3 h-3" /> Tarot Oracle v1.0
             </div>
-            <h1 className="text-4xl font-black italic tracking-tighter uppercase text-white leading-none break-keep">타로 인사이트</h1>
+            <h1 className="text-4xl font-black tracking-tighter uppercase text-white leading-none break-keep">타로 인사이트</h1>
           </div>
 
           <JellyBalance onClick={() => setShopOpen(true)} />
@@ -386,7 +386,7 @@ export default function TarotPage() {
               <Orbit className="w-6 h-6 text-indigo-400" />
             </div>
             <div>
-              <h2 className="text-2xl font-black italic tracking-tight uppercase text-white break-keep">과거/현재/미래 스프레드</h2>
+              <h2 className="text-2xl font-black tracking-tight uppercase text-white break-keep">과거/현재/미래 스프레드</h2>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1 break-keep">심층 심리 및 운 흐름 분석</p>
             </div>
           </div>
@@ -517,7 +517,7 @@ export default function TarotPage() {
                         <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
                           <HistoryIcon className="w-5 h-5 text-indigo-400" />
                         </div>
-                        <h3 className="text-lg font-black italic tracking-tight text-white uppercase">Divine Grounds</h3>
+                        <h3 className="text-lg font-black tracking-tight text-white uppercase">Divine Grounds</h3>
                       </div>
 
                       <div className="space-y-4">
@@ -541,7 +541,7 @@ export default function TarotPage() {
                         <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
                           <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                         </div>
-                        <h3 className="text-lg font-black italic tracking-tight text-white uppercase">Decision Support</h3>
+                        <h3 className="text-lg font-black tracking-tight text-white uppercase">Decision Support</h3>
                       </div>
                       <p className="text-sm text-slate-300 leading-relaxed font-medium">
                         분석된 {spreadPulse.majorCount}개의 고차원 아르카나 신호는 당신의 운명이 중대한 전환점에 있음을 시사합니다. 조급함을 버리고 내면의 목소리에 귀를 기울일 때 가장 선명한 길을 찾을 수 있습니다.
@@ -567,7 +567,7 @@ export default function TarotPage() {
               <LayoutGrid className="w-20 h-20 text-slate-400 relative z-10" />
             </div>
             <div className="text-center space-y-2">
-              <p className="text-sm font-black uppercase tracking-[0.5em] text-slate-300 italic">
+              <p className="text-sm font-black uppercase tracking-[0.5em] text-slate-300">
                 의식을 기다리는 중
               </p>
               <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">

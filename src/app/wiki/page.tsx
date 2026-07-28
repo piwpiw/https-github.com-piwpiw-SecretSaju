@@ -63,10 +63,10 @@ export default function WikiPage() {
                                 {locale === 'ko' ? '지식 베이스' : 'Knowledge Base'}
                             </span>
                         </motion.div>
-                        <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase mb-2">
-                            {locale === 'ko' ? '사주' : 'Saju'} <span className="text-primary italic">{locale === 'ko' ? '백과사전' : 'Wiki'}</span>
+                        <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase mb-2">
+                            {locale === 'ko' ? '사주' : 'Saju'} <span className="text-primary">{locale === 'ko' ? '백과사전' : 'Wiki'}</span>
                         </h1>
-                        <p className="text-xl md:text-2xl text-muted font-medium italic opacity-70">
+                        <p className="text-xl md:text-2xl text-muted font-medium opacity-70">
                             {locale === 'ko' ? '사주 도메인 전체 문서·기술 명세를 정리한 지식 공간입니다.' : 'Comprehensive technical specifications & docs'}
                         </p>
                     </div>
@@ -97,7 +97,7 @@ export default function WikiPage() {
                         >
                             <div className="flex items-center gap-6 border-b-2 border-border-color pb-4">
                                 <div className="w-3 h-10 bg-primary rounded-full" />
-                                <h2 className="text-4xl font-black italic tracking-tighter uppercase text-foreground">{cat}</h2>
+                                <h2 className="text-4xl font-black tracking-tighter uppercase text-foreground">{cat}</h2>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -146,7 +146,7 @@ export default function WikiPage() {
                         <span className="text-xl font-black text-muted tracking-widest uppercase hidden sm:block">Secret Node</span>
                     </div>
                     <div className="text-right text-lg">
-                        <p className="font-black text-primary italic">&gt; LOAD_COMPLETE_</p>
+                        <p className="font-black text-primary">&gt; LOAD_COMPLETE_</p>
                     </div>
                 </div>
             </div>

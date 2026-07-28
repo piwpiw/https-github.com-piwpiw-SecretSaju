@@ -19,10 +19,10 @@ export default function LoveScoreCounter({ targetScore = 92 }: { targetScore?: n
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="text-8xl font-black italic tracking-tighter text-white drop-shadow-[0_0_30px_rgba(99,102,241,0.5)] flex items-baseline"
+                    className="text-8xl font-black tracking-tighter text-white drop-shadow-[0_0_30px_rgba(99,102,241,0.5)] flex items-baseline"
                 >
                     {count}
-                    <span className="text-2xl font-black italic ml-2 text-indigo-400 opacity-80 uppercase tracking-widest">%</span>
+                    <span className="text-2xl font-black ml-2 text-indigo-400 opacity-80 uppercase tracking-widest">%</span>
                 </motion.div>
 
                 {/* Orbital Glow */}

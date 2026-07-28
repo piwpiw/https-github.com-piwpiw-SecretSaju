@@ -210,7 +210,7 @@ function SajuPageContent() {
               <Calculator className="w-6 h-6 text-indigo-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-black italic tracking-tighter uppercase text-white">사주 분석</h1>
+              <h1 className="text-3xl font-black tracking-tighter uppercase text-white">사주 분석</h1>
               <p className="text-xs text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">프로필 기반 + 직접 입력 하이브리드</p>
             </div>
           </div>

@@ -171,7 +171,7 @@ export default function MorePage() {
           </div>
           <div>
             <p className="text-sm font-black text-muted tracking-[0.2em] uppercase">Secret Saju</p>
-            <h1 className="text-4xl font-black italic tracking-tighter mb-2">더 보기</h1>
+            <h1 className="text-4xl font-black tracking-tighter mb-2">더 보기</h1>
             <p className="text-xs font-bold text-muted tracking-widest uppercase">전체 메뉴를 빠르게 이동하세요</p>
           </div>
         </div>

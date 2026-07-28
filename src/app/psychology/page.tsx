@@ -83,7 +83,7 @@ export default function PsychologyPage() {
           <div className="inline-flex items-center gap-2 text-indigo-300 font-black tracking-[0.2em] uppercase text-xs">
             <Brain className="w-4 h-4" /> 심리 성향 진단
           </div>
-          <h1 className="text-3xl md:text-4xl font-black italic mt-2 break-keep">간단 심리 체크</h1>
+          <h1 className="text-3xl md:text-4xl font-black mt-2 break-keep">간단 심리 체크</h1>
           <p className="text-slate-300 mt-2 break-keep">세 가지만 답하면 오늘 어떤 방식이 잘 맞는지 알려드려요.</p>
 
           <div className="mt-7 grid gap-5">

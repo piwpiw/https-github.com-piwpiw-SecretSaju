@@ -23,7 +23,7 @@ export default function ShopPage() {
           </button>
           <div className="px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex items-center gap-3">
             <Sparkles className="w-4 h-4 text-indigo-400" />
-            <span className="text-[10px] font-black uppercase tracking-widest italic">시크릿사주 젤리 공방</span>
+            <span className="text-[10px] font-black uppercase tracking-widest">시크릿사주 젤리 공방</span>
           </div>
         </header>
 

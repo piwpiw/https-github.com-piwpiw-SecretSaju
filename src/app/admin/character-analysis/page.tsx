@@ -109,7 +109,7 @@ export default function CharacterAnalysisPage() {
                             <h3 className="text-xl font-bold mb-3 text-yellow-400">
                                 📜 인생 모토
                             </h3>
-                            <p className="text-lg italic text-slate-200">
+                            <p className="text-lg text-slate-200">
                                 &quot;{analysis.core_traits.life_motto}&quot;
                             </p>
                         </motion.div>

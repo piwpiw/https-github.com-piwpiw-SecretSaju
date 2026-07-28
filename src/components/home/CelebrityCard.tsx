@@ -71,7 +71,7 @@ export function CelebrityCard({ celebrity, index = 0 }: CelebrityCardProps) {
             {/* Quote (if available) */}
             {celebrity.quote && (
                 <div className="mb-3 pl-3 border-l-2 border-primary/50">
-                    <p className="text-sm italic text-zinc-400">
+                    <p className="text-sm text-zinc-400">
                         {celebrity.quote}
                     </p>
                 </div>

@@ -18,7 +18,7 @@ export default function LuckyColorChips() {
 
     return (
         <div className="space-y-4">
-            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">오늘의 행운 색상</h4>
+            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">오늘의 행운 색상</h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {colors.map((c) => (
                     <div

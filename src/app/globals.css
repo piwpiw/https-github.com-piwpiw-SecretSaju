@@ -132,7 +132,7 @@ body {
 }
 
 .ui-title-gradient {
-  @apply font-black italic uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-500;
+  @apply font-black uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-500;
   filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.3));
 }
 
@@ -186,7 +186,7 @@ body {
 }
 
 .ui-title {
-  @apply text-2xl md:text-3xl font-black italic tracking-tighter leading-tight;
+  @apply text-2xl md:text-3xl font-black tracking-tighter leading-tight;
 }
 
 .ui-title-gradient {

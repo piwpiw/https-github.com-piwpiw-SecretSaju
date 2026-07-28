@@ -181,7 +181,7 @@ export default function EncyclopediaPage() {
                 <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
                   <Search className="w-6 h-6 text-slate-600" />
                 </div>
-                <p className="text-slate-500 font-black uppercase tracking-widest italic">결과가 없습니다</p>
+                <p className="text-slate-500 font-black uppercase tracking-widest">결과가 없습니다</p>
               </motion.div>
             )}
           </AnimatePresence>

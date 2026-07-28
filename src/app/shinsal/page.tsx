@@ -70,7 +70,7 @@ export default function ShinsalPage() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fuchsia-500/10 border border-fuchsia-400/30 text-fuchsia-200 font-black uppercase tracking-[0.2em] text-xs">
             <Shield className="w-4 h-4" /> 신살 진단
           </div>
-          <h1 className="text-4xl font-black italic mt-4">신살 운세 지도</h1>
+          <h1 className="text-4xl font-black mt-4">신살 운세 지도</h1>
           <p className="text-slate-300 mt-2">프로필과는 별개로 신살 흐름만 빠르게 점검하고 조언을 받을 수 있습니다.</p>
 
           <div className="mt-6 grid md:grid-cols-2 gap-4">

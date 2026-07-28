@@ -51,7 +51,7 @@ export default function DestinyCalendar() {
                         className="p-2 hover:bg-white/10 rounded-xl transition-colors" aria-label="이전">
                         <ChevronLeft className="w-5 h-5 text-slate-400" />
                     </button>
-                    <span className="text-lg font-black italic text-white min-w-[120px] text-center uppercase tracking-tight">
+                    <span className="text-lg font-black text-white min-w-[120px] text-center uppercase tracking-tight">
                         {format(currentDate, 'yyyy. MM', { locale: ko })}
                     </span>
                     <button

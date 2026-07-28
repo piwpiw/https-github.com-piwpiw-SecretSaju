@@ -58,7 +58,7 @@ export default function LuckyScoreCard() {
                                 />
                             </svg>
                             <div className="relative z-10 text-center space-y-1">
-                                <div className="text-4xl sm:text-5xl font-black text-white italic drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]">{score}</div>
+                                <div className="text-4xl sm:text-5xl font-black text-white drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]">{score}</div>
                                 <div className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.24em] text-[color:var(--text-muted)]">조화 지수</div>
                             </div>
                         </div>
@@ -90,7 +90,7 @@ export default function LuckyScoreCard() {
                             ].map((stat, i) => (
                                 <div key={i} className={cn("flex items-center gap-2.5 px-3 py-2 rounded-2xl border border-white/10", stat.color)}>
                                     <stat.icon className="w-3.5 h-3.5" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest border-l border-white/10 pl-2.5">{stat.label}: <span className="text-white italic">{stat.val}</span></span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest border-l border-white/10 pl-2.5">{stat.label}: <span className="text-white">{stat.val}</span></span>
                                 </div>
                             ))}
                         </div>

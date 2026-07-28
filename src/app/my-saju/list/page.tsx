@@ -134,7 +134,7 @@ export default function SajuListPage() {
               </div>
               <div>
                 <h1 className="ui-title-gradient text-3xl leading-none">인연 네트워크</h1>
-                <p className="text-[10px] font-black text-indigo-500/60 uppercase tracking-[0.2em] mt-1 italic">사주 시너지 지도</p>
+                <p className="text-[10px] font-black text-indigo-500/60 uppercase tracking-[0.2em] mt-1">사주 시너지 지도</p>
               </div>
             </div>
             <RelationshipMap members={profiles.map((p) => ({ id: p.id, name: p.name }))} />
@@ -163,7 +163,7 @@ export default function SajuListPage() {
 
         <ScrollReveal delay={0.2}>
           <div className="mb-6 bg-white/[0.02] border border-white/5 rounded-[2rem] p-5 sm:p-8 overflow-hidden">
-            <h4 className="text-[10px] font-black text-indigo-500 tracking-widest italic mb-2 break-keep">인생 흐름 에너지</h4>
+            <h4 className="text-[10px] font-black text-indigo-500 tracking-widest mb-2 break-keep">인생 흐름 에너지</h4>
             <LifeTimeline />
           </div>
         </ScrollReveal>
@@ -266,7 +266,7 @@ export default function SajuListPage() {
                       </div>
 
                       <div className="mb-8">
-                        <h3 className="text-3xl font-black text-foreground italic tracking-tighter uppercase group-hover:text-primary transition-colors">
+                        <h3 className="text-3xl font-black text-foreground tracking-tighter uppercase group-hover:text-primary transition-colors">
                           {profile.name}
                         </h3>
                         <span className="inline-flex mt-3 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border bg-primary/10 text-primary border-primary/30">

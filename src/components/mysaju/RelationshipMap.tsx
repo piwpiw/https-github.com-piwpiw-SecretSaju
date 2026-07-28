@@ -102,7 +102,7 @@ export default function RelationshipMap({ members = [] }: RelationshipMapProps) 
                 </div>
             </div>
 
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[9px] font-black text-indigo-300 uppercase tracking-[0.2em] italic">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[9px] font-black text-indigo-300 uppercase tracking-[0.2em]">
                 Destiny Alignment Web
             </div>
 

@@ -157,7 +157,7 @@ export default function LuckPage() {
             <ArrowLeft className="w-5 h-5 text-slate-400" />
           </button>
           <div className="text-center">
-            <h1 className="text-3xl font-black italic tracking-tighter uppercase text-white mb-1">운세 & 부적</h1>
+            <h1 className="text-3xl font-black tracking-tighter uppercase text-white mb-1">운세 & 부적</h1>
             <p className="text-[10px] font-black text-indigo-400 tracking-[0.3em] uppercase">영적 부적 엔진</p>
           </div>
           <JellyBalance />
@@ -180,10 +180,10 @@ export default function LuckPage() {
               </div>
 
               <div className="space-y-6 max-w-lg mx-auto">
-                <h2 className="text-5xl font-black text-white italic tracking-tighter leading-tight uppercase break-keep">
+                <h2 className="text-5xl font-black text-white tracking-tighter leading-tight uppercase break-keep">
                   운명의 흐름을<br />바꾸는 기운
                 </h2>
-                <p className="text-lg text-slate-400 font-medium leading-relaxed italic break-keep">
+                <p className="text-lg text-slate-400 font-medium leading-relaxed break-keep">
                   동양의 신비로운 에너지를 담은 디지털 부적을 통해<br />
                   당신이 원하는 기운을 강화하고 액운을 막으세요.
                 </p>
@@ -192,7 +192,7 @@ export default function LuckPage() {
               <div className="pt-10 flex flex-col items-center gap-6">
                 <button
                   onClick={handleStart}
-                  className="px-12 py-6 bg-white text-black font-black text-2xl italic tracking-tighter border-none rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(255,255,255,0.2)] flex items-center gap-4 break-keep"
+                  className="px-12 py-6 bg-white text-black font-black text-2xl tracking-tighter border-none rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(255,255,255,0.2)] flex items-center gap-4 break-keep"
                 >
                   <Sparkles className="w-8 h-8 text-indigo-500" />
                   의식 시작하기
@@ -211,7 +211,7 @@ export default function LuckPage() {
             >
               <div className="text-center space-y-2">
                 <p className="text-xs font-black text-indigo-500 uppercase tracking-[0.4em]">운명 선택</p>
-                <h2 className="text-3xl font-black italic uppercase">강화할 기운 선택</h2>
+                <h2 className="text-3xl font-black uppercase">강화할 기운 선택</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -228,7 +228,7 @@ export default function LuckPage() {
                       <t.icon className="w-8 h-8 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-2">{t.name}</h3>
+                      <h3 className="text-xl font-black text-white uppercase tracking-tighter mb-2">{t.name}</h3>
                       <p className="text-xs text-slate-400 font-medium leading-relaxed">{t.desc}</p>
                     </div>
                     <div className="ml-auto w-12 h-12 rounded-full border border-white/5 flex items-center justify-center group-hover:bg-indigo-500 group-hover:border-indigo-400 transition-all">
@@ -250,7 +250,7 @@ export default function LuckPage() {
             >
               <div className="space-y-2">
                 <p className="text-xs font-black text-indigo-500 uppercase tracking-[0.4em]">의식 진행 단계</p>
-                <h2 className="text-3xl font-black italic uppercase">의식 가이드</h2>
+                <h2 className="text-3xl font-black uppercase">의식 가이드</h2>
                 <p className="text-sm text-slate-400">
                   <span className="text-white font-black">{selectedTalisman.name}</span>을 화면에 배치하며 3초 후 최종 결단이 표시됩니다.
                 </p>
@@ -282,7 +282,7 @@ export default function LuckPage() {
                   <div className="text-7xl mb-8">
                     <selectedTalisman.icon className="w-16 h-16 text-white" />
                   </div>
-                  <div className="text-3xl font-black text-white/95 italic uppercase tracking-[0.2em]">{selectedTalisman.name}</div>
+                  <div className="text-3xl font-black text-white/95 uppercase tracking-[0.2em]">{selectedTalisman.name}</div>
                   <div className="absolute bottom-10 inset-x-0 px-8">
                     <p className="text-xs text-white/70 mb-3 uppercase tracking-[0.25em]">터치 시 의식 시작합니다</p>
                     <div className="flex items-center justify-center gap-2">
@@ -327,7 +327,7 @@ export default function LuckPage() {
                     <Smartphone className="w-3 h-3" />
                     분석 완료
                   </p>
-                  <h3 className="text-4xl font-black italic uppercase">결과 행렬</h3>
+                  <h3 className="text-4xl font-black uppercase">결과 행렬</h3>
                 </div>
 
                 <div className="py-8">

@@ -37,7 +37,7 @@ export default function StoryPage() {
         </div>
 
         <div className="mb-16">
-          <h1 className="text-4xl sm:text-6xl font-black italic tracking-tighter uppercase mb-4 text-foreground">
+          <h1 className="text-4xl sm:text-6xl font-black tracking-tighter uppercase mb-4 text-foreground">
             운명 이야기 아카이브
           </h1>
           <p className="text-xl text-muted font-medium max-w-2xl leading-relaxed">

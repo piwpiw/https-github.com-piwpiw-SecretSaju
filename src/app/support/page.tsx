@@ -97,7 +97,7 @@ export default function SupportPage() {
 
           <motion.h1
             variants={itemVariants}
-            className="mb-6 text-4xl font-black italic leading-tight tracking-tighter text-white md:text-5xl"
+            className="mb-6 text-4xl font-black leading-tight tracking-tighter text-white md:text-5xl"
           >
             표준 결제 경로로만
             <br />

@@ -73,12 +73,12 @@ export default function LuckySecretModal() {
                                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
                                     <Zap className="w-3 h-3" /> 운명 공개
                                 </div>
-                                <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase mb-4">
+                                <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-4">
                                     {activeProfile?.name}님을 위한 비밀 가이드
                                 </h3>
 
                                 <div className="bg-white/5 rounded-3xl p-6 border border-white/5 shadow-inner">
-                                    <p className="text-sm font-bold text-slate-100 leading-relaxed italic">
+                                    <p className="text-sm font-bold text-slate-100 leading-relaxed">
                                         &ldquo;{secret}&rdquo;
                                     </p>
                                 </div>
@@ -93,7 +93,7 @@ export default function LuckySecretModal() {
                                 </button>
                                 <div className="flex items-center justify-center gap-2 opacity-30">
                                     <Shield className="w-3 h-3 text-slate-500" />
-                                    <span className="text-[8px] font-black uppercase tracking-tighter text-slate-500 italic">개인 맞춤 운명 흐름</span>
+                                    <span className="text-[8px] font-black uppercase tracking-tighter text-slate-500">개인 맞춤 운명 흐름</span>
                                 </div>
                             </div>
                         </div>

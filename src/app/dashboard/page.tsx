@@ -170,7 +170,7 @@ function DashboardContent() {
                             <motion.p
                                 animate={{ opacity: [0.5, 1, 0.5] }}
                                 transition={{ duration: 2, repeat: Infinity }}
-                                className="text-2xl font-black text-white italic tracking-[0.2em] uppercase"
+                                className="text-2xl font-black text-white tracking-[0.2em] uppercase"
                             >
                                 Synchronizing Destiny Web…
                             </motion.p>
@@ -216,7 +216,7 @@ function DashboardContent() {
 
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-10 mb-8 sm:mb-20 text-center md:text-left">
                     <div>
-                        <h1 className="text-3xl sm:text-5xl font-black text-foreground italic tracking-tighter uppercase mb-2 sm:mb-3">
+                        <h1 className="text-3xl sm:text-5xl font-black text-foreground tracking-tighter uppercase mb-2 sm:mb-3">
                             {locale === 'ko' ? '운명 대시보드 (Destiny Web)' : 'Dashboard'}
                         </h1>
                         <p className="text-lg sm:text-2xl text-muted font-medium">
@@ -265,7 +265,7 @@ function DashboardContent() {
                                     <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
                                 </div>
                                 <div>
-                                    <h3 className="text-2xl sm:text-3xl font-black text-foreground mb-1 sm:mb-2 italic tracking-tight">{t('nav.daily')}</h3>
+                                    <h3 className="text-2xl sm:text-3xl font-black text-foreground mb-1 sm:mb-2 tracking-tight">{t('nav.daily')}</h3>
                                     <p className="text-base sm:text-lg text-muted font-medium">오늘의 흐름을 한 번에 점검하세요.</p>
                                 </div>
                             </div>
@@ -304,7 +304,7 @@ function DashboardContent() {
                                         <p className="text-lg text-muted font-medium">{t(`common.relation.${rel.profile.relationship}`)}</p>
                                     </div>
                                 </div>
-                                <div className={`text-4xl font-black italic tracking-tighter ${rel.analysis ? getCompColor(rel.analysis.score) : 'text-slate-700'}`}>
+                                <div className={`text-4xl font-black tracking-tighter ${rel.analysis ? getCompColor(rel.analysis.score) : 'text-slate-700'}`}>
                                     {rel.analysis?.score}%
                                 </div>
                             </div>
@@ -319,7 +319,7 @@ function DashboardContent() {
                                             className={`h-full bg-gradient-to-r ${rel.analysis.score >= 80 ? 'from-cyan-400 to-indigo-500' : 'from-yellow-400 to-rose-500'}`}
                                         />
                                     </div>
-                                    <p className="text-sm text-muted font-medium leading-relaxed line-clamp-2 italic opacity-80 mt-4 mb-6">
+                                    <p className="text-sm text-muted font-medium leading-relaxed line-clamp-2 opacity-80 mt-4 mb-6">
                                         &ldquo;{rel.analysis.chemistry}&rdquo;
                                     </p>
 
@@ -347,7 +347,7 @@ function DashboardContent() {
                                                 e.stopPropagation();
                                                 router.push(`/relationship/${rel.profile.id}/vs`);
                                             }}
-                                            className="py-3 min-h-[44px] rounded-2xl bg-gradient-to-r from-primary to-indigo-600 text-white font-black text-sm shadow-lg hover:shadow-primary/20 tracking-widest italic flex items-center justify-center gap-1"
+                                            className="py-3 min-h-[44px] rounded-2xl bg-gradient-to-r from-primary to-indigo-600 text-white font-black text-sm shadow-lg hover:shadow-primary/20 tracking-widest flex items-center justify-center gap-1"
                                         >
                                             <Zap className="w-4 h-4" /> VS
                                         </button>
@@ -380,7 +380,7 @@ function DashboardContent() {
                         <div className="absolute top-0 left-0 w-2 h-full bg-primary" />
                         <div className="flex items-center gap-4 sm:gap-6 mb-8 sm:mb-8">
                             <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
-                            <h3 className="text-xl sm:text-3xl font-black text-foreground italic uppercase tracking-tight">인사이트 리빌 (Insight Reveal)</h3>
+                            <h3 className="text-xl sm:text-3xl font-black text-foreground uppercase tracking-tight">인사이트 리빌 (Insight Reveal)</h3>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
                             {insights.map((insight, i) => (

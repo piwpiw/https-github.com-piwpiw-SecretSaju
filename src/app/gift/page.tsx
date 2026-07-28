@@ -128,10 +128,10 @@ export default function GiftPage() {
                 {locale === 'ko' ? '프리미엄 선물' : 'PREMIUM GIFT'}
               </span>
             </motion.div>
-            <h1 className="text-5xl md:text-7xl font-black text-foreground italic tracking-tighter uppercase mb-4">
-              {locale === 'ko' ? '행운' : 'Destiny'} <span className="text-pink-500 italic">{locale === 'ko' ? '선물' : 'Gift'}</span>
+            <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter uppercase mb-4">
+              {locale === 'ko' ? '행운' : 'Destiny'} <span className="text-pink-500">{locale === 'ko' ? '선물' : 'Gift'}</span>
             </h1>
-            <p className="text-xl md:text-2xl text-muted font-medium italic opacity-70">
+            <p className="text-xl md:text-2xl text-muted font-medium opacity-70">
               {locale === 'ko'
                 ? '특별한 사람에게 운세 선물을 보내보세요.'
                 : 'Gift a comprehensive destiny report to someone special.'}
@@ -183,7 +183,7 @@ export default function GiftPage() {
                   placeholder={locale === 'ko' ? '이름을 입력해 주세요' : 'Enter their name'}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-background border-2 border-border-color rounded-3xl px-8 py-6 text-foreground font-black text-3xl focus:outline-none focus:border-pink-500 transition-all placeholder:text-neutral-700 italic"
+                  className="w-full bg-background border-2 border-border-color rounded-3xl px-8 py-6 text-foreground font-black text-3xl focus:outline-none focus:border-pink-500 transition-all placeholder:text-neutral-700"
                 />
                 <p id="gift-name-help" className="text-xs text-slate-400">2글자 이상 입력해 주세요.</p>
               </div>
@@ -202,7 +202,7 @@ export default function GiftPage() {
                   aria-required="true"
                   value={formData.birthDate}
                   onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
-                  className="w-full bg-background border-2 border-border-color rounded-3xl px-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-pink-500 transition-all [color-scheme:dark] italic"
+                  className="w-full bg-background border-2 border-border-color rounded-3xl px-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-pink-500 transition-all [color-scheme:dark]"
                 />
               </div>
 
@@ -222,7 +222,7 @@ export default function GiftPage() {
                     placeholder="friend@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-background border-2 border-border-color rounded-3xl pl-20 pr-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-pink-500 transition-all placeholder:text-neutral-700 italic"
+                    className="w-full bg-background border-2 border-border-color rounded-3xl pl-20 pr-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-pink-500 transition-all placeholder:text-neutral-700"
                   />
                   {formData.email.length > 0 && !hasEmail ? (
                     <p id="gift-email-help" className="text-xs text-rose-300 mt-2">올바른 이메일 형식을 입력해 주세요.</p>
@@ -286,7 +286,7 @@ export default function GiftPage() {
                   <Send className="w-12 h-12 text-white" />
                 </motion.div>
               </div>
-              <h3 className="text-4xl md:text-5xl font-black italic tracking-tight text-foreground mb-6 uppercase">
+              <h3 className="text-4xl md:text-5xl font-black tracking-tight text-foreground mb-6 uppercase">
                 {locale === 'ko' ? '발송 완료' : 'Transmission Complete'}
               </h3>
               <p className="text-2xl text-muted mb-8 font-medium">

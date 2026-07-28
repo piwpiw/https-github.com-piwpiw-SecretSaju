@@ -21,7 +21,7 @@ export default function AppOnlyGate({ children, title = "앱 전용 기능" }: {
                         <Smartphone className="w-8 h-8 text-amber-500" />
                     </div>
                     <div>
-                        <h4 className="text-sm font-black text-white italic tracking-tighter uppercase mb-1">앱 전용 기능</h4>
+                        <h4 className="text-sm font-black text-white tracking-tighter uppercase mb-1">앱 전용 기능</h4>
                         <p className="text-[10px] text-slate-400 font-medium">시크릿사주 앱에서만 제공되는 프리미엄 기능입니다.</p>
                     </div>
                     <button className="px-6 py-2.5 bg-white text-slate-900 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-400 transition-all">앱에서 보기</button>

@@ -9,7 +9,7 @@ export default function ShareCard({ name = "나의 운명" }: { name?: string })
                 <div className="w-16 h-16 rounded-3xl bg-indigo-600 mx-auto flex items-center justify-center mb-6 shadow-xl shadow-indigo-900/40">
                     <Sparkles className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-black italic text-white uppercase tracking-widest mb-2">{name}</h3>
+                <h3 className="text-xl font-black text-white uppercase tracking-widest mb-2">{name}</h3>
                 <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-8">시크릿 AI 오라클에서 생성</p>
 
                 <div className="grid grid-cols-2 gap-4">

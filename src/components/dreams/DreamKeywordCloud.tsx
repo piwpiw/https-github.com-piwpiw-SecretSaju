@@ -26,7 +26,7 @@ export default function DreamKeywordCloud() {
                         repeatType: 'reverse',
                         ease: 'easeInOut'
                     }}
-                    className="text-[10px] font-black uppercase tracking-widest cursor-default select-none italic"
+                    className="text-[10px] font-black uppercase tracking-widest cursor-default select-none"
                 >
                     {kw.text}
                 </motion.div>

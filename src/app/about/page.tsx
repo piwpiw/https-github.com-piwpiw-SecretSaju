@@ -24,11 +24,11 @@ export default function AboutPage() {
                         </span>
                     </motion.div>
 
-                    <h1 className="text-6xl md:text-8xl font-black text-white italic tracking-tighter uppercase mb-6 leading-none">
+                    <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase mb-6 leading-none">
                         Secret <span className="text-cyan-400">Saju</span>
                     </h1>
                     <p className="text-slate-400 text-xl font-medium max-w-2xl mx-auto leading-relaxed tracking-wide">
-                        사회적 가면 뒤에 숨겨진 <span className="text-white italic">본능적 아키텍처</span>를<br />
+                        사회적 가면 뒤에 숨겨진 <span className="text-white">본능적 아키텍처</span>를<br />
                         최첨단 Quantum Sync 엔진으로 적출하는 명리학 프로토콜입니다.
                     </p>
                 </div>
@@ -50,7 +50,7 @@ export default function AboutPage() {
                             <div className={`mystic-glow ${feature.bg} opacity-0 group-hover:opacity-100 transition-opacity`} />
                             <div className="relative z-10">
                                 <feature.icon className={`w-10 h-10 mb-6 ${feature.color}`} />
-                                <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase mb-4">{feature.title}</h3>
+                                <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-4">{feature.title}</h3>
                                 <p className="text-slate-500 font-medium leading-relaxed">{feature.desc}</p>
                             </div>
                         </motion.div>
@@ -66,7 +66,7 @@ export default function AboutPage() {
                 >
                     <div className="p-6 sm:p-9 text-center relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[80px] -mr-32 -mt-32" />
-                        <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase mb-4">동기화 시작하기</h2>
+                        <h2 className="text-3xl font-black text-white tracking-tighter uppercase mb-4">동기화 시작하기</h2>
                         <p className="text-slate-500 mb-8 max-w-md mx-auto">지금 바로 당신의 고유 주파수를 측정하고 운명의 타래를 분석하세요.</p>
                         <Link
                             href="/"

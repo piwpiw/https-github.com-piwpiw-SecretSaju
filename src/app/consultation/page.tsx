@@ -86,7 +86,7 @@ export default function ConsultationPage() {
             <Zap className="w-3 h-3" />
             실시간 상담
           </div>
-          <h1 className="text-4xl font-black italic tracking-tighter uppercase mb-2">1:1 전문가 상담</h1>
+          <h1 className="text-4xl font-black tracking-tighter uppercase mb-2">1:1 전문가 상담</h1>
           <p className="text-slate-500 text-sm font-medium">
             결제 전 상담사 프로필과 후기를 확인하고 바로 채팅/통화를 시작할 수 있습니다.
           </p>

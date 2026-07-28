@@ -76,7 +76,7 @@ export default function AmbientSoundPortal() {
                         className="p-4 rounded-[2rem] bg-slate-900/80 backdrop-blur-3xl border border-white/10 shadow-2xl flex items-center gap-4"
                     >
                         <div className="flex flex-col">
-                            <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest italic leading-none mb-1">Ambient Mode</span>
+                            <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest leading-none mb-1">Ambient Mode</span>
                             <span className="text-xs font-bold text-slate-200">Cosmic White Noise</span>
                         </div>
                         <button

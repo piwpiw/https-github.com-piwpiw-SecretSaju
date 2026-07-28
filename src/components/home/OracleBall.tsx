@@ -113,7 +113,7 @@ export default function OracleBall({
                                     className="flex flex-col items-center gap-3"
                                 >
                                     <Zap className="w-14 h-14 text-white fill-current animate-pulse" />
-                                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/50 italic">동기화 중...</span>
+                                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/50">동기화 중...</span>
                                 </motion.div>
                             ) : (
                                 <motion.div
@@ -140,7 +140,7 @@ export default function OracleBall({
                             exit={{ opacity: 0, y: -15 }}
                             className="space-y-4"
                         >
-                            <p className="text-lg font-black text-indigo-200 leading-tight italic drop-shadow-[0_0_10px_rgba(99,102,241,0.3)]">&ldquo;{advice}&rdquo;</p>
+                            <p className="text-lg font-black text-indigo-200 leading-tight drop-shadow-[0_0_10px_rgba(99,102,241,0.3)]">&ldquo;{advice}&rdquo;</p>
                             <div className="w-12 h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent mx-auto rounded-full" />
                         </motion.div>
                     ) : !isSpinning && (

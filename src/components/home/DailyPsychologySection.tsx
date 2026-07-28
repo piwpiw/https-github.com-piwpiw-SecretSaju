@@ -58,7 +58,7 @@ export default function DailyPsychologySection() {
                                     {item.emoji}
                                 </span>
                                 <div className="space-y-2">
-                                    <h4 className="text-sm sm:text-base font-black text-white italic tracking-tight group-hover:text-rose-200 transition-colors leading-tight">{item.title}</h4>
+                                    <h4 className="text-sm sm:text-base font-black text-white tracking-tight group-hover:text-rose-200 transition-colors leading-tight">{item.title}</h4>
                                     {tags.length > 0 ? (
                                         <div className="flex flex-wrap gap-2">
                                             {tags.map((tag) => (

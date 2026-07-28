@@ -91,10 +91,10 @@ export default function SelectionPage() {
                     <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-flex px-4 py-2 rounded-full mb-6 bg-surface border border-border-color">
                         <span className="text-sm font-bold text-primary tracking-widest leading-none uppercase">{t('select.title')}</span>
                     </motion.div>
-        <h1 className="text-5xl md:text-7xl font-black text-foreground italic tracking-tighter uppercase mb-4">
-                        {locale === 'ko' ? '운명' : '운명'} <span className="text-primary italic">{locale === 'ko' ? '서비스' : '서비스'}</span>
+        <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter uppercase mb-4">
+                        {locale === 'ko' ? '운명' : '운명'} <span className="text-primary">{locale === 'ko' ? '서비스' : '서비스'}</span>
                     </h1>
-                    <p className="text-xl md:text-2xl text-muted font-medium italic opacity-70 max-w-2xl">{t('select.desc')}</p>
+                    <p className="text-xl md:text-2xl text-muted font-medium opacity-70 max-w-2xl">{t('select.desc')}</p>
                 </div>
 
                 {/* Profile Selector */}
@@ -107,7 +107,7 @@ export default function SelectionPage() {
                             <select
                                 value={selectedProfile}
                                 onChange={(e) => setSelectedProfile(e.target.value)}
-                                className="w-full bg-surface border-2 border-border-color rounded-4xl px-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-primary transition-all appearance-none italic shadow-lg hover:shadow-primary/10"
+                                className="w-full bg-surface border-2 border-border-color rounded-4xl px-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-primary transition-all appearance-none shadow-lg hover:shadow-primary/10"
                             >
                                 <option value="" disabled>{locale === 'ko' ? '누구의 운세를 볼까요?' : '누구의 운세를 볼까요?'}</option>
                                 {profiles.map((p) => (
@@ -151,7 +151,7 @@ export default function SelectionPage() {
 
                                         <div className="flex-1 relative z-10">
                                             <h3 className="text-3xl font-black text-foreground mb-2 tracking-tight group-hover:text-primary transition-colors">{svc.title}</h3>
-                                            <p className="text-lg font-bold text-muted italic opacity-80 mb-6">{svc.subtitle}</p>
+                                            <p className="text-lg font-bold text-muted opacity-80 mb-6">{svc.subtitle}</p>
                                             <p className="text-lg text-muted leading-relaxed opacity-90 font-medium">
                                                 {svc.description}
                                             </p>

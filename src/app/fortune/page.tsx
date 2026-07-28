@@ -40,7 +40,7 @@ function ScoreBar({ label, score, gradient, icon: Icon, delay = 0 }: ScoreMetric
           </div>
           <span className="text-xs font-black text-slate-400 uppercase tracking-widest">{label}</span>
         </div>
-        <span className="text-xl font-black text-white italic">{score}</span>
+        <span className="text-xl font-black text-white">{score}</span>
       </div>
       <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
         <motion.div
@@ -260,7 +260,7 @@ function FortuneContent() {
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500 mb-1">종합 운세 점수</p>
-                    <h2 className="text-2xl font-black text-white italic">{result.summary}</h2>
+                    <h2 className="text-2xl font-black text-white">{result.summary}</h2>
                   </div>
                 </div>
                 <div className="h-0.5 bg-gradient-to-r from-indigo-500/50 to-transparent w-24 mb-5 rounded-full" />
