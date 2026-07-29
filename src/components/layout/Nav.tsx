@@ -167,7 +167,7 @@ export function Nav() {
                   <span className="text-[13px] font-black uppercase text-slate-300 tracking-widest">
                     {activeProfile?.name || "게스트"}
                   </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-600 group-hover:text-slate-300 transition-colors" />
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-300 transition-colors" />
                 </button>
 
                 <AnimatePresence>
@@ -180,7 +180,7 @@ export function Nav() {
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         className="absolute top-12 right-0 z-50 w-56 bg-slate-900/95 backdrop-blur-3xl border border-white/5 rounded-3xl shadow-3xl overflow-hidden py-3"
                       >
-                        <div className="px-5 py-2 text-[13px] font-black text-slate-600 uppercase tracking-widest border-b border-white/5 mb-2">프로필 슬롯</div>
+                        <div className="px-5 py-2 text-[13px] font-black text-slate-400 uppercase tracking-widest border-b border-white/5 mb-2">프로필 슬롯</div>
                         {Array.from({ length: 4 }).map((_, i) => {
                           const profile = profiles[i];
                           return (

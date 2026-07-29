@@ -285,7 +285,7 @@ export default function RelationshipDetailPage() {
                                 </div>
                             ))}
                         </div>
-                        <p className="mt-4 text-[13px] text-slate-600 text-center">※ 대운의 변화는 인생의 큰 방향성을 결정짓는 10개 마디입니다.</p>
+                        <p className="mt-4 text-[13px] text-slate-400 text-center">※ 대운의 변화는 인생의 큰 방향성을 결정짓는 10개 마디입니다.</p>
                     </motion.div>
                 )}
 

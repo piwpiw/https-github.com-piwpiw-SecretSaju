@@ -304,7 +304,7 @@ function DashboardContent() {
                                         <p className="text-lg text-muted font-medium">{t(`common.relation.${rel.profile.relationship}`)}</p>
                                     </div>
                                 </div>
-                                <div className={`text-4xl font-black tracking-tighter ${rel.analysis ? getCompColor(rel.analysis.score) : 'text-slate-700'}`}>
+                                <div className={`text-4xl font-black tracking-tighter ${rel.analysis ? getCompColor(rel.analysis.score) : 'text-slate-400'}`}>
                                     {rel.analysis?.score}%
                                 </div>
                             </div>

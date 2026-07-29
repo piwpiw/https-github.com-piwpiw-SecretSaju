@@ -34,7 +34,7 @@ export default function LuckyColorChips() {
                             <p className="text-[13px] font-black text-white uppercase">{c.name}</p>
                             <p className="text-[13px] text-slate-500 font-mono">{c.hex}</p>
                         </div>
-                        {copied === c.hex ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-700 group-hover:text-slate-400 transition-colors" />}
+                        {copied === c.hex ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-400 transition-colors" />}
                     </div>
                 ))}
             </div>

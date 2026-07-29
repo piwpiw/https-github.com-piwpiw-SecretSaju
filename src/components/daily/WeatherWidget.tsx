@@ -68,7 +68,7 @@ export default function WeatherWidget() {
     return (
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 transition-all hover:bg-slate-200 dark:hover:bg-slate-700 cursor-default shadow-sm border border-slate-200/50 dark:border-slate-700/50">
             {getWeatherIcon(weather.temp)}
-            <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{weather.temp}℃</span>
+            <span className="text-sm font-bold text-slate-400 dark:text-slate-300">{weather.temp}℃</span>
             <span className={cn(
                 "text-[13px] font-black ml-1 px-1.5 py-0.5 rounded-md uppercase tracking-tighter",
                 weather.dust === "좋음" ? "text-green-500 bg-green-500/10" : "text-amber-500 bg-amber-500/10"

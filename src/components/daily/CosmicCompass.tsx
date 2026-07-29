@@ -16,7 +16,7 @@ export default function CosmicCompass({ direction = "동남(SE)" }: { direction?
             {['N', 'E', 'S', 'W'].map((label, i) => (
                 <div
                     key={label}
-                    className="absolute font-black text-[13px] text-slate-600 tracking-tighter"
+                    className="absolute font-black text-[13px] text-slate-400 tracking-tighter"
                     style={{
                         top: i === 0 ? '8px' : i === 2 ? 'auto' : '50%',
                         bottom: i === 2 ? '8px' : 'auto',

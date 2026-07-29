@@ -293,7 +293,7 @@ export default function MyPage() {
                     <p className="font-black text-white text-sm">{item.label}</p>
                     <p className="text-[13px] text-slate-500 mt-0.5 truncate">{item.desc}</p>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                 </div>
               );
 
@@ -348,7 +348,7 @@ export default function MyPage() {
                 <p className="font-black text-white text-sm">결제 및 구독 관리</p>
                 <p className="text-[13px] text-slate-500 mt-0.5">결제, 환불, 멤버십 문의 경로를 확인합니다.</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
             </Link>
             <Link
               href="/account/delete"
@@ -361,14 +361,14 @@ export default function MyPage() {
                 <p className="font-black text-white text-sm">회원 탈퇴 요청</p>
                 <p className="text-[13px] text-slate-500 mt-0.5">삭제 전 안내와 요청 절차를 확인합니다.</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
             </Link>
           </div>
         </motion.section>
 
         <div className="flex items-center justify-center gap-2 pt-4 border-t border-white/5">
           <Orbit className="w-3 h-3 text-indigo-500/50" />
-          <p className="text-[13px] uppercase tracking-[0.35em] text-slate-600 font-black">Secret Saju</p>
+          <p className="text-[13px] uppercase tracking-[0.35em] text-slate-400 font-black">Secret Saju</p>
           <Orbit className="w-3 h-3 text-indigo-500/50" />
         </div>
       </div>

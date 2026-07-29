@@ -70,7 +70,7 @@ export default function DestinyCalendar() {
                 {DAYS.map((d, i) => (
                     <div key={d} className={cn(
                         "text-center text-[13px] font-black tracking-widest py-2",
-                        i === 0 ? "text-rose-500/70" : i === 6 ? "text-blue-400/70" : "text-slate-600"
+                        i === 0 ? "text-rose-500/70" : i === 6 ? "text-blue-400/70" : "text-slate-400"
                     )}>
                         {d}
                     </div>

@@ -37,7 +37,7 @@ export default async function AdminDashboardPage() {
             </span>
             <span className="text-emerald-400 font-bold text-sm">모든_시스템_정상</span>
           </div>
-            <span className="text-sm text-slate-600">지역: ap-northeast-2</span>
+            <span className="text-sm text-slate-400">지역: ap-northeast-2</span>
         </div>
       </div>
 

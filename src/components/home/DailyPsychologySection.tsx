@@ -69,7 +69,7 @@ export default function DailyPsychologySection() {
                                 </div>
                             </div>
                             <div className="relative z-10 p-2 rounded-xl bg-white/10 group-hover:bg-rose-500/25 transition-all">
-                                <Sparkles className="w-4 h-4 text-slate-700 group-hover:text-rose-500" />
+                                <Sparkles className="w-4 h-4 text-slate-400 group-hover:text-rose-500" />
                             </div>
                         </Link>
                     );

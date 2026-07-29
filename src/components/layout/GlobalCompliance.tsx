@@ -25,10 +25,10 @@ export function GlobalCompliance() {
                     </div>
 
                     <div className="text-center space-y-1">
-                        <p className="text-[13px] text-zinc-600 font-medium">상호: (주)시크릿퍼블리싱 | 대표: 홍길동</p>
-                        <p className="text-[13px] text-zinc-600">사업자등록번호: 123-45-67890 | 통신판매업: 2024-서울강남-1234</p>
-                        <p className="text-[13px] text-zinc-600">주소: 서울특별시 강남구 테헤란로 123, 4층</p>
-                        <p className="text-[13px] text-zinc-600">고객센터: support@secretsaju.com</p>
+                        <p className="text-[13px] text-zinc-400 font-medium">상호: (주)시크릿퍼블리싱 | 대표: 홍길동</p>
+                        <p className="text-[13px] text-zinc-400">사업자등록번호: 123-45-67890 | 통신판매업: 2024-서울강남-1234</p>
+                        <p className="text-[13px] text-zinc-400">주소: 서울특별시 강남구 테헤란로 123, 4층</p>
+                        <p className="text-[13px] text-zinc-400">고객센터: support@secretsaju.com</p>
                     </div>
                 </div>
 

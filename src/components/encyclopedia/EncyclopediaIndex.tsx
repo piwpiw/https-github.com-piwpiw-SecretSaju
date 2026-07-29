@@ -25,7 +25,7 @@ export default function EncyclopediaIndex() {
                         const el = document.getElementById(`index-${item.label}`);
                         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
-                    className="w-6 h-6 flex items-center justify-center text-[13px] font-black text-slate-600 hover:text-indigo-400 transition-colors uppercase"
+                    className="w-6 h-6 flex items-center justify-center text-[13px] font-black text-slate-400 hover:text-indigo-400 transition-colors uppercase"
                 >
                     {item.label}
                 </motion.button>

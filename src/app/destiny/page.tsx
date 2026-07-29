@@ -100,7 +100,7 @@ export default function DestinyPage() {
           <section className="space-y-6">
             <div className="flex items-center justify-between px-2">
               <h3 className="text-sm font-black text-slate-500 tracking-[0.3em] break-keep">운명의 흐름</h3>
-              <LayoutGrid className="w-4 h-4 text-slate-700" />
+              <LayoutGrid className="w-4 h-4 text-slate-400" />
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {FATE_MODULES.map((item, i) => {
@@ -151,7 +151,7 @@ export default function DestinyPage() {
                       </div>
                       <p className="text-sm text-slate-400 font-medium leading-relaxed">{item.desc}</p>
                     </div>
-                    <ArrowRight className="w-6 h-6 text-slate-600 group-hover:text-white transition-colors" />
+                    <ArrowRight className="w-6 h-6 text-slate-400 group-hover:text-white transition-colors" />
                     {item.jelly && (
                       <div className="absolute top-4 right-8 flex items-center gap-1.5 px-3 py-1 bg-black/40 rounded-full border border-white/5 text-[13px] font-black text-rose-400 uppercase">
                         <Zap className="w-3 h-3 fill-rose-400" /> {item.jelly} Jelly

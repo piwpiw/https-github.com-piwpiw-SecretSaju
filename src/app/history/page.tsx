@@ -143,7 +143,7 @@ export default function HistoryPage() {
                                 placeholder="기록 검색..."
                                 className="w-full bg-white/[0.03] border border-white/10 rounded-3xl py-5 pl-14 pr-6 text-white text-lg font-bold placeholder:text-slate-700 focus:outline-none focus:border-indigo-500/50 transition-all shadow-2xl"
                             />
-                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
+                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-indigo-400 transition-colors" />
                         </div>
 
                         <button
@@ -241,7 +241,7 @@ export default function HistoryPage() {
                                                     {log.title}
                                                 </h3>
                                                 {log.profileName && (
-                                                    <span className="text-[13px] font-black text-slate-600 uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-md border border-white/5">
+                                                    <span className="text-[13px] font-black text-slate-400 uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-md border border-white/5">
                                                         {log.profileName}
                                                     </span>
                                                 )}
@@ -256,7 +256,7 @@ export default function HistoryPage() {
                                             <button
                                                 onClick={() => handleDelete(log.id)}
                                                 aria-label={`기록 ${log.title} 삭제`}
-                                                className="p-4 rounded-2xl bg-white/5 text-slate-600 hover:text-rose-500 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/20"
+                                                className="p-4 rounded-2xl bg-white/5 text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/20"
                                             >
                                             <Trash2 className="w-5 h-5" />
                                         </button>
@@ -280,7 +280,7 @@ export default function HistoryPage() {
                             className="text-center py-40 border-2 border-dashed border-white/5 rounded-[2rem]"
                         >
                             <Database className="w-16 h-16 text-slate-800 mx-auto mb-6 opacity-30" />
-                            <p className="text-slate-600 font-black uppercase tracking-widest">표시할 데이터가 없습니다.</p>
+                            <p className="text-slate-400 font-black uppercase tracking-widest">표시할 데이터가 없습니다.</p>
                             <Link href="/select-fortune" className="mt-8 inline-block px-10 py-5 bg-indigo-500 text-black font-black text-sm rounded-2xl tracking-widest hover:scale-105 transition-all">
                                 분석 시작
                             </Link>

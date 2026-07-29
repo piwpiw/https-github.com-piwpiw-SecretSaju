@@ -122,7 +122,7 @@ export default function ProfileWallet({ onSelectProfile }: Props) {
                                             className="p-1.5 rounded-xl opacity-0 group-hover:opacity-100 hover:bg-rose-500/20 transition-all" aria-label="삭제">
                                             <Trash2 className="w-3 h-3 text-rose-400" />
                                         </button>
-                                        <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-indigo-400 transition-colors" />
+                                        <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition-colors" />
                                     </div>
                                 </button>
                             ))}

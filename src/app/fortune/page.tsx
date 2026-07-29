@@ -74,7 +74,7 @@ function MonthBar({ score, month, peak }: { score: number; month: number; peak: 
           {score}
         </span>
       </div>
-      <span className="text-[13px] font-black text-slate-600">{month}월</span>
+      <span className="text-[13px] font-black text-slate-400">{month}월</span>
     </div>
   );
 }
@@ -347,7 +347,7 @@ function FortuneContent() {
                     <p className="text-sm text-slate-500 mt-0.5">대운, 세운, 격국 분석 포함</p>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
+                <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
               </Link>
 
               {/* Share */}
@@ -365,7 +365,7 @@ function FortuneContent() {
               {/* Brand */}
               <div className="flex items-center justify-center gap-2 pt-2">
                 <Orbit className="w-3 h-3 text-indigo-500/30" />
-                <p className="text-[13px] uppercase tracking-[0.35em] text-slate-600 font-black">Secret Saju</p>
+                <p className="text-[13px] uppercase tracking-[0.35em] text-slate-400 font-black">Secret Saju</p>
                 <Orbit className="w-3 h-3 text-indigo-500/30" />
               </div>
             </motion.div>

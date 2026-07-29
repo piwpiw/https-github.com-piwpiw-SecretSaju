@@ -96,7 +96,7 @@ export default function FortuneCarousel() {
                             </div>
 
                             <div className="mt-6 sm:mt-8 flex justify-end relative z-10 transition-transform group-hover:translate-x-1">
-                                <ChevronRight className={cn("w-5 h-5", item.highlight ? "text-indigo-500" : "text-slate-700 group-hover:text-white")} />
+                                <ChevronRight className={cn("w-5 h-5", item.highlight ? "text-indigo-500" : "text-slate-400 group-hover:text-white")} />
                             </div>
                         </motion.div>
                     </Link>

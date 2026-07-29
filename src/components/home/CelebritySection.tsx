@@ -113,7 +113,7 @@ export function CelebritySection({ pillarCode }: CelebritySectionProps) {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.4 }}
                 >
-                    <p className="text-sm text-zinc-600">
+                    <p className="text-sm text-zinc-400">
                         💡 Tip: 사주는 타고난 <span className="text-primary">재능</span>과 <span className="text-primary">성향</span>을 알려줍니다
                     </p>
                 </motion.div>

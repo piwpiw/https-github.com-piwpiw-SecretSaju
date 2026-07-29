@@ -320,7 +320,7 @@ export default function CharacterAnalysisPage() {
                     <p className="text-sm text-slate-500">
                         사주 명리학의 전통적 분석 방식 | 점수가 아닌 균형과 경향성
                     </p>
-                    <p className="text-sm text-slate-600 mt-2">
+                    <p className="text-sm text-slate-400 mt-2">
                         ← <a href="/admin/test-control" className="text-cyan-400 hover:underline">관리자 대시보드</a>
                         {" | "}
                         <a href="/" className="text-cyan-400 hover:underline">홈</a>

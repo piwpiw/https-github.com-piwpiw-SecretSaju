@@ -115,7 +115,7 @@ export default function ShopPage() {
 
         <section className="mt-24 text-center">
           <div className="inline-flex flex-col items-center">
-            <p className="text-[13px] font-black text-slate-600 uppercase tracking-[0.5em] mb-4 break-keep">
+            <p className="text-[13px] font-black text-slate-400 uppercase tracking-[0.5em] mb-4 break-keep">
               {FREE_LAUNCH ? '무료 오픈 기간 · 결제 정보를 받지 않습니다' : '신경망 암호화로 결제 데이터 보호'}
             </p>
             <div className="flex gap-4 opacity-30 grayscale hover:grayscale-0 transition-all">

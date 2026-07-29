@@ -92,7 +92,7 @@ export function CelebrityCard({ celebrity, index = 0 }: CelebrityCardProps) {
 
             {/* Birthdate (subtle) */}
             <div className="mt-3 pt-3 border-t border-white/5">
-                <p className="text-sm text-zinc-600">
+                <p className="text-sm text-zinc-400">
                     생년월일: {celebrity.birthdate}
                 </p>
             </div>

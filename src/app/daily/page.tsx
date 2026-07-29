@@ -252,13 +252,13 @@ export default function DailyFortunePage() {
                     )}
                     {fortune.luckyNumber !== undefined && (
                       <div className="text-center">
-                        <p className="text-[13px] font-black uppercase tracking-widest text-slate-600 mb-1">럭키 넘버</p>
+                        <p className="text-[13px] font-black uppercase tracking-widest text-slate-400 mb-1">럭키 넘버</p>
                         <p className="text-2xl font-black text-amber-400">{fortune.luckyNumber}</p>
                       </div>
                     )}
                     {fortune.element && elemMeta && (
                       <div className="text-center">
-                        <p className="text-[13px] font-black uppercase tracking-widest text-slate-600 mb-1">오행 기운</p>
+                        <p className="text-[13px] font-black uppercase tracking-widest text-slate-400 mb-1">오행 기운</p>
                         <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg ${elemMeta.bg} border`}>
                           <elemMeta.icon className={`w-3 h-3 ${elemMeta.color}`} />
                           <span className={`text-sm font-black ${elemMeta.color}`}>{fortune.element}</span>
@@ -326,7 +326,7 @@ export default function DailyFortunePage() {
                         </div>
                         <p className="text-sm font-black text-slate-200 break-keep">{seg.label}</p>
                         <p className="text-[13px] text-slate-500 mt-0.5 break-keep">{seg.sub}</p>
-                        <p className="text-[13px] text-slate-600 mt-1.5 font-bold">{seg.time}</p>
+                        <p className="text-[13px] text-slate-400 mt-1.5 font-bold">{seg.time}</p>
                         {isCurrent && (
                           <div className="mt-2 flex items-center gap-1">
                             <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
