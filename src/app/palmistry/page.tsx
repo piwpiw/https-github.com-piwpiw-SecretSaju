@@ -1,86 +1,170 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+/**
+ * 손금 화면.
+ *
+ * 예전에는 유형 세 개 중 하나를 고르면 그 유형 설명을 그대로 돌려줬다.
+ * 손금을 본 적이 없었다. 이제 실제로 손바닥 사진을 찍거나 앨범에서 골라
+ * 올리고, 그 사진을 분석한다.
+ */
+
+import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Hand, Play, HeartPulse, Sparkles, History, RefreshCw, CheckCircle2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Camera,
+  CheckCircle2,
+  Hand,
+  Images,
+  Loader2,
+  RefreshCw,
+  Search,
+  Sparkles,
+  TriangleAlert,
+} from "lucide-react";
+import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
 
-type PalmistryType = "typeA" | "typeB" | "typeC";
+type PalmLine = { name: string; reading: string };
 
-const TYPES: Record<
-  PalmistryType,
-  {
-    title: string;
-    description: string;
-    plan: string[];
-  }
-> = {
-  typeA: {
-    title: "활동형(집중력 높음, 단기 성취형)",
-    description: "단기 과제 처리 속도와 실행 추진력이 높은 유형입니다.",
-    plan: ["명확한 목표 1개 설정", "매일 25분 집중", "성과 기록 7일 유지"],
-  },
-  typeB: {
-    title: "균형형(공감력 높음, 조율형)",
-    description: "의사결정에서 사람 간 조율과 균형감이 큰 장점입니다.",
-    plan: ["중요 일정 체크리스트", "의사결정은 근거 2개 이상 확인", "주간 점검 루틴 고정"],
-  },
-  typeC: {
-    title: "직관형(통찰력 높음, 장기 성장형)",
-    description: "큰 흐름을 보는 감각이 뛰어나며 장기 플래닝에 유리합니다.",
-    plan: ["주요 판단 기준 3개 기록", "실행 전 2단계 검증", "월별 회고 주기 반영"],
-  },
+type PalmReading = {
+  isPalm: boolean;
+  retakeReason: string;
+  observed: string[];
+  summary: string;
+  lines: PalmLine[];
+  actions: string[];
 };
 
-type DiagnosisLog = {
-  type: PalmistryType;
-  createdAt: string;
-  content: string;
-};
+/** 긴 변 기준 축소 크기. 손금 선은 이 정도면 충분히 보인다. */
+const MAX_EDGE = 1400;
+
+/**
+ * 원본 사진은 요즘 폰에서 5~10MB 라 그대로 보내면 업로드가 오래 걸린다.
+ * 캔버스로 줄여서 JPEG 로 다시 뽑는다.
+ */
+function toResizedDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const scale = Math.min(1, MAX_EDGE / Math.max(img.width, img.height));
+      const width = Math.round(img.width * scale);
+      const height = Math.round(img.height * scale);
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        reject(new Error("사진을 처리하지 못했습니다."));
+        return;
+      }
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL("image/jpeg", 0.85));
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("사진을 열지 못했습니다. 다른 사진으로 다시 시도해 주세요."));
+    };
+
+    img.src = url;
+  });
+}
+
+const TIPS = [
+  "손바닥이 화면을 가득 채우게 찍어 주세요.",
+  "밝은 곳에서, 그림자가 지지 않게 찍어 주세요.",
+  "손가락을 살짝 펴고 손금이 접히지 않게 해 주세요.",
+  "보통 주로 쓰는 손(오른손잡이면 오른손)을 찍습니다.",
+];
 
 export default function PalmistryPage() {
   const router = useRouter();
-  const [choice, setChoice] = useState<PalmistryType | "">("");
-  const [result, setResult] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [history, setHistory] = useState<DiagnosisLog[]>([]);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const albumInputRef = useRef<HTMLInputElement>(null);
 
-  const summary = useMemo(() => {
-    if (!choice) return "손금 유형을 선택하고 실행하면 결과를 확인할 수 있습니다.";
-    const item = TYPES[choice];
-    return `${item.title}. ${item.description}`;
-  }, [choice]);
+  const [preview, setPreview] = useState<string>("");
+  const [reading, setReading] = useState<PalmReading | null>(null);
+  const [error, setError] = useState<string>("");
+  const [analyzing, setAnalyzing] = useState(false);
 
-  const run = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!choice) {
-      setResult("손금 유형을 먼저 골라주세요.");
-      return;
+  const analyze = useCallback(async (dataUrl: string) => {
+    setAnalyzing(true);
+    setError("");
+    setReading(null);
+
+    try {
+      const res = await fetch("/api/palmistry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: dataUrl }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data?.error ?? "분석에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+        return;
+      }
+
+      const result = data.reading as PalmReading;
+      setReading(result);
+
+      // 손바닥이 아니면 해석이 없으니 기록도 남기지 않는다
+      if (result.isPalm) {
+        saveAnalysisToHistory({
+          type: "PALMISTRY",
+          title: "손금 분석",
+          subtitle: result.summary.slice(0, 40),
+          result,
+        });
+      }
+    } catch {
+      setError("연결에 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.");
+    } finally {
+      setAnalyzing(false);
     }
+  }, []);
 
-    setSubmitting(true);
-    setResult("");
-    await new Promise((resolve) => window.setTimeout(resolve, 500));
-    const analysis = `선택한 유형 해석: ${TYPES[choice].description} 실무 적용은 목표 1개 정하고 7일간 추적하면 정밀도가 올라갑니다.`;
-    const log: DiagnosisLog = {
-      type: choice,
-      createdAt: new Date().toLocaleString(),
-      content: analysis,
-    };
-    setHistory((prev) => [log, ...prev].slice(0, 6));
-    setResult(analysis);
-    setSubmitting(false);
-  };
+  const handleFile = useCallback(
+    async (file: File | undefined) => {
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        setError("사진 파일만 올릴 수 있습니다.");
+        return;
+      }
 
-  const resetForm = () => {
-    setChoice("");
-    setResult("");
+      setError("");
+      setReading(null);
+
+      try {
+        const dataUrl = await toResizedDataUrl(file);
+        setPreview(dataUrl);
+        await analyze(dataUrl);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "사진을 처리하지 못했습니다.");
+      }
+    },
+    [analyze],
+  );
+
+  const reset = () => {
+    setPreview("");
+    setReading(null);
+    setError("");
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
+    if (albumInputRef.current) albumInputRef.current.value = "";
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-28">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_0%,rgba(20,184,166,0.18),transparent_45%)]" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
-        <div className="flex items-center justify-between mb-8">
+    <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-24">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_0%,rgba(20,184,166,0.16),transparent_45%)]" />
+
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 relative z-10">
+        <div className="flex items-center justify-between mb-5">
           <button
             onClick={() => router.back()}
             aria-label="이전 화면으로 돌아가기"
@@ -88,108 +172,186 @@ export default function PalmistryPage() {
           >
             <ArrowLeft className="w-5 h-5 text-slate-200" />
           </button>
-          <button
-            onClick={resetForm}
-            aria-label="선택 항목 초기화"
-            className="text-sm px-4 py-2 rounded-full border border-white/10 bg-white/10 inline-flex items-center gap-2"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-            초기화
-          </button>
+          {(preview || reading) && (
+            <button
+              onClick={reset}
+              className="text-[15px] px-4 py-2.5 rounded-full border border-white/10 bg-white/10 inline-flex items-center gap-2"
+            >
+              <RefreshCw className="w-4 h-4" />
+              다시 찍기
+            </button>
+          )}
         </div>
 
-        <section className="bg-slate-900/60 border border-white/10 rounded-[2.3rem] p-8 md:p-6 sm:p-9">
-          <div className="inline-flex items-center gap-2 text-emerald-300 font-black text-sm tracking-[0.2em]">
-            <Hand className="w-4 h-4" /> 손금 분석
+        <section className="rounded-3xl border border-white/10 bg-slate-900/60 p-5 sm:p-6">
+          <div className="inline-flex items-center gap-2 text-emerald-300 font-black text-[15px]">
+            <Hand className="w-4 h-4" /> 손금 보기
           </div>
-          <h1 className="text-3xl md:text-4xl font-black mt-3">손금 유형 플로우</h1>
-          <p className="text-slate-300 mt-2">나와 가까운 유형을 고르면, 오늘 바로 해볼 일을 알려드려요.</p>
+          <h1 className="text-2xl sm:text-3xl font-black mt-2">손바닥 사진을 올려 주세요</h1>
+          <p className="text-[15px] leading-[1.8] text-slate-300 mt-2 break-keep">
+            손바닥을 찍은 사진에서 선을 읽어 해석합니다.
+            <br />
+            사진은 분석에만 쓰고 따로 저장하지 않습니다.
+          </p>
 
-          <form onSubmit={run} className="mt-6 space-y-4" aria-label="손금 분석 폼">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {(Object.entries(TYPES) as [PalmistryType, (typeof TYPES)[PalmistryType]][]).map(([key, value]) => (
-                <label key={key} className="block">
-                  <input
-                    type="radio"
-                    name="palmType"
-                    className="sr-only"
-                    checked={choice === key}
-                    onChange={() => setChoice(key)}
-                    aria-label={value.title}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setChoice(key)}
-                    aria-pressed={choice === key}
-                    className={`w-full p-4 rounded-2xl text-left border ${choice === key ? "border-emerald-300 bg-emerald-500/10" : "border-white/10"} transition`}
-                  >
-                    <div className="font-black">{value.title}</div>
-                    <p className="mt-2 text-sm text-slate-300">{value.description}</p>
-                  </button>
-                </label>
-              ))}
+          {/* 실제 파일 입력. capture 를 붙이면 폰에서 카메라가 바로 열린다 */}
+          <input
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="sr-only"
+            aria-label="카메라로 손바닥 촬영"
+            onChange={(e) => handleFile(e.target.files?.[0])}
+          />
+          <input
+            ref={albumInputRef}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            aria-label="앨범에서 손바닥 사진 선택"
+            onChange={(e) => handleFile(e.target.files?.[0])}
+          />
+
+          {preview ? (
+            <div className="mt-5 rounded-2xl overflow-hidden border border-white/10 bg-black/30">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={preview} alt="올린 손바닥 사진" className="w-full max-h-[420px] object-contain" />
             </div>
-
-            <div className="rounded-3xl border border-white/10 bg-slate-900/45 p-5 text-sm text-slate-200">
-              {summary}
+          ) : (
+            <div className="mt-5 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] p-6 text-center">
+              <Hand className="w-10 h-10 mx-auto text-emerald-300/70" />
+              <p className="mt-3 text-[15px] text-slate-300 break-keep">
+                아직 올린 사진이 없습니다.
+                <br />
+                아래에서 촬영하거나 앨범에서 고르세요.
+              </p>
             </div>
+          )}
 
+          <div className="mt-4 grid grid-cols-2 gap-3">
             <button
-              type="submit"
-              disabled={submitting}
-              aria-label={submitting ? "분석 실행 중" : "손금 분석 실행"}
-              className="w-full py-5 rounded-full bg-emerald-500 text-slate-900 font-black uppercase tracking-[0.2em] disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+              type="button"
+              onClick={() => cameraInputRef.current?.click()}
+              disabled={analyzing}
+              className="py-4 rounded-2xl bg-emerald-500 text-slate-900 font-black inline-flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              {submitting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />} 분석 실행
+              <Camera className="w-5 h-5" /> 촬영하기
             </button>
-          </form>
+            <button
+              type="button"
+              onClick={() => albumInputRef.current?.click()}
+              disabled={analyzing}
+              className="py-4 rounded-2xl border border-white/15 bg-white/10 font-black inline-flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              <Images className="w-5 h-5" /> 사진 고르기
+            </button>
+          </div>
+
+          {preview && !analyzing && (
+            <button
+              type="button"
+              onClick={() => analyze(preview)}
+              className="mt-3 w-full py-4 rounded-2xl border border-emerald-400/40 bg-emerald-500/10 text-emerald-200 font-black inline-flex items-center justify-center gap-2"
+            >
+              <Search className="w-5 h-5" /> 이 사진으로 다시 분석
+            </button>
+          )}
+
+          <ul className="mt-5 space-y-1.5">
+            {TIPS.map((tip) => (
+              <li key={tip} className="flex items-start gap-2 text-[14px] leading-[1.7] text-slate-400 break-keep">
+                <span className="mt-2 w-1 h-1 rounded-full bg-slate-500 shrink-0" />
+                <span>{tip}</span>
+              </li>
+            ))}
+          </ul>
         </section>
 
-        {result ? (
-          <section className="mt-8 rounded-2xl border border-white/10 bg-slate-900/50 p-6">
-            <div className="flex items-center gap-2 text-pink-300 font-black">
-              <Sparkles className="w-4 h-4" /> 진단 결과
+        {analyzing && (
+          <section className="mt-4 rounded-3xl border border-white/10 bg-slate-900/60 p-6 text-center">
+            <Loader2 className="w-6 h-6 mx-auto text-emerald-300 animate-spin" />
+            <p className="mt-3 text-[15px] text-slate-300">사진에서 손금을 읽는 중입니다…</p>
+          </section>
+        )}
+
+        {error && (
+          <section
+            role="alert"
+            className="mt-4 rounded-3xl border border-rose-500/30 bg-rose-950/40 p-5 text-[15px] leading-[1.8] text-rose-200 break-keep"
+          >
+            {error}
+          </section>
+        )}
+
+        {reading && !reading.isPalm && (
+          <section className="mt-4 rounded-3xl border border-amber-500/30 bg-amber-950/30 p-5">
+            <div className="flex items-center gap-2 text-amber-300 font-black text-[15px]">
+              <TriangleAlert className="w-4 h-4" /> 손바닥이 잘 안 보여요
             </div>
-            <p className="mt-3 text-slate-200">{result}</p>
-            <div className="mt-5 text-sm text-slate-400 flex items-center gap-2">
-              <HeartPulse className="w-4 h-4" /> 7일간 매일 10분씩 기록하면 정밀도가 올라갑니다.
-            </div>
-            {choice ? (
-              <div className="mt-5 rounded-2xl border border-emerald-700/30 bg-emerald-950/40 p-4">
-                <p className="text-sm text-emerald-300 font-black uppercase tracking-[0.2em] mb-3">실행 루틴</p>
-                <ul className="space-y-2 text-sm">
-                  {TYPES[choice].plan.map((step) => (
-                    <li key={step} className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 mt-0.5 text-emerald-300" />
-                      <span>{step}</span>
+            <p className="mt-2 text-[15px] leading-[1.8] text-amber-100/90 break-keep">
+              {reading.retakeReason || "사진에서 손바닥을 찾지 못했습니다."}
+              <br />
+              손바닥이 화면을 채우도록 다시 찍어 주세요.
+            </p>
+          </section>
+        )}
+
+        {reading && reading.isPalm && (
+          <div className="mt-4 space-y-4">
+            <section className="rounded-3xl border border-white/10 bg-slate-900/60 p-5 sm:p-6">
+              <div className="flex items-center gap-2 text-pink-300 font-black text-[15px]">
+                <Sparkles className="w-4 h-4" /> 한눈에
+              </div>
+              <p className="mt-3 text-[16px] leading-[1.85] text-slate-100 break-keep">{reading.summary}</p>
+            </section>
+
+            {reading.observed.length > 0 && (
+              <section className="rounded-3xl border border-white/10 bg-slate-900/60 p-5 sm:p-6">
+                <div className="flex items-center gap-2 text-cyan-300 font-black text-[15px]">
+                  <Search className="w-4 h-4" /> 사진에서 보인 것
+                </div>
+                <ul className="mt-3 space-y-2">
+                  {reading.observed.map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-[15px] leading-[1.8] text-slate-200 break-keep">
+                      <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
+                      <span>{item}</span>
                     </li>
                   ))}
                 </ul>
-              </div>
-            ) : null}
-          </section>
-        ) : null}
+              </section>
+            )}
 
-        <section className="mt-8 rounded-2xl border border-white/10 bg-slate-900/50 p-6">
-          <div className="flex items-center gap-2 text-cyan-300 font-black mb-4">
-            <History className="w-4 h-4" /> 최근 진단 이력
+            {reading.lines.length > 0 && (
+              <section className="space-y-3">
+                {reading.lines.map((line) => (
+                  <div key={line.name} className="rounded-3xl border border-white/10 bg-slate-900/60 p-5 sm:p-6">
+                    <p className="text-[15px] font-black text-emerald-300">{line.name}</p>
+                    <p className="mt-2 text-[15px] leading-[1.85] text-slate-200 break-keep">{line.reading}</p>
+                  </div>
+                ))}
+              </section>
+            )}
+
+            {reading.actions.length > 0 && (
+              <section className="rounded-3xl border border-emerald-500/25 bg-emerald-950/30 p-5 sm:p-6">
+                <p className="text-[15px] font-black text-emerald-300">오늘 해볼 것</p>
+                <ul className="mt-3 space-y-2">
+                  {reading.actions.map((action) => (
+                    <li key={action} className="flex items-start gap-2 text-[15px] leading-[1.8] text-emerald-50 break-keep">
+                      <CheckCircle2 className="w-4 h-4 mt-1 text-emerald-300 shrink-0" />
+                      <span>{action}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            <p className="text-[14px] leading-[1.7] text-slate-500 text-center break-keep">
+              손금 해석은 참고용입니다. 건강이 걱정되면 병원에서 확인하세요.
+            </p>
           </div>
-          {history.length === 0 ? (
-            <p className="text-sm text-slate-400">아직 기록이 없습니다. 실행으로 첫 진단을 남겨보세요.</p>
-          ) : (
-            <ul className="space-y-3 text-sm">
-              {history.map((item, idx) => (
-                <li key={`${item.type}-${item.createdAt}-${idx}`} className="rounded-xl border border-white/10 bg-slate-800/50 p-3">
-                  <p className="text-sm text-slate-400 mb-1">{item.createdAt}</p>
-                  <p>
-                    <span className="text-cyan-300 font-black">[{TYPES[item.type].title}] </span>
-                    {item.content}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+        )}
       </div>
     </main>
   );
