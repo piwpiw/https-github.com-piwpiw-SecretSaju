@@ -50,7 +50,7 @@ export default function LoadingGlitch({ onComplete }: LoadingGlitchProps) {
 
             <div className="relative z-10 w-full max-w-md px-6 flex flex-col items-center">
                 {/* Visualizer Ring */}
-                <div className="relative w-40 h-40 mb-10 flex items-center justify-center">
+                <div className="relative w-40 h-40 mb-6 flex items-center justify-center">
                     <motion.div
                         className="absolute inset-0 rounded-full border-2 border-indigo-500/20"
                         animate={{ rotate: 360 }}
@@ -83,7 +83,7 @@ export default function LoadingGlitch({ onComplete }: LoadingGlitchProps) {
                     >
                         {steps[step].title}
                     </motion.div>
-                    <div className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                    <div className="text-sm" style={{ color: "var(--text-muted)" }}>
                         {Math.floor(progress)}%
                     </div>
                 </div>
@@ -100,7 +100,7 @@ export default function LoadingGlitch({ onComplete }: LoadingGlitchProps) {
                 </div>
 
                 {/* Korean status lines */}
-                <div className="mt-6 text-xs flex flex-col items-center gap-1" style={{ color: "var(--text-secondary)" }}>
+                <div className="mt-6 text-sm flex flex-col items-center gap-1" style={{ color: "var(--text-muted)" }}>
                     <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity }}>
                         오행 데이터 분석 중...
                     </motion.div>

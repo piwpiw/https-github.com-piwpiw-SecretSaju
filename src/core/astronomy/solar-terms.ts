@@ -65,11 +65,26 @@ export interface SolarTerm {
 }
 
 /**
+ * 한국 표준시(KST) 오프셋 (시간 단위)
+ *
+ * 이 모듈의 계산은 두 개의 서로 다른 시간축을 오간다.
+ * - 천문 계산(태양 황경, 율리우스 적일)은 **세계시(UT)** 기준이다.
+ * - 사주 엔진이 넘겨주는 `baseDateKST` 는 Date 의 로컬 필드에
+ *   **KST 벽시계 값**을 담고 있다 (서버 타임존과 무관한 관례).
+ *
+ * 예전에는 이 둘을 그대로 비교했다. 그러면 2024년 입춘(KST 17:27)이
+ * 08:12 로 취급되어, 그 사이(9시간)에 태어난 사람의 연주가 한 해 밀렸다.
+ * 절기 시각은 KST 벽시계로 돌려주고, KST 입력은 UT 로 되돌린 뒤 계산한다.
+ */
+const KST_OFFSET_HOURS = 9;
+const KST_OFFSET_DAYS = KST_OFFSET_HOURS / 24;
+
+/**
  * 율리우스 날짜(Julian Day Number) 계산
- * 
+ *
  * 천문학 계산에 사용되는 표준 날짜 시스템
- * 
- * @param date 그레고리력 날짜
+ *
+ * @param date 그레고리력 날짜 (로컬 필드를 UT 로 해석한다)
  * @returns 율리우스 날짜
  */
 export function dateToJulianDay(date: Date): number {
@@ -161,7 +176,14 @@ export function calculateSolarLongitude(jd: number): number {
         0.000289 * Math.sin(3 * Mrad);
 
     // 태양 진황경
-    let lambda = L0 + C;
+    const trueLongitude = L0 + C;
+
+    // 겉보기 황경(apparent longitude) 보정.
+    // 절기는 진황경이 아니라 겉보기 황경으로 정의된다. 장동(nutation)과
+    // 광행차(aberration)를 빼지 않으면 약 0.0057도 = 8분가량 늦게 나온다.
+    // Meeus, Astronomical Algorithms 25.11
+    const omega = 125.04 - 1934.136 * T;
+    let lambda = trueLongitude - 0.00569 - 0.00478 * Math.sin(omega * (Math.PI / 180));
 
     // 0-360 범위로 정규화
     lambda = lambda % 360;
@@ -175,7 +197,7 @@ export function calculateSolarLongitude(jd: number): number {
  * 
  * @param targetLongitude 목표 태양 황경 (0-360도)
  * @param year 연도
- * @returns 절기 날짜
+ * @returns 절기 날짜 (KST 벽시계 기준)
  */
 export function findSolarTermDate(targetLongitude: number, year: number): Date {
     // 검색 범위 설정 (해당 연도 전체)
@@ -198,8 +220,8 @@ export function findSolarTermDate(targetLongitude: number, year: number): Date {
         const diff = normalizeAngleDifference(targetLongitude, longitude);
 
         if (Math.abs(diff) < 0.001) {
-            // 충분히 가까우면 종료
-            return julianDayToDate(midJD);
+            // 충분히 가까우면 종료 (UT → KST 벽시계로 변환해서 반환)
+            return julianDayToDate(midJD + KST_OFFSET_DAYS);
         }
 
         if (diff > 0) {
@@ -209,7 +231,7 @@ export function findSolarTermDate(targetLongitude: number, year: number): Date {
         }
     }
 
-    return julianDayToDate((startJD + endJD) / 2);
+    return julianDayToDate((startJD + endJD) / 2 + KST_OFFSET_DAYS);
 }
 
 /**
@@ -228,11 +250,12 @@ function normalizeAngleDifference(target: number, current: number): number {
 /**
  * 특정 날짜의 현재 절기 찾기
  * 
- * @param date 날짜
+ * @param date 날짜 (KST 벽시계 기준)
  * @returns 현재 절기 정보
  */
 export function getCurrentSolarTerm(date: Date): SolarTerm {
-    const jd = dateToJulianDay(date);
+    // 입력은 KST 벽시계이므로 UT 로 되돌린 뒤 태양 황경을 구한다.
+    const jd = dateToJulianDay(date) - KST_OFFSET_DAYS;
     const longitude = calculateSolarLongitude(jd);
 
     // Sort terms by longitude for searching

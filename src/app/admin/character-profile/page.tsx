@@ -25,7 +25,7 @@ export default function CharacterProfilePage() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white p-5 sm:p-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -38,7 +38,7 @@ export default function CharacterProfilePage() {
                 </div>
 
                 {/* Selector */}
-                <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
+                <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6">
                     <label htmlFor="character-profile-pillar" className="block text-sm font-semibold mb-2 text-cyan-400">
                         캐릭터 선택
                     </label>
@@ -61,14 +61,14 @@ export default function CharacterProfilePage() {
                 </div>
 
                 {/* Main Profile */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Left: Basic Info */}
                     <div className="space-y-6">
                         {/* Animal Card */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl p-6 border border-purple-500/20"
+                            className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl p-4 sm:p-6 border border-purple-500/20"
                         >
                             <div className="flex items-start justify-between mb-4">
                                 <div>
@@ -103,7 +103,7 @@ export default function CharacterProfilePage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                             style={{
                                 borderColor: profile.wuxing.color + "40",
                             }}
@@ -130,14 +130,14 @@ export default function CharacterProfilePage() {
 
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
-                                        <div className="text-xs text-green-400 mb-1">강점</div>
-                                        <p className="text-xs text-slate-300">
+                                        <div className="text-sm text-green-400 mb-1">강점</div>
+                                        <p className="text-sm text-slate-300">
                                             {profile.personality_core.strength}
                                         </p>
                                     </div>
                                     <div>
-                                        <div className="text-xs text-red-400 mb-1">약점</div>
-                                        <p className="text-xs text-slate-300">
+                                        <div className="text-sm text-red-400 mb-1">약점</div>
+                                        <p className="text-sm text-slate-300">
                                             {profile.personality_core.weakness}
                                         </p>
                                     </div>
@@ -150,7 +150,7 @@ export default function CharacterProfilePage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                                 ⭐ 특수 능력 (신살)
@@ -172,7 +172,7 @@ export default function CharacterProfilePage() {
                                                 <span className="text-2xl">{s.emoji}</span>
                                                 <div>
                                                     <div className="font-bold">{s.name}</div>
-                                                    <div className="text-xs text-slate-400">{s.effect}</div>
+                                                    <div className="text-sm text-slate-400">{s.effect}</div>
                                                 </div>
                                             </div>
                                             <p className="text-sm text-slate-300 mt-2">
@@ -195,7 +195,7 @@ export default function CharacterProfilePage() {
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-6">
                                 📊 5차원 스탯 (100점 만점)
@@ -244,7 +244,7 @@ export default function CharacterProfilePage() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-gradient-to-br from-slate-900/50 to-purple-900/30 border border-cyan-500/30 rounded-xl p-6"
+                            className="bg-gradient-to-br from-slate-900/50 to-purple-900/30 border border-cyan-500/30 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                                 🎮 캐릭터 시트

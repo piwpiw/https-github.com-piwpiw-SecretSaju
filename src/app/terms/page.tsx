@@ -5,23 +5,23 @@ export default function TermsPage() {
   return (
     <main className="min-h-screen relative overflow-hidden pb-40">
       <div className="max-w-4xl mx-auto px-0 sm:px-6 pt-16 relative z-10">
-        <Link href="/mypage" className="flex items-center gap-3 text-secondary hover:text-foreground transition-all group mb-12">
+        <Link href="/mypage" className="flex items-center gap-3 text-muted hover:text-foreground transition-all group mb-8">
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-bold">뒤로</span>
         </Link>
 
-        <div className="bg-surface border border-border-color rounded-5xl p-10 sm:p-16 relative z-10 shadow-2xl">
-          <div className="flex items-center gap-6 mb-12 pb-12 border-b border-border-color">
+        <div className="bg-surface border border-border-color rounded-5xl p-5 sm:p-8 sm:p-16 relative z-10 shadow-2xl">
+          <div className="flex items-center gap-6 mb-8 pb-12 border-b border-border-color">
             <div className="w-20 h-20 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center">
               <FileText className="w-10 h-10 text-primary" />
             </div>
             <div>
               <h1 className="text-4xl font-black mb-2 text-foreground">이용약관</h1>
-              <p className="text-sm text-secondary font-medium">최종 개정일: 2026.03.08</p>
+              <p className="text-sm text-muted font-medium">최종 개정일: 2026.03.08</p>
             </div>
           </div>
 
-          <div className="space-y-10 text-secondary text-base leading-8 whitespace-pre-line font-medium">
+          <div className="space-y-10 text-muted text-base leading-8 whitespace-pre-line font-medium">
             <section>
               <h2 className="text-foreground font-black text-2xl mb-4">1. 목적</h2>
               <p>

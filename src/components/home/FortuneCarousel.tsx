@@ -30,7 +30,7 @@ export default function FortuneCarousel() {
     };
 
     return (
-        <section className="py-10 sm:py-12 md:py-14 relative">
+        <section className="py-10 sm:py-8 md:py-14 relative">
             <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_15%_15%,rgba(129,140,254,0.16),transparent_52%),radial-gradient(circle_at_85%_80%,rgba(168,85,247,0.12),transparent_58%)]" />
             <div className="flex items-center justify-between mb-6 sm:mb-8 px-4 sm:px-6">
                 <div className="flex items-center gap-3 sm:gap-4 min-w-0">
@@ -39,7 +39,7 @@ export default function FortuneCarousel() {
                     </div>
                     <div className="min-w-0">
                         <h2 className="ui-title-gradient text-xl sm:text-2xl tracking-[0.08em]">운세 메뉴 <span className="text-indigo-400">모음</span></h2>
-                        <p className="text-micro-copy mt-1 opacity-80">오늘의 컨텐츠를 한 번에 탐색합니다</p>
+                        <p className="text-micro-copy text-slate-300 mt-1">오늘의 컨텐츠를 한 번에 탐색합니다</p>
                     </div>
                 </div>
                 <div className="flex gap-2 sm:gap-3 flex-shrink-0">
@@ -86,17 +86,17 @@ export default function FortuneCarousel() {
 
                                 <div className="space-y-2">
                                     <div className="flex items-center gap-2">
-                                        <h4 className="text-base sm:text-lg font-black text-white italic tracking-tight">{item.label}</h4>
+                                        <h4 className="text-base sm:text-lg font-black text-white tracking-tight">{item.label}</h4>
                                         {item.highlight && (
                                             <Zap className="w-3.5 h-3.5 fill-indigo-500 text-indigo-500 animate-pulse" />
                                         )}
                                     </div>
-                                    <p className="text-xs text-slate-400 leading-relaxed font-medium transition-colors group-hover:text-slate-200">{item.desc}</p>
+                                    <p className="text-sm text-slate-400 leading-relaxed font-medium transition-colors group-hover:text-slate-200">{item.desc}</p>
                                 </div>
                             </div>
 
                             <div className="mt-6 sm:mt-8 flex justify-end relative z-10 transition-transform group-hover:translate-x-1">
-                                <ChevronRight className={cn("w-5 h-5", item.highlight ? "text-indigo-500" : "text-slate-700 group-hover:text-white")} />
+                                <ChevronRight className={cn("w-5 h-5", item.highlight ? "text-indigo-500" : "text-slate-400 group-hover:text-white")} />
                             </div>
                         </motion.div>
                     </Link>

@@ -48,7 +48,7 @@ export function ShareSection({
   };
 
   return (
-    <section className="w-full max-w-md mx-auto py-12 px-4">
+    <section className="w-full max-w-md mx-auto py-8 px-4">
       <h3 className="font-display text-xl text-foreground mb-4 text-center">
         친구들이 보는 내 뒷모습
       </h3>

@@ -45,17 +45,17 @@ function FailContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+    <div className="min-h-screen flex items-center justify-center p-2 sm:p-4 bg-background">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-surface p-6 sm:p-8 md:p-12 rounded-4xl shadow-2xl max-w-md w-full text-center border border-border-color"
+        className="bg-surface p-4 sm:p-8 md:p-6 sm:p-9 rounded-4xl shadow-2xl max-w-md w-full text-center border border-border-color"
       >
         <div className="flex flex-col items-center">
           <XCircle className="w-16 h-16 sm:w-20 sm:h-20 text-rose-500 mb-6" />
           <h2 className="text-2xl sm:text-3xl font-black text-foreground uppercase tracking-tight mb-2">결제 실패</h2>
 
-          <div className="bg-rose-500/10 border border-rose-500/20 p-6 rounded-2xl mt-6 w-full">
+          <div className="bg-rose-500/10 border border-rose-500/20 p-3 sm:p-6 rounded-2xl mt-6 w-full">
             <div className="flex items-start gap-3 text-left">
               <AlertCircle className="w-6 h-6 text-rose-400 shrink-0 mt-0.5" />
               <div>
@@ -68,13 +68,13 @@ function FailContent() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full mt-10">
             <button
               onClick={() => router.push(getPrimaryRoute())}
-              className="py-4 sm:py-5 bg-background border border-border-color text-secondary font-black text-base sm:text-lg rounded-2xl hover:text-foreground transition-all min-h-[48px] flex items-center justify-center"
+              className="py-4 sm:py-5 bg-background border border-border-color text-muted font-black text-base sm:text-lg rounded-2xl hover:text-foreground transition-all min-h-[48px] flex items-center justify-center"
             >
               {getPrimaryLabel()}
             </button>
             <button
               onClick={() => router.push('/mypage')}
-              className="py-4 sm:py-5 bg-background border border-border-color text-secondary font-black text-base sm:text-lg rounded-2xl hover:text-foreground transition-all min-h-[48px] flex items-center justify-center"
+              className="py-4 sm:py-5 bg-background border border-border-color text-muted font-black text-base sm:text-lg rounded-2xl hover:text-foreground transition-all min-h-[48px] flex items-center justify-center"
             >
               마이페이지
             </button>

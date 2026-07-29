@@ -5,24 +5,24 @@ export default function PrivacyPage() {
   return (
     <main className="min-h-screen relative overflow-hidden pb-40">
       <div className="max-w-4xl mx-auto px-0 sm:px-6 pt-16 relative z-10">
-        <Link href="/mypage" className="flex items-center gap-3 text-secondary hover:text-foreground transition-all group mb-12">
+        <Link href="/mypage" className="flex items-center gap-3 text-muted hover:text-foreground transition-all group mb-8">
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-bold tracking-widest break-keep">돌아가기</span>
         </Link>
 
-        <div className="bg-surface border border-border-color rounded-5xl p-10 sm:p-16 relative z-10 shadow-2xl">
-          <div className="flex items-center gap-6 mb-12 pb-12 border-b border-border-color">
+        <div className="bg-surface border border-border-color rounded-5xl p-5 sm:p-8 sm:p-16 relative z-10 shadow-2xl">
+          <div className="flex items-center gap-6 mb-8 pb-12 border-b border-border-color">
             <div className="w-20 h-20 rounded-3xl bg-secondary/10 border border-secondary/20 flex items-center justify-center">
-              <Lock className="w-10 h-10 text-secondary" />
+              <Lock className="w-10 h-10 text-muted" />
             </div>
             <div>
               <h1 className="text-4xl font-black text-foreground mb-2">개인정보 처리방침</h1>
-              <p className="text-sm font-bold text-secondary uppercase tracking-widest leading-none">Last Modified: 2026.03.08</p>
+              <p className="text-sm font-bold text-muted uppercase tracking-widest leading-none">Last Modified: 2026.03.08</p>
             </div>
           </div>
 
-          <div className="space-y-10 text-secondary text-base leading-8 whitespace-pre-line font-medium">
-            <p className="text-lg text-foreground bg-background p-6 rounded-2xl border border-border-color">
+          <div className="space-y-10 text-muted text-base leading-8 whitespace-pre-line font-medium">
+            <p className="text-lg text-foreground bg-background p-4 sm:p-6 rounded-2xl border border-border-color">
               Secret Saju는 서비스 제공에 필요한 최소한의 개인정보만 수집하며, 결제 검증, 계정 관리, 고객지원,
               보안 대응 목적 외에는 이용하지 않습니다.
             </p>
@@ -46,7 +46,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="text-foreground font-black text-2xl mb-4">3. 보관 및 삭제</h2>
-              <p className="p-6 bg-background rounded-2xl border border-border-color text-foreground leading-relaxed">
+              <p className="p-4 sm:p-6 bg-background rounded-2xl border border-border-color text-foreground leading-relaxed">
                 이용자는 탈퇴 요청 또는 삭제 요청을 할 수 있습니다. 계정 삭제가 확정되면 서비스 데이터는 내부 정책과
                 관계 법령에 따라 삭제 또는 분리 보관됩니다. 다만 전자상거래, 세무, 분쟁 대응에 필요한 일부 기록은 법정
                 보존 기간 동안 암호화하여 보관될 수 있습니다.
@@ -57,16 +57,16 @@ export default function PrivacyPage() {
               <h2 className="text-foreground font-black text-2xl mb-4">4. 이용자 권리</h2>
               <p className="text-foreground">
                 이용자는 자신의 개인정보 열람, 정정, 삭제, 처리 정지 요청을 할 수 있으며,
-                <Link href="/account/delete" className="text-secondary underline ml-1">회원 탈퇴 요청</Link> 또는
-                <Link href="/inquiry" className="text-secondary underline ml-1">문의하기</Link>를 통해 접수할 수 있습니다.
+                <Link href="/account/delete" className="text-muted underline ml-1">회원 탈퇴 요청</Link> 또는
+                <Link href="/inquiry" className="text-muted underline ml-1">문의하기</Link>를 통해 접수할 수 있습니다.
               </p>
             </section>
 
             <div className="pt-12 border-t border-border-color flex items-center justify-between">
-              <span className="text-sm text-secondary font-bold tracking-widest break-keep">보호 절차</span>
+              <span className="text-sm text-muted font-bold tracking-widest break-keep">보호 절차</span>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/20">
-                <ShieldCheck className="w-5 h-5 text-secondary" />
-                <span className="text-xs font-black text-secondary tracking-widest break-keep">보안 우선</span>
+                <ShieldCheck className="w-5 h-5 text-muted" />
+                <span className="text-sm font-black text-muted tracking-widest break-keep">보안 우선</span>
               </div>
             </div>
           </div>

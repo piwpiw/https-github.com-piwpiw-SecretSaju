@@ -128,15 +128,15 @@ export default function TransitTicker({ userDayStem }: Props) {
 
                 <div className="flex-1 relative z-10">
                     <div className="flex items-center gap-2 mb-0.5">
-                        <span className={`text-[10px] font-black ${labelColor} uppercase tracking-widest`}>Real-time Transit</span>
+                        <span className={`text-[13px] font-black ${labelColor} uppercase tracking-widest`}>Real-time Transit</span>
                         <div className="w-1 h-1 rounded-full bg-slate-600" />
-                        <span className="text-[10px] font-bold text-slate-500">
+                        <span className="text-[13px] font-bold text-slate-500">
                             {now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                     </div>
                     <div className="flex flex-col">
                         <span className="text-sm font-bold text-slate-200 leading-tight">{alert.title}</span>
-                        <span className="text-[11px] text-slate-400 leading-tight hidden md:block mt-0.5">{alert.desc}</span>
+                        <span className="text-[13px] text-slate-400 leading-tight hidden md:block mt-0.5">{alert.desc}</span>
                     </div>
                 </div>
 

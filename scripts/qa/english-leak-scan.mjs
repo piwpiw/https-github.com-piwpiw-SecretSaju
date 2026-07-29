@@ -25,6 +25,8 @@ const ALLOWED = [
     /^(AI|API|PDF|OK|SNS|UI|UX|QR|SMS|CS|FAQ|GPT|LLM|MBTI|VIP|CEO)$/i,
     /^(SecretSaju|Secret Saju|Bohemian Studio|Kakao|Google|Toss|Naver|Vercel|Notion)$/i,
     /^(Tarot|Oracle|Saju)$/i,
+    // 메이저 아르카나 번호. 로마 숫자는 타로 카드에 원래 그렇게 인쇄된다.
+    /^(0|[IVX]{1,5})$/,
 ];
 
 const ROUTES = JSON.parse(

@@ -16,7 +16,7 @@ export default function CharacterAnalysisPage() {
     const pillarName = getPillarNameKo(selectedIndex);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white p-5 sm:p-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -29,7 +29,7 @@ export default function CharacterAnalysisPage() {
                 </div>
 
                 {/* Selector */}
-                <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
+                <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6">
                     <label htmlFor="character-analysis-pillar" className="block text-sm font-semibold mb-2 text-cyan-400">
                         인물 선택
                     </label>
@@ -52,14 +52,14 @@ export default function CharacterAnalysisPage() {
                 </div>
 
                 {/* Main Analysis */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Column 1: Summary */}
                     <div className="space-y-6">
                         {/* Animal Card */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl p-6 border border-purple-500/20"
+                            className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl p-4 sm:p-6 border border-purple-500/20"
                         >
                             <div className="text-6xl mb-4 text-center">🐾</div>
                             <h2 className="text-3xl font-bold text-center mb-2">
@@ -78,7 +78,7 @@ export default function CharacterAnalysisPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-white/5 backdrop-blur-lg border border-cyan-500/30 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-cyan-500/30 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4 text-cyan-400">
                                 💫 성격 유형
@@ -104,12 +104,12 @@ export default function CharacterAnalysisPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="bg-gradient-to-br from-yellow-900/20 to-orange-900/20 border border-yellow-500/30 rounded-xl p-6"
+                            className="bg-gradient-to-br from-yellow-900/20 to-orange-900/20 border border-yellow-500/30 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-3 text-yellow-400">
                                 📜 인생 모토
                             </h3>
-                            <p className="text-lg italic text-slate-200">
+                            <p className="text-lg text-slate-200">
                                 &quot;{analysis.core_traits.life_motto}&quot;
                             </p>
                         </motion.div>
@@ -121,7 +121,7 @@ export default function CharacterAnalysisPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4">⚖️ 오행 균형도</h3>
 
@@ -175,7 +175,7 @@ export default function CharacterAnalysisPage() {
                                             ].name_kr
                                         }
                                     </div>
-                                    <div className="text-xs text-slate-400 mt-1">
+                                    <div className="text-sm text-slate-400 mt-1">
                                         이 영역을 보완하면 더 균형잡힌 삶을 살 수 있습니다
                                     </div>
                                 </div>
@@ -187,7 +187,7 @@ export default function CharacterAnalysisPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4">🎯 핵심 특징</h3>
 
@@ -227,7 +227,7 @@ export default function CharacterAnalysisPage() {
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4">🌟 인생 5대 영역</h3>
                             <p className="text-sm text-slate-400 mb-6">
@@ -240,7 +240,7 @@ export default function CharacterAnalysisPage() {
                                         <div className="flex justify-between items-center mb-2">
                                             <span className="font-semibold text-lg">{aspect.name}</span>
                                             <span
-                                                className={`px-3 py-1 rounded-full text-xs font-bold ${aspect.strength === "매우 강함"
+                                                className={`px-3 py-1 rounded-full text-sm font-bold ${aspect.strength === "매우 강함"
                                                     ? "bg-green-500/20 text-green-400"
                                                     : aspect.strength === "강함"
                                                         ? "bg-cyan-500/20 text-cyan-400"
@@ -261,7 +261,7 @@ export default function CharacterAnalysisPage() {
                                             {aspect.keywords.map((kw, idx) => (
                                                 <span
                                                     key={idx}
-                                                    className="px-2 py-1 bg-slate-800/50 rounded text-xs text-slate-300"
+                                                    className="px-2 py-1 bg-slate-800/50 rounded text-sm text-slate-300"
                                                 >
                                                     {kw}
                                                 </span>
@@ -277,7 +277,7 @@ export default function CharacterAnalysisPage() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4">⭐ 특수 신살</h3>
 
@@ -297,7 +297,7 @@ export default function CharacterAnalysisPage() {
                                                 <span className="text-2xl">{s.emoji}</span>
                                                 <div className="flex-1">
                                                     <div className="font-bold">{s.name}</div>
-                                                    <div className="text-xs text-slate-400">{s.effect}</div>
+                                                    <div className="text-sm text-slate-400">{s.effect}</div>
                                                 </div>
                                             </div>
                                             <p className="text-sm text-slate-300 mt-2">
@@ -320,7 +320,7 @@ export default function CharacterAnalysisPage() {
                     <p className="text-sm text-slate-500">
                         사주 명리학의 전통적 분석 방식 | 점수가 아닌 균형과 경향성
                     </p>
-                    <p className="text-xs text-slate-600 mt-2">
+                    <p className="text-sm text-slate-400 mt-2">
                         ← <a href="/admin/test-control" className="text-cyan-400 hover:underline">관리자 대시보드</a>
                         {" | "}
                         <a href="/" className="text-cyan-400 hover:underline">홈</a>

@@ -71,22 +71,22 @@ export default function ConsultationPage() {
     <main className="min-h-screen bg-slate-950 text-white relative overflow-hidden pb-40">
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5 pointer-events-none" />
 
-      <div className="max-w-2xl mx-auto px-4 pt-10">
+      <div className="max-w-2xl mx-auto px-0 sm:px-4 pt-10">
         <button
           type="button"
           onClick={() => router.back()}
-          className="flex items-center gap-3 text-slate-400 hover:text-white transition-all mb-10 group"
+          className="flex items-center gap-3 text-slate-400 hover:text-white transition-all mb-6 group"
         >
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-black uppercase tracking-tighter">뒤로</span>
         </button>
 
-        <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+        <div className="mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-[13px] font-black uppercase tracking-widest mb-4">
             <Zap className="w-3 h-3" />
             실시간 상담
           </div>
-          <h1 className="text-4xl font-black italic tracking-tighter uppercase mb-2">1:1 전문가 상담</h1>
+          <h1 className="text-4xl font-black tracking-tighter uppercase mb-2">1:1 전문가 상담</h1>
           <p className="text-slate-500 text-sm font-medium">
             결제 전 상담사 프로필과 후기를 확인하고 바로 채팅/통화를 시작할 수 있습니다.
           </p>
@@ -99,7 +99,7 @@ export default function ConsultationPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.08 }}
-              className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-3xl p-6 hover:bg-slate-800 hover:border-amber-500/50 transition-all group"
+              className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-3xl p-4 sm:p-6 hover:bg-slate-800 hover:border-amber-500/50 transition-all group"
             >
               <div className="flex gap-6">
                 <div className="w-20 h-20 bg-slate-800 rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform shadow-xl">
@@ -109,19 +109,19 @@ export default function ConsultationPage() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <h3 className="text-lg font-black">{c.name}</h3>
-                      <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-bold">
+                      <span className="text-[13px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-bold">
                         {c.category}
                       </span>
                     </div>
                     {c.status === "online" ? (
                       <div className="flex items-center gap-1.5 px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded-full">
                         <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                        <span className="text-[9px] text-green-400 font-black uppercase tracking-tighter">
+                        <span className="text-[13px] text-green-400 font-black uppercase tracking-tighter">
                           접속
                         </span>
                       </div>
                     ) : (
-                      <span className="text-[9px] text-slate-500 font-black uppercase tracking-tighter">
+                      <span className="text-[13px] text-slate-500 font-black uppercase tracking-tighter">
                         상담중
                       </span>
                     )}
@@ -130,21 +130,21 @@ export default function ConsultationPage() {
                   <div className="flex items-center gap-4 mb-4">
                     <div className="flex items-center gap-1 text-amber-300">
                       <Star className="w-3.5 h-3.5 fill-current" />
-                      <span className="text-xs font-black">{c.rating.toFixed(1)}</span>
+                      <span className="text-sm font-black">{c.rating.toFixed(1)}</span>
                     </div>
                     <div className="flex items-center gap-1 text-slate-400">
                       <MessageSquare className="w-3.5 h-3.5" />
-                      <span className="text-xs font-bold">{c.reviews}</span>
+                      <span className="text-sm font-bold">{c.reviews}</span>
                     </div>
                     <div className="flex items-center gap-1 text-slate-400">
                       <Clock className="w-3.5 h-3.5" />
-                      <span className="text-xs font-bold">{c.price}</span>
+                      <span className="text-sm font-bold">{c.price}</span>
                     </div>
                   </div>
 
                   <div className="flex flex-wrap gap-2">
                     {c.tags.map((tag) => (
-                      <span key={tag} className="text-[9px] text-slate-500 font-medium">
+                      <span key={tag} className="text-[13px] text-slate-500 font-medium">
                         {tag}
                       </span>
                     ))}
@@ -155,14 +155,14 @@ export default function ConsultationPage() {
               <div className="grid grid-cols-2 gap-3 mt-6">
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl text-xs font-black transition-all"
+                  className="flex items-center justify-center gap-2 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl text-sm font-black transition-all"
                 >
                   <MessageSquare className="w-4 h-4" />
                   채팅 상담
                 </button>
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-black transition-all"
+                  className="flex items-center justify-center gap-2 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-sm font-black transition-all"
                 >
                   <Phone className="w-4 h-4" />
                   통화 상담
@@ -172,12 +172,12 @@ export default function ConsultationPage() {
           ))}
         </div>
 
-        <div className="mt-12 p-6 bg-slate-900/30 border border-slate-800 rounded-3xl flex items-center justify-between">
+        <div className="mt-12 p-4 sm:p-6 bg-slate-900/30 border border-slate-800 rounded-3xl flex items-center justify-between">
           <div className="flex items-center gap-4">
             <ShieldCheck className="w-8 h-8 text-indigo-400" />
             <div>
-              <p className="text-xs font-black text-slate-100 uppercase tracking-tighter">보안 보호</p>
-              <p className="text-[10px] text-slate-500 font-medium leading-tight">
+              <p className="text-sm font-black text-slate-100 uppercase tracking-tighter">보안 보호</p>
+              <p className="text-[13px] text-slate-500 font-medium leading-tight">
                 상담 내용은 암호화되어 저장되며,
                 <br />
                 결제/로그는 공식 정책에 따라 관리됩니다.
@@ -186,7 +186,7 @@ export default function ConsultationPage() {
           </div>
           <Link
             href="/shop"
-            className="text-[10px] font-black text-amber-500 border-b border-amber-500 hover:text-amber-300"
+            className="text-[13px] font-black text-amber-500 border-b border-amber-500 hover:text-amber-300"
           >
             충전하기
           </Link>

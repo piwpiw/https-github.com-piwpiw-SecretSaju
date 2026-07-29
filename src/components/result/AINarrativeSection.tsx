@@ -56,6 +56,25 @@ interface Props {
   categoryFocus?: string;
 }
 
+/**
+ * AI 가 돌려주는 텍스트에서 마크다운 기호를 걷어낸다.
+ *
+ * 화면에 `**Easy Explanation:**` 이 그대로 찍히고 있었다. 우리는 이 문자열을
+ * 그냥 <p> 에 넣고 있어서 별표가 글자로 보인다. 굵게 표시할 방법이 없으니
+ * 기호만 없앤다. 영문 소제목(Easy Explanation 등)도 같이 지운다 — 한국어
+ * 서비스인데 AI 가 가끔 영문 라벨을 붙여서 내려준다.
+ */
+function cleanNarrative(raw: string): string {
+  return (raw || '')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/^\s*#{1,6}\s*/gm, '')
+    .replace(/`{1,3}/g, '')
+    .replace(/^\s*[-*]\s+/gm, '· ')
+    .replace(/\b(Easy Explanation|Expert Explanation|Action|Summary)\s*:\s*/gi, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 function NarrativeCard({
   title,
   body,
@@ -66,9 +85,16 @@ function NarrativeCard({
   tone: string;
 }) {
   return (
-    <article className={`rounded-3xl border p-4 ${tone}`}>
-      <h4 className="text-xs font-black uppercase tracking-[0.22em] text-white">{title}</h4>
-      <p className="mt-3 text-sm leading-7 text-slate-100 break-keep">{body}</p>
+    <article className={`rounded-3xl border p-5 sm:p-6 ${tone}`}>
+      <h4 className="text-[13px] font-black tracking-[0.06em] text-white">{title}</h4>
+      {/*
+        예전에는 text-sm + tracking 넓힘이었는데, 3단으로 좁아진 칸에서 한 줄에
+        여덟 글자쯤밖에 안 들어가 글이 토막났다. 글자를 키우고 자간을 정상으로
+        되돌린다. break-keep 은 한국어 단어가 중간에 끊기지 않게 해 준다.
+      */}
+      <p className="mt-3 whitespace-pre-line text-[15px] leading-[1.85] text-slate-100 break-keep">
+        {cleanNarrative(body)}
+      </p>
     </article>
   );
 }
@@ -306,14 +332,14 @@ export default function AINarrativeSection({
             </div>
             <div>
               <h3 className="mb-1 text-sm font-black uppercase tracking-widest leading-none text-indigo-200">AI 확장 해석</h3>
-              <p className="text-[10px] font-bold uppercase text-slate-500">
+              <p className="text-[13px] font-bold uppercase text-slate-400">
                 해석 페르소나: {persona} / 모델: {modelLabel}
               </p>
-              <p className="mt-1 text-[11px] text-slate-300 break-keep">
+              <p className="mt-1 text-[13px] text-slate-300 break-keep">
                 {activeReader.heroEmoji} {activeReader.name} / {activeReader.subtitle}
               </p>
               {favoriteReaderIds.includes(activeReader.id) ? (
-                <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-amber-200">Favorite Reader</p>
+                <p className="mt-1 text-[13px] font-bold uppercase tracking-[0.16em] text-amber-200">Favorite Reader</p>
               ) : null}
             </div>
           </div>
@@ -331,7 +357,7 @@ export default function AINarrativeSection({
         <section className="rounded-3xl border border-white/10 bg-black/20 p-2.5 sm:p-4">
           <div className="mb-3 flex items-center gap-2 text-amber-200">
             <Wand2 className="h-4 w-4" />
-            <p className="text-xs font-black uppercase tracking-[0.2em]">리더 선택</p>
+            <p className="text-sm font-black uppercase tracking-[0.2em]">리더 선택</p>
           </div>
 
           {favoriteReaderIds.length ? (
@@ -347,7 +373,7 @@ export default function AINarrativeSection({
                       setSelectedReaderId(reader.id);
                       setActiveReader(reader);
                     }}
-                    className="inline-flex items-center gap-2 rounded-full border border-amber-300/30 bg-amber-500/10 px-3 py-1.5 text-[11px] font-black text-amber-100"
+                    className="inline-flex items-center gap-2 rounded-full border border-amber-300/30 bg-amber-500/10 px-3 py-1.5 text-[13px] font-black text-amber-100"
                   >
                     <Star className="h-3 w-3 fill-current" />
                     {reader.heroEmoji} {reader.name}
@@ -356,7 +382,7 @@ export default function AINarrativeSection({
             </div>
           ) : null}
 
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2">
             {availableReaders.map((reader) => {
               const selected = reader.id === selectedReaderId;
               const recommended = reader.id === recommendedReader.id;
@@ -389,16 +415,16 @@ export default function AINarrativeSection({
                         setActiveReader(reader);
                         saveLastReaderId(queryType, reader.id);
                       }}
-                      className="flex-1 text-left disabled:opacity-60"
+                      className="min-w-0 flex-1 text-left disabled:opacity-60"
                     >
                       <p className="text-xl">{reader.heroEmoji}</p>
                       <p className="mt-2 text-sm font-black text-white break-keep">{reader.name}</p>
-                      <p className="mt-2 text-xs leading-relaxed text-slate-300 break-keep">{reader.subtitle}</p>
+                      <p className="mt-2 text-sm leading-relaxed text-slate-300 break-keep">{reader.subtitle}</p>
                     </button>
 
-                    <div className="flex flex-col items-end gap-2">
+                    <div className="flex shrink-0 flex-col items-end gap-2">
                       {recommended ? (
-                        <span className="rounded-full border border-emerald-300/30 bg-emerald-500/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-emerald-100">
+                        <span className="rounded-full border border-emerald-300/30 bg-emerald-500/10 px-2 py-1 text-[13px] font-black uppercase tracking-[0.16em] text-emerald-100">
                           추천
                         </span>
                       ) : null}
@@ -419,15 +445,15 @@ export default function AINarrativeSection({
 
                   {!unlocked ? (
                     <div className="mt-3 rounded-2xl border border-rose-300/20 bg-rose-500/10 p-3">
-                      <p className="inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-[0.16em] text-rose-100">
+                      <p className="inline-flex items-center gap-1 text-[13px] font-black uppercase tracking-[0.16em] text-rose-100">
                         <Lock className="h-3 w-3" />
                         {reader.tier === "signature" ? "시그니처 멤버십" : "프리미엄 리더"}
                       </p>
-                      <p className="mt-2 text-[11px] leading-6 text-slate-200 break-keep">{reader.curiosityPrompt}</p>
+                      <p className="mt-2 text-[13px] leading-6 text-slate-200 break-keep">{reader.curiosityPrompt}</p>
                       <button
                         type="button"
                         onClick={() => handleUnlockReader(reader)}
-                        className="mt-3 inline-flex items-center gap-2 rounded-xl bg-rose-600 px-3 py-2 text-[11px] font-black text-white"
+                        className="mt-3 inline-flex items-center gap-2 rounded-xl bg-rose-600 px-3 py-2 text-[13px] font-black text-white"
                       >
                         {reader.tier === "signature" ? "👑 5 젤리로 멤버십 시작" : `🔓 ${unlockCost} 젤리로 해금`}
                       </button>
@@ -443,12 +469,12 @@ export default function AINarrativeSection({
                         }}
                         className="mt-3 block w-full text-left"
                       >
-                        <p className="text-[11px] leading-relaxed text-indigo-100 break-keep">{reader.curiosityPrompt}</p>
+                        <p className="text-[13px] leading-relaxed text-indigo-100 break-keep">{reader.curiosityPrompt}</p>
                         <div className="mt-3 flex flex-wrap gap-1.5">
                           {reader.specialties.slice(0, 3).map((item) => (
                             <span
                               key={`${reader.id}-${item}`}
-                              className="rounded-full border border-white/10 bg-black/20 px-2 py-1 text-[10px] text-slate-200"
+                              className="rounded-full border border-white/10 bg-black/20 px-2 py-1 text-[13px] text-slate-200"
                             >
                               {item}
                             </span>
@@ -459,7 +485,7 @@ export default function AINarrativeSection({
                         <button
                           type="button"
                           onClick={() => setCompareReaderId(compareReaderId === reader.id ? null : reader.id)}
-                          className={`mt-3 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[11px] font-black ${
+                          className={`mt-3 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[13px] font-black ${
                             compareReaderId === reader.id
                               ? "border-cyan-300/30 bg-cyan-500/10 text-cyan-100"
                               : "border-white/10 bg-black/20 text-slate-200"
@@ -469,7 +495,7 @@ export default function AINarrativeSection({
                           {compareReaderId === reader.id ? "비교 해제" : "비교 추가"}
                         </button>
                       ) : null}
-                      <p className="mt-2 text-[10px] text-slate-500">
+                      <p className="mt-2 text-[13px] text-slate-500">
                         {reader.tier === "signature"
                           ? "구독 전용 리더"
                           : reader.tier === "pro"
@@ -492,31 +518,31 @@ export default function AINarrativeSection({
               <button
                 type="button"
                 onClick={handleSaveCompare}
-                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black text-slate-100"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-black text-slate-100"
               >
                 <Save className="h-3.5 w-3.5" />
                 해석 저장
               </button>
               {membershipActive ? (
-                <span className="rounded-full border border-yellow-300/30 bg-yellow-500/10 px-3 py-1 text-[11px] font-black text-yellow-100">
+                <span className="rounded-full border border-yellow-300/30 bg-yellow-500/10 px-3 py-1 text-[13px] font-black text-yellow-100">
                   👑 시그니처 멤버십 활성
                 </span>
               ) : null}
-              {saveMessage ? <span className="text-xs text-emerald-300">{saveMessage}</span> : null}
+              {saveMessage ? <span className="text-sm text-emerald-300">{saveMessage}</span> : null}
             </div>
 
             <div className="rounded-3xl border border-indigo-300/20 bg-indigo-500/10 p-4">
-              <p className="text-xs font-black tracking-[0.2em] text-indigo-100 break-keep">이 리더의 한마디</p>
+              <p className="text-sm font-black tracking-[0.2em] text-indigo-100 break-keep">이 리더의 한마디</p>
               <p className="mt-2 text-sm leading-7 text-slate-100 break-keep">{dualNarrative.hook}</p>
             </div>
 
             <div className={`grid gap-4 ${compareNarrative ? "xl:grid-cols-2" : ""}`}>
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.18em] text-indigo-100">
+                <div className="flex items-center gap-2 text-[13px] font-black uppercase tracking-[0.18em] text-indigo-100">
                   <span>{activeReader.heroEmoji}</span>
                   <span>{activeReader.name}</span>
                 </div>
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 xl:grid-cols-3">
                   <NarrativeCard title="쉬운 설명" body={dualNarrative.easy} tone="border-cyan-300/20 bg-cyan-500/10" />
                   <NarrativeCard title="전문 해설" body={dualNarrative.expert} tone="border-indigo-300/20 bg-indigo-500/10" />
                   <NarrativeCard title="바로 할 일" body={dualNarrative.action} tone="border-emerald-300/20 bg-emerald-500/10" />
@@ -525,11 +551,11 @@ export default function AINarrativeSection({
 
               {compareNarrative && compareReader ? (
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.18em] text-fuchsia-100">
+                  <div className="flex items-center gap-2 text-[13px] font-black uppercase tracking-[0.18em] text-fuchsia-100">
                     <span>{compareReader.heroEmoji}</span>
                     <span>{compareReader.name}</span>
                   </div>
-                  <div className="grid gap-4 md:grid-cols-3">
+                  <div className="grid gap-4 xl:grid-cols-3">
                     <NarrativeCard title="쉬운 설명" body={compareNarrative.easy} tone="border-fuchsia-300/20 bg-fuchsia-500/10" />
                     <NarrativeCard title="전문 해설" body={compareNarrative.expert} tone="border-purple-300/20 bg-purple-500/10" />
                     <NarrativeCard title="바로 할 일" body={compareNarrative.action} tone="border-amber-300/20 bg-amber-500/10" />
@@ -541,7 +567,7 @@ export default function AINarrativeSection({
             <div className="rounded-3xl border border-white/10 bg-black/20 p-2.5 sm:p-4">
               <div className="flex flex-wrap items-center gap-2">
                 <Sparkles className="h-4 w-4 text-amber-200" />
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-amber-100 break-keep">왜 리더마다 다르게 말하나요?</p>
+                <p className="text-sm font-black uppercase tracking-[0.2em] text-amber-100 break-keep">왜 리더마다 다르게 말하나요?</p>
               </div>
               <p className="mt-3 text-sm leading-7 text-slate-200 break-keep">{dualNarrative.disclaimer}</p>
               {compareNarrative ? (
@@ -550,7 +576,7 @@ export default function AINarrativeSection({
                 </p>
               ) : null}
               {lineageProfileId ? (
-                <p className="mt-2 text-[11px] text-slate-400">
+                <p className="mt-2 text-[13px] text-slate-400">
                   학파 기준: {lineageProfileId} / evidence {evidence?.length ?? 0}건
                 </p>
               ) : null}
@@ -564,7 +590,7 @@ export default function AINarrativeSection({
           </div>
         )}
 
-        {error ? <p className="text-xs text-rose-300">AI 응답이 불안정해 기본 해설로 표시했습니다.</p> : null}
+        {error ? <p className="text-sm text-rose-300">AI 응답이 불안정해 기본 해설로 표시했습니다.</p> : null}
       </div>
 
       <JellyShopModal isOpen={showShop} onClose={() => setShowShop(false)} highlightTier="pro" />

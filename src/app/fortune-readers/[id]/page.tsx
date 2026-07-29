@@ -24,27 +24,27 @@ export default function FortuneReaderDetailPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-32">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.16),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(244,114,182,0.10),transparent_45%)]" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
-        <header className="flex items-center justify-between mb-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
+        <header className="flex items-center justify-between mb-6">
           <button onClick={() => router.back()} className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-200" />
           </button>
           <div className="text-center">
-            <p className="text-[10px] uppercase tracking-[0.24em] font-black text-indigo-300">Reader Profile</p>
+            <p className="text-[13px] uppercase tracking-[0.24em] font-black text-indigo-300">Reader Profile</p>
             <h1 className="text-3xl font-black text-white">{reader.name}</h1>
           </div>
           <div className="w-11 h-11" />
         </header>
 
-        <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-8">
-          <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+        <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-5 sm:p-8">
+          <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-6xl">{reader.heroEmoji}</p>
               <p className="mt-4 text-lg font-black text-white">{reader.subtitle}</p>
               <p className="mt-3 text-sm leading-7 text-slate-200">{reader.description}</p>
             </div>
             <div className="min-w-[220px] rounded-3xl border border-white/10 bg-black/20 p-5">
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] text-slate-200">
+              <div className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.18em] text-slate-200">
                 {reader.tier === "signature" ? <Crown className="w-4 h-4 text-yellow-200" /> : <Sparkles className="w-4 h-4 text-indigo-200" />}
                 {reader.tier}
               </div>
@@ -77,7 +77,7 @@ export default function FortuneReaderDetailPage() {
             <p className="text-sm font-black text-white">이 리더가 특화된 영역</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {reader.specialties.map((item) => (
-                <span key={`${reader.id}-${item}`} className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[11px] text-slate-100">
+                <span key={`${reader.id}-${item}`} className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[13px] text-slate-100">
                   {item}
                 </span>
               ))}
@@ -86,7 +86,7 @@ export default function FortuneReaderDetailPage() {
           </div>
         </section>
 
-        <section className="mt-8 rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+        <section className="mt-8 rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:p-6">
           <p className="text-sm font-black text-white">이 리더를 추천하는 경우</p>
           <div className="mt-4 space-y-3 text-sm text-slate-200">
             <p>1. 해설이 너무 어렵게 느껴지면 쉬운 번역형 리더가 적합합니다.</p>

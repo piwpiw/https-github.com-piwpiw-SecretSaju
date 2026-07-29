@@ -101,7 +101,7 @@ export default function GiftPage() {
   };
 
   return (
-    <main className="min-h-screen relative overflow-hidden flex flex-col items-center pt-24 pb-40 px-6">
+    <main className="min-h-screen relative overflow-hidden flex flex-col items-center pt-24 pb-40 px-0 sm:px-6">
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -110,7 +110,7 @@ export default function GiftPage() {
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-border-color">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-3 text-lg font-bold text-secondary hover:text-foreground transition-all"
+            className="flex items-center gap-3 text-lg font-bold text-muted hover:text-foreground transition-all"
           >
             <ArrowLeft className="w-6 h-6" />
             {t('common.back')}
@@ -128,10 +128,10 @@ export default function GiftPage() {
                 {locale === 'ko' ? '프리미엄 선물' : 'PREMIUM GIFT'}
               </span>
             </motion.div>
-            <h1 className="text-5xl md:text-7xl font-black text-foreground italic tracking-tighter uppercase mb-4">
-              {locale === 'ko' ? '행운' : 'Destiny'} <span className="text-pink-500 italic">{locale === 'ko' ? '선물' : 'Gift'}</span>
+            <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter uppercase mb-4">
+              {locale === 'ko' ? '행운' : 'Destiny'} <span className="text-pink-500">{locale === 'ko' ? '선물' : 'Gift'}</span>
             </h1>
-            <p className="text-xl md:text-2xl text-secondary font-medium italic opacity-70">
+            <p className="text-xl md:text-2xl text-muted font-medium opacity-70">
               {locale === 'ko'
                 ? '특별한 사람에게 운세 선물을 보내보세요.'
                 : 'Gift a comprehensive destiny report to someone special.'}
@@ -144,12 +144,12 @@ export default function GiftPage() {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="w-full max-w-2xl bg-surface rounded-5xl border border-border-color p-12 md:p-16 relative shadow-2xl overflow-hidden z-10"
+        className="w-full max-w-2xl bg-surface rounded-5xl border border-border-color p-4 sm:p-9 md:p-16 relative shadow-2xl overflow-hidden z-10"
       >
         <div className="absolute top-0 right-0 w-64 h-64 bg-pink-500/10 blur-3xl rounded-full opacity-50" />
 
         {!isAuthenticated && !isAdmin ? (
-          <div className="relative z-10 mb-10">
+          <div className="relative z-10 mb-6">
             <AuthRequiredNotice
               compact
               nextPath="/gift"
@@ -170,7 +170,7 @@ export default function GiftPage() {
               className="space-y-12 relative z-10"
             >
               <div className="space-y-6">
-                <label className="text-xl font-bold flex items-center gap-4 text-secondary">
+                <label className="text-xl font-bold flex items-center gap-4 text-muted">
                   <span className="w-2 h-8 rounded-full bg-pink-500" />
                   {locale === 'ko' ? '받는 사람 이름' : 'Recipient Name'}
                 </label>
@@ -183,29 +183,31 @@ export default function GiftPage() {
                   placeholder={locale === 'ko' ? '이름을 입력해 주세요' : 'Enter their name'}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-background border-2 border-border-color rounded-3xl px-8 py-6 text-foreground font-black text-3xl focus:outline-none focus:border-pink-500 transition-all placeholder:text-neutral-700 italic"
+                  className="w-full bg-background border-2 border-border-color rounded-3xl px-8 py-6 text-foreground font-black text-3xl focus:outline-none focus:border-pink-500 transition-all placeholder:text-neutral-700"
                 />
-                <p id="gift-name-help" className="text-xs text-slate-400">2글자 이상 입력해 주세요.</p>
+                <p id="gift-name-help" className="text-sm text-slate-400">2글자 이상 입력해 주세요.</p>
               </div>
 
               <div className="space-y-6">
-                <label className="text-xl font-bold flex items-center gap-4 text-secondary">
+                <label className="text-xl font-bold flex items-center gap-4 text-muted">
                   <span className="w-2 h-8 rounded-full bg-pink-500" />
                   {locale === 'ko' ? '생년월일' : 'Birthdate'}
                 </label>
                 <input
                   required
                   type="date"
+                  min="1900-01-01"
+                  max="2100-12-31"
                   aria-label="받는 분 생년월일"
                   aria-required="true"
                   value={formData.birthDate}
                   onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
-                  className="w-full bg-background border-2 border-border-color rounded-3xl px-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-pink-500 transition-all [color-scheme:dark] italic"
+                  className="w-full bg-background border-2 border-border-color rounded-3xl px-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-pink-500 transition-all [color-scheme:dark]"
                 />
               </div>
 
               <div className="space-y-6">
-                <label className="text-xl font-bold flex items-center gap-4 text-secondary">
+                <label className="text-xl font-bold flex items-center gap-4 text-muted">
                   <span className="w-2 h-8 rounded-full bg-pink-500" />
                   {locale === 'ko' ? '이메일' : 'Email Address'}
                 </label>
@@ -220,12 +222,12 @@ export default function GiftPage() {
                     placeholder="friend@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-background border-2 border-border-color rounded-3xl pl-20 pr-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-pink-500 transition-all placeholder:text-neutral-700 italic"
+                    className="w-full bg-background border-2 border-border-color rounded-3xl pl-20 pr-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-pink-500 transition-all placeholder:text-neutral-700"
                   />
                   {formData.email.length > 0 && !hasEmail ? (
-                    <p id="gift-email-help" className="text-xs text-rose-300 mt-2">올바른 이메일 형식을 입력해 주세요.</p>
+                    <p id="gift-email-help" className="text-sm text-rose-300 mt-2">올바른 이메일 형식을 입력해 주세요.</p>
                   ) : (
-                    <p id="gift-email-help" className="text-xs text-slate-500 mt-2">이메일은 영문+숫자 + @ + 도메인 형식이 필요합니다.</p>
+                    <p id="gift-email-help" className="text-sm text-slate-500 mt-2">이메일은 영문+숫자 + @ + 도메인 형식이 필요합니다.</p>
                   )}
                 </div>
               </div>
@@ -251,7 +253,7 @@ export default function GiftPage() {
                   )}
                 </button>
                 <div className="flex items-center justify-center gap-2 mt-4 text-emerald-400 font-bold text-base bg-emerald-500/10 py-3 rounded-2xl">
-                  <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center text-xs">J</span>
+                  <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center text-sm">J</span>
                   {locale === 'ko' ? '젤리 3개 소모' : 'Consumes 3 Jellies'}
                 </div>
               </div>
@@ -272,9 +274,9 @@ export default function GiftPage() {
               key="success"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="py-16 text-center relative z-10 flex flex-col items-center"
+              className="py-10 text-center relative z-10 flex flex-col items-center"
             >
-              <div className="w-40 h-40 bg-emerald-500/10 rounded-full flex items-center justify-center mb-10 border-2 border-emerald-500/30">
+              <div className="w-40 h-40 bg-emerald-500/10 rounded-full flex items-center justify-center mb-6 border-2 border-emerald-500/30">
                 <motion.div
                   initial={{ scale: 0, rotate: -45 }}
                   animate={{ scale: 1, rotate: 0 }}
@@ -284,10 +286,10 @@ export default function GiftPage() {
                   <Send className="w-12 h-12 text-white" />
                 </motion.div>
               </div>
-              <h3 className="text-4xl md:text-5xl font-black italic tracking-tight text-foreground mb-6 uppercase">
+              <h3 className="text-4xl md:text-5xl font-black tracking-tight text-foreground mb-6 uppercase">
                 {locale === 'ko' ? '발송 완료' : 'Transmission Complete'}
               </h3>
-              <p className="text-2xl text-secondary mb-12 font-medium">
+              <p className="text-2xl text-muted mb-8 font-medium">
                 {locale === 'ko'
                   ? '선물이 성공적으로 등록되었습니다.'
                   : 'The gift has been successfully registered.'}

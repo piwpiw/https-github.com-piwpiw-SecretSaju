@@ -12,21 +12,21 @@ export default function LoginPage() {
     // (z-60, 상단 32~97px) 아래로 파고들어 페이지 제목이 가려졌다.
     // 내비 높이만큼 위쪽 여백을 확보한다.
     return (
-        <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-6 pb-10 pt-28 relative overflow-hidden">
+        <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-0 sm:px-6 pb-10 pt-28 relative overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.18),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(236,72,153,0.12),transparent_55%)]" />
 
             <motion.div
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative z-10 max-w-lg w-full rounded-3xl border border-white/10 bg-slate-900/60 backdrop-blur-xl p-7"
+                className="relative z-10 max-w-lg w-full rounded-3xl border border-white/10 bg-slate-900/60 backdrop-blur-xl p-5 sm:p-7"
             >
-                <p className="text-[11px] font-black tracking-[0.18em] text-indigo-200 mb-2">시크릿사주</p>
+                <p className="text-[13px] font-black tracking-[0.18em] text-indigo-200 mb-2">시크릿사주</p>
                 <h1 className="text-3xl font-black leading-tight">로그인</h1>
                 <p className="mt-2 text-sm text-slate-300">카카오·구글·이메일로 빠르게 로그인하세요. 네이버 로그인은 준비 중입니다.</p>
 
                 <section aria-labelledby="login-page-guide" className="mt-6 rounded-2xl border border-white/10 bg-black/25 p-4">
-                    <h2 id="login-page-guide" className="text-xs font-black tracking-widest text-indigo-300 uppercase">
+                    <h2 id="login-page-guide" className="text-sm font-black tracking-widest text-indigo-300 uppercase">
                         빠른 이용 가이드
                     </h2>
                     <ul className="mt-3 space-y-2 text-sm text-slate-300">
@@ -47,14 +47,14 @@ export default function LoginPage() {
                     <button
                         type="button"
                         onClick={() => router.push('/')}
-                        className="px-4 py-2 rounded-lg border border-white/15 text-xs font-bold text-slate-300 hover:text-white hover:bg-white/10"
+                        className="px-4 py-2 rounded-lg border border-white/15 text-sm font-bold text-slate-300 hover:text-white hover:bg-white/10"
                     >
                         홈으로 이동
                     </button>
                     <button
                         type="button"
                         onClick={() => router.push('/inquiry')}
-                        className="px-4 py-2 rounded-lg border border-indigo-300/30 text-xs font-bold text-indigo-200 hover:bg-indigo-500/20"
+                        className="px-4 py-2 rounded-lg border border-indigo-300/30 text-sm font-bold text-indigo-200 hover:bg-indigo-500/20"
                     >
                         문의하기
                     </button>

@@ -36,7 +36,7 @@ export function CelebrityCard({ celebrity, index = 0 }: CelebrityCardProps) {
                     <h3 className="font-display text-xl text-foreground font-bold">
                         {celebrity.name}
                     </h3>
-                    <p className="text-secondary text-sm flex items-center gap-1">
+                    <p className="text-muted text-sm flex items-center gap-1">
                         <span>{categoryEmojis[celebrity.category] || '✨'}</span>
                         {celebrity.category}
                     </p>
@@ -71,7 +71,7 @@ export function CelebrityCard({ celebrity, index = 0 }: CelebrityCardProps) {
             {/* Quote (if available) */}
             {celebrity.quote && (
                 <div className="mb-3 pl-3 border-l-2 border-primary/50">
-                    <p className="text-sm italic text-zinc-400">
+                    <p className="text-sm text-zinc-400">
                         {celebrity.quote}
                     </p>
                 </div>
@@ -92,7 +92,7 @@ export function CelebrityCard({ celebrity, index = 0 }: CelebrityCardProps) {
 
             {/* Birthdate (subtle) */}
             <div className="mt-3 pt-3 border-t border-white/5">
-                <p className="text-xs text-zinc-600">
+                <p className="text-sm text-zinc-400">
                     생년월일: {celebrity.birthdate}
                 </p>
             </div>

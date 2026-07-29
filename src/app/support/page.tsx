@@ -69,13 +69,13 @@ export default function SupportPage() {
       />
       <div className="pointer-events-none absolute left-0 top-0 h-[40vh] w-full bg-gradient-to-b from-pink-900/10 via-slate-950/50 to-transparent" />
 
-      <div className="relative z-10 mx-auto max-w-4xl px-6 py-12">
+      <div className="relative z-10 mx-auto max-w-4xl px-0 sm:px-6 py-8">
         <motion.button
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => router.back()}
           aria-label="뒤로 가기"
-          className="group mb-10 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
+          className="group mb-6 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
         >
           <ArrowLeft className="h-5 w-5 text-slate-400 transition-colors group-hover:-translate-x-1 group-hover:text-white" />
         </motion.button>
@@ -84,20 +84,20 @@ export default function SupportPage() {
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="relative overflow-hidden rounded-[3rem] border border-white/10 bg-slate-900/40 p-10 shadow-2xl backdrop-blur-2xl md:p-14"
+          className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/40 p-5 sm:p-8 shadow-2xl backdrop-blur-2xl md:p-5 sm:p-8"
         >
           <div className="pointer-events-none absolute right-0 top-0 -mr-40 -mt-40 h-[400px] w-[400px] rounded-full bg-pink-500/10 blur-[100px]" />
 
           <motion.div
             variants={itemVariants}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-pink-400"
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-4 py-2 text-[13px] font-black uppercase tracking-[0.24em] text-pink-400"
           >
             <HeartHandshake className="h-3 w-3" /> 고객 지원
           </motion.div>
 
           <motion.h1
             variants={itemVariants}
-            className="mb-6 text-4xl font-black italic leading-tight tracking-tighter text-white md:text-5xl"
+            className="mb-6 text-4xl font-black leading-tight tracking-tighter text-white md:text-5xl"
           >
             표준 결제 경로로만
             <br />
@@ -106,7 +106,7 @@ export default function SupportPage() {
 
           <motion.p
             variants={itemVariants}
-            className="mb-12 max-w-2xl text-sm font-medium leading-relaxed text-slate-300 md:text-base"
+            className="mb-8 max-w-2xl text-sm font-medium leading-relaxed text-slate-300 md:text-base"
           >
             Secret Saju는 결제, 젤리 충전, 멤버십 활성화를 클라이언트 화면에서 직접 처리하지
             않습니다. 실제 구매와 크레딧 반영은{" "}
@@ -123,7 +123,9 @@ export default function SupportPage() {
                   href={item.href}
                   className={`group relative block h-full overflow-hidden rounded-[2rem] border border-white/5 bg-gradient-to-br ${item.color} p-8 shadow-xl transition-all duration-300 hover:bg-slate-900/80 ${item.borderHover} ${item.shadowHover}`}
                 >
-                  <div className="absolute right-0 top-0 scale-150 p-6 opacity-0 transition-opacity group-hover:opacity-10 -rotate-12">
+                  {/* 장식 아이콘. scale-150 때문에 제목 위까지 넘어와 제목의
+                      클릭 판정을 가로챈다. 장식은 히트 테스트에서 빼 둔다. */}
+                  <div className="pointer-events-none absolute right-0 top-0 scale-150 p-6 opacity-0 transition-opacity group-hover:opacity-10 -rotate-12">
                     <item.icon className={`h-24 w-24 ${item.iconColor}`} />
                   </div>
 
@@ -135,7 +137,7 @@ export default function SupportPage() {
                   <h3 className="mb-3 text-xl font-black tracking-tight text-white">{item.title}</h3>
                   <p className="mb-8 text-sm leading-relaxed text-slate-400">{item.description}</p>
 
-                  <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-300 transition-colors group-hover:text-white">
+                  <div className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-slate-300 transition-colors group-hover:text-white">
                     {item.cta}
                     <ExternalLink className="h-3 w-3 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
                   </div>
@@ -145,7 +147,7 @@ export default function SupportPage() {
           </div>
 
           <motion.div variants={itemVariants} className="relative z-10 mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="group flex flex-col items-start rounded-[2rem] border border-slate-800 bg-slate-950/50 p-8 transition-colors hover:border-cyan-500/30">
+            <div className="group flex flex-col items-start rounded-[2rem] border border-slate-800 bg-slate-950/50 p-5 sm:p-8 transition-colors hover:border-cyan-500/30">
               <div className="mb-4 flex items-center gap-3 text-lg font-black tracking-tight text-cyan-400">
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-cyan-500/20 bg-cyan-500/10">
                   <MessageCircle className="h-4 w-4" />
@@ -166,7 +168,7 @@ export default function SupportPage() {
               </a>
             </div>
 
-            <div className="group relative overflow-hidden rounded-[2rem] border border-indigo-500/20 bg-indigo-950/20 p-8">
+            <div className="group relative overflow-hidden rounded-[2rem] border border-indigo-500/20 bg-indigo-950/20 p-5 sm:p-8">
               <div className="absolute -right-4 -top-4 p-4 opacity-5 transition-opacity group-hover:opacity-10">
                 <Shield className="h-32 w-32 text-indigo-400" />
               </div>

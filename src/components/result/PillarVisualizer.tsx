@@ -19,7 +19,7 @@ export default function PillarVisualizer({ pillars }: { pillars: Pillar[] }) {
         ];
 
   return (
-    <div className="flex justify-center gap-4 md:gap-8 py-10 px-4 bg-slate-900/40 rounded-[3rem] border border-white/5 relative overflow-hidden backdrop-blur-xl">
+    <div className="flex justify-center gap-4 md:gap-6 py-10 px-4 bg-slate-900/40 rounded-[2rem] border border-white/5 relative overflow-hidden backdrop-blur-xl">
       <div className="absolute inset-0 bg-[image:var(--noise-texture)] opacity-[0.03]" />
 
       {displayPillars.map((p, i) => (
@@ -30,7 +30,7 @@ export default function PillarVisualizer({ pillars }: { pillars: Pillar[] }) {
           transition={{ delay: i * 0.15 }}
           className="flex flex-col items-center gap-4 group relative z-10"
         >
-          <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">{p.name}</span>
+          <span className="text-[13px] font-black text-slate-500 uppercase tracking-widest">{p.name}</span>
           <div className="flex flex-col items-center p-4 rounded-2xl bg-white/[0.02] border border-white/10 group-hover:border-white/20 transition-all shadow-2xl">
             <span className={`text-4xl md:text-5xl font-serif font-black ${p.color} leading-none mb-2`}>{p.kan}</span>
             <span className={`text-4xl md:text-5xl font-serif font-black ${p.color} leading-none`}>{p.ji}</span>

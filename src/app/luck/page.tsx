@@ -146,7 +146,7 @@ export default function LuckPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.12),transparent_60%)] pointer-events-none" />
       {showToast && <LuxuryToast message={toastMsg} isVisible={showToast} />}
 
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <header className="flex items-center justify-between mb-16">
           <button
             type="button"
@@ -157,8 +157,8 @@ export default function LuckPage() {
             <ArrowLeft className="w-5 h-5 text-slate-400" />
           </button>
           <div className="text-center">
-            <h1 className="text-3xl font-black italic tracking-tighter uppercase text-white mb-1">운세 & 부적</h1>
-            <p className="text-[10px] font-black text-indigo-400 tracking-[0.3em] uppercase">영적 부적 엔진</p>
+            <h1 className="text-3xl font-black tracking-tighter uppercase text-white mb-1">운세 & 부적</h1>
+            <p className="text-[13px] font-black text-indigo-400 tracking-[0.3em] uppercase">영적 부적 엔진</p>
           </div>
           <JellyBalance />
         </header>
@@ -180,10 +180,10 @@ export default function LuckPage() {
               </div>
 
               <div className="space-y-6 max-w-lg mx-auto">
-                <h2 className="text-5xl font-black text-white italic tracking-tighter leading-tight uppercase break-keep">
+                <h2 className="text-5xl font-black text-white tracking-tighter leading-tight uppercase break-keep">
                   운명의 흐름을<br />바꾸는 기운
                 </h2>
-                <p className="text-lg text-slate-400 font-medium leading-relaxed italic break-keep">
+                <p className="text-lg text-slate-400 font-medium leading-relaxed break-keep">
                   동양의 신비로운 에너지를 담은 디지털 부적을 통해<br />
                   당신이 원하는 기운을 강화하고 액운을 막으세요.
                 </p>
@@ -192,12 +192,12 @@ export default function LuckPage() {
               <div className="pt-10 flex flex-col items-center gap-6">
                 <button
                   onClick={handleStart}
-                  className="px-12 py-6 bg-white text-black font-black text-2xl italic tracking-tighter border-none rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(255,255,255,0.2)] flex items-center gap-4 break-keep"
+                  className="px-12 py-6 bg-white text-black font-black text-2xl tracking-tighter border-none rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(255,255,255,0.2)] flex items-center gap-4 break-keep"
                 >
                   <Sparkles className="w-8 h-8 text-indigo-500" />
                   의식 시작하기
                 </button>
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">시작에 5젤리 필요</p>
+                <p className="text-[13px] font-black text-slate-500 uppercase tracking-[0.4em]">시작에 5젤리 필요</p>
               </div>
             </motion.section>
           )}
@@ -210,8 +210,8 @@ export default function LuckPage() {
               className="space-y-12"
             >
               <div className="text-center space-y-2">
-                <p className="text-xs font-black text-indigo-500 uppercase tracking-[0.4em]">운명 선택</p>
-                <h2 className="text-3xl font-black italic uppercase">강화할 기운 선택</h2>
+                <p className="text-sm font-black text-indigo-500 uppercase tracking-[0.4em]">운명 선택</p>
+                <h2 className="text-3xl font-black uppercase">강화할 기운 선택</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -219,7 +219,7 @@ export default function LuckPage() {
                   <button
                     key={t.id}
                     onClick={() => handleSelect(t)}
-                    className="p-8 rounded-[3rem] bg-slate-900/40 backdrop-blur-xl border border-white/5 hover:border-indigo-500/40 transition-all group flex items-center gap-8 text-left relative overflow-hidden"
+                    className="p-5 sm:p-8 rounded-[2rem] bg-slate-900/40 backdrop-blur-xl border border-white/5 hover:border-indigo-500/40 transition-all group flex items-center gap-6 text-left relative overflow-hidden"
                   >
                     <div className={cn(
                       "w-20 h-24 rounded-2xl bg-gradient-to-br flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform",
@@ -228,8 +228,8 @@ export default function LuckPage() {
                       <t.icon className="w-8 h-8 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-2">{t.name}</h3>
-                      <p className="text-xs text-slate-400 font-medium leading-relaxed">{t.desc}</p>
+                      <h3 className="text-xl font-black text-white uppercase tracking-tighter mb-2">{t.name}</h3>
+                      <p className="text-sm text-slate-400 font-medium leading-relaxed">{t.desc}</p>
                     </div>
                     <div className="ml-auto w-12 h-12 rounded-full border border-white/5 flex items-center justify-center group-hover:bg-indigo-500 group-hover:border-indigo-400 transition-all">
                       <Zap className="w-5 h-5 text-slate-100" />
@@ -249,8 +249,8 @@ export default function LuckPage() {
               className="text-center space-y-12"
             >
               <div className="space-y-2">
-                <p className="text-xs font-black text-indigo-500 uppercase tracking-[0.4em]">의식 진행 단계</p>
-                <h2 className="text-3xl font-black italic uppercase">의식 가이드</h2>
+                <p className="text-sm font-black text-indigo-500 uppercase tracking-[0.4em]">의식 진행 단계</p>
+                <h2 className="text-3xl font-black uppercase">의식 가이드</h2>
                 <p className="text-sm text-slate-400">
                   <span className="text-white font-black">{selectedTalisman.name}</span>을 화면에 배치하며 3초 후 최종 결단이 표시됩니다.
                 </p>
@@ -274,7 +274,7 @@ export default function LuckPage() {
                   transition={{ duration: 3, ease: "easeInOut" }}
                   onClick={handleBurn}
                   className={cn(
-                    "w-full h-full rounded-[2.5rem] bg-gradient-to-br shadow-[0_0_80px_rgba(0,0,0,0.55)] border border-white/10 flex flex-col items-center justify-center p-10 relative cursor-pointer",
+                    "w-full h-full rounded-[2.5rem] bg-gradient-to-br shadow-[0_0_80px_rgba(0,0,0,0.55)] border border-white/10 flex flex-col items-center justify-center p-5 sm:p-8 relative cursor-pointer",
                     selectedTalisman.color
                   )}
                 >
@@ -282,9 +282,9 @@ export default function LuckPage() {
                   <div className="text-7xl mb-8">
                     <selectedTalisman.icon className="w-16 h-16 text-white" />
                   </div>
-                  <div className="text-3xl font-black text-white/95 italic uppercase tracking-[0.2em]">{selectedTalisman.name}</div>
+                  <div className="text-3xl font-black text-white/95 uppercase tracking-[0.2em]">{selectedTalisman.name}</div>
                   <div className="absolute bottom-10 inset-x-0 px-8">
-                    <p className="text-xs text-white/70 mb-3 uppercase tracking-[0.25em]">터치 시 의식 시작합니다</p>
+                    <p className="text-sm text-white/70 mb-3 uppercase tracking-[0.25em]">터치 시 의식 시작합니다</p>
                     <div className="flex items-center justify-center gap-2">
                       {[1, 2, 3].map((i) => (
                         <Palette key={i} className="w-4 h-4 text-white/45 animate-pulse" />
@@ -302,7 +302,7 @@ export default function LuckPage() {
 
                 {!isBurning && (
                   <div className="absolute -bottom-12 left-0 w-full text-center">
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 animate-pulse">
+                    <span className="text-[13px] font-black uppercase tracking-[0.3em] text-indigo-500 animate-pulse">
                       카드 터치 시 의식이 즉시 시작됩니다
                     </span>
                   </div>
@@ -316,38 +316,38 @@ export default function LuckPage() {
               key="result"
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-[4rem] p-10 md:p-12 text-center relative overflow-hidden shadow-2xl"
+              className="bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-[4rem] p-5 sm:p-8 md:p-6 sm:p-9 text-center relative overflow-hidden shadow-2xl"
             >
               <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
               <div className="absolute -top-40 -left-40 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px]" />
 
               <div className="relative z-10 space-y-10">
                 <div className="space-y-4">
-                  <p className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-300 rounded-full text-[10px] font-black uppercase tracking-[0.24em] border border-green-500/20">
+                  <p className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-300 rounded-full text-[13px] font-black uppercase tracking-[0.24em] border border-green-500/20">
                     <Smartphone className="w-3 h-3" />
                     분석 완료
                   </p>
-                  <h3 className="text-4xl font-black italic uppercase">결과 행렬</h3>
+                  <h3 className="text-4xl font-black uppercase">결과 행렬</h3>
                 </div>
 
                 <div className="py-8">
                   <p className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-green-400">{ritualScore}%</p>
-                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.25em]">의식 에너지 지수</p>
+                  <p className="text-[13px] text-slate-500 font-black uppercase tracking-[0.25em]">의식 에너지 지수</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
-                  <div className="bg-white/5 border border-white/5 p-6 rounded-3xl">
-                    <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-2">선택된 부적</p>
+                  <div className="bg-white/5 border border-white/5 p-4 sm:p-6 rounded-3xl">
+                    <p className="text-[13px] font-black text-indigo-300 uppercase tracking-widest mb-2">선택된 부적</p>
                     <p className="text-sm font-black text-white">{selectedTalisman.name}</p>
                   </div>
-                  <div className="bg-white/5 border border-white/5 p-6 rounded-3xl md:col-span-2">
-                    <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-2">전략적 조언</p>
+                  <div className="bg-white/5 border border-white/5 p-4 sm:p-6 rounded-3xl md:col-span-2">
+                    <p className="text-[13px] font-black text-indigo-300 uppercase tracking-widest mb-2">전략적 조언</p>
                     <p className="text-sm font-medium text-slate-200 leading-relaxed">{getRitualAdvice(selectedTalisman.id)}</p>
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/5 p-8 rounded-3xl text-left">
-                  <h4 className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em]">상세 메시지</h4>
+                <div className="bg-white/5 border border-white/5 p-5 sm:p-8 rounded-3xl text-left">
+                  <h4 className="text-[13px] font-black text-indigo-300 uppercase tracking-[0.3em]">상세 메시지</h4>
                   <p className="text-sm font-medium text-slate-300 leading-relaxed mt-3">
                     {activeName}님을 위한 {selectedTalisman.name}의 기운을 담았습니다.
                     행운은 노력하고 준비된 자에게 찾아오므로, 오늘의 의식을 당신의 망설임을 걷어내는 계기로 삼으시길 바랍니다.
@@ -356,7 +356,7 @@ export default function LuckPage() {
 
                 <button
                   onClick={resetFlow}
-                  className="w-full py-5 bg-transparent border-2 border-white/5 rounded-2xl text-slate-500 font-black uppercase tracking-[0.25em] hover:text-white hover:border-indigo-500/40 transition-all text-xs inline-flex items-center justify-center gap-3"
+                  className="w-full py-5 bg-transparent border-2 border-white/5 rounded-2xl text-slate-500 font-black uppercase tracking-[0.25em] hover:text-white hover:border-indigo-500/40 transition-all text-sm inline-flex items-center justify-center gap-3"
                 >
                   <RefreshCw className="w-4 h-4" />
                   의식 다시 하기

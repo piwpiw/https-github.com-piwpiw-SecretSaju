@@ -102,7 +102,7 @@ export default function PartnershipPage() {
 
       <LuxuryToast isVisible={toastVisible} message={toastMessage} />
 
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <header className="flex items-center gap-4 mb-20">
           <button
             onClick={() => router.back()}
@@ -110,20 +110,20 @@ export default function PartnershipPage() {
             <ArrowLeft className="w-5 h-5 text-slate-400 group-hover:-translate-x-0.5 transition-transform" />
           </button>
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[9px] font-black uppercase tracking-[0.3em] border border-indigo-500/20 italic mb-1.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[13px] font-black uppercase tracking-[0.3em] border border-indigo-500/20 mb-1.5">
               <Rocket className="w-3 h-3" /> 운명 제휴
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black italic tracking-tighter text-white">파트너십</h1>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tighter text-white">파트너십</h1>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-6">
           <div className="space-y-10">
             <div className="space-y-4">
-              <h2 className="text-4xl font-black italic leading-none tracking-tighter text-white">
+              <h2 className="text-4xl font-black leading-none tracking-tighter text-white">
                 무한한 시너지
               </h2>
-              <p className="text-sm font-bold text-slate-500 italic opacity-80 leading-relaxed pl-1">
+              <p className="text-sm font-bold text-slate-500 opacity-80 leading-relaxed pl-1">
                 시크릿사주의 운세 데이터와 서비스를 결합해, 공동 가치를 만듭니다.
               </p>
             </div>
@@ -142,8 +142,8 @@ export default function PartnershipPage() {
                     <item.icon className={cn("w-5 h-5", item.color)} />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-white italic tracking-tighter">{item.title}</h3>
-                    <p className="text-[10px] text-slate-500 font-bold mt-1">{item.desc}</p>
+                    <h3 className="text-sm font-black text-white tracking-tighter">{item.title}</h3>
+                    <p className="text-[13px] text-slate-500 font-bold mt-1">{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -151,20 +151,20 @@ export default function PartnershipPage() {
 
             <div className="flex gap-4 items-center pl-2 opacity-50">
               <Mail className="w-4 h-4" />
-              <span className="text-xs font-bold font-mono tracking-widest">partnership@secretsaju.com</span>
+              <span className="text-sm font-bold font-mono tracking-widest">partnership@secretsaju.com</span>
             </div>
           </div>
 
-          <div className="p-8 sm:p-10 bg-gradient-to-br from-slate-900/60 to-indigo-950/20 rounded-[3rem] border border-white/10 shadow-[0_0_40px_rgba(79,70,229,0.1)] relative overflow-hidden backdrop-blur-md">
+          <div className="p-5 sm:p-5 sm:p-8 bg-gradient-to-br from-slate-900/60 to-indigo-950/20 rounded-[2rem] border border-white/10 shadow-[0_0_40px_rgba(79,70,229,0.1)] relative overflow-hidden backdrop-blur-md">
             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none" />
 
             <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-              <p className="mb-2 text-xs text-slate-400 uppercase tracking-[0.25em]">
+              <p className="mb-2 text-sm text-slate-400 uppercase tracking-[0.25em]">
                 작성 상태: {isSubmitReady ? "완료" : "미작성"}
               </p>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 tracking-[0.2em] italic flex items-center gap-2">
+                <label className="text-[13px] font-black text-slate-400 tracking-[0.2em] flex items-center gap-2">
                   <Globe className="w-3 h-3 text-indigo-400" /> 기업/기관
                 </label>
                 <input
@@ -181,7 +181,7 @@ export default function PartnershipPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 tracking-[0.2em] italic">이름</label>
+                  <label className="text-[13px] font-black text-slate-400 tracking-[0.2em]">이름</label>
                   <input
                     type="text"
                     required
@@ -194,7 +194,7 @@ export default function PartnershipPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 tracking-[0.2em] italic">이메일</label>
+                  <label className="text-[13px] font-black text-slate-400 tracking-[0.2em]">이메일</label>
                   <input
                     type="email"
                     required
@@ -207,13 +207,13 @@ export default function PartnershipPage() {
                     placeholder="이메일 주소"
                   />
                   {!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) && form.email.length > 0 ? (
-                    <p className="text-xs text-rose-300 mt-1">이메일 형식을 맞춰주세요.</p>
+                    <p className="text-sm text-rose-300 mt-1">이메일 형식을 맞춰주세요.</p>
                   ) : null}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 tracking-[0.2em] italic">협업 유형</label>
+                <label className="text-[13px] font-black text-slate-400 tracking-[0.2em]">협업 유형</label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {partnershipTypes.map((item) => (
                     <button
@@ -221,7 +221,7 @@ export default function PartnershipPage() {
                       type="button"
                       onClick={() => setForm({ ...form, type: item.value })}
                       className={cn(
-                        "py-3 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all",
+                        "py-3 rounded-xl border text-[13px] font-black uppercase tracking-widest transition-all",
                         form.type === item.value
                           ? "bg-indigo-600/20 border-indigo-400/50 text-indigo-300"
                           : "bg-white/5 border-white/5 text-slate-500 hover:bg-white/10 hover:text-white",
@@ -234,7 +234,7 @@ export default function PartnershipPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 tracking-[0.2em] italic">제안 내용</label>
+                <label className="text-[13px] font-black text-slate-400 tracking-[0.2em]">제안 내용</label>
                 <textarea
                   required
                   aria-required="true"
@@ -246,12 +246,12 @@ export default function PartnershipPage() {
                 />
               </div>
 
-              {formError ? <p className="text-xs text-rose-300">{formError}</p> : null}
+              {formError ? <p role="alert" className="text-sm text-rose-300">{formError}</p> : null}
 
               <button
                 type="submit"
                 disabled={loading || !isSubmitReady}
-                className="w-full py-5 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-black italic uppercase tracking-[0.2em] text-sm text-white border border-indigo-400/50 shadow-[0_0_30px_rgba(79,70,229,0.2)] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group"
+                className="w-full py-5 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-black uppercase tracking-[0.2em] text-sm text-white border border-indigo-400/50 shadow-[0_0_30px_rgba(79,70,229,0.2)] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group"
                 aria-busy={loading}
               >
                 {loading ? (
@@ -267,9 +267,9 @@ export default function PartnershipPage() {
               </button>
 
               {submitted ? (
-                <div className="rounded-xl border border-emerald-400/50 bg-emerald-500/10 px-4 py-3 text-xs text-emerald-100">
+                <div className="rounded-xl border border-emerald-400/50 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
                   <p>성공적으로 제출했습니다. 다음 단계 안내를 곧 보내드릴게요.</p>
-                  <p className="text-[11px] mt-1 text-emerald-200/80">접수일시: {submittedAt}</p>
+                  <p className="text-[13px] mt-1 text-emerald-200/80">접수일시: {submittedAt}</p>
                 </div>
               ) : null}
             </form>

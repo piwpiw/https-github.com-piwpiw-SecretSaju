@@ -44,12 +44,12 @@ export default function WikiPage() {
     return (
         <main className="min-h-screen relative overflow-hidden pb-40 text-foreground">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,var(--primary)_0%,transparent_30%)] opacity-5" />
-            <div className="max-w-5xl mx-auto px-0 sm:px-6 py-16 relative z-10">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 border-b border-border-color pb-16">
+            <div className="max-w-5xl mx-auto px-0 sm:px-6 py-10 relative z-10">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-20 border-b border-border-color pb-16">
                     <div>
                         <button
                             onClick={() => router.push('/')}
-                            className="flex items-center gap-3 text-lg font-bold text-secondary hover:text-foreground transition-all group mb-8"
+                            className="flex items-center gap-3 text-lg font-bold text-muted hover:text-foreground transition-all group mb-8"
                         >
                             <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
                             {t('common.back')}
@@ -63,21 +63,21 @@ export default function WikiPage() {
                                 {locale === 'ko' ? '지식 베이스' : 'Knowledge Base'}
                             </span>
                         </motion.div>
-                        <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase mb-2">
-                            {locale === 'ko' ? '사주' : 'Saju'} <span className="text-primary italic">{locale === 'ko' ? '백과사전' : 'Wiki'}</span>
+                        <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase mb-2">
+                            {locale === 'ko' ? '사주' : 'Saju'} <span className="text-primary">{locale === 'ko' ? '백과사전' : 'Wiki'}</span>
                         </h1>
-                        <p className="text-xl md:text-2xl text-secondary font-medium italic opacity-70">
+                        <p className="text-xl md:text-2xl text-muted font-medium opacity-70">
                             {locale === 'ko' ? '사주 도메인 전체 문서·기술 명세를 정리한 지식 공간입니다.' : 'Comprehensive technical specifications & docs'}
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-8 bg-surface p-6 rounded-3xl border border-border-color shadow-lg">
+                    <div className="flex items-center gap-6 bg-surface p-4 sm:p-6 rounded-3xl border border-border-color shadow-lg">
                         <div className="text-right border-r border-border-color pr-6">
-                            <div className="text-sm font-bold text-secondary uppercase tracking-widest mb-1">{locale === 'ko' ? '최종 갱신' : 'Last Updated'}</div>
+                            <div className="text-sm font-bold text-muted uppercase tracking-widest mb-1">{locale === 'ko' ? '최종 갱신' : 'Last Updated'}</div>
                             <div className="text-xl font-black">2026.02.26</div>
                         </div>
                         <div className="text-right">
-                            <div className="text-sm font-bold text-secondary uppercase tracking-widest mb-1">{locale === 'ko' ? '상태' : 'Status'}</div>
+                            <div className="text-sm font-bold text-muted uppercase tracking-widest mb-1">{locale === 'ko' ? '상태' : 'Status'}</div>
                             <div className="text-xl font-black text-emerald-500 flex items-center gap-2">
                                 <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse" />
                                 {locale === 'ko' ? '활성' : 'Active'}
@@ -93,11 +93,11 @@ export default function WikiPage() {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.1, duration: 0.5 }}
-                            className="space-y-8"
+                            className="space-y-6"
                         >
                             <div className="flex items-center gap-6 border-b-2 border-border-color pb-4">
                                 <div className="w-3 h-10 bg-primary rounded-full" />
-                                <h2 className="text-4xl font-black italic tracking-tighter uppercase text-foreground">{cat}</h2>
+                                <h2 className="text-4xl font-black tracking-tighter uppercase text-foreground">{cat}</h2>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -106,7 +106,7 @@ export default function WikiPage() {
                                         <Link
                                             key={doc.slug}
                                             href={`/wiki/${doc.slug}`}
-                                            className="bg-surface p-8 rounded-4xl border border-border-color hover:border-primary/50 group transition-all shadow-md hover:shadow-xl hover:-translate-y-1 relative overflow-hidden"
+                                            className="bg-surface p-5 sm:p-8 rounded-4xl border border-border-color hover:border-primary/50 group transition-all shadow-md hover:shadow-xl hover:-translate-y-1 relative overflow-hidden"
                                         >
                                             <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-10 transition-opacity">
                                                 <doc.icon className="w-24 h-24 text-primary" />
@@ -116,7 +116,7 @@ export default function WikiPage() {
                                                     <doc.icon className={`w-8 h-8 ${doc.color}`} />
                                                 </div>
                                                 <div className="flex items-end justify-between mt-auto">
-                                                    <span className="text-2xl font-black tracking-tight text-secondary group-hover:text-foreground transition-colors">
+                                                    <span className="text-2xl font-black tracking-tight text-muted group-hover:text-foreground transition-colors">
                                                         {locale === 'ko' ? doc.titleKo : doc.titleEn}
                                                     </span>
                                                     <ChevronRight className="w-8 h-8 text-border-color group-hover:text-primary group-hover:translate-x-2 transition-all" />
@@ -125,9 +125,9 @@ export default function WikiPage() {
                                         </Link>
                                     ))
                                 ) : (
-                                    <div className="col-span-full p-12 rounded-4xl bg-surface border border-dashed border-border-color flex flex-col items-center justify-center gap-4">
-                                        <Sparkles className="w-10 h-10 text-secondary opacity-50" />
-                                        <span className="text-xl font-bold text-secondary uppercase tracking-widest">{locale === 'ko' ? '문서 없음' : 'No Documents'}</span>
+                                    <div className="col-span-full p-4 sm:p-9 rounded-4xl bg-surface border border-dashed border-border-color flex flex-col items-center justify-center gap-4">
+                                        <Sparkles className="w-10 h-10 text-muted opacity-50" />
+                                        <span className="text-xl font-bold text-muted uppercase tracking-widest">{locale === 'ko' ? '문서 없음' : 'No Documents'}</span>
                                     </div>
                                 )}
                             </div>
@@ -135,7 +135,7 @@ export default function WikiPage() {
                     ))}
                 </div>
 
-                <div className="mt-32 p-10 rounded-4xl bg-background border-2 border-border-color backdrop-blur-xl shadow-xl flex items-center justify-between">
+                <div className="mt-32 p-5 sm:p-8 rounded-4xl bg-background border-2 border-border-color backdrop-blur-xl shadow-xl flex items-center justify-between">
                     <div className="flex items-center gap-6">
                         <div className="flex gap-3">
                             <div className="w-4 h-4 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]" />
@@ -143,10 +143,10 @@ export default function WikiPage() {
                             <div className="w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                         </div>
                         <div className="h-2 w-24 bg-border-color rounded-full hidden sm:block" />
-                        <span className="text-xl font-black text-secondary tracking-widest uppercase hidden sm:block">Secret Node</span>
+                        <span className="text-xl font-black text-muted tracking-widest uppercase hidden sm:block">Secret Node</span>
                     </div>
                     <div className="text-right text-lg">
-                        <p className="font-black text-primary italic">&gt; LOAD_COMPLETE_</p>
+                        <p className="font-black text-primary">&gt; LOAD_COMPLETE_</p>
                     </div>
                 </div>
             </div>

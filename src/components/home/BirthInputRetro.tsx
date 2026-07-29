@@ -71,7 +71,7 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
                 {/* Header */}
                 <div className="text-center mb-8">
                     <h2 className="ui-title-gradient text-2xl mb-1">출생정보 입력</h2>
-                    <p className="text-micro-copy opacity-80">정확한 사주 계산을 위해 날짜를 입력해 주세요</p>
+                    <p className="text-micro-copy text-slate-300">정확한 사주 계산을 위해 날짜를 입력해 주세요</p>
                 </div>
 
                 <form
@@ -207,7 +207,7 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
                                         })}
                                     </select>
                                 </div>
-                                <p className="text-[11px] text-slate-500 mt-2 text-center">시간이 모호하면 주변 사람의 기억 범위를 기준으로 입력하세요</p>
+                                <p className="text-[13px] text-slate-500 mt-2 text-center">시간이 모호하면 주변 사람의 기억 범위를 기준으로 입력하세요</p>
                             </motion.div>
                         )}
                     </AnimatePresence>

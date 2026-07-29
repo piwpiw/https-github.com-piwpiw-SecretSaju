@@ -26,26 +26,26 @@ export default function PremiumWalletCard({ jellies, isFreeLaunch = false, onCli
                             <Gem className="w-5 h-5 text-indigo-400" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] italic">시크릿 멤버십</p>
-                            <p className="text-xs font-bold text-white uppercase tracking-widest opacity-60">젤리 지갑</p>
+                            <p className="text-[13px] font-black text-indigo-400 uppercase tracking-[0.3em]">시크릿 멤버십</p>
+                            <p className="text-sm font-bold text-white uppercase tracking-widest opacity-60">젤리 지갑</p>
                         </div>
                     </div>
-                    <div className="px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-[9px] font-black text-indigo-300 uppercase tracking-widest animate-pulse">
+                    <div className="px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-[13px] font-black text-indigo-300 uppercase tracking-widest animate-pulse">
                         프리미엄 상태
                     </div>
                 </div>
 
                 <div className="space-y-1">
-                    <p className="text-xs font-black text-slate-500 tracking-widest italic break-keep">
+                    <p className="text-sm font-black text-slate-500 tracking-widest break-keep">
                         {isFreeLaunch ? '이용 상태' : '현재 잔액'}
                     </p>
                     <div className="flex items-end gap-3">
                         {isFreeLaunch ? (
-                            <span className="text-4xl font-black italic text-white tracking-tighter break-keep">전체 무료</span>
+                            <span className="text-4xl font-black text-white tracking-tighter break-keep">전체 무료</span>
                         ) : (
                             <>
-                                <span className="text-5xl font-black italic text-white tracking-tighter">{jellies.toLocaleString('ko-KR')}</span>
-                                <span className="text-2xl font-black italic text-indigo-400 mb-1 tracking-tighter">젤리</span>
+                                <span className="text-5xl font-black text-white tracking-tighter">{jellies.toLocaleString('ko-KR')}</span>
+                                <span className="text-2xl font-black text-indigo-400 mb-1 tracking-tighter">젤리</span>
                             </>
                         )}
                     </div>
@@ -61,7 +61,7 @@ export default function PremiumWalletCard({ jellies, isFreeLaunch = false, onCli
                     </div>
                     <button
                         onClick={onClickCharge}
-                        className="bg-white text-black px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-slate-200 transition-colors shadow-xl shadow-white/5 active:scale-95 transition-all"
+                        className="bg-white text-black px-6 py-3 rounded-2xl font-black text-[13px] uppercase tracking-widest flex items-center gap-2 hover:bg-slate-200 transition-colors shadow-xl shadow-white/5 active:scale-95 transition-all"
                     >
                         즉시 충전 <ArrowRight className="w-3.5 h-3.5" />
                     </button>

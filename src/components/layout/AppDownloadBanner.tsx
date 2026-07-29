@@ -24,7 +24,7 @@ export default function AppDownloadBanner() {
     if (!isVisible) return null;
 
     return (
-        <div className="bg-amber-500 text-black px-3 py-2 flex items-start sm:items-center justify-between gap-2 text-xs sm:text-[11px] font-bold relative z-[100] animate-in slide-in-from-top duration-500">
+        <div className="bg-amber-500 text-black px-3 py-2 flex items-start sm:items-center justify-between gap-2 text-sm sm:text-[13px] font-bold relative z-[100] animate-in slide-in-from-top duration-500">
             <div className="flex items-center gap-2 min-w-0">
                 <Smartphone className="w-4 h-4 flex-shrink-0" />
                 <span className="leading-tight">모바일에서 더 편하게 사주 결과를 확인하세요</span>

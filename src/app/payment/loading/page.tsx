@@ -36,15 +36,15 @@ function PaymentLoadingContent() {
 
   if (isTimeout) {
     return (
-      <main className="min-h-screen bg-background flex items-center justify-center px-4 py-16">
+      <main className="min-h-screen bg-background flex items-center justify-center px-0 sm:px-4 py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-surface border border-border-color rounded-4xl p-8 max-w-md w-full text-center"
+          className="bg-surface border border-border-color rounded-4xl p-5 sm:p-8 max-w-md w-full text-center"
         >
           <AlertTriangle className="w-12 h-12 text-rose-400 mx-auto mb-6" />
           <h1 className="text-2xl font-black text-foreground mb-4">결제 처리 지연</h1>
-          <p className="text-sm text-secondary mb-8">
+          <p className="text-sm text-muted mb-8">
             결제 응답이 오지 않아 상태 확인이 지연되고 있습니다. 잠시 후 결제 내역을 직접 확인해 주세요.
           </p>
           <div className="flex flex-col gap-3">
@@ -56,12 +56,12 @@ function PaymentLoadingContent() {
             </button>
             <button
               onClick={() => router.push('/shop')}
-              className="w-full py-4 bg-background border border-border-color text-secondary font-bold text-base rounded-2xl hover:text-foreground transition-all"
+              className="w-full py-4 bg-background border border-border-color text-muted font-bold text-base rounded-2xl hover:text-foreground transition-all"
             >
               결제 다시 시도
             </button>
           </div>
-          <p className="text-xs text-slate-500 mt-8">
+          <p className="text-sm text-slate-500 mt-8">
             주문번호 <span className="text-primary">{orderId}</span>
           </p>
         </motion.div>
@@ -70,11 +70,11 @@ function PaymentLoadingContent() {
   }
 
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center px-4 py-16">
+    <main className="min-h-screen bg-background flex items-center justify-center px-0 sm:px-4 py-10">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-surface border border-border-color rounded-4xl p-10 max-w-md w-full text-center"
+        className="bg-surface border border-border-color rounded-4xl p-5 sm:p-8 max-w-md w-full text-center"
       >
         <Loader2 className="w-16 h-16 text-primary animate-spin mx-auto mb-8" />
         <h1 className="text-2xl font-black text-foreground mb-6">결제 진행 중</h1>
@@ -87,14 +87,14 @@ function PaymentLoadingContent() {
                 opacity: index === activeStep ? 1 : 0.35,
               }}
               className={`text-sm leading-relaxed ${
-                index === activeStep ? 'text-primary font-bold' : 'text-secondary'
+                index === activeStep ? 'text-primary font-bold' : 'text-muted'
               }`}
             >
               {index + 1}. {step}
             </motion.p>
           ))}
         </div>
-        <p className="text-xs text-slate-500">
+        <p className="text-sm text-slate-500">
           주문번호 <span className="text-primary">{orderId}</span>
         </p>
       </motion.div>

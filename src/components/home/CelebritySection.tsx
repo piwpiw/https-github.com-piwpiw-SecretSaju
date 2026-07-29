@@ -57,17 +57,17 @@ export function CelebritySection({ pillarCode }: CelebritySectionProps) {
     }
 
     return (
-        <section className="py-16 px-4 bg-gradient-to-b from-background to-surface/50">
+        <section className="py-10 px-4 bg-gradient-to-b from-background to-surface/50">
             <div className="max-w-4xl mx-auto">
                 {/* Section Header */}
                 <motion.div
-                    className="text-center mb-12"
+                    className="text-center mb-8"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-4">
                         <Users className="w-4 h-4 text-primary" />
-                        <span className="text-sm text-secondary">Social Proof</span>
+                        <span className="text-sm text-muted">Social Proof</span>
                     </div>
 
                     <h2 className="font-display text-3xl md:text-4xl text-foreground mb-3">
@@ -113,7 +113,7 @@ export function CelebritySection({ pillarCode }: CelebritySectionProps) {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.4 }}
                 >
-                    <p className="text-sm text-zinc-600">
+                    <p className="text-sm text-zinc-400">
                         💡 Tip: 사주는 타고난 <span className="text-primary">재능</span>과 <span className="text-primary">성향</span>을 알려줍니다
                     </p>
                 </motion.div>

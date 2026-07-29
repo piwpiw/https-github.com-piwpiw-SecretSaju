@@ -92,6 +92,59 @@ function codeSafe(input: string) {
   return input.toLowerCase().replace(/[^a-z0-9]+/gi, "-");
 }
 
+/**
+ * 마이너 아르카나 의미.
+ *
+ * 예전에는 52장이 전부 같은 문장을 썼다. 역방향은 죄다 "과속, 불균형, 강한
+ * 고정관념이 나타나기 쉬운 구간입니다." 였다. 어떤 카드를 뽑아도 결과가
+ * 같으니 카드를 뽑는 의미가 없었다.
+ *
+ * 전통 구조 그대로 수트(어느 영역인가)와 숫자(그 영역의 어느 단계인가)를
+ * 조합해 만든다. 4 x 13 = 52장이 서로 다른 문장을 갖는다.
+ */
+const SUIT_MEANING: Record<TarotSuit, { area: string; verb: string; caution: string }> = {
+  wands: { area: "일과 추진력", verb: "밀고 나가는 힘", caution: "서두르다 태우는 에너지" },
+  cups: { area: "감정과 관계", verb: "마음을 나누는 힘", caution: "감정에 잠기는 흐름" },
+  swords: { area: "생각과 대화", verb: "판단하고 말하는 힘", caution: "말이 앞서 생기는 갈등" },
+  pentacles: { area: "돈과 현실", verb: "쌓아 올리는 힘", caution: "손에 쥐려다 굳는 태도" },
+};
+
+const RANK_MEANING: Record<string, { up: string; down: string }> = {
+  A: { up: "이제 막 씨앗이 심어졌습니다. 작게 시작할수록 잘 자랍니다", down: "시작만 반복하고 뿌리를 못 내리는 중입니다" },
+  "2": { up: "둘 사이에서 저울질하는 자리입니다. 고르면 가벼워집니다", down: "결정을 미루는 사이 둘 다 놓치고 있습니다" },
+  "3": { up: "혼자보다 같이 할 때 커집니다. 손을 내밀어 보세요", down: "각자 다른 곳을 보고 있어 힘이 흩어집니다" },
+  "4": { up: "자리를 잡았습니다. 지킬 것과 놓을 것을 정할 때입니다", down: "안전한 자리에 머무느라 굳어 가고 있습니다" },
+  "5": { up: "부딪히고 모자란 구간입니다. 버티는 것 자체가 성과입니다", down: "다툼이 길어져 서로 지치고 있습니다" },
+  "6": { up: "고비를 넘겼습니다. 받은 만큼 돌려주면 더 순해집니다", down: "회복이 더뎌 과거를 자꾸 돌아보게 됩니다" },
+  "7": { up: "시험대에 섰습니다. 조금만 더 버티면 판이 바뀝니다", down: "혼자 다 지려다 버거워진 상태입니다" },
+  "8": { up: "손에 익어 속도가 붙습니다. 지금 흐름을 타세요", down: "빨라진 만큼 놓치는 것이 늘고 있습니다" },
+  "9": { up: "거의 다 왔습니다. 마지막 한 걸음이 남았습니다", down: "다 온 줄 알고 힘을 뺀 상태입니다" },
+  "10": { up: "한 바퀴를 다 돌았습니다. 매듭짓고 다음을 여세요", down: "혼자 너무 많이 짊어져 넘치고 있습니다" },
+  J: { up: "배우는 자리입니다. 서툴러도 해 보는 쪽이 남습니다", down: "재고 따지느라 첫걸음을 못 떼고 있습니다" },
+  Q: { up: "품어서 다스리는 자리입니다. 사람이 따릅니다", down: "챙기다 지쳐 마음이 굳어 가고 있습니다" },
+  K: { up: "판을 쥐고 이끄는 자리입니다. 결정하면 따라옵니다", down: "쥐려는 힘이 세져 주변이 숨 막혀 합니다" },
+};
+
+/** 앞 글자 받침에 따라 을/를 을 고른다 ("태도을" 같은 오타를 막는다) */
+function objectParticle(word: string): string {
+  const last = word.trim().slice(-1);
+  const code = last.charCodeAt(0);
+  if (code < 0xac00 || code > 0xd7a3) return "을";
+  return (code - 0xac00) % 28 === 0 ? "를" : "을";
+}
+
+function minorUpright(suit: TarotSuit, rank: string, nameKr: string) {
+  const s = SUIT_MEANING[suit];
+  const r = RANK_MEANING[rank];
+  return `${nameKr}: ${s.area}에서 ${r.up}. ${s.verb}이 살아나는 자리입니다.`;
+}
+
+function minorReversed(suit: TarotSuit, rank: string, nameKr: string) {
+  const s = SUIT_MEANING[suit];
+  const r = RANK_MEANING[rank];
+  return `${nameKr}(역방향): ${s.area}에서 ${r.down}. ${s.caution}${objectParticle(s.caution)} 먼저 살펴보세요.`;
+}
+
 function buildMinorDeck(startSequence: number) {
   const rows: TarotDeckCard[] = [];
   let seq = startSequence;
@@ -109,8 +162,8 @@ function buildMinorDeck(startSequence: number) {
         rank: short,
         number: rankIndex + 1,
         keywords: ["minor", suit, short, label_kr],
-        meaning_upright: `${nameKr}: ${nameEn}이 해당 영역에서 구체적 수행능력과 현실적 조정력을 제공합니다.`,
-        meaning_reversed: `${nameKr}: 과속, 불균형, 강한 고정관념이 나타나기 쉬운 구간입니다.`,
+        meaning_upright: minorUpright(suit, short, nameKr),
+        meaning_reversed: minorReversed(suit, short, nameKr),
         image_key: `${suit}-${short.toLowerCase()}`,
         is_active: true,
       });

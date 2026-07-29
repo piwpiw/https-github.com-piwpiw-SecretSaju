@@ -250,7 +250,7 @@ export default function VSModePage() {
     return (
       <main className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
         <Loader2 className="w-10 h-10 animate-spin text-primary" />
-        <p className="text-sm font-bold text-secondary">궁합 비교를 불러오는 중...</p>
+        <p className="text-sm font-bold text-muted">궁합 비교를 불러오는 중...</p>
       </main>
     );
   }
@@ -259,18 +259,18 @@ export default function VSModePage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground pb-24">
-      <div className="max-w-6xl mx-auto px-5 py-8 space-y-8">
+      <div className="max-w-6xl mx-auto px-0 sm:px-5 py-8 space-y-6">
         <header className="flex items-center justify-between">
           <button onClick={() => router.back()} className="inline-flex items-center gap-2 text-slate-400 hover:text-white">
             <ArrowLeft className="w-4 h-4" />
             뒤로
           </button>
           <div className="text-center">
-            <p className="text-xs text-indigo-300 font-bold tracking-widest">궁합 VS 분석</p>
+            <p className="text-sm text-indigo-300 font-bold tracking-widest">궁합 VS 분석</p>
             <h1 className="text-xl font-black">
               <span className="text-indigo-300">{mainProfile?.name}</span> vs <span>{targetProfile?.name}</span>
             </h1>
-            {shareMessage && <p className="text-xs text-slate-400 mt-1">{shareMessage}</p>}
+            {shareMessage && <p className="text-sm text-slate-400 mt-1">{shareMessage}</p>}
           </div>
           <KakaoShareButton
             title={`${mainProfile?.name ?? "A"} vs ${targetProfile?.name ?? "B"} 궁합 분석`}
@@ -315,7 +315,7 @@ export default function VSModePage() {
                 <w.icon className="w-4 h-4 text-indigo-300" />
                 <p className="text-sm font-bold">{w.label}</p>
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+              <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
                 <div className="rounded-xl border border-white/10 bg-black/30 p-3">
                   <p className="text-slate-400">{mainProfile?.name}</p>
                   <p className="text-white font-bold mt-1">{w.descA}</p>
@@ -342,14 +342,14 @@ export default function VSModePage() {
                     const branch = getBranchInfo(p?.branchIndex);
                     return (
                       <div key={`${person.label}-${k}`} className="rounded-xl border border-white/10 bg-slate-950/40 p-2">
-                        <p className="text-[10px] text-slate-400 font-bold">{PILLAR_LABEL[k]}</p>
+                        <p className="text-[13px] text-slate-400 font-bold">{PILLAR_LABEL[k]}</p>
                         <div className={`mt-1 rounded border px-2 py-1 ${elementTone(stem.element)}`}>
                           <p className="text-lg font-black leading-none">{stem.hanja}</p>
-                          <p className="text-[10px]">{stem.ko}·{stem.element}</p>
+                          <p className="text-[13px]">{stem.ko}·{stem.element}</p>
                         </div>
                         <div className={`mt-1 rounded border px-2 py-1 ${elementTone(branch.element)}`}>
                           <p className="text-lg font-black leading-none">{branch.hanja}</p>
-                          <p className="text-[10px]">{branch.ko}·{branch.element}</p>
+                          <p className="text-[13px]">{branch.ko}·{branch.element}</p>
                         </div>
                       </div>
                     );
@@ -368,7 +368,7 @@ export default function VSModePage() {
               return (
                 <div key={term} className="rounded-xl border border-white/10 bg-black/30 p-3">
                   <p className="text-sm font-black text-white">{guide.term}{guide.hanja ? ` (${guide.hanja})` : ""}</p>
-                  <p className="text-xs text-slate-300 mt-1">{guide.plain}</p>
+                  <p className="text-sm text-slate-300 mt-1">{guide.plain}</p>
                 </div>
               );
             })}

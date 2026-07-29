@@ -190,8 +190,8 @@ function SajuPageContent() {
   return (
     <main className="min-h-[100dvh] bg-slate-950 text-slate-100 relative overflow-hidden pb-32">
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
-        <div className="flex items-center justify-between mb-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
+        <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => router.back()}
             className="flex items-center gap-3 text-slate-300 hover:text-white transition-colors"
@@ -202,7 +202,7 @@ function SajuPageContent() {
           <JellyBalance />
         </div>
 
-        <section className="bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-[3rem] p-10 md:p-14 shadow-2xl relative overflow-hidden group">
+        <section className="bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-[2rem] p-5 sm:p-8 md:p-5 sm:p-8 shadow-2xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px] -mr-48 -mt-48 pointer-events-none group-hover:bg-indigo-600/20 transition-all duration-1000" />
 
           <div className="flex items-center gap-4 mb-6 relative z-10">
@@ -210,15 +210,15 @@ function SajuPageContent() {
               <Calculator className="w-6 h-6 text-indigo-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-black italic tracking-tighter uppercase text-white">사주 분석</h1>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">프로필 기반 + 직접 입력 하이브리드</p>
+              <h1 className="text-3xl font-black tracking-tighter uppercase text-white">사주 분석</h1>
+              <p className="text-sm text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">프로필 기반 + 직접 입력 하이브리드</p>
             </div>
           </div>
 
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
             {STEPS.map((step, i) => (
               <div key={step.key} className="rounded-2xl border border-white/10 bg-black/30 p-4">
-                <p className="text-[10px] text-indigo-300 uppercase tracking-[0.2em] font-black">{step.title}</p>
+                <p className="text-[13px] text-indigo-300 uppercase tracking-[0.2em] font-black">{step.title}</p>
                 <p className="mt-2 text-sm text-slate-200">{step.hint}</p>
                 <div className={`mt-3 h-1.5 rounded-full bg-white/10 overflow-hidden ${i === 2 && result ? 'ring-1 ring-indigo-300/40' : ''}`}>
                   <div className={`h-full transition-all duration-700 ${result && i < 2 ? 'w-full' : i === 2 && result ? 'w-full' : i === 1 && (result || manualName) ? 'w-1/2' : i === 0 && ((manualName || selectedProfileId) || !useManualInput) ? 'w-3/4' : 'w-0'} ${i === 2 && result ? 'bg-emerald-400' : 'bg-indigo-400'}`} />
@@ -227,8 +227,8 @@ function SajuPageContent() {
             ))}
           </div>
 
-          <div className="space-y-8 relative z-10 mt-10">
-            <div className="flex items-center justify-center gap-3 text-xs">
+          <div className="space-y-6 relative z-10 mt-10">
+            <div className="flex items-center justify-center gap-3 text-sm">
               <button
                 type="button"
                 onClick={() => setUseManualInput(false)}
@@ -263,6 +263,8 @@ function SajuPageContent() {
                 <label className="text-sm font-black flex items-center gap-2 text-slate-300 uppercase tracking-widest">생년월일</label>
                 <input
                   type="date"
+                  min="1900-01-01"
+                  max="2100-12-31"
                   aria-label="생년월일"
                   value={manualBirthDate}
                   onChange={(e) => setManualBirthDate(e.target.value)}
@@ -323,7 +325,7 @@ function SajuPageContent() {
                     시간 미상
                   </button>
                 </div>
-                <p className="text-xs text-slate-400">시간이 불확실하면 `시간 미상`을 켜면 12:00로 계산합니다.</p>
+                <p className="text-sm text-slate-400">시간이 불확실하면 `시간 미상`을 켜면 12:00로 계산합니다.</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -350,9 +352,9 @@ function SajuPageContent() {
             )}
 
             <div className="flex gap-2 flex-wrap">
-              <span className="text-xs bg-indigo-500/20 text-indigo-200 px-3 py-1 rounded-full border border-indigo-500/30">젤리 3개 소모</span>
-              <span className="text-xs bg-white/10 text-slate-300 px-3 py-1 rounded-full border border-white/10">관계 분석 포함</span>
-              <span className="text-xs bg-white/10 text-slate-300 px-3 py-1 rounded-full border border-white/10">히스토리 저장</span>
+              <span className="text-sm bg-indigo-500/20 text-indigo-200 px-3 py-1 rounded-full border border-indigo-500/30">젤리 3개 소모</span>
+              <span className="text-sm bg-white/10 text-slate-300 px-3 py-1 rounded-full border border-white/10">관계 분석 포함</span>
+              <span className="text-sm bg-white/10 text-slate-300 px-3 py-1 rounded-full border border-white/10">히스토리 저장</span>
             </div>
 
             <button
@@ -368,15 +370,17 @@ function SajuPageContent() {
               {loading ? "사주 분석 중..." : FREE_LAUNCH ? "사주 분석 시작 (무료)" : "3젤리로 사주 실행"}
             </button>
 
-            {notice && <p className="text-sm text-center text-rose-300 font-medium">{notice}</p>}
+            {/* 눈으로는 보였지만 읽어주는 표시가 없어서, 스크린리더 사용자는
+                버튼을 눌러도 왜 아무 일이 없는지 알 수 없었다. */}
+            {notice && <p role="alert" className="text-sm text-center text-rose-300 font-medium">{notice}</p>}
           </div>
         </section>
 
         {result && archetype && !loading && (
           <motion.section initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="mt-16">
-            <div className="flex items-center gap-4 mb-10 justify-center">
+            <div className="flex items-center gap-4 mb-6 justify-center">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10" />
-              <div className="px-6 py-2 rounded-full border border-white/10 bg-white/5 text-xs font-black text-indigo-300 uppercase tracking-[0.3em] flex items-center gap-2 backdrop-blur-md">
+              <div className="px-6 py-2 rounded-full border border-white/10 bg-white/5 text-sm font-black text-indigo-300 uppercase tracking-[0.3em] flex items-center gap-2 backdrop-blur-md">
                 <Sparkles className="w-4 h-4" /> 분석 완료
               </div>
               <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10" />
@@ -465,7 +469,7 @@ export default function SajuPage() {
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             className="w-10 h-10 rounded-full border-2 border-indigo-500/30 border-t-indigo-500"
           />
-          <p className="text-slate-500 font-black tracking-[0.4em] uppercase text-[10px]">Loading...</p>
+          <p className="text-slate-500 font-black tracking-[0.4em] uppercase text-[13px]">Loading...</p>
         </div>
       </div>
     }>

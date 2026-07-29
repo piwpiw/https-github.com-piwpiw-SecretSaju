@@ -58,7 +58,7 @@ export default function ShinsalPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-28">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(168,85,247,0.14),transparent_40%),radial-gradient(circle_at_80%_40%,rgba(236,72,153,0.12),transparent_45%)]" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <div className="flex items-center justify-between mb-8">
           <button onClick={() => router.back()} className="w-11 h-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-200" />
@@ -66,11 +66,11 @@ export default function ShinsalPage() {
           <JellyBalance />
         </div>
 
-        <section className="bg-slate-900/60 border border-white/10 rounded-[2.3rem] p-8 md:p-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fuchsia-500/10 border border-fuchsia-400/30 text-fuchsia-200 font-black uppercase tracking-[0.2em] text-xs">
+        <section className="bg-slate-900/60 border border-white/10 rounded-[2.3rem] p-5 md:p-6 sm:p-9">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fuchsia-500/10 border border-fuchsia-400/30 text-fuchsia-200 font-black uppercase tracking-[0.2em] text-sm">
             <Shield className="w-4 h-4" /> 신살 진단
           </div>
-          <h1 className="text-4xl font-black italic mt-4">신살 운세 지도</h1>
+          <h1 className="text-4xl font-black mt-4">신살 운세 지도</h1>
           <p className="text-slate-300 mt-2">프로필과는 별개로 신살 흐름만 빠르게 점검하고 조언을 받을 수 있습니다.</p>
 
           <div className="mt-6 grid md:grid-cols-2 gap-4">
@@ -84,10 +84,10 @@ export default function ShinsalPage() {
               >
                 <div className="flex items-center justify-between">
                   <div className="font-bold text-white">{item.name}</div>
-                  <span className={`text-[11px] px-2 py-1 rounded-full border ${badgeClass(item.risk)}`}>{item.risk}</span>
+                  <span className={`text-[13px] px-2 py-1 rounded-full border ${badgeClass(item.risk)}`}>{item.risk}</span>
                 </div>
                 <p className="mt-3 text-sm text-slate-300">{item.note}</p>
-                <p className="mt-4 text-xs text-slate-400">권장: {item.tip}</p>
+                <p className="mt-4 text-sm text-slate-400">권장: {item.tip}</p>
               </motion.button>
             ))}
           </div>
@@ -101,7 +101,7 @@ export default function ShinsalPage() {
             {run ? "분석 중..." : FREE_LAUNCH ? "전체 신살 요약 받기 (무료)" : "5젤리로 전체 신살 요약 받기"}
           </button>
           {errorMessage && (
-            <p className="mt-3 text-sm text-center text-rose-300 font-medium">{errorMessage}</p>
+            <p role="alert" className="mt-3 text-sm text-center text-rose-300 font-medium">{errorMessage}</p>
           )}
         </section>
 
@@ -109,7 +109,7 @@ export default function ShinsalPage() {
           <motion.section
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-8 rounded-3xl border border-white/10 bg-slate-900/50 p-7"
+            className="mt-8 rounded-3xl border border-white/10 bg-slate-900/50 p-5 sm:p-7"
           >
             <div className="flex items-center gap-3 text-emerald-300 font-black">
               <ShieldCheck className="w-5 h-5" /> 선택 항목 상세

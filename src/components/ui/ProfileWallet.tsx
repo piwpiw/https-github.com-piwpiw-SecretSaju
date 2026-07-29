@@ -78,7 +78,7 @@ export default function ProfileWallet({ onSelectProfile }: Props) {
                         <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-white/5">
                             <div>
                                 <h3 className="text-sm font-black text-indigo-300 uppercase tracking-widest">Destiny Wallet</h3>
-                                <p className="text-[10px] text-slate-500 mt-0.5">{profiles.length}/5 슬롯 사용 중</p>
+                                <p className="text-[13px] text-slate-500 mt-0.5">{profiles.length}/5 슬롯 사용 중</p>
                             </div>
                             <div className="w-8 h-8 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
                                 <Users className="w-4 h-4 text-indigo-400" />
@@ -93,10 +93,10 @@ export default function ProfileWallet({ onSelectProfile }: Props) {
                                 </div>
                             )}
                             {error && (
-                                <div className="text-center py-4 text-[11px] text-rose-400">{error}</div>
+                                <div role="alert" className="text-center py-4 text-[13px] text-rose-400">{error}</div>
                             )}
                             {!loading && !error && profiles.length === 0 && (
-                                <div className="text-center py-6 text-[11px] text-slate-500">
+                                <div className="text-center py-6 text-[13px] text-slate-500">
                                     저장된 사주 프로필이 없습니다.<br />
                                     <span className="text-indigo-400">로그인 후 추가해보세요.</span>
                                 </div>
@@ -108,12 +108,12 @@ export default function ProfileWallet({ onSelectProfile }: Props) {
                                     className="w-full p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all text-left flex items-center justify-between group"
                                 >
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-xs font-black text-slate-200 truncate">{p.name}</p>
-                                        <p className="text-[10px] text-slate-500 mt-0.5">
+                                        <p className="text-sm font-black text-slate-200 truncate">{p.name}</p>
+                                        <p className="text-[13px] text-slate-500 mt-0.5">
                                             {relationshipLabel(p.relationship)} · {p.birthdate}
                                         </p>
                                         {p.archetype && (
-                                            <p className="text-[10px] text-indigo-400 mt-0.5 truncate">{p.archetype}</p>
+                                            <p className="text-[13px] text-indigo-400 mt-0.5 truncate">{p.archetype}</p>
                                         )}
                                     </div>
                                     <div className="flex items-center gap-1 ml-2 shrink-0">
@@ -122,7 +122,7 @@ export default function ProfileWallet({ onSelectProfile }: Props) {
                                             className="p-1.5 rounded-xl opacity-0 group-hover:opacity-100 hover:bg-rose-500/20 transition-all" aria-label="삭제">
                                             <Trash2 className="w-3 h-3 text-rose-400" />
                                         </button>
-                                        <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-indigo-400 transition-colors" />
+                                        <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition-colors" />
                                     </div>
                                 </button>
                             ))}
@@ -133,7 +133,7 @@ export default function ProfileWallet({ onSelectProfile }: Props) {
                                     className="w-full p-4 rounded-2xl border border-dashed border-white/10 hover:border-indigo-400/40 hover:bg-indigo-500/5 transition-all flex items-center justify-center gap-2 group"
                                 >
                                     <Plus className="w-4 h-4 text-slate-500 group-hover:text-indigo-400 transition-colors" />
-                                    <span className="text-[10px] font-black text-slate-500 group-hover:text-indigo-300 uppercase tracking-widest transition-colors">새 사주 추가</span>
+                                    <span className="text-[13px] font-black text-slate-500 group-hover:text-indigo-300 uppercase tracking-widest transition-colors">새 사주 추가</span>
                                 </a>
                             )}
                         </div>
@@ -152,7 +152,7 @@ export default function ProfileWallet({ onSelectProfile }: Props) {
                 <Wallet className="w-6 h-6" />
                 {profiles.length > 0 && (
                     <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-indigo-500 border-2 border-slate-950 flex items-center justify-center">
-                        <span className="text-[9px] font-black text-white">{profiles.length}</span>
+                        <span className="text-[13px] font-black text-white">{profiles.length}</span>
                     </div>
                 )}
             </button>

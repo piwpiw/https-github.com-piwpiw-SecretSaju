@@ -38,9 +38,9 @@ function ScoreBar({ label, score, gradient, icon: Icon, delay = 0 }: ScoreMetric
           <div className="w-7 h-7 rounded-xl bg-white/5 border border-white/8 flex items-center justify-center">
             <Icon className="w-3.5 h-3.5 text-slate-300" />
           </div>
-          <span className="text-xs font-black text-slate-400 uppercase tracking-widest">{label}</span>
+          <span className="text-sm font-black text-slate-400 uppercase tracking-widest">{label}</span>
         </div>
-        <span className="text-xl font-black text-white italic">{score}</span>
+        <span className="text-xl font-black text-white">{score}</span>
       </div>
       <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
         <motion.div
@@ -59,7 +59,7 @@ function MonthBar({ score, month, peak }: { score: number; month: number; peak: 
     <div className="flex flex-col items-center gap-2 group/m">
       <div className="relative w-full flex items-end justify-center h-32">
         {peak && (
-          <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-black text-amber-400">
+          <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-sm font-black text-amber-400">
             <Trophy className="w-3 h-3" />
           </div>
         )}
@@ -70,11 +70,11 @@ function MonthBar({ score, month, peak }: { score: number; month: number; peak: 
           transition={{ delay: month * 0.04, duration: 0.9, ease: "easeOut" }}
           className={cn("w-9 rounded-t-2xl", peak ? "bg-gradient-to-t from-indigo-600 to-amber-500 shadow-lg shadow-amber-500/20" : "bg-gradient-to-t from-slate-800 to-slate-600")}
         />
-        <span className="absolute bottom-full mb-1 text-[9px] font-black text-slate-500 opacity-0 group-hover/m:opacity-100 transition-opacity">
+        <span className="absolute bottom-full mb-1 text-[13px] font-black text-slate-500 opacity-0 group-hover/m:opacity-100 transition-opacity">
           {score}
         </span>
       </div>
-      <span className="text-[10px] font-black text-slate-600">{month}월</span>
+      <span className="text-[13px] font-black text-slate-400">{month}월</span>
     </div>
   );
 }
@@ -82,7 +82,7 @@ function MonthBar({ score, month, peak }: { score: number; month: number; peak: 
 function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
   return (
     <div className={`rounded-2xl border p-4 ${tone}`}>
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-white/80">{title}</p>
+      <p className="text-sm font-black uppercase tracking-[0.2em] text-white/80">{title}</p>
       <p className="mt-2 text-sm leading-relaxed text-white">{body}</p>
     </div>
   );
@@ -159,16 +159,16 @@ function FortuneContent() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px]" style={{ background: "radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%)" }} />
       </div>
 
-      <div className="max-w-3xl mx-auto px-5 py-10 relative z-10">
+      <div className="max-w-3xl mx-auto px-0 sm:px-5 py-10 relative z-10">
         {/* Header */}
-        <header className="flex items-center justify-between mb-10">
+        <header className="flex items-center justify-between mb-6">
           <button onClick={() => router.back()}
             className="w-11 h-11 rounded-2xl bg-white/5 border border-white/8 flex items-center justify-center hover:bg-white/10 transition-all group" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-300 group-hover:-translate-x-0.5 transition-transform" />
           </button>
           <div className="text-center">
             <h1 className="text-lg font-black text-white">{year}년 연간 운세</h1>
-            <p className="text-[10px] font-black text-indigo-300 tracking-[0.25em] mt-0.5 break-keep">연간 운세 분석</p>
+            <p className="text-[13px] font-black text-indigo-300 tracking-[0.25em] mt-0.5 break-keep">연간 운세 분석</p>
           </div>
           <div className="w-11 h-11" />
         </header>
@@ -177,14 +177,14 @@ function FortuneContent() {
         <motion.form
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           onSubmit={handleCalculate}
-          className="rounded-[2.5rem] border border-white/10 bg-slate-900/60 backdrop-blur-xl p-8 mb-8 relative overflow-hidden"
+          className="rounded-[2.5rem] border border-white/10 bg-slate-900/60 backdrop-blur-xl p-5 sm:p-8 mb-8 relative overflow-hidden"
         >
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
 
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Year Selector */}
             <div>
-              <label className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-slate-500 mb-4" htmlFor="year-selector">
+              <label className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] text-slate-500 mb-4" htmlFor="year-selector">
                 <Target className="w-4 h-4 text-indigo-400" />
                 분석 연도
               </label>
@@ -204,7 +204,7 @@ function FortuneContent() {
 
             {/* Birth Input */}
             <div>
-              <label className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-slate-500 mb-4">
+              <label className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] text-slate-500 mb-4">
                 <History className="w-4 h-4 text-indigo-400" />
                 생년월일
               </label>
@@ -246,10 +246,10 @@ function FortuneContent() {
             <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
 
               {/* Summary hero */}
-              <div className="rounded-[2.5rem] border border-indigo-500/20 bg-slate-900/60 backdrop-blur-xl p-8 relative overflow-hidden">
+              <div className="rounded-[2.5rem] border border-indigo-500/20 bg-slate-900/60 backdrop-blur-xl p-5 sm:p-8 relative overflow-hidden">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent" />
                 <div className="absolute top-4 right-6">
-                  <span className="px-3 py-1 rounded-full text-xs font-black bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                  <span className="px-3 py-1 rounded-full text-sm font-black bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
                     {result.pillarName}
                   </span>
                 </div>
@@ -259,8 +259,8 @@ function FortuneContent() {
                     <span className="text-2xl font-black text-white">{animatedScore}</span>
                   </div>
                   <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500 mb-1">종합 운세 점수</p>
-                    <h2 className="text-2xl font-black text-white italic">{result.summary}</h2>
+                    <p className="text-[13px] font-black uppercase tracking-[0.25em] text-slate-500 mb-1">종합 운세 점수</p>
+                    <h2 className="text-2xl font-black text-white">{result.summary}</h2>
                   </div>
                 </div>
                 <div className="h-0.5 bg-gradient-to-r from-indigo-500/50 to-transparent w-24 mb-5 rounded-full" />
@@ -297,7 +297,7 @@ function FortuneContent() {
               />
 
               {/* Score bars */}
-              <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-8">
+              <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-5 sm:p-8">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2.5">
                     <BarChart3 className="w-5 h-5 text-indigo-400" />
@@ -316,12 +316,12 @@ function FortuneContent() {
               </div>
 
               {/* Monthly Trend */}
-              <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-8">
+              <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-5 sm:p-8">
                 <div className="flex items-center gap-2.5 mb-6">
                   <CalendarDays className="w-5 h-5 text-amber-400" />
                   <h3 className="text-sm font-black text-white uppercase tracking-widest">{year}년 월별 흐름</h3>
                   {peakMonth >= 0 && (
-                    <span className="ml-auto text-[10px] font-black text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full">
+                    <span className="ml-auto text-[13px] font-black text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full">
                       {peakMonth + 1}월 최고
                     </span>
                   )}
@@ -337,17 +337,17 @@ function FortuneContent() {
 
               {/* CTA */}
               <Link href={`/dashboard?profileId=${profileId}`}
-                className="flex items-center justify-between p-6 rounded-[2rem] border border-white/8 bg-white/[0.02] hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all group">
+                className="flex items-center justify-between p-4 sm:p-6 rounded-[2rem] border border-white/8 bg-white/[0.02] hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all group">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
                     <Sparkles className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <p className="font-black text-white">대시보드에서 상세 운세 보기</p>
-                    <p className="text-xs text-slate-500 mt-0.5">대운, 세운, 격국 분석 포함</p>
+                    <p className="text-sm text-slate-500 mt-0.5">대운, 세운, 격국 분석 포함</p>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
+                <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
               </Link>
 
               {/* Share */}
@@ -365,7 +365,7 @@ function FortuneContent() {
               {/* Brand */}
               <div className="flex items-center justify-center gap-2 pt-2">
                 <Orbit className="w-3 h-3 text-indigo-500/30" />
-                <p className="text-[10px] uppercase tracking-[0.35em] text-slate-600 font-black">Secret Saju</p>
+                <p className="text-[13px] uppercase tracking-[0.35em] text-slate-400 font-black">Secret Saju</p>
                 <Orbit className="w-3 h-3 text-indigo-500/30" />
               </div>
             </motion.div>
@@ -383,7 +383,7 @@ export default function FortunePage() {
         <div className="flex flex-col items-center gap-4">
           <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             className="w-10 h-10 rounded-full border-2 border-indigo-500/30 border-t-indigo-500" />
-          <p className="text-slate-500 font-black tracking-[0.4em] uppercase text-[10px]">로딩 중...</p>
+          <p className="text-slate-500 font-black tracking-[0.4em] uppercase text-[13px]">로딩 중...</p>
         </div>
       </div>
     }>

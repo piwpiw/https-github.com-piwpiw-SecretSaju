@@ -11,24 +11,24 @@ export default function RefundPage() {
   return (
     <main className="min-h-screen relative overflow-hidden pb-40">
       <div className="max-w-4xl mx-auto px-0 sm:px-6 pt-16 relative z-10">
-        <Link href="/mypage" className="flex items-center gap-3 text-secondary hover:text-foreground transition-all group mb-12">
+        <Link href="/mypage" className="flex items-center gap-3 text-muted hover:text-foreground transition-all group mb-8">
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-bold tracking-widest uppercase">뒤로가기</span>
         </Link>
 
-        <div className="bg-surface border border-border-color rounded-5xl p-10 sm:p-16 relative z-10 shadow-2xl">
-          <div className="flex items-center gap-6 mb-12 pb-12 border-b border-border-color">
+        <div className="bg-surface border border-border-color rounded-5xl p-5 sm:p-8 sm:p-16 relative z-10 shadow-2xl">
+          <div className="flex items-center gap-6 mb-8 pb-12 border-b border-border-color">
             <div className="w-20 h-20 rounded-3xl bg-secondary/10 border border-secondary/20 flex items-center justify-center">
-              <RefreshCw className="w-10 h-10 text-secondary" />
+              <RefreshCw className="w-10 h-10 text-muted" />
             </div>
             <div>
               <h1 className="text-4xl font-black text-foreground mb-2">환불 규정</h1>
-              <p className="text-sm font-bold text-secondary uppercase tracking-widest leading-none">최종 개정일: 2026.03.08</p>
+              <p className="text-sm font-bold text-muted uppercase tracking-widest leading-none">최종 개정일: 2026.03.08</p>
             </div>
           </div>
 
-          <div className="space-y-10 text-secondary text-base leading-8 whitespace-pre-line font-medium">
-            <p className="text-lg text-foreground bg-background p-6 rounded-2xl border border-border-color">
+          <div className="space-y-10 text-muted text-base leading-8 whitespace-pre-line font-medium">
+            <p className="text-lg text-foreground bg-background p-4 sm:p-6 rounded-2xl border border-border-color">
               Secret Saju는 결제 내역과 실제 사용 여부를 기준으로 환불 가능 여부를 검토합니다.
               환불이 필요한 경우 문의 접수를 통해 검토가 시작됩니다.
             </p>
@@ -36,7 +36,7 @@ export default function RefundPage() {
             <section>
               <h2 className="text-foreground font-black text-2xl mb-4">1. 환불 가능한 경우</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-background border border-emerald-500/20 rounded-3xl p-8">
+                <div className="bg-background border border-emerald-500/20 rounded-3xl p-5 sm:p-8">
                   <div className="flex items-center gap-3 text-emerald-500 font-black uppercase tracking-widest mb-6 text-sm">
                     <CheckCircle className="w-5 h-5" /> 환불 가능
                   </div>
@@ -46,7 +46,7 @@ export default function RefundPage() {
                     <li>미사용 상태의 유료 권한에 대해 운영 정책상 환불이 가능한 경우</li>
                   </ul>
                 </div>
-                <div className="bg-background border border-rose-500/20 rounded-3xl p-8">
+                <div className="bg-background border border-rose-500/20 rounded-3xl p-5 sm:p-8">
                   <div className="flex items-center gap-3 text-rose-500 font-black uppercase tracking-widest mb-6 text-sm">
                     <XCircle className="w-5 h-5" /> 환불 불가
                   </div>
@@ -67,50 +67,50 @@ export default function RefundPage() {
                   { s: "02", t: "결제 검증", d: "결제 기록, 사용 기록, 중복 여부를 확인합니다." },
                   { s: "03", t: "승인 또는 반려", d: "승인 시 환불 처리, 반려 시 사유를 안내합니다." },
                 ].map((step) => (
-                  <div key={step.s} className="flex gap-8 items-center bg-background p-6 rounded-2xl border border-border-color">
-                    <span className="text-secondary font-black text-4xl leading-none">{step.s}</span>
+                  <div key={step.s} className="flex gap-6 items-center bg-background p-4 sm:p-6 rounded-2xl border border-border-color">
+                    <span className="text-muted font-black text-4xl leading-none">{step.s}</span>
                     <div>
                       <h3 className="text-foreground font-black mb-1 text-lg">{step.t}</h3>
-                      <p className="text-secondary">{step.d}</p>
+                      <p className="text-muted">{step.d}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </section>
 
-            <section className="bg-background rounded-3xl p-10 border border-border-color relative overflow-hidden">
+            <section className="bg-background rounded-3xl p-5 sm:p-8 border border-border-color relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-5">
                 <Mail className="w-32 h-32 text-primary" />
               </div>
               <h2 className="text-foreground font-black mb-8 flex items-center gap-3 text-lg relative z-10">
                 <Mail className="w-6 h-6 text-primary" /> 고객지원
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 relative z-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
                 <div className="space-y-2">
-                  <p className="text-xs text-secondary uppercase font-bold tracking-widest leading-none">문의 경로</p>
+                  <p className="text-sm text-muted uppercase font-bold tracking-widest leading-none">문의 경로</p>
                   <p className="text-primary font-black text-2xl break-all">/inquiry</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-xs text-secondary uppercase font-bold tracking-widest leading-none">처리 시간</p>
+                  <p className="text-sm text-muted uppercase font-bold tracking-widest leading-none">처리 시간</p>
                   <p className="text-foreground font-black text-2xl">영업일 기준 순차 처리</p>
                 </div>
               </div>
             </section>
 
             <div className="pt-12 border-t border-border-color flex items-center justify-between">
-              <span className="text-sm text-secondary font-bold tracking-widest break-keep">자산 보호</span>
+              <span className="text-sm text-muted font-bold tracking-widest break-keep">자산 보호</span>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/20">
-                <ShieldAlert className="w-5 h-5 text-secondary" />
-                <span className="text-xs font-black text-secondary tracking-widest break-keep">검증된 결제만</span>
+                <ShieldAlert className="w-5 h-5 text-muted" />
+                <span className="text-sm font-black text-foreground tracking-widest break-keep">검증된 결제만</span>
               </div>
             </div>
           </div>
         </div>
 
         <div className="mt-16 flex justify-center gap-12 border-t border-border-color pt-12">
-          <Link href="/terms" className="text-sm font-black text-secondary hover:text-foreground uppercase tracking-widest transition-colors">이용약관</Link>
-          <Link href="/privacy" className="text-sm font-black text-secondary hover:text-foreground uppercase tracking-widest transition-colors">개인정보처리방침</Link>
-          <Link href="/inquiry" className="text-sm font-black text-secondary hover:text-foreground uppercase tracking-widest transition-colors">문의하기</Link>
+          <Link href="/terms" className="text-sm font-black text-muted hover:text-foreground uppercase tracking-widest transition-colors">이용약관</Link>
+          <Link href="/privacy" className="text-sm font-black text-muted hover:text-foreground uppercase tracking-widest transition-colors">개인정보처리방침</Link>
+          <Link href="/inquiry" className="text-sm font-black text-muted hover:text-foreground uppercase tracking-widest transition-colors">문의하기</Link>
         </div>
       </div>
     </main>

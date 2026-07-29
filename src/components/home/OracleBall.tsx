@@ -59,24 +59,37 @@ export default function OracleBall({
     };
 
     return (
-        <div className={cn("max-w-md mx-auto panel-shell p-12 text-center relative overflow-hidden group", className)}>
+        <div className={cn("max-w-md mx-auto panel-shell p-6 sm:p-9 text-center relative overflow-hidden group", className)}>
             <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent" />
             <div className="absolute bottom-0 right-0 w-52 h-52 bg-indigo-500/12 rounded-full blur-[80px] -mr-28 -mb-24 opacity-80 pointer-events-none" />
 
-            <div className="mb-12 relative z-10">
+            <div className="mb-8 relative z-10">
                 <div className="ui-chip mb-6">
                     <Sparkles className="w-3.5 h-3.5 animate-pulse" /> 채널링 공명
                 </div>
                 <h3 className="ui-title ui-title-gradient mb-3 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">{title}</h3>
-                <p className="text-micro-copy opacity-80">{description}</p>
+                <p className="text-micro-copy text-slate-300">{description}</p>
             </div>
 
+            {/*
+              role="button" 만 있고 tabindex 가 없어서 키보드로는 이 공을
+              아예 누를 수 없었다. 마우스 없이 홈에 들어오면 기능이 통째로
+              사라지는 셈이라 tabindex 와 Enter/Space 처리를 붙인다.
+            */}
             <motion.div
                 animate={controls}
                 onClick={handleConsult}
-                className="relative w-64 h-64 mx-auto cursor-pointer mb-12 select-none group/ball"
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        handleConsult();
+                    }
+                }}
+                className="relative w-64 h-64 mx-auto cursor-pointer mb-8 select-none group/ball rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400"
                 role="button"
+                tabIndex={0}
                 aria-label="운세 조언 뽑기"
+                aria-busy={isSpinning}
             >
                 {/* Orbital Rings */}
                 <div className="absolute -inset-4 border border-indigo-500/10 rounded-full animate-rotate-slow opacity-60" />
@@ -100,7 +113,7 @@ export default function OracleBall({
                                     className="flex flex-col items-center gap-3"
                                 >
                                     <Zap className="w-14 h-14 text-white fill-current animate-pulse" />
-                                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/50 italic">동기화 중...</span>
+                                    <span className="text-[13px] font-black uppercase tracking-[0.4em] text-white/50">동기화 중...</span>
                                 </motion.div>
                             ) : (
                                 <motion.div
@@ -127,7 +140,7 @@ export default function OracleBall({
                             exit={{ opacity: 0, y: -15 }}
                             className="space-y-4"
                         >
-                            <p className="text-lg font-black text-indigo-200 leading-tight italic drop-shadow-[0_0_10px_rgba(99,102,241,0.3)]">&ldquo;{advice}&rdquo;</p>
+                            <p className="text-lg font-black text-indigo-200 leading-tight drop-shadow-[0_0_10px_rgba(99,102,241,0.3)]">&ldquo;{advice}&rdquo;</p>
                             <div className="w-12 h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent mx-auto rounded-full" />
                         </motion.div>
                     ) : !isSpinning && (

@@ -29,7 +29,7 @@ export function RecommendationsSection({
         viewport={{ once: true }}
       >
         <h3 className="font-display text-base text-foreground mb-1">{animalName} 추천 음식</h3>
-        <p className="text-zinc-500 text-xs mb-3">오늘의 오행 밸런스를 맞추는 음식 3가지를 추천합니다.</p>
+        <p className="text-zinc-500 text-sm mb-3">오늘의 오행 밸런스를 맞추는 음식 3가지를 추천합니다.</p>
         <ul className="space-y-2">
           {foods.length === 0 ? (
             <li className="rounded-xl bg-white/5 px-3 py-2.5 text-sm text-zinc-500">추천 음식이 없습니다.</li>
@@ -39,7 +39,7 @@ export function RecommendationsSection({
                 <span className="text-xl">{item.emoji}</span>
                 <div>
                   <p className="font-medium text-foreground">{item.name}</p>
-                  <p className="text-xs text-zinc-400">{item.reason}</p>
+                  <p className="text-sm text-zinc-400">{item.reason}</p>
                 </div>
               </li>
             ))
@@ -54,7 +54,7 @@ export function RecommendationsSection({
         viewport={{ once: true }}
       >
         <h3 className="font-display text-base text-foreground mb-1">{animalName} 추천 아이템</h3>
-        <p className="text-zinc-500 text-xs mb-3">오늘의 사주 성향에 맞는 상품을 큐레이팅했습니다.</p>
+        <p className="text-zinc-500 text-sm mb-3">오늘의 사주 성향에 맞는 상품을 큐레이팅했습니다.</p>
         <ul className="space-y-2">
           {products.length === 0 ? (
             <li className="rounded-xl bg-white/5 px-3 py-2.5 text-sm text-zinc-500">추천 상품이 없습니다.</li>
@@ -67,7 +67,7 @@ export function RecommendationsSection({
                 <span className="text-xl">{item.emoji}</span>
                 <div>
                   <p className="font-medium text-foreground">{item.name}</p>
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-sm text-zinc-400">
                     {item.category ? `${item.category} | ` : ""}
                     {item.reason}
                   </p>
@@ -89,7 +89,7 @@ export function RecommendationsSection({
             <span className="text-lg">🎁</span>
             <h3 className="font-display text-base text-foreground">사주 연계 이벤트</h3>
           </div>
-          <p className="text-amber-500/80 text-xs mb-3">실시간으로 선별된 진행 중인 이벤트입니다.</p>
+          <p className="text-amber-500/80 text-sm mb-3">실시간으로 선별된 진행 중인 이벤트입니다.</p>
           <ul className="space-y-2">
             {campaigns.map((camp: any, i: number) => (
               <li
@@ -98,15 +98,15 @@ export function RecommendationsSection({
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 mb-2">
+                    <span className="inline-block px-2 py-0.5 rounded text-[13px] font-bold bg-amber-500/20 text-amber-400 mb-2">
                       {camp.source} {camp.category ? `· ${camp.category}` : ""}
                     </span>
                     <h4 className="font-medium text-foreground text-sm line-clamp-1">{camp.title}</h4>
-                    <p className="text-xs text-zinc-400 mt-0.5 line-clamp-2">{camp.description}</p>
+                    <p className="text-sm text-zinc-400 mt-0.5 line-clamp-2">{camp.description}</p>
                   </div>
                 </div>
                 {camp.reward_info && (
-                  <div className="mt-1 text-xs font-semibold text-amber-300 bg-amber-500/10 inline-block px-2 py-1 rounded">
+                  <div className="mt-1 text-sm font-semibold text-amber-300 bg-amber-500/10 inline-block px-2 py-1 rounded">
                     보상: {camp.reward_info}
                   </div>
                 )}
@@ -115,7 +115,7 @@ export function RecommendationsSection({
                     href={camp.landing_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 text-xs font-medium text-center bg-white/10 hover:bg-white/20 text-white rounded-lg py-2 transition-colors"
+                    className="mt-1 text-sm font-medium text-center bg-white/10 hover:bg-white/20 text-white rounded-lg py-2 transition-colors"
                   >
                     링크 보기
                   </a>

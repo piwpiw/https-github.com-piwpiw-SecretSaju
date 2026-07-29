@@ -28,7 +28,7 @@ export function SecretBlur({
   };
 
   return (
-    <section className="w-full max-w-md mx-auto py-12 px-4">
+    <section className="w-full max-w-md mx-auto py-8 px-4">
       <h3 className="font-display text-xl text-foreground mb-4 text-center">비밀 미리보기 (시크릿)</h3>
 
       {isOpen ? (
@@ -37,7 +37,7 @@ export function SecretBlur({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          <p className="text-secondary font-medium mb-2">해제된 비밀 콘텐츠</p>
+          <p className="text-muted font-medium mb-2">해제된 비밀 콘텐츠</p>
           <p className="text-zinc-300 text-sm">{secretPreview}</p>
         </motion.div>
       ) : (

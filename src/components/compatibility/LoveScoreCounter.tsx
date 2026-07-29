@@ -19,10 +19,10 @@ export default function LoveScoreCounter({ targetScore = 92 }: { targetScore?: n
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="text-8xl font-black italic tracking-tighter text-white drop-shadow-[0_0_30px_rgba(99,102,241,0.5)] flex items-baseline"
+                    className="text-8xl font-black tracking-tighter text-white drop-shadow-[0_0_30px_rgba(99,102,241,0.5)] flex items-baseline"
                 >
                     {count}
-                    <span className="text-2xl font-black italic ml-2 text-indigo-400 opacity-80 uppercase tracking-widest">%</span>
+                    <span className="text-2xl font-black ml-2 text-indigo-400 opacity-80 uppercase tracking-widest">%</span>
                 </motion.div>
 
                 {/* Orbital Glow */}
@@ -39,7 +39,7 @@ export default function LoveScoreCounter({ targetScore = 92 }: { targetScore?: n
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1 }}
-                className="mt-4 px-6 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] inline-block shadow-2xl"
+                className="mt-4 px-6 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[13px] font-black text-indigo-300 uppercase tracking-[0.3em] inline-block shadow-2xl"
             >
                 Ultimate Synergy Quotient
             </motion.div>

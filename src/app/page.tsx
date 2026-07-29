@@ -344,7 +344,11 @@ export default function HomePage() {
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="flex items-center gap-3 px-5 py-3.5 bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl shadow-black/50 group hover:border-indigo-500/30 transition-all active:scale-[0.98]"
+          // 안쪽 input 이 outline-none 이라 포커스 표시가 아예 없었다.
+          // 마우스 hover 만 테두리가 반응하고 키보드로 들어오면 아무 변화가
+          // 없어서, 어디에 커서가 있는지 알 수 없었다. focus-within 으로
+          // hover 와 같은 신호를 준다.
+          className="flex items-center gap-3 px-5 py-3.5 bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl shadow-black/50 group hover:border-indigo-500/30 focus-within:border-indigo-500/60 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all active:scale-[0.98]"
         >
             <form onSubmit={handleSearchSubmit} className="flex items-center gap-3 w-full">
               <Search className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform" />
@@ -367,7 +371,7 @@ export default function HomePage() {
                 }
                 role="combobox"
                 aria-autocomplete="list"
-                className="bg-transparent border-none outline-none text-xs font-black text-white placeholder:text-slate-500 w-full tracking-wider italic uppercase"
+                className="bg-transparent border-none outline-none text-sm font-black text-white placeholder:text-slate-500 w-full tracking-wider uppercase"
               />
             <button type="submit" className="sr-only">
               검색
@@ -394,8 +398,8 @@ export default function HomePage() {
                 onMouseEnter={() => setActiveSearchIndex(index)}
                 className={`w-full text-left px-4 py-2.5 hover:bg-white/10 border-b border-white/10 last:border-b-0 flex items-start gap-2 ${topSearchMatches[activeSearchIndex]?.path === item.path ? "bg-fuchsia-500/10" : ""}`}
               >
-                <span className="mt-0.5 text-[10px] text-fuchsia-400">{item.title}</span>
-                <span className="text-[11px] text-slate-300 font-black tracking-wide">
+                <span className="mt-0.5 text-[13px] text-fuchsia-400">{item.title}</span>
+                <span className="text-[13px] text-slate-300 font-black tracking-wide">
                   {item.description}
                 </span>
               </button>
@@ -404,7 +408,7 @@ export default function HomePage() {
         )}
         {searchError && (
           <div className="mt-2 px-1 space-y-2">
-            <p className="text-[11px] text-rose-300 font-black uppercase tracking-wider">
+            <p className="text-[13px] text-rose-300 font-black uppercase tracking-wider">
               {searchError}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -413,7 +417,7 @@ export default function HomePage() {
                   key={`fallback-${item.path}`}
                   type="button"
                   onClick={() => handleSearchSelect(item.path)}
-                  className="text-[10px] px-2.5 py-1 rounded-full border border-white/15 text-slate-200 hover:bg-white/10"
+                  className="text-[13px] px-2.5 py-1 rounded-full border border-white/15 text-slate-200 hover:bg-white/10"
                 >
                   {item.title}
                 </button>
@@ -437,10 +441,10 @@ export default function HomePage() {
       {/* Main Content */}
       {/* 앱 셸(layout.tsx)이 이미 좌우 px-4를 준다. 여기서 px-6을 또 주면
           390px 화면에서 콘텐츠 폭이 계단식으로 깎인다. 모바일은 셸에 맡긴다. */}
-      <div className="relative z-10 container mx-auto px-0 sm:px-6 pt-28 pb-20">
+      <div className="relative z-10 container mx-auto px-0 sm:px-6 pt-20 pb-10">
         {/* Dashboard Portal */}
         {(flowState === "boot" || flowState === "input") && (
-          <div className="max-w-5xl mx-auto flex flex-col gap-8 sm:gap-16">
+          <div className="max-w-5xl mx-auto flex flex-col gap-4 sm:gap-5">
             {/* Hero Section (Banner) */}
             <motion.div className="order-1" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: "easeOut" }}>
               <CouponBanner />
@@ -451,7 +455,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row items-center justify-between px-4 gap-4">
                 <div className="text-center sm:text-left">
                   <h2 className="ui-title-gradient text-2xl sm:text-3xl tracking-[0.08em] leading-none">글로벌 <span className="text-indigo-500">운세 동기화</span></h2>
-                  <p className="text-micro-copy mt-2 sm:mt-3 opacity-80 font-black italic text-indigo-200">
+                  <p className="text-micro-copy mt-2 sm:mt-3 font-black text-indigo-200">
                     {clientHour === null
                       ? "오늘의 운세 흐름을 준비 중입니다"
                       : clientHour >= 5 && clientHour < 11
@@ -465,7 +469,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center gap-3 px-4 py-2 ui-chip">
                   <Activity className="w-3.5 h-3.5 text-indigo-300 animate-pulse" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-100 italic">시스템 동기 상태: 최적</span>
+                  <span className="text-[13px] font-black uppercase tracking-widest text-slate-100">시스템 동기 상태: 최적</span>
                 </div>
               </div>
               <motion.div
@@ -499,19 +503,19 @@ export default function HomePage() {
             <ScrollReveal direction="down">
               <motion.div
                 id="saju-input"
-                className="order-2 panel-shell py-12 sm:py-20 px-4 sm:px-10"
+                className="order-2 panel-shell py-8 sm:py-10 px-4 sm:px-10"
               >
                 <div className="absolute top-0 right-10 w-48 h-1 bg-gradient-to-l from-indigo-500/50 to-transparent" />
                 <div className="text-center mb-6 space-y-3">
-                  <div className="ui-chip inline-flex text-[9px]">
+                  <div className="ui-chip inline-flex text-[13px]">
                     <Compass className="w-3 h-3" /> 핵심 분석 엔진
                   </div>
-                  <h3 className="ui-title text-white text-2xl sm:text-3xl font-black italic uppercase tracking-tighter"><span className="text-indigo-500">핵심</span> 사주 분석</h3>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">정확한 태어난 시간에 가까울수록 엔진 정밀도가 수직 상승합니다</p>
+                  <h3 className="ui-title text-white text-2xl sm:text-3xl font-black uppercase tracking-tighter"><span className="text-indigo-500">핵심</span> 사주 분석</h3>
+                  <p className="text-[13px] text-slate-400 uppercase tracking-widest font-bold">정확한 태어난 시간에 가까울수록 엔진 정밀도가 수직 상승합니다</p>
                 </div>
                 <div className="max-w-xl mx-auto space-y-4">
                   <BirthInputRetro onSubmit={handleBirthSubmit} />
-                  <div className="flex items-center justify-center gap-2.5 text-[9px] text-slate-500 font-black uppercase tracking-widest italic opacity-60">
+                  <div className="flex items-center justify-center gap-2.5 text-[13px] text-slate-500 font-black uppercase tracking-widest opacity-60">
                     <Shield className="w-3.5 h-3.5 text-indigo-500/50" /> 보안 처리: AES-256 로컬 연산 전용
                   </div>
                 </div>
@@ -528,13 +532,13 @@ export default function HomePage() {
                 transition={{ duration: 0.7 }}
               >
                 <div className="text-center mb-6">
-                  <div className="ui-chip inline-flex text-[9px]">
+                  <div className="ui-chip inline-flex text-[13px]">
                     <Shield className="w-3 h-3" /> 작명 진입 패널
                   </div>
-                  <h3 className="ui-title text-white text-2xl sm:text-3xl font-black italic uppercase tracking-tighter mt-3">
+                  <h3 className="ui-title text-white text-2xl sm:text-3xl font-black uppercase tracking-tighter mt-3">
                     <span className="text-fuchsia-400">작명</span> 엔진
                   </h3>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">이름을 입력하면 작명 분석으로 바로 이동</p>
+                  <p className="text-[13px] text-slate-500 uppercase tracking-widest font-bold">이름을 입력하면 작명 분석으로 바로 이동</p>
                 </div>
                 <div className="max-w-xl mx-auto space-y-3">
                   <label htmlFor="naming-draft-name" className="sr-only">
@@ -562,7 +566,7 @@ export default function HomePage() {
                     maxLength={20}
                     className="w-full rounded-2xl bg-black/40 border border-white/10 px-5 py-4 text-fuchsia-100 text-sm font-bold focus:outline-none focus:border-fuchsia-400/60"
                   />
-                  <p id="naming-draft-help" className="text-[11px] text-slate-400 px-1">
+                  <p id="naming-draft-help" className="text-[13px] text-slate-400 px-1">
                     이름만 입력해도 작명 분석을 시작할 수 있습니다.
                   </p>
                   <button
@@ -599,9 +603,9 @@ export default function HomePage() {
                 { label: "궁합보기", icon: "💖", link: "/compatibility" }
               ].map((item, idx) => (
                 <Link key={idx} href={item.link}>
-                  <div className="premium-card p-6 flex flex-col items-center justify-center gap-3 group hover:border-primary/50 transition-all text-center h-full">
+                  <div className="premium-card p-4 sm:p-6 flex flex-col items-center justify-center gap-3 group hover:border-primary/50 transition-all text-center h-full">
                     <span className="text-3xl group-hover:scale-125 transition-transform">{item.icon}</span>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.label}</span>
+                    <span className="text-[13px] font-black text-slate-400 uppercase tracking-widest">{item.label}</span>
                     <div className="noise-texture opacity-[0.05]" />
                     <div className="premium-glow opacity-30" />
                   </div>
@@ -622,8 +626,8 @@ export default function HomePage() {
                   <span className="text-lg">🍇</span>
                 </div>
                 <div className="pr-2">
-                  <p className="text-[8px] font-black text-indigo-400 uppercase tracking-widest leading-none mb-1">현재 잔액</p>
-                  <p className="text-sm font-black italic text-white leading-none">340 개</p>
+                  <p className="text-[13px] font-black text-indigo-400 uppercase tracking-widest leading-none mb-1">현재 잔액</p>
+                  <p className="text-sm font-black text-white leading-none">340 개</p>
                 </div>
               </motion.div>
             </div>
@@ -637,7 +641,7 @@ export default function HomePage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-12"
+            className="space-y-7"
           >
             <ResultCard
               personName={sajuPersonName}
@@ -677,7 +681,7 @@ export default function HomePage() {
                 }}
                 disabled={isSharing}
                 aria-label="분석 결과 공유"
-                className="w-full sm:flex-1 py-5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-black uppercase italic tracking-widest text-[10px] shadow-xl shadow-indigo-950/20 transition-all flex items-center justify-center gap-3 active:scale-95"
+                className="w-full sm:flex-1 py-5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-black uppercase tracking-widest text-[13px] shadow-xl shadow-indigo-950/20 transition-all flex items-center justify-center gap-3 active:scale-95"
               >
                 <Zap className="w-4 h-4 fill-current" /> 분석 공유하기
               </button>

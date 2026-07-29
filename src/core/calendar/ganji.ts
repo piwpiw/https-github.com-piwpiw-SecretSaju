@@ -148,37 +148,50 @@ export function getDayPillar(date: Date): GanJi {
 }
 
 /**
+ * 시지 경계를 어느 시계 위에서 자를지 정하는 기준.
+ *
+ * - `true-solar`: 이미 진태양시로 환산된 시각을 받는다. 자시는 23:00-00:59.
+ * - `kst-civil` : 보정 없는 한국 표준시(KST) 시계를 받는다. 서울은 표준경도
+ *                 135도보다 약 8도 서쪽이라 남중이 30분쯤 늦으므로, 자시를
+ *                 23:30-01:29 로 잡는 관례를 쓴다.
+ *
+ * 두 보정을 겹쳐 쓰면 안 된다. 예전에는 진태양시로 환산한 시각에 30분 관례를
+ * 한 번 더 적용해서, 시 경계 30분 안에 태어난 사람의 시주가 한 칸씩 밀렸다.
+ */
+export type HourBoundaryMode = 'true-solar' | 'kst-civil';
+
+/**
  * Calculates Hour Pillar (Si-ju)
  * Based on Day Stem and Time.
- * 
- * Day Stem -> Hour Stem Start (for Ja-hour 23:30-01:30):
+ *
+ * Day Stem -> Hour Stem Start (for Ja-hour):
  * 甲(0)/己(5) -> 0 (甲子)
  * 乙(1)/庚(6) -> 2 (丙子)
  * 丙(2)/辛(7) -> 4 (戊子)
  * 丁(3)/壬(8) -> 6 (庚子)
  * 戊(4)/癸(9) -> 8 (壬子)
- * 
+ *
  * Formula: (DayStemIndex % 5 * 2) % 10 = Start Hour Stem Index
+ *
+ * @param baseTime 시지를 자를 기준 시각
+ * @param dayStemIndex 일간 인덱스 (0-9)
+ * @param boundary 경계 기준. 기본값은 보정 없는 KST 시계(23:30 자시)
  */
-export function getHourPillar(trueSolarDate: Date, dayStemIndex: number): GanJi {
-    const hours = trueSolarDate.getHours();
-    const minutes = trueSolarDate.getMinutes();
+export function getHourPillar(
+    baseTime: Date,
+    dayStemIndex: number,
+    boundary: HourBoundaryMode = 'kst-civil'
+): GanJi {
+    const hours = baseTime.getHours();
+    const minutes = baseTime.getMinutes();
 
-    // Determine Hour Branch (Zodiac Hour)
-    // Ja: 23:30 - 01:29 (centered at 00:00)
-    // Chuk: 01:30 - 03:29 (centered at 02:00)
-    // ...
-    // Index = floor((hours + 1) / 2) % 12
-    // 23+1 = 24 / 2 = 12 % 12 = 0 (Ja)
-    // 0+1 = 1 / 2 = 0 (Ja)
-    // 1+1 = 2 / 2 = 1 (Chuk)
-    // 12+1 = 13 / 2 = 6 (O)
+    // 자시의 시작점을 자정 기준 분으로 표현한다.
+    // 진태양시 기준이면 23:00, KST 시계 기준이면 23:30.
+    const jaStartMinutes = boundary === 'true-solar' ? 23 * 60 : 23 * 60 + 30;
 
-    // Precise boundary:
-    // Ja hour = 23:30-01:29, then every 2 hours.
     const minutesOfDay = hours * 60 + minutes;
-    const shifted = (minutesOfDay - 90 + 1440) % 1440; // 01:30 -> 0
-    const hourBranchIndex = (Math.floor(shifted / 120) + 1) % 12;
+    const shifted = (minutesOfDay - jaStartMinutes + 1440) % 1440; // 자시 시작 -> 0
+    const hourBranchIndex = Math.floor(shifted / 120) % 12;
 
     // Calculate Hour Stem
     const startStemIndex = (dayStemIndex % 5 * 2) % 10;

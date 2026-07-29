@@ -2,9 +2,9 @@
  * Saju Calculation Module
  * 
  * DACRE Engine: Dynamic Age-Context Rendering Engine
- * Input: Birthdate/Time ??Output: One of 60 Animal Archetypes (?쇱＜ 湲곕컲)
+ * Input: Birthdate/Time → Output: One of 60 Animal Archetypes (일주 기반)
  *
- * 留뚯꽭??媛꾨떒 援ы쁽: 湲곗???2000-01-01 = ?듿뜄) ?鍮?寃쎄낵??mod 60 ???쇱＜ ?몃뜳??
+ * 만세력 간단 구현: 기준일(2000-01-01 = 무오) 대비 경과일 mod 60 → 일주 인덱스
  * 
  * ---
  * 
@@ -37,15 +37,15 @@ export type { ElementAnalysisResult, ElementScores } from '@/core/myeongni/eleme
 export type { Sinsal } from '@/core/myeongni/sinsal';
 export type { Sipsong } from '@/core/myeongni/sipsong';
 
-// NEW: ????몄슫
+// NEW: 대운·세운
 export { calculateDaewun, getCurrentUnInfo, calculateSaewun } from '@/core/myeongni/daewun';
 export type { DaewunInfo, SaewunInfo } from '@/core/myeongni/daewun';
 
-// NEW: 寃⑷뎅
+// NEW: 격국
 export { determineGyeokguk } from '@/core/myeongni/gyeokguk';
 export type { GyeokgukInfo, Gyeokguk, JungGyeokguk, JongGyeokguk, JeonwangGyeokguk } from '@/core/myeongni/gyeokguk';
 
-// NEW: ??씠?댁꽦
+// NEW: 십이운성
 export { analyzeSibiwoonseongAll, getSibiwoonseong } from '@/core/myeongni/sibiwoonseong';
 export type { SibiwoonseongInfo, SibiwoonseongAnalysis, Sibiwoonseong } from '@/core/myeongni/sibiwoonseong';
 
@@ -61,12 +61,15 @@ const STEM_ELEMENTS: Record<string, Element> = {
   갑: "목", 을: "목", 병: "화", 정: "화", 무: "토", 기: "토", 경: "금", 신: "금", 임: "수", 계: "수"
 };
 
+// 천간 10개의 오행: 갑을=목, 병정=화, 무기=토, 경신=금, 임계=수.
+// 마지막 "수"(계)가 빠져 9개뿐이었다. 계 일간이면 오행이 undefined 가 되어
+// `/admin/compatibility` 등에서 조용히 값이 사라졌다.
 const CHEONGAN_ELEMENTS: Element[] = [
   "목", "목",
   "화", "화",
   "토", "토",
   "금", "금",
-  "수",
+  "수", "수",
 ];
 
 /** 吏吏 ?ㅽ뻾 留ㅽ븨 */
@@ -76,12 +79,12 @@ const JIJI_ELEMENTS: Element[] = [
   "금", "금", "토", "수",
 ];
 
-/** 60媛묒옄 ?쒖꽌 (0=?꿨춴 ~ 59=?멧벤) */
+/** 60갑자 순서 (0=갑자 ~ 59=계해) */
 const PILLAR_STEMS = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"] as const;
 const PILLAR_BRANCHES = ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"] as const;
 export const PILLAR_NAMES_KO = Array.from({ length: 60 }, (_, index) => `${PILLAR_STEMS[index % 10]}${PILLAR_BRANCHES[index % 12]}`);
 
-/** DB/JSON??肄붾뱶 (?? GAP_JA, EUL_CHUK, ... GAP_SUL = 媛묒닠) - 60媛묒옄 ?쒖꽌 */
+/** DB/JSON용 코드 (예: GAP_JA, EUL_CHUK, … GAP_SUL = 갑술) — 60갑자 순서 */
 export const PILLAR_CODES: readonly string[] = [
   "GAP_JA", "EUL_CHUK", "BYEONG_IN", "JEONG_MYO", "MU_JIN", "GI_SA", "GYEONG_O", "SIN_MI", "IM_SIN", "GYE_YU",
   "GAP_SUL", "EUL_HAE", "BYEONG_JA", "JEONG_CHUK", "MU_IN", "GI_MYO", "GYEONG_JIN", "SIN_SA", "IM_O", "GYE_MI",
@@ -91,9 +94,9 @@ export const PILLAR_CODES: readonly string[] = [
   "GAP_IN", "EUL_MYO", "BYEONG_JIN", "JEONG_SA", "MU_O", "GI_MI", "GYEONG_SIN", "SIN_YU", "IM_SUL", "GYE_HAE",
 ];
 
-/** 湲곗??? 2000-01-01 UTC = ?듿뜄 (?몃뜳??54) */
+/** 기준일: 2000-01-01 UTC = 무오 (인덱스 54) */
 const REFERENCE_DATE = new Date(Date.UTC(2000, 0, 1));
-const REFERENCE_PILLAR_INDEX = 54; // ?듿뜄
+const REFERENCE_PILLAR_INDEX = 54; // 무오
 
 function isLeapYear(year: number): boolean {
   return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
@@ -106,7 +109,7 @@ function getDaysBetween(from: Date, to: Date): number {
 }
 
 /**
- * ?앸뀈?붿씪(쨌????諛쏆븘 ?쇱＜(?ζ윶) ?몃뜳??0~59 諛섑솚
+ * 생년월일(·시)을 받아 일주(日柱) 인덱스 0~59 를 반환
  */
 export function getDayPillarIndex(birthDate: Date): number {
   const days = getDaysBetween(REFERENCE_DATE, birthDate);
@@ -114,40 +117,45 @@ export function getDayPillarIndex(birthDate: Date): number {
 }
 
 /**
- * ?쇱＜ ?몃뜳?????쒓? ?대쫫 (媛묒옄, ?꾩텞, ...)
+ * 일주 인덱스 → 한글 이름 (갑자, 을축, …)
  */
 export function getPillarNameKo(index: number): string {
   return PILLAR_NAMES_KO[index % 60] ?? "\uAC00\uC790";
 }
 
 /**
- * ?쇱＜ ?몃뜳????DB/JSON??肄붾뱶 (GAP_JA, WO_DOG ??
+ * 일주 인덱스 → DB/JSON용 코드 (GAP_JA, EUL_CHUK …)
  */
 export function getPillarCode(index: number): string {
   return PILLAR_CODES[index % 60] ?? "GAP_JA";
 }
 
 /**
- * ?쇱＜ ?몃뜳????泥쒓컙 ?ㅽ뻾
- * IMPROVED: ?뺥솗??泥쒓컙 留ㅽ븨 (?댁쟾 ?⑥닚 % 5?먯꽌 媛쒖꽑)
+ * 일주 인덱스 → 천간 오행
+ * 이전의 단순 `% 5` 매핑에서 정확한 천간 매핑으로 개선
  */
 export function getDayStemElement(pillarIndex: number): Element {
-  const stemIndex = pillarIndex % 10; // 泥쒓컙? 10媛??쒗솚
+  const stemIndex = pillarIndex % 10; // 천간은 10개 순환
   return CHEONGAN_ELEMENTS[stemIndex];
 }
 
 /**
- * ?쇱＜ ?몃뜳????吏吏 ?ㅽ뻾
- * IMPROVED: ?뺥솗??吏吏 留ㅽ븨
+ * 일주 인덱스 → 지지 오행
+ *
+ * 60갑자에서 지지는 12개 주기로 순환하므로 `index % 12` 가 맞다.
+ * 이전 구현은 `Math.floor(index / 5) % 12` 였는데, 이러면 60개 중 52개가
+ * 다른 지지를 가리킨다(예: 인덱스 1 → 축이어야 하는데 자, 54 → 오여야 하는데 술).
+ * 같은 파일의 `PILLAR_NAMES_KO` 는 처음부터 `% 12` 를 쓰고 있어 두 값이 서로
+ * 어긋나 있었다. `/admin/compatibility` 가 이 함수로 지지 오행을 계산한다.
  */
 export function getDayBranchElement(pillarIndex: number): Element {
-  const branchIndex = Math.floor(pillarIndex / 5) % 12; // 吏吏??12媛??쒗솚
+  const branchIndex = ((pillarIndex % 12) + 12) % 12; // 지지는 12개 순환
   return JIJI_ELEMENTS[branchIndex];
 }
 
 /**
- * ?쇱＜??二쇱슂 ?ㅽ뻾 (?쇨컙 湲곗?)
- * ?ъ＜ 遺꾩꽍? 二쇰줈 ?쇨컙(泥쒓컙)??湲곗??쇰줈 ?섎?濡?泥쒓컙 ?ㅽ뻾??諛섑솚
+ * 일주의 주요 오행 (일간 기준)
+ * 사주 분석은 주로 일간(천간)을 기준으로 하므로 천간 오행을 반환한다
  */
 export function getPrimaryElement(pillarIndex: number): Element {
   return getDayStemElement(pillarIndex);
@@ -157,13 +165,13 @@ export type SajuResult = {
   pillarIndex: number;
   pillarNameKo: string;
   code: string;
-  element: Element;          // ?쇨컙 ?ㅽ뻾
-  stemElement: Element;      // 泥쒓컙 ?ㅽ뻾 (紐낆떆??
+  element: Element;          // 일간 오행
+  stemElement: Element;      // 천간 오행 (명시적)
   branchElement: Element;    // 吏吏 ?ㅽ뻾
-  elementScores: number[];   // ?ㅼ떆媛??ㅽ뻾 ?먯닔 (%, 吏?κ컙 媛以묒튂)
-  elementCounts: number[];   // ?ㅼ떆媛??ㅽ뻾 媛쒖닔 (0~8)
-  elementBasicPercentages: number[]; // 湲곕낯 ?ㅽ뻾 ?먯닔 (%, 媛쒖닔 湲곕컲)
-  /** ?섏씠?: "10s" | "20s" | "30s" (Age-Context?? */
+  elementScores: number[];   // 오행 점수 (%, 지장간 가중치 반영)
+  elementCounts: number[];   // 오행 개수 (0~8)
+  elementBasicPercentages: number[]; // 기본 오행 비율 (%, 개수 기반)
+  /** 나이대: "10s" | "20s" | "30s" (Age-Context 용) */
   ageGroup: "10s" | "20s" | "30s";
   fourPillars: any;
   daewun?: any;
@@ -275,7 +283,7 @@ function normalizeBirthDateOrFallback(value: Date): Date {
 }
 
 /**
- * ?앸뀈?붿씪怨??깅퀎??諛쏆븘 怨좎젙諛 ?ъ＜ 遺꾩꽍 ?섑뻾
+ * 생년월일과 성별을 받아 고정밀 사주 분석을 수행
  */
 export async function calculateSaju(
   birthDate: Date,

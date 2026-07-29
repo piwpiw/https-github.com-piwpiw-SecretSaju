@@ -123,7 +123,7 @@ export default function AddSajuPage() {
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 pb-24">
-      <div className="max-w-3xl mx-auto px-0 sm:px-6 py-12">
+      <div className="max-w-3xl mx-auto px-0 sm:px-6 py-8">
         <button onClick={() => router.back()} className="inline-flex items-center gap-2 text-slate-400 hover:text-white">
           <ArrowLeft className="w-4 h-4" />
           뒤로
@@ -147,7 +147,7 @@ export default function AddSajuPage() {
           </div>
         ) : null}
 
-        <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-white/10 bg-white/5 p-6" aria-label="사주 프로필 등록 폼">
+        <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-6" aria-label="사주 프로필 등록 폼">
           <div>
             <label className="text-sm font-semibold flex items-center gap-2 mb-2">
               <UserIcon className="w-4 h-4" /> 이름
@@ -163,7 +163,7 @@ export default function AddSajuPage() {
               className="w-full rounded-xl bg-black/30 border border-white/10 px-4 py-3"
               placeholder="이름 입력"
             />
-            <p id="profile-name-help" className="text-xs text-slate-400 mt-2">
+            <p id="profile-name-help" className="text-sm text-slate-400 mt-2">
               2자 이상 입력하면 이후 변경 시 유의미한 오차를 줄일 수 있습니다.
             </p>
           </div>
@@ -199,6 +199,8 @@ export default function AddSajuPage() {
               <input
                 id="birth-date"
                 type="date"
+                  min="1900-01-01"
+                  max="2100-12-31"
                 value={birthdate}
                 onChange={(e) => setBirthdate(e.target.value)}
                 aria-label="생년월일 입력"
@@ -206,7 +208,7 @@ export default function AddSajuPage() {
                 aria-invalid={isBirthDateEmpty}
                 className="w-full rounded-xl bg-black/30 border border-white/10 px-4 py-3"
               />
-              <p id="birthdate-help" className="text-xs text-slate-400 mt-2">
+              <p id="birthdate-help" className="text-sm text-slate-400 mt-2">
                 실제 생년월일을 기준으로 사주 계산 정확도가 높아집니다.
               </p>
             </div>

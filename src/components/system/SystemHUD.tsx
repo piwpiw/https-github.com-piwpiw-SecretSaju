@@ -19,16 +19,16 @@ export default function SystemHUD() {
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-xl backdrop-blur-xl">
                     <Cpu className="w-3.5 h-3.5 text-cyan-400" />
-                    <span className="text-[10px] font-black text-slate-400 tracking-[0.2em] uppercase">Core: Quantum-V4</span>
+                    <span className="text-[13px] font-black text-slate-400 tracking-[0.2em] uppercase">Core: Quantum-V4</span>
                 </div>
                 <div className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-xl backdrop-blur-xl">
                     <Globe className="w-3.5 h-3.5 text-purple-400" />
-                    <span className="text-[10px] font-black text-slate-400 tracking-[0.2em] uppercase">Node: Seoul_Central</span>
+                    <span className="text-[13px] font-black text-slate-400 tracking-[0.2em] uppercase">Node: Seoul_Central</span>
                 </div>
             </div>
             <div className="flex flex-col items-end gap-2">
                 <div className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-xl backdrop-blur-xl">
-                    <span className="text-[10px] font-black text-cyan-400 tracking-[0.2em] uppercase">{systemTime}</span>
+                    <span className="text-[13px] font-black text-cyan-400 tracking-[0.2em] uppercase">{systemTime}</span>
                     <Server className="w-3.5 h-3.5 text-cyan-400" />
                 </div>
                 <div className="flex items-center gap-2">

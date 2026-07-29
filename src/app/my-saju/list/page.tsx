@@ -97,7 +97,7 @@ export default function SajuListPage() {
 
   return (
     <main className="min-h-screen relative overflow-hidden pb-40">
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-16 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-10 relative z-10">
         <ScrollReveal>
           <div className="flex items-center justify-between mb-8">
             <button
@@ -119,7 +119,7 @@ export default function SajuListPage() {
               </button>
               <button
                 onClick={() => router.push('/my-saju/add')}
-                className="btn-neumorphic px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 text-indigo-400 group"
+                className="btn-neumorphic px-6 py-3 rounded-2xl text-[13px] font-black uppercase tracking-widest flex items-center gap-2 text-indigo-400 group"
                 aria-label="신규 프로필 추가"
               >
                 <UserPlus className="w-4 h-4 group-hover:scale-110 transition-transform" /> 신규 프로필 추가
@@ -127,43 +127,43 @@ export default function SajuListPage() {
             </div>
           </div>
 
-          <div className="mb-12">
+          <div className="mb-8">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
                 <Users className="w-6 h-6 text-indigo-400" />
               </div>
               <div>
                 <h1 className="ui-title-gradient text-3xl leading-none">인연 네트워크</h1>
-                <p className="text-[10px] font-black text-indigo-500/60 uppercase tracking-[0.2em] mt-1 italic">사주 시너지 지도</p>
+                <p className="text-[13px] font-black text-indigo-500/60 uppercase tracking-[0.2em] mt-1">사주 시너지 지도</p>
               </div>
             </div>
             <RelationshipMap members={profiles.map((p) => ({ id: p.id, name: p.name }))} />
           </div>
         </ScrollReveal>
 
-        <div className="mb-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="rounded-3xl border border-border-color bg-gradient-to-br from-slate-900/70 to-surface p-6">
-            <p className="text-xs font-black uppercase tracking-widest text-secondary">프로필 커버리지</p>
+        <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="rounded-3xl border border-border-color bg-gradient-to-br from-slate-900/70 to-surface p-4 sm:p-6">
+            <p className="text-sm font-black uppercase tracking-widest text-muted">프로필 커버리지</p>
             <div className="mt-4 h-2 rounded-full bg-black/30 border border-white/10">
               <div className="h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${completionRate}%` }} />
             </div>
-            <p className="mt-3 text-sm text-secondary">현재 {completionRate}%</p>
+            <p className="mt-3 text-sm text-muted">현재 {completionRate}%</p>
           </div>
-          <div className="rounded-3xl border border-border-color bg-gradient-to-br from-indigo-900/20 to-surface p-6">
-            <p className="text-xs font-black uppercase tracking-widest text-secondary">관계 맵 가동률</p>
+          <div className="rounded-3xl border border-border-color bg-gradient-to-br from-indigo-900/20 to-surface p-4 sm:p-6">
+            <p className="text-sm font-black uppercase tracking-widest text-muted">관계 맵 가동률</p>
             <p className="mt-4 text-3xl font-black">{profiles.length > 1 ? `${profiles.length - 1}개` : "0개"}</p>
-            <p className="mt-2 text-sm text-secondary">연결 가능한 관계 후보군</p>
+            <p className="mt-2 text-sm text-muted">연결 가능한 관계 후보군</p>
           </div>
-          <div className="rounded-3xl border border-border-color bg-gradient-to-br from-rose-900/20 to-surface p-6">
-            <p className="text-xs font-black uppercase tracking-widest text-secondary">다음 액션</p>
+          <div className="rounded-3xl border border-border-color bg-gradient-to-br from-rose-900/20 to-surface p-4 sm:p-6">
+            <p className="text-sm font-black uppercase tracking-widest text-muted">다음 액션</p>
             <p className="mt-4 text-xl font-black">프로필 점검 1회</p>
-            <p className="mt-2 text-sm text-secondary">오늘도 관계 분석 정확도 향상</p>
+            <p className="mt-2 text-sm text-muted">오늘도 관계 분석 정확도 향상</p>
           </div>
         </div>
 
         <ScrollReveal delay={0.2}>
-          <div className="mb-10 bg-white/[0.02] border border-white/5 rounded-[3rem] p-10 overflow-hidden">
-            <h4 className="text-[10px] font-black text-indigo-500 tracking-widest italic mb-2 break-keep">인생 흐름 에너지</h4>
+          <div className="mb-6 bg-white/[0.02] border border-white/5 rounded-[2rem] p-5 sm:p-8 overflow-hidden">
+            <h4 className="text-[13px] font-black text-indigo-500 tracking-widest mb-2 break-keep">인생 흐름 에너지</h4>
             <LifeTimeline />
           </div>
         </ScrollReveal>
@@ -221,10 +221,10 @@ export default function SajuListPage() {
             >
               <div className="relative z-10 flex flex-col items-center">
                 <div className="w-24 h-24 rounded-full bg-background border border-border-color flex items-center justify-center mb-8 group-hover:scale-110 transition-transform group-hover:bg-primary/5">
-                  <Plus className="w-12 h-12 text-secondary group-hover:text-primary transition-colors" />
+                  <Plus className="w-12 h-12 text-muted group-hover:text-primary transition-colors" />
                 </div>
                 <h3 className="text-3xl font-black text-foreground mb-4">등록된 프로필이 없습니다.</h3>
-                <p className="text-xl text-secondary font-medium mb-12">
+                <p className="text-xl text-muted font-medium mb-8">
                   첫 프로필을 저장하면 바로 분석과 궁합 진단을 이어서 볼 수 있습니다.
                 </p>
                 <Link
@@ -237,7 +237,7 @@ export default function SajuListPage() {
               </div>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <AnimatePresence>
                 {visibleProfiles.map((profile, index) => (
                   <motion.div
@@ -246,7 +246,7 @@ export default function SajuListPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-surface rounded-4xl p-10 border border-border-color hover:border-primary/40 transition-all shadow-xl group hover:scale-[1.02] flex flex-col justify-between"
+                    className="bg-surface rounded-4xl p-5 sm:p-8 border border-border-color hover:border-primary/40 transition-all shadow-xl group hover:scale-[1.02] flex flex-col justify-between"
                     aria-label={`${profile.name} 프로필 카드`}
                   >
                     <div>
@@ -259,27 +259,27 @@ export default function SajuListPage() {
                           disabled={deletingId === profile.id}
                           onClick={() => setPendingDelete({ id: profile.id, name: profile.name })}
                           aria-label={`${profile.name} 삭제`}
-                          className="p-3 text-secondary hover:text-rose-500 hover:bg-rose-500/10 rounded-2xl transition-all border border-transparent hover:border-rose-500/20 disabled:opacity-50"
+                          className="p-3 text-muted hover:text-rose-500 hover:bg-rose-500/10 rounded-2xl transition-all border border-transparent hover:border-rose-500/20 disabled:opacity-50"
                         >
                           {deletingId === profile.id ? <Loader2 className="w-6 h-6 animate-spin" /> : <Trash2 className="w-6 h-6" />}
                         </button>
                       </div>
 
                       <div className="mb-8">
-                        <h3 className="text-3xl font-black text-foreground italic tracking-tighter uppercase group-hover:text-primary transition-colors">
+                        <h3 className="text-3xl font-black text-foreground tracking-tighter uppercase group-hover:text-primary transition-colors">
                           {profile.name}
                         </h3>
-                        <span className="inline-flex mt-3 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border bg-primary/10 text-primary border-primary/30">
+                        <span className="inline-flex mt-3 px-4 py-1.5 rounded-full text-sm font-black uppercase tracking-widest border bg-primary/10 text-primary border-primary/30">
                           {relationshipLabel[profile.relationship] || profile.relationship}
                         </span>
                       </div>
 
-                      <div className="space-y-4 mb-10">
-                        <div className="flex items-center gap-4 text-sm font-bold text-secondary uppercase tracking-widest">
+                      <div className="space-y-4 mb-6">
+                        <div className="flex items-center gap-4 text-sm font-bold text-muted uppercase tracking-widest">
                           <Calendar className="w-5 h-5 text-primary" />
                           {String(profile.birthdate).split('T')[0]} ({calendarLabel[profile.calendarType] || profile.calendarType})
                         </div>
-                        <div className="flex items-center gap-4 text-sm font-bold text-secondary uppercase tracking-widest">
+                        <div className="flex items-center gap-4 text-sm font-bold text-muted uppercase tracking-widest">
                           <User className="w-5 h-5 text-primary" />
                           {genderLabel[profile.gender] || profile.gender}
                         </div>
@@ -304,15 +304,15 @@ export default function SajuListPage() {
 
       {pendingDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-md rounded-3xl border border-border-color bg-surface p-6">
+          <div className="w-full max-w-md rounded-3xl border border-border-color bg-surface p-4 sm:p-6">
             <div className="flex items-start justify-between mb-2">
               <h3 className="text-xl font-black">프로필 삭제</h3>
-              <Sparkles className="w-5 h-5 text-secondary" />
+              <Sparkles className="w-5 h-5 text-muted" />
             </div>
-            <p className="mt-2 text-sm text-secondary">
+            <p className="mt-2 text-sm text-muted">
               <span className="text-foreground font-bold">{pendingDelete.name}</span> 프로필을 삭제할까요?
             </p>
-            <p className="mt-1 text-xs text-secondary">삭제된 데이터는 되돌릴 수 없습니다.</p>
+            <p className="mt-1 text-sm text-muted">삭제된 데이터는 되돌릴 수 없습니다.</p>
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setPendingDelete(null)}

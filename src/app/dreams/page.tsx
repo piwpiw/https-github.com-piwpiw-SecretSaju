@@ -58,12 +58,12 @@ export default function DreamsPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-28">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.18),transparent_45%)]" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <div className="flex items-center justify-between mb-8">
           <button type="button" onClick={() => router.back()} aria-label="뒤로 가기" className="w-10 h-10 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center">
             <ArrowLeft className="w-5 h-5 text-slate-200" />
           </button>
-          <div className="text-xs px-4 py-2 rounded-full border border-white/10 bg-white/10 text-slate-300">꿈해몽 정밀 도우미</div>
+          <div className="text-sm px-4 py-2 rounded-full border border-white/10 bg-white/10 text-slate-300">꿈해몽 정밀 도우미</div>
         </div>
 
         <ScrollReveal>
@@ -72,7 +72,7 @@ export default function DreamsPage() {
           </div>
 
           {/* 320px에서 좌우 여백이 과해 본문이 잘리던 문제 — 모바일만 축소 */}
-          <section className="bg-slate-900/55 border border-white/10 rounded-[1.75rem] p-5 sm:rounded-[2.5rem] sm:p-8 md:p-12 relative overflow-hidden">
+          <section className="bg-slate-900/55 border border-white/10 rounded-[1.75rem] p-5 sm:rounded-[2.5rem] sm:p-8 md:p-6 sm:p-9 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] -mr-32 -mt-32" />
 
             <div className="flex items-center gap-3 mb-6">
@@ -80,8 +80,8 @@ export default function DreamsPage() {
                 <Sparkles className="w-5 h-5 text-emerald-400" />
               </div>
               <div>
-                <h1 className="text-2xl font-black italic text-white uppercase tracking-widest leading-none">AI 꿈 해몽 비서</h1>
-                <p className="text-[10px] font-black text-emerald-500/60 uppercase tracking-[0.2em] mt-1 italic">심층 상징 추출 엔진</p>
+                <h1 className="text-2xl font-black text-white uppercase tracking-widest leading-none">AI 꿈 해몽 비서</h1>
+                <p className="text-[13px] font-black text-emerald-500/60 uppercase tracking-[0.2em] mt-1">심층 상징 추출 엔진</p>
               </div>
             </div>
 
@@ -89,7 +89,7 @@ export default function DreamsPage() {
 
             <AIDreamParser />
 
-            {status ? <p className="mt-4 text-xs text-emerald-300 text-center font-bold tracking-widest uppercase animate-pulse">{status}</p> : null}
+            {status ? <p className="mt-4 text-sm text-emerald-300 text-center font-bold tracking-widest uppercase animate-pulse">{status}</p> : null}
           </section>
         </ScrollReveal>
 

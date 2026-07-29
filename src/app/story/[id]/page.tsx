@@ -26,18 +26,18 @@ export default function StoryDetailPage({ params }: Props) {
     <main className="min-h-[100dvh] bg-background text-foreground relative pb-32">
       <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
-        <header className="mb-12">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
+        <header className="mb-8">
           <Link
             href="/story"
-            className="inline-flex items-center gap-3 text-secondary hover:text-foreground mb-6 transition-all group"
+            className="inline-flex items-center gap-3 text-muted hover:text-foreground mb-6 transition-all group"
             aria-label="목록으로 돌아가기"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             목록으로 돌아가기
           </Link>
 
-          <nav aria-label="스토리 내비게이션" className="text-xs text-secondary flex items-center gap-2">
+          <nav aria-label="스토리 내비게이션" className="text-sm text-muted flex items-center gap-2">
             <Link href="/story" className="hover:text-foreground">
               스토리 목록
             </Link>
@@ -49,13 +49,13 @@ export default function StoryDetailPage({ params }: Props) {
         </header>
 
         <article>
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-black text-primary uppercase tracking-widest bg-primary/10">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-black text-primary uppercase tracking-widest bg-primary/10">
             {story.category}
           </span>
           <h1 className="mt-4 text-3xl md:text-5xl font-black leading-tight">{story.title}</h1>
-          <p className="mt-4 text-secondary leading-relaxed">{story.description}</p>
+          <p className="mt-4 text-muted leading-relaxed">{story.description}</p>
 
-          <div className="mt-6 flex items-center gap-6 text-sm font-bold text-secondary uppercase tracking-wider">
+          <div className="mt-6 flex items-center gap-6 text-sm font-bold text-muted uppercase tracking-wider">
             <span className="flex items-center gap-1.5">
               <Calendar className="w-4 h-4" />
               {story.date}
@@ -68,7 +68,7 @@ export default function StoryDetailPage({ params }: Props) {
         </article>
 
         <section
-          className="mt-8 bg-surface border border-border-color rounded-4xl p-8 md:p-10 shadow-xl leading-relaxed whitespace-pre-line text-base md:text-lg"
+          className="mt-8 bg-surface border border-border-color rounded-4xl p-5 md:p-5 sm:p-8 shadow-xl leading-relaxed whitespace-pre-line text-base md:text-lg"
           aria-label={`${story.title} 본문`}
         >
           {story.content}
@@ -81,10 +81,10 @@ export default function StoryDetailPage({ params }: Props) {
             aria-label="이전 글 보기"
           >
             <span>
-              <span className="text-secondary">이전 글</span>
+              <span className="text-muted">이전 글</span>
               <span className="block mt-1 text-foreground">{prevStory.title}</span>
             </span>
-            <ArrowLeft className="w-5 h-5 text-secondary" />
+            <ArrowLeft className="w-5 h-5 text-muted" />
           </Link>
           <Link
             href={`/story/${nextStory.id}`}
@@ -92,10 +92,10 @@ export default function StoryDetailPage({ params }: Props) {
             aria-label="다음 글 보기"
           >
             <span className="text-right">
-              <span className="text-secondary">다음 글</span>
+              <span className="text-muted">다음 글</span>
               <span className="block mt-1 text-foreground">{nextStory.title}</span>
             </span>
-            <ArrowRight className="w-5 h-5 text-secondary" />
+            <ArrowRight className="w-5 h-5 text-muted" />
           </Link>
         </div>
       </div>

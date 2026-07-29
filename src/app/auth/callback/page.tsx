@@ -111,11 +111,11 @@ export default function AuthCallback() {
     }, [router]);
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-background px-6">
+        <main className="min-h-screen flex items-center justify-center bg-background px-0 sm:px-6">
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-surface p-12 rounded-4xl border border-border-color shadow-2xl text-center max-w-md w-full"
+                className="bg-surface p-4 sm:p-9 rounded-4xl border border-border-color shadow-2xl text-center max-w-md w-full"
             >
                 <div
                     className={`w-24 h-24 rounded-3xl ${isError ? 'bg-rose-500/10 border-rose-500/30' : 'bg-primary/10 border-primary/30'} border flex items-center justify-center mx-auto mb-8 shadow-xl ${isError ? 'shadow-rose-500/20' : 'shadow-primary/20'}`}
@@ -133,7 +133,7 @@ export default function AuthCallback() {
                     {isError ? '로그인 실패' : '로그인 확인 중'}
                 </h1>
 
-                <p className={`text-lg ${isError ? 'text-secondary opacity-80' : 'text-secondary'} font-bold`}>{message}</p>
+                <p className={`text-lg ${isError ? 'text-muted opacity-80' : 'text-muted'} font-bold`}>{message}</p>
             </motion.div>
         </main>
     );

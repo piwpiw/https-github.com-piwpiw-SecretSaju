@@ -75,12 +75,12 @@ function StatCard({ label, value, unit, color, icon: Icon, percent }: {
   return (
     <div className="rounded-[2rem] border border-white/8 bg-white/[0.03] p-5 flex flex-col gap-3 hover:border-white/15 transition-all group">
       <div className="flex items-center justify-between">
-        <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">{label}</p>
+        <p className="text-[13px] font-black uppercase tracking-[0.25em] text-slate-500">{label}</p>
         <Icon className={`w-4 h-4 ${color} opacity-60 group-hover:opacity-100 transition-opacity`} />
       </div>
       <div className="flex items-end gap-1.5">
-        <span className={`text-3xl font-black italic ${color}`}>{value}</span>
-        <span className="text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">{unit}</span>
+        <span className={`text-3xl font-black ${color}`}>{value}</span>
+        <span className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-widest">{unit}</span>
       </div>
       {percent !== undefined && (
         <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
@@ -144,14 +144,14 @@ export default function MyPage() {
 
   if (!user) {
     return (
-      <main className="min-h-screen relative overflow-hidden flex items-center justify-center px-6 py-16 bg-slate-950">
+      <main className="min-h-screen relative overflow-hidden flex items-center justify-center px-0 sm:px-6 py-10 bg-slate-950">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.08),transparent_70%)]" />
         <motion.div
           initial={{ opacity: 0, y: 24, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           className="max-w-sm w-full relative z-10"
         >
-          <div className="rounded-[3rem] border border-white/10 bg-slate-900/60 backdrop-blur-2xl p-10 text-center shadow-2xl">
+          <div className="rounded-[2rem] border border-white/10 bg-slate-900/60 backdrop-blur-2xl p-5 sm:p-8 text-center shadow-2xl">
             <div className="w-20 h-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-6">
               <Crown className="w-10 h-10 text-indigo-400" />
             </div>
@@ -165,7 +165,7 @@ export default function MyPage() {
             >
               로그인 하기
             </button>
-            <Link href="/" className="text-xs text-slate-500 hover:text-slate-300 mt-6 inline-block tracking-widest uppercase transition-colors">
+            <Link href="/" className="text-sm text-slate-500 hover:text-slate-300 mt-6 inline-block tracking-widest uppercase transition-colors">
               홈으로 돌아가기
             </Link>
           </div>
@@ -183,13 +183,13 @@ export default function MyPage() {
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] opacity-10" style={{ background: "radial-gradient(circle, rgba(168,85,247,0.3) 0%, transparent 70%)" }} />
       </div>
 
-      <div className="max-w-4xl mx-auto px-5 py-10 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-5 py-10 relative z-10">
 
         {/* ── Header ─────────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start justify-between mb-10"
+          className="flex items-start justify-between mb-6"
         >
           <div className="flex items-center gap-5">
             {/* Avatar */}
@@ -204,20 +204,20 @@ export default function MyPage() {
                 )}
               </div>
               {/* Level badge */}
-              <div className={`absolute -bottom-2 -right-2 px-2 py-0.5 rounded-xl ${level.bg} border ${level.border} text-[10px] font-black ${level.color}`}>
+              <div className={`absolute -bottom-2 -right-2 px-2 py-0.5 rounded-xl ${level.bg} border ${level.border} text-[13px] font-black ${level.color}`}>
                 {level.badge}
               </div>
             </div>
             {/* Name & greeting */}
             <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-0.5">{greeting} ·</p>
+              <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-0.5">{greeting} ·</p>
               <h1 className="text-2xl font-black text-white">{user.nickname}<span className="text-indigo-400">님</span></h1>
               <div className="flex items-center gap-2 mt-1">
-                <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full ${level.bg} border ${level.border} ${level.color}`}>
+                <span className={`text-[13px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full ${level.bg} border ${level.border} ${level.color}`}>
                   {level.name}
                 </span>
                 {user.auth_provider && (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-indigo-400/70 bg-indigo-500/5 px-2 py-0.5 rounded-full border border-indigo-500/10">
+                  <span className="text-[13px] font-black uppercase tracking-widest text-indigo-400/70 bg-indigo-500/5 px-2 py-0.5 rounded-full border border-indigo-500/10">
                     {user.auth_provider === "mcp" ? "MCP" : user.auth_provider}
                   </span>
                 )}
@@ -280,7 +280,7 @@ export default function MyPage() {
           className="mb-8"
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-500">주요 메뉴</h2>
+            <h2 className="text-sm font-black uppercase tracking-[0.25em] text-slate-500">주요 메뉴</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {MAIN_ACTIONS.map((item) => {
@@ -291,9 +291,9 @@ export default function MyPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-black text-white text-sm">{item.label}</p>
-                    <p className="text-[11px] text-slate-500 mt-0.5 truncate">{item.desc}</p>
+                    <p className="text-[13px] text-slate-500 mt-0.5 truncate">{item.desc}</p>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                 </div>
               );
 
@@ -313,7 +313,7 @@ export default function MyPage() {
           transition={{ delay: 0.3 }}
           className="mb-8"
         >
-          <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-500 mb-4">빠른 바로가기</h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.25em] text-slate-500 mb-4">빠른 바로가기</h2>
           <div className="grid grid-cols-4 gap-3">
             {QUICK_LINKS.map((item) => (
               <Link
@@ -322,7 +322,7 @@ export default function MyPage() {
                 className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl ${item.bg} border hover:scale-[1.03] transition-all`}
               >
                 <item.icon className={`w-5 h-5 ${item.color}`} />
-                <span className="text-[11px] font-black text-slate-300 text-center leading-tight">{item.label}</span>
+                <span className="text-[13px] font-black text-slate-300 text-center leading-tight">{item.label}</span>
               </Link>
             ))}
           </div>
@@ -335,7 +335,7 @@ export default function MyPage() {
           transition={{ delay: 0.34 }}
           className="mb-8"
         >
-          <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-500 mb-4">Account Standards</h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.25em] text-slate-500 mb-4">Account Standards</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Link
               href="/billing"
@@ -346,9 +346,9 @@ export default function MyPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-black text-white text-sm">결제 및 구독 관리</p>
-                <p className="text-[11px] text-slate-500 mt-0.5">결제, 환불, 멤버십 문의 경로를 확인합니다.</p>
+                <p className="text-[13px] text-slate-500 mt-0.5">결제, 환불, 멤버십 문의 경로를 확인합니다.</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
             </Link>
             <Link
               href="/account/delete"
@@ -359,16 +359,16 @@ export default function MyPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-black text-white text-sm">회원 탈퇴 요청</p>
-                <p className="text-[11px] text-slate-500 mt-0.5">삭제 전 안내와 요청 절차를 확인합니다.</p>
+                <p className="text-[13px] text-slate-500 mt-0.5">삭제 전 안내와 요청 절차를 확인합니다.</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
             </Link>
           </div>
         </motion.section>
 
         <div className="flex items-center justify-center gap-2 pt-4 border-t border-white/5">
           <Orbit className="w-3 h-3 text-indigo-500/50" />
-          <p className="text-[10px] uppercase tracking-[0.35em] text-slate-600 font-black">Secret Saju</p>
+          <p className="text-[13px] uppercase tracking-[0.35em] text-slate-400 font-black">Secret Saju</p>
           <Orbit className="w-3 h-3 text-indigo-500/50" />
         </div>
       </div>
@@ -388,7 +388,7 @@ export default function MyPage() {
               initial={{ scale: 0.9, opacity: 0, y: 16 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 16 }}
-              className="w-full max-w-sm rounded-[2.5rem] border border-white/10 bg-slate-900/95 backdrop-blur-2xl p-8 text-center"
+              className="w-full max-w-sm rounded-[2.5rem] border border-white/10 bg-slate-900/95 backdrop-blur-2xl p-5 sm:p-8 text-center"
             >
               <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto mb-5">
                 <LogOut className="w-7 h-7 text-rose-400" />

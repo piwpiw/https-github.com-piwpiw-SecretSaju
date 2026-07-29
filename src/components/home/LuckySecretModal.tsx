@@ -55,7 +55,7 @@ export default function LuckySecretModal() {
                         initial={{ opacity: 0, scale: 0.8, y: 50, rotate: -2 }}
                         animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
                         exit={{ opacity: 0, scale: 0.8, y: 50 }}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-sm bg-gradient-to-br from-indigo-900 to-slate-900 border border-indigo-500/30 rounded-[3rem] p-10 z-[301] shadow-[0_0_100px_rgba(99,102,241,0.3)] overflow-hidden"
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-sm bg-gradient-to-br from-indigo-900 to-slate-900 border border-indigo-500/30 rounded-[2rem] p-5 sm:p-8 z-[301] shadow-[0_0_100px_rgba(99,102,241,0.3)] overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px] -mr-32 -mt-32" />
 
@@ -63,22 +63,22 @@ export default function LuckySecretModal() {
                             <X className="w-6 h-6" />
                         </button>
 
-                        <div className="text-center space-y-8 relative z-10">
+                        <div className="text-center space-y-6 relative z-10">
                             <div className="w-24 h-24 bg-white/5 backdrop-blur-xl rounded-[2.5rem] flex items-center justify-center mx-auto border border-white/10 shadow-2xl relative group">
                                 <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-xl animate-pulse" />
                                 <Star className="w-12 h-12 text-amber-400 fill-current group-hover:scale-125 transition-transform duration-700" />
                             </div>
 
                             <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-[13px] font-black uppercase tracking-widest mb-4">
                                     <Zap className="w-3 h-3" /> 운명 공개
                                 </div>
-                                <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase mb-4">
+                                <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-4">
                                     {activeProfile?.name}님을 위한 비밀 가이드
                                 </h3>
 
                                 <div className="bg-white/5 rounded-3xl p-6 border border-white/5 shadow-inner">
-                                    <p className="text-sm font-bold text-slate-100 leading-relaxed italic">
+                                    <p className="text-sm font-bold text-slate-100 leading-relaxed">
                                         &ldquo;{secret}&rdquo;
                                     </p>
                                 </div>
@@ -87,13 +87,13 @@ export default function LuckySecretModal() {
                             <div className="flex flex-col gap-3">
                                 <button
                                     onClick={() => setIsOpen(false)}
-                                    className="w-full py-4 bg-indigo-600 border border-indigo-400/50 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-indigo-900 transition-all shadow-xl shadow-indigo-950/50"
+                                    className="w-full py-4 bg-indigo-600 border border-indigo-400/50 text-white rounded-2xl text-[13px] font-black uppercase tracking-widest hover:bg-white hover:text-indigo-900 transition-all shadow-xl shadow-indigo-950/50"
                                 >
                                     확인 후 닫기
                                 </button>
                                 <div className="flex items-center justify-center gap-2 opacity-30">
                                     <Shield className="w-3 h-3 text-slate-500" />
-                                    <span className="text-[8px] font-black uppercase tracking-tighter text-slate-500 italic">개인 맞춤 운명 흐름</span>
+                                    <span className="text-[13px] font-black uppercase tracking-tighter text-slate-500">개인 맞춤 운명 흐름</span>
                                 </div>
                             </div>
                         </div>

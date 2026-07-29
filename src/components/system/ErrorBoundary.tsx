@@ -50,7 +50,7 @@ export class ErrorBoundary extends Component<Props, State> {
                                 <summary className="cursor-pointer text-sm text-purple-300 mb-2">
                                     개발자 정보 보기
                                 </summary>
-                                <pre className="text-xs text-red-300 overflow-auto">
+                                <pre className="text-sm text-red-300 overflow-auto">
                                     {this.state.error.toString()}
                                     {this.state.error.stack}
                                 </pre>

@@ -18,7 +18,7 @@ export default function KeywordChips({ tags = [] }: KeywordChipsProps) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: i * 0.1 }}
           whileHover={{ scale: 1.05 }}
-          className="px-4 py-1.5 rounded-full border border-white/5 bg-white/5 backdrop-blur-md text-[10px] font-black uppercase tracking-widest italic flex items-center gap-2 group cursor-default shadow-lg shadow-black/20"
+          className="px-4 py-1.5 rounded-full border border-white/5 bg-white/5 backdrop-blur-md text-[13px] font-black uppercase tracking-widest flex items-center gap-2 group cursor-default shadow-lg shadow-black/20"
         >
           <div
             className="w-1 h-4 rounded-full transition-colors"

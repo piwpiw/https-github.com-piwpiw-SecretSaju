@@ -85,29 +85,29 @@ export default function SelectionPage() {
 
     return (
         <main className="min-h-screen relative overflow-hidden pb-40">
-            <div className="max-w-5xl mx-auto px-0 sm:px-6 py-16 relative z-10">
+            <div className="max-w-5xl mx-auto px-0 sm:px-6 py-10 relative z-10">
                 {/* Header */}
                 <div className="text-center md:text-left mb-20 border-b border-border-color pb-16">
                     <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-flex px-4 py-2 rounded-full mb-6 bg-surface border border-border-color">
                         <span className="text-sm font-bold text-primary tracking-widest leading-none uppercase">{t('select.title')}</span>
                     </motion.div>
-        <h1 className="text-5xl md:text-7xl font-black text-foreground italic tracking-tighter uppercase mb-4">
-                        {locale === 'ko' ? '운명' : '운명'} <span className="text-primary italic">{locale === 'ko' ? '서비스' : '서비스'}</span>
+        <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter uppercase mb-4">
+                        {locale === 'ko' ? '운명' : '운명'} <span className="text-primary">{locale === 'ko' ? '서비스' : '서비스'}</span>
                     </h1>
-                    <p className="text-xl md:text-2xl text-secondary font-medium italic opacity-70 max-w-2xl">{t('select.desc')}</p>
+                    <p className="text-xl md:text-2xl text-muted font-medium opacity-70 max-w-2xl">{t('select.desc')}</p>
                 </div>
 
                 {/* Profile Selector */}
                 {profiles.length > 0 && (
                     <div className="mb-16">
-                        <label className="text-xl font-bold flex items-center gap-4 text-secondary mb-6 pl-2">
+                        <label className="text-xl font-bold flex items-center gap-4 text-muted mb-6 pl-2">
                             <Star className="w-6 h-6 text-primary" /> {locale === 'ko' ? '서비스 대상 변경' : '서비스 대상 변경'}
                         </label>
                         <div className="relative group max-w-md">
                             <select
                                 value={selectedProfile}
                                 onChange={(e) => setSelectedProfile(e.target.value)}
-                                className="w-full bg-surface border-2 border-border-color rounded-4xl px-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-primary transition-all appearance-none italic shadow-lg hover:shadow-primary/10"
+                                className="w-full bg-surface border-2 border-border-color rounded-4xl px-8 py-6 text-foreground font-black text-2xl focus:outline-none focus:border-primary transition-all appearance-none shadow-lg hover:shadow-primary/10"
                             >
                                 <option value="" disabled>{locale === 'ko' ? '누구의 운세를 볼까요?' : '누구의 운세를 볼까요?'}</option>
                                 {profiles.map((p) => (
@@ -117,7 +117,7 @@ export default function SelectionPage() {
                                 ))}
                             </select>
                             <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none w-10 h-10 rounded-full bg-background flex items-center justify-center border border-border-color shadow-sm group-hover:bg-primary/10 group-hover:border-primary/30 transition-all">
-                                <ChevronDown className="w-6 h-6 text-secondary group-hover:text-primary transition-colors" />
+                                <ChevronDown className="w-6 h-6 text-muted group-hover:text-primary transition-colors" />
                             </div>
                         </div>
                     </div>
@@ -127,7 +127,7 @@ export default function SelectionPage() {
                 {profiles.length === 0 && <div className="h-10" />}
 
                 {/* Premium Service Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <AnimatePresence>
                         {services.map((svc, i) => (
                             <motion.div
@@ -137,22 +137,22 @@ export default function SelectionPage() {
                                 transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" }}
                             >
                                 <Link href={selectedProfile ? `${svc.href}?profileId=${selectedProfile}` : svc.href} className="block group h-full">
-                                    <div className="bg-surface rounded-5xl p-10 border border-border-color h-full flex flex-col relative overflow-hidden transition-all duration-500 hover:border-primary/50 shadow-xl hover:shadow-primary/10 group-hover:-translate-y-2">
+                                    <div className="bg-surface rounded-5xl p-5 sm:p-8 border border-border-color h-full flex flex-col relative overflow-hidden transition-all duration-500 hover:border-primary/50 shadow-xl hover:shadow-primary/10 group-hover:-translate-y-2">
                                         <div className={`absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br ${svc.bgGlow} rounded-full blur-3xl opacity-30 group-hover:opacity-70 transition-opacity duration-700`} />
 
                                         <div className="flex items-start justify-between mb-8 relative z-10">
                                             <div className={`w-20 h-20 rounded-4xl bg-gradient-to-br ${svc.color} flex items-center justify-center shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
                                                 <svc.icon className="w-10 h-10 text-white" />
                                             </div>
-                                    <span className="px-5 py-2 rounded-full text-sm font-black bg-background border border-border-color tracking-widest uppercase text-secondary group-hover:text-foreground transition-colors">
+                                    <span className="px-5 py-2 rounded-full text-sm font-black bg-background border border-border-color tracking-widest uppercase text-muted group-hover:text-foreground transition-colors">
                                                 {svc.badge}
                                             </span>
                                         </div>
 
                                         <div className="flex-1 relative z-10">
                                             <h3 className="text-3xl font-black text-foreground mb-2 tracking-tight group-hover:text-primary transition-colors">{svc.title}</h3>
-                                            <p className="text-lg font-bold text-secondary italic opacity-80 mb-6">{svc.subtitle}</p>
-                                            <p className="text-lg text-secondary leading-relaxed opacity-90 font-medium">
+                                            <p className="text-lg font-bold text-muted opacity-80 mb-6">{svc.subtitle}</p>
+                                            <p className="text-lg text-muted leading-relaxed opacity-90 font-medium">
                                                 {svc.description}
                                             </p>
                                         </div>
@@ -162,7 +162,7 @@ export default function SelectionPage() {
                                             {locale === 'ko' ? '자세히 보기' : '자세히 보기'}
                                             </span>
                                             <div className="w-12 h-12 rounded-full bg-background border border-border-color flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all shadow-sm">
-                                                <ChevronRight className="w-6 h-6 text-secondary group-hover:text-white transition-colors" />
+                                                <ChevronRight className="w-6 h-6 text-muted group-hover:text-white transition-colors" />
                                             </div>
                                         </div>
                                     </div>
@@ -180,34 +180,34 @@ export default function SelectionPage() {
                         { icon: Star, label: locale === 'ko' ? '운명 리뷰' : '운명 리뷰', href: '/inquiry' },
                         { icon: Flame, label: locale === 'ko' ? '특별 부적' : '특별 부적', href: '/gift' },
                     ].map((item, i) => (
-                        <Link key={i} href={item.href} className="bg-surface rounded-4xl p-8 border border-border-color flex flex-col items-center justify-center text-center gap-4 group hover:border-primary/30 transition-all hover:bg-background shadow-md hover:shadow-lg">
+                        <Link key={i} href={item.href} className="bg-surface rounded-4xl p-5 sm:p-8 border border-border-color flex flex-col items-center justify-center text-center gap-4 group hover:border-primary/30 transition-all hover:bg-background shadow-md hover:shadow-lg">
                             <div className="relative">
                                 <div className="w-16 h-16 rounded-3xl bg-background border border-border-color flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
-                                    <item.icon className="w-8 h-8 text-secondary group-hover:text-primary transition-colors" />
+                                    <item.icon className="w-8 h-8 text-muted group-hover:text-primary transition-colors" />
                                 </div>
                                 {item.badge && (
-                                    <span className="absolute -top-2 -right-2 px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white animate-bounce shadow-md">
+                                    <span className="absolute -top-2 -right-2 px-2 py-0.5 rounded-full text-[13px] font-black bg-rose-500 text-white animate-bounce shadow-md">
                                         {item.badge}
                                     </span>
                                 )}
                             </div>
-                            <span className="text-lg font-black tracking-tight text-secondary group-hover:text-foreground">{item.label}</span>
+                            <span className="text-lg font-black tracking-tight text-muted group-hover:text-foreground">{item.label}</span>
                         </Link>
                     ))}
                 </div>
 
                 {/* No profiles state */}
                 {profiles.length === 0 && (
-                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-16 bg-surface rounded-5xl p-16 text-center border-2 border-dashed border-primary/30 relative overflow-hidden group">
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-16 bg-surface rounded-5xl p-4 sm:p-16 text-center border-2 border-dashed border-primary/30 relative overflow-hidden group">
                         <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors duration-700" />
                         <div className="relative z-10">
-                            <div className="w-24 h-24 bg-primary/10 rounded-4xl flex items-center justify-center mx-auto mb-10 border border-primary/20">
+                            <div className="w-24 h-24 bg-primary/10 rounded-4xl flex items-center justify-center mx-auto mb-6 border border-primary/20">
                                 <Sparkles className="w-12 h-12 text-primary animate-pulse" />
                             </div>
                             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
                                 {locale === 'ko' ? '아직 등록된 사주 노드가 없습니다' : '아직 등록된 사주 노드가 없습니다'}
                             </h2>
-                            <p className="text-xl text-secondary mb-10 font-medium">
+                            <p className="text-xl text-muted mb-6 font-medium">
                                 {locale === 'ko' ? '분석을 시작하려면 당신의 프로필을 먼저 만들어주세요.' : '분석을 시작하려면 프로필을 먼저 만들어주세요.'}
                             </p>
                             <Link href="/my-saju/add" className="inline-flex items-center gap-4 px-10 py-6 rounded-4xl bg-primary text-white font-black text-xl hover:scale-105 transition-all shadow-xl shadow-primary/20 uppercase tracking-widest">

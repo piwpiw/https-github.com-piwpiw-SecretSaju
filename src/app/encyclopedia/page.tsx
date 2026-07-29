@@ -103,7 +103,7 @@ export default function EncyclopediaPage() {
       <AmbientSoundPortal />
       <EncyclopediaIndex />
 
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8">
         <button onClick={() => router.back()} className="inline-flex items-center gap-2 text-slate-400 hover:text-white">
           <ArrowLeft className="w-4 h-4" />
           이전
@@ -129,7 +129,7 @@ export default function EncyclopediaPage() {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-full text-xs border ${activeCategory === cat.id ? "bg-indigo-500/20 text-indigo-100 border-indigo-400/40" : "bg-white/5 text-slate-300 border-white/10"}`}
+                className={`px-3 py-1.5 rounded-full text-sm border ${activeCategory === cat.id ? "bg-indigo-500/20 text-indigo-100 border-indigo-400/40" : "bg-white/5 text-slate-300 border-white/10"}`}
               >
                 {cat.label}
               </button>
@@ -152,12 +152,12 @@ export default function EncyclopediaPage() {
                   exit={{ opacity: 0, scale: 0.9 }}
                   key={term.id}
                   id={showId ? `index-${currentInitial}` : undefined}
-                  className="rounded-3xl border border-white/5 bg-white/5 p-6 hover:bg-white/10 transition-all hover:border-indigo-500/30 group relative overflow-hidden"
+                  className="rounded-3xl border border-white/5 bg-white/5 p-4 sm:p-6 hover:bg-white/10 transition-all hover:border-indigo-500/30 group relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
                     <Sparkles className="w-5 h-5 text-indigo-400" />
                   </div>
-                  <div className="text-[10px] font-black text-indigo-500 tracking-widest break-keep">{toCategoryLabel(term.category)}</div>
+                  <div className="text-[13px] font-black text-indigo-500 tracking-widest break-keep">{toCategoryLabel(term.category)}</div>
                   <h2 className="text-xl font-black mt-1 text-white group-hover:text-indigo-200 transition-colors flex items-center gap-2">
                     <span className={query && term.name.includes(query) ? "text-indigo-300 underline underline-offset-4 decoration-indigo-500/50" : ""}>{term.name}</span>
                     <span className="text-slate-500 text-sm font-bold">[{term.hanja}]</span>
@@ -165,7 +165,7 @@ export default function EncyclopediaPage() {
                   <p className="text-sm text-slate-400 mt-3 leading-relaxed">{term.desc}</p>
                   <div className="flex flex-wrap gap-2 mt-5">
                     {term.tags.map((tag) => (
-                      <span key={`${term.id}-${tag}`} className="text-[10px] font-black px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                      <span key={`${term.id}-${tag}`} className="text-[13px] font-black px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
                         {tag}
                       </span>
                     ))}
@@ -179,9 +179,9 @@ export default function EncyclopediaPage() {
                 className="col-span-full py-20 text-center"
               >
                 <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
-                  <Search className="w-6 h-6 text-slate-600" />
+                  <Search className="w-6 h-6 text-slate-400" />
                 </div>
-                <p className="text-slate-500 font-black uppercase tracking-widest italic">결과가 없습니다</p>
+                <p className="text-slate-500 font-black uppercase tracking-widest">결과가 없습니다</p>
               </motion.div>
             )}
           </AnimatePresence>

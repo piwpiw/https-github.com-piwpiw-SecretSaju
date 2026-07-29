@@ -199,7 +199,7 @@ export default function RadarChart({
                             initial={{ opacity: 0, scale: 0.5 }}
                             animate={{ opacity: 0.6, scale: 1 }}
                             transition={{ delay: 1.5 + i * 0.1 }}
-                            className="text-[11px] sm:text-[12px] font-semibold tracking-[0.2em] uppercase"
+                            className="text-[13px] sm:text-[13px] font-semibold tracking-[0.2em] uppercase"
                             textAnchor="middle"
                             alignmentBaseline="middle"
                         >

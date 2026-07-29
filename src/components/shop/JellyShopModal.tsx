@@ -30,6 +30,7 @@ export default function JellyShopModal({
   const titleId = useId();
   const descriptionId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const [selectedTier, setSelectedTier] = useState<string | null>(
     highlightTier || 'pro',
   );
@@ -91,14 +92,58 @@ export default function JellyShopModal({
     }
 
     document.body.style.overflow = 'hidden';
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
     closeButtonRef.current?.focus();
 
-    window.addEventListener('keydown', handleEscapeClose);
+    // Escape 는 있었지만 Tab 을 막는 게 없어서, 결제 모달이 떠 있는 채로
+    // 탭이 뒤 페이지의 버튼들로 새어 나갔다. 화면에는 모달만 보이는데
+    // 포커스는 안 보이는 곳에 가 있으니 키보드로는 쓸 수가 없다.
+    const focusableSelector = [
+      'a[href]', 'button:not([disabled])', 'input:not([disabled])',
+      'select:not([disabled])', 'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])',
+    ].join(',');
+
+    const focusables = () => {
+      const root = dialogRef.current;
+      if (!root) return [] as HTMLElement[];
+      return Array.from(root.querySelectorAll<HTMLElement>(focusableSelector)).filter(
+        (el) => el.offsetParent !== null || el === document.activeElement,
+      );
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const items = focusables();
+      if (items.length === 0) return;
+      const firstItem = items[0];
+      const lastItem = items[items.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      const outside = !dialogRef.current?.contains(active);
+
+      if (event.shiftKey && (active === firstItem || outside)) {
+        event.preventDefault();
+        lastItem.focus();
+      } else if (!event.shiftKey && (active === lastItem || outside)) {
+        event.preventDefault();
+        firstItem.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
     return () => {
       document.body.style.overflow = '';
-      window.removeEventListener('keydown', handleEscapeClose);
+      document.removeEventListener('keydown', onKeyDown);
+      // 닫힐 때 열었던 버튼으로 포커스를 되돌린다.
+      previouslyFocused?.focus?.();
     };
-  }, [handleEscapeClose, isOpen]);
+  }, [isOpen, onClose]);
 
   const handlePurchase = async (tier: PricingTier) => {
     trackPaymentClick(tier.id, tier.price);
@@ -171,6 +216,7 @@ export default function JellyShopModal({
             className="fixed inset-0 z-[71] flex items-center justify-center p-4 pointer-events-none"
           >
             <div
+              ref={dialogRef}
               className="bg-surface rounded-2xl shadow-2xl max-w-2xl w-full pointer-events-auto overflow-hidden border border-white/10"
               onClick={(e) => e.stopPropagation()}
               onKeyDown={handleEscapeClose}
@@ -189,7 +235,7 @@ export default function JellyShopModal({
                   type="button"
                   onClick={onClose}
                   className="absolute top-4 right-4 rounded-full p-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-                  style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)' }}
+                  style={{ backgroundColor: 'var(--surface)', color: 'var(--text-muted)' }}
                   aria-label="젤리 구매 모달 닫기"
                 >
                   <X className="w-5 h-5" />
@@ -201,7 +247,7 @@ export default function JellyShopModal({
                     젤리 구매
                   </h2>
                 </div>
-                <p id={descriptionId} className="text-sm break-keep" style={{ color: 'var(--text-secondary)' }}>
+                <p id={descriptionId} className="text-sm break-keep" style={{ color: 'var(--text-muted)' }}>
                   {FREE_LAUNCH
                     ? '무료 오픈 기간에는 모든 기능이 무료라 충전하지 않아도 됩니다. 아래는 정식 오픈 후 가격 안내입니다.'
                     : '내 지갑 잔액을 간편하게 충전하세요.'}
@@ -251,7 +297,7 @@ export default function JellyShopModal({
                     >
                       {tier.popular && (
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                          <div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                          <div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
                             <TrendingUp className="w-3 h-3" />
                             추천
                           </div>
@@ -263,7 +309,7 @@ export default function JellyShopModal({
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="text-lg font-bold text-foreground">{tier.label}</h3>
                             {tier.badge && (
-                              <span className="text-xs font-semibold text-yellow-400 bg-yellow-400/20 px-2 py-0.5 rounded">
+                              <span className="text-sm font-semibold text-yellow-400 bg-yellow-400/20 px-2 py-0.5 rounded">
                                 {tier.badge}
                               </span>
                             )}
@@ -277,7 +323,7 @@ export default function JellyShopModal({
                             )}
                           </div>
 
-                          <p className="text-xs text-zinc-500 mt-1">{`평균 ${perUnitPrice.toLocaleString()}원 / 1젤리`}</p>
+                          <p className="text-sm text-zinc-500 mt-1">{`평균 ${perUnitPrice.toLocaleString()}원 / 1젤리`}</p>
                         </div>
 
                         <div className="text-right">
@@ -323,7 +369,7 @@ export default function JellyShopModal({
                           <p className={`text-sm font-bold ${isActive ? 'text-yellow-400' : 'text-foreground'}`}>
                             {method.label}
                           </p>
-                          <p className="text-xs text-zinc-500 truncate">{method.desc}</p>
+                          <p className="text-sm text-zinc-500 truncate">{method.desc}</p>
                         </div>
                       </button>
                     );
@@ -358,12 +404,12 @@ export default function JellyShopModal({
                   )}
                 </button>
 
-                <p className="text-center text-xs text-zinc-500 mt-3">
+                <p className="text-center text-sm text-zinc-500 mt-3">
                   결제 완료 후 사용 가능한 젤리 수량이 즉시 반영됩니다.
                 </p>
 
                 {purchaseError && (
-                  <p className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-300 text-center">
+                  <p className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300 text-center">
                     {purchaseError}
                   </p>
                 )}

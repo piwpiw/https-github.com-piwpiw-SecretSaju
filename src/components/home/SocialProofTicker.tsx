@@ -21,10 +21,14 @@ export default function SocialProofTicker() {
                 {[...USERS, ...USERS, ...USERS].map((u, i) => (
                     <div key={i} className="flex items-center gap-3">
                         <div className="w-1 h-1 rounded-full bg-indigo-500 animate-pulse" />
-                        <span className="text-[10px] font-black text-slate-300 italic tracking-tighter">
+                        <span className="text-[13px] font-black text-slate-300 tracking-tighter">
                             {u.name}님이 <span className="text-indigo-400">{u.action}</span>
                         </span>
-                        <span className="text-[8px] font-bold text-slate-600 uppercase tracking-widest">{u.time}</span>
+                        {/* 이 티커는 bg-slate-950 위에 있고 그 배경은 테마를 따르지 않는다.
+                            그래서 테마 토큰(text-muted)을 쓰면 가독성 테마에서
+                            #374151 이 되어 1.96:1 로 오히려 안 보인다.
+                            고정 배경에는 고정 밝은 색을 쓴다 (slate-400, 7.87:1). */}
+                        <span className="text-[13px] font-bold text-slate-400 uppercase tracking-widest">{u.time}</span>
                     </div>
                 ))}
             </motion.div>

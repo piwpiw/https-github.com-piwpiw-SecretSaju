@@ -163,16 +163,16 @@ export default function MorePage() {
   return (
     <main className="min-h-[100dvh] relative overflow-hidden pb-40 bg-background text-foreground">
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.05]" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
-        <div className="flex items-center gap-6 mb-12 pb-8 border-b border-border-color">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
+        <div className="flex items-center gap-6 mb-8 pb-8 border-b border-border-color">
           <div className="w-20 h-20 rounded-3xl bg-surface border border-border-color flex items-center justify-center shadow-2xl relative overflow-hidden group">
             <div className="absolute inset-0 bg-primary/20 animate-pulse group-hover:scale-150 transition-transform duration-700" />
             <Settings className="w-10 h-10 text-primary relative z-10 sm:animate-[spin_6s_linear_infinite]" />
           </div>
           <div>
-            <p className="text-sm font-black text-secondary tracking-[0.2em] uppercase">Secret Saju</p>
-            <h1 className="text-4xl font-black italic tracking-tighter mb-2">더 보기</h1>
-            <p className="text-xs font-bold text-secondary tracking-widest uppercase">전체 메뉴를 빠르게 이동하세요</p>
+            <p className="text-sm font-black text-muted tracking-[0.2em] uppercase">Secret Saju</p>
+            <h1 className="text-4xl font-black tracking-tighter mb-2">더 보기</h1>
+            <p className="text-sm font-bold text-muted tracking-widest uppercase">전체 메뉴를 빠르게 이동하세요</p>
           </div>
         </div>
 
@@ -185,13 +185,13 @@ export default function MorePage() {
               transition={{ delay: gIdx * 0.08 }}
               className="space-y-6"
             >
-              <h2 className="text-sm font-black text-secondary tracking-widest uppercase flex items-center gap-3">
+              <h2 className="text-sm font-black text-muted tracking-widest uppercase flex items-center gap-3">
                 <Shield className="w-4 h-4 text-primary" /> {group.group}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {group.items.map((item) => (
                   <Link key={item.link} href={item.link}>
-                    <div className="bg-surface border border-border-color p-6 rounded-3xl hover:-translate-y-1 hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group flex items-center justify-between h-full">
+                    <div className="bg-surface border border-border-color p-4 sm:p-6 rounded-3xl hover:-translate-y-1 hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group flex items-center justify-between h-full">
                       <div className="flex items-center gap-5">
                         <div className="w-14 h-14 rounded-2xl bg-background border border-border-color flex items-center justify-center relative overflow-hidden shrink-0">
                           <div className={`absolute inset-0 opacity-10 ${item.color.replace("text", "bg")} group-hover:opacity-30 transition-opacity`} />
@@ -201,16 +201,16 @@ export default function MorePage() {
                           <h3 className="font-bold text-lg mb-1 flex items-center gap-3">
                             {item.title}
                             {item.badge && (
-                              <span className="text-[9px] px-2 py-0.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20 tracking-widest uppercase">
+                              <span className="text-[13px] px-2 py-0.5 rounded-full bg-secondary/10 text-muted border border-secondary/20 tracking-widest uppercase">
                                 {item.badge}
                               </span>
                             )}
                           </h3>
-                          <p className="text-xs text-secondary font-medium leading-relaxed">{item.desc}</p>
-                          <p className="text-[10px] text-slate-400 mt-1">도움말: {item.help}</p>
+                          <p className="text-sm text-muted font-medium leading-relaxed">{item.desc}</p>
+                          <p className="text-[13px] text-slate-400 mt-1">도움말: {item.help}</p>
                         </div>
                       </div>
-                      <ChevronRight className="w-6 h-6 text-secondary group-hover:text-foreground transition-colors group-hover:translate-x-1 shrink-0 ml-4" />
+                      <ChevronRight className="w-6 h-6 text-muted group-hover:text-foreground transition-colors group-hover:translate-x-1 shrink-0 ml-4" />
                     </div>
                   </Link>
                 ))}
@@ -227,18 +227,18 @@ export default function MorePage() {
             className="space-y-6 pt-8 border-t border-border-color"
           >
             <div>
-              <h2 className="text-sm font-black text-secondary tracking-widest uppercase flex items-center gap-3">
+              <h2 className="text-sm font-black text-muted tracking-widest uppercase flex items-center gap-3">
                 <Compass className="w-4 h-4 text-primary" /> 전체 메뉴
               </h2>
-              <p className="mt-2 text-xs text-secondary break-keep">
+              <p className="mt-2 text-sm text-muted break-keep">
                 구현된 모든 화면을 한곳에 모았습니다. 찾는 기능이 위에 없다면 여기서 확인하세요.
               </p>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-6">
               {SITE_MENU.map((group) => (
                 <div key={group.title}>
-                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.24em] text-primary break-keep">
+                  <p className="mb-3 text-[13px] font-black uppercase tracking-[0.24em] text-primary break-keep">
                     {group.title}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -254,7 +254,7 @@ export default function MorePage() {
                         <span className="min-w-0">
                           <span className="block text-sm font-bold break-keep">{item.label}</span>
                           {item.desc ? (
-                            <span className="block text-[11px] leading-5 text-secondary break-keep">
+                            <span className="block text-[13px] leading-5 text-muted break-keep">
                               {item.desc}
                             </span>
                           ) : null}

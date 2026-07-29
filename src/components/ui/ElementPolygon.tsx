@@ -102,7 +102,7 @@ export default function ElementPolygon({ scores, size = 200, className = "" }: E
                     return (
                         <motion.div
                             key={`label-${i}`}
-                            className="absolute text-xs font-bold text-white/70"
+                            className="absolute text-sm font-bold text-white/70"
                             style={{
                                 left: edge.x,
                                 top: edge.y,

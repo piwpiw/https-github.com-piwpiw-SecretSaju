@@ -71,7 +71,7 @@ function ScoreRing({ score }: { score: number }) {
           className="text-3xl font-black" style={{ color }}>
           {score}
         </motion.p>
-        <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">점</p>
+        <p className="text-[13px] font-black uppercase tracking-widest text-slate-500">점</p>
       </div>
     </div>
   );
@@ -80,7 +80,7 @@ function ScoreRing({ score }: { score: number }) {
 function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
   return (
     <div className={`rounded-2xl border p-4 ${tone}`}>
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-white/80">{title}</p>
+      <p className="text-sm font-black uppercase tracking-[0.2em] text-white/80">{title}</p>
       <p className="mt-2 text-sm leading-relaxed text-slate-100 break-keep">{body}</p>
     </div>
   );
@@ -154,17 +154,17 @@ export default function DailyFortunePage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px]" style={{ background: "radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%)" }} />
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-10 relative z-10">
+      <div className="max-w-2xl mx-auto px-0 sm:px-5 py-10 relative z-10">
 
         {/* Nav */}
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex items-center justify-between mb-6">
           <button onClick={() => router.back()}
             className="w-11 h-11 rounded-2xl bg-white/5 border border-white/8 flex items-center justify-center hover:bg-white/10 transition-all group" aria-label="뒤로 가기">
             <ArrowLeft className="w-5 h-5 text-slate-300 group-hover:-translate-x-0.5 transition-transform" />
           </button>
           <div className="text-center">
             <h1 className="text-lg font-black text-white tracking-tight">일일 운세</h1>
-            {now && <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center justify-center gap-1">
+            {now && <p className="text-[13px] font-bold text-slate-400 uppercase tracking-widest flex items-center justify-center gap-1">
               {getTimeIcon(now.getHours())} {now.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}
             </p>}
           </div>
@@ -183,7 +183,7 @@ export default function DailyFortunePage() {
             className="mb-6 flex items-center justify-center gap-3">
             <div className="px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-              <span className="text-[11px] font-black text-indigo-300 tracking-widest">
+              <span className="text-[13px] font-black text-indigo-300 tracking-widest">
                 일주 {liveGanji.day.fullName} · 시주 {liveGanji.hour.fullName}시
               </span>
             </div>
@@ -194,7 +194,7 @@ export default function DailyFortunePage() {
         <div className="flex gap-1 mb-8 p-1 bg-white/[0.04] border border-white/8 rounded-2xl w-fit mx-auto">
           {TABS.map(({ key, label }) => (
             <button key={key} onClick={() => setActiveTab(key)}
-              className={cn("px-5 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all",
+              className={cn("px-5 py-2 rounded-xl text-[13px] font-black uppercase tracking-widest transition-all",
                 activeTab === key
                   ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20"
                   : "text-slate-500 hover:text-slate-300"
@@ -208,13 +208,13 @@ export default function DailyFortunePage() {
         <AnimatePresence mode="wait">
           {isLoading ? (
             <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="rounded-[2.5rem] border border-white/8 bg-white/[0.03] p-10 flex flex-col items-center gap-6">
+              className="rounded-[2.5rem] border border-white/8 bg-white/[0.03] p-5 sm:p-8 flex flex-col items-center gap-6">
               <div className="space-y-3 w-full">
                 {[1, 2, 3].map(i => (
                   <div key={i} className={`h-4 bg-white/5 rounded-full animate-pulse ${i === 3 ? "w-2/3" : "w-full"}`} />
                 ))}
               </div>
-              <p className="text-[11px] font-black text-indigo-400 uppercase tracking-widest animate-pulse">운세 데이터 분석 중...</p>
+              <p className="text-[13px] font-black text-indigo-400 uppercase tracking-widest animate-pulse">운세 데이터 분석 중...</p>
             </motion.div>
           ) : fortune ? (
             <motion.div key="fortune" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
@@ -224,17 +224,17 @@ export default function DailyFortunePage() {
               <div className="rounded-[2.5rem] border border-white/10 bg-slate-900/60 backdrop-blur-xl p-5 sm:p-8 relative overflow-hidden">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-0.5 bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent rounded-full" />
 
-                <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-8">
+                <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-6">
                   {/* Score Ring */}
                   <ScoreRing score={scoreVal} />
 
                   {/* Info */}
                   <div className="flex-1 min-w-0 w-full text-center sm:text-left">
-                    <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500 mb-1">{fortune.date}</p>
+                    <p className="text-[13px] font-black uppercase tracking-[0.25em] text-slate-500 mb-1">{fortune.date}</p>
                     {fortune.pillarName && (
                       <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-3">
                         <Sparkles className="w-3 h-3 text-indigo-400" />
-                        <span className="text-[10px] font-black text-indigo-300">{fortune.pillarName}</span>
+                        <span className="text-[13px] font-black text-indigo-300">{fortune.pillarName}</span>
                       </div>
                     )}
                     <p className="text-sm text-slate-300 leading-relaxed font-medium break-keep">{fortune.message}</p>
@@ -246,22 +246,22 @@ export default function DailyFortunePage() {
                   <div className="mt-6 pt-5 border-t border-white/5 grid grid-cols-3 gap-3">
                     {fortune.luckyColor && (
                       <div className="text-center">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-600 mb-1">럭키 컬러</p>
+                        <p className="text-[13px] font-black uppercase tracking-widest text-muted mb-1">럭키 컬러</p>
                         <p className="text-sm font-black text-slate-200">{fortune.luckyColor}</p>
                       </div>
                     )}
                     {fortune.luckyNumber !== undefined && (
                       <div className="text-center">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-600 mb-1">럭키 넘버</p>
+                        <p className="text-[13px] font-black uppercase tracking-widest text-slate-400 mb-1">럭키 넘버</p>
                         <p className="text-2xl font-black text-amber-400">{fortune.luckyNumber}</p>
                       </div>
                     )}
                     {fortune.element && elemMeta && (
                       <div className="text-center">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-600 mb-1">오행 기운</p>
+                        <p className="text-[13px] font-black uppercase tracking-widest text-slate-400 mb-1">오행 기운</p>
                         <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg ${elemMeta.bg} border`}>
                           <elemMeta.icon className={`w-3 h-3 ${elemMeta.color}`} />
-                          <span className={`text-xs font-black ${elemMeta.color}`}>{fortune.element}</span>
+                          <span className={`text-sm font-black ${elemMeta.color}`}>{fortune.element}</span>
                         </div>
                       </div>
                     )}
@@ -307,8 +307,8 @@ export default function DailyFortunePage() {
               )}
 
               {/* Time Segments */}
-              <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-6">
-                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500 mb-4">시간대별 에너지</p>
+              <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-4 sm:p-6">
+                <p className="text-[13px] font-black uppercase tracking-[0.25em] text-slate-500 mb-4">시간대별 에너지</p>
                 <div className="grid grid-cols-3 gap-3">
                   {SEGMENTS.map((seg) => {
                     const isCurrent = now && (
@@ -325,12 +325,12 @@ export default function DailyFortunePage() {
                           <seg.icon className="w-4 h-4 text-white" />
                         </div>
                         <p className="text-sm font-black text-slate-200 break-keep">{seg.label}</p>
-                        <p className="text-[10px] text-slate-500 mt-0.5 break-keep">{seg.sub}</p>
-                        <p className="text-[9px] text-slate-600 mt-1.5 font-bold">{seg.time}</p>
+                        <p className="text-[13px] text-slate-500 mt-0.5 break-keep">{seg.sub}</p>
+                        <p className="text-[13px] text-slate-400 mt-1.5 font-bold">{seg.time}</p>
                         {isCurrent && (
                           <div className="mt-2 flex items-center gap-1">
                             <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-                            <span className="text-[9px] font-black text-indigo-400 uppercase break-keep">현재</span>
+                            <span className="text-[13px] font-black text-indigo-400 uppercase break-keep">현재</span>
                           </div>
                         )}
                       </div>

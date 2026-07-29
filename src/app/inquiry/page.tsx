@@ -77,14 +77,14 @@ export default function InquiryPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-32">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.14),transparent_50%)]" />
-      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-12 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 py-8 relative z-10">
         <button onClick={() => router.back()} className="mb-8 inline-flex items-center gap-2 text-slate-300 hover:text-white">
           <ArrowLeft className="w-5 h-5" /> 뒤로
         </button>
 
         {step === "form" ? (
-          <form onSubmit={submit} className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-8 md:p-12 space-y-6">
-            <h1 className="text-4xl font-black italic">문의하기</h1>
+          <form onSubmit={submit} className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-5 md:p-6 sm:p-9 space-y-6">
+            <h1 className="text-4xl font-black">문의하기</h1>
             <p className="text-slate-300">요청 성격에 맞는 항목을 고른 뒤 문의를 남겨 주세요.</p>
 
             <fieldset className="grid grid-cols-2 gap-3" aria-describedby="category-help">
@@ -101,7 +101,7 @@ export default function InquiryPage() {
                 <RefreshCw className="inline w-4 h-4 mr-2" /> 환불/결제
               </button>
             </fieldset>
-            <p id="category-help" className="text-xs text-slate-400 -mt-2">
+            <p id="category-help" className="text-sm text-slate-400 -mt-2">
               원하는 상담 유형을 선택하면 담당 라우팅이 달라집니다.
             </p>
 
@@ -122,7 +122,7 @@ export default function InquiryPage() {
                 required
               />
               {!isSubjectValid && touched.subject ? (
-                <p id="subject-feedback" className="mt-2 text-xs text-rose-300">
+                <p id="subject-feedback" className="mt-2 text-sm text-rose-300">
                   제목은 1~80자로 입력해 주세요.
                 </p>
               ) : null}
@@ -145,11 +145,11 @@ export default function InquiryPage() {
                 required
               />
               {!isMessageValid && touched.message ? (
-                <p id="message-feedback" className="mt-2 text-xs text-rose-300">
+                <p id="message-feedback" className="mt-2 text-sm text-rose-300">
                   문의 내용은 최소 10자 이상 입력해 주세요.
                 </p>
               ) : null}
-              <p className="text-xs text-slate-500 mt-2">현재 글자 수: {message.length}</p>
+              <p className="text-sm text-slate-500 mt-2">현재 글자 수: {message.length}</p>
             </div>
 
             <div>
@@ -164,14 +164,14 @@ export default function InquiryPage() {
                 className="w-full px-4 py-4 rounded-2xl bg-slate-950 border border-white/10"
               />
               {email.length > 0 && !isEmailValid ? (
-                <p className="mt-2 text-xs text-rose-300">
+                <p className="mt-2 text-sm text-rose-300">
                   올바른 이메일 형식을 입력해 주세요.
                 </p>
               ) : null}
             </div>
 
             {fieldError ? <div className="p-3 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-100 text-sm">{fieldError}</div> : null}
-            {error ? <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-400/50 text-rose-100 text-sm">{error}</div> : null}
+            {error ? <div role="alert" className="p-3 rounded-xl bg-rose-500/20 border border-rose-400/50 text-rose-100 text-sm">{error}</div> : null}
 
             <button
               type="submit"
@@ -186,7 +186,7 @@ export default function InquiryPage() {
             <p className="text-sm text-slate-400">전송된 내용은 1~2 영업일 내 처리됩니다.</p>
           </form>
         ) : (
-          <section className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-12 text-center">
+          <section className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-4 sm:p-9 text-center">
             <CheckCircle2 className="mx-auto w-14 h-14 text-emerald-300" />
             <h2 className="mt-4 text-3xl font-black">접수 완료</h2>
             <p className="mt-3 text-slate-300">감사합니다. 빠르게 답변 드리겠습니다.</p>

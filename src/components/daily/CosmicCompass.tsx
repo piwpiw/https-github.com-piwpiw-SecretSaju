@@ -16,7 +16,7 @@ export default function CosmicCompass({ direction = "동남(SE)" }: { direction?
             {['N', 'E', 'S', 'W'].map((label, i) => (
                 <div
                     key={label}
-                    className="absolute font-black text-[10px] text-slate-600 tracking-tighter"
+                    className="absolute font-black text-[13px] text-slate-400 tracking-tighter"
                     style={{
                         top: i === 0 ? '8px' : i === 2 ? 'auto' : '50%',
                         bottom: i === 2 ? '8px' : 'auto',
@@ -47,10 +47,10 @@ export default function CosmicCompass({ direction = "동남(SE)" }: { direction?
 
             {/* Direction Label Overlay */}
             <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap text-center">
-                <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-1">행운의 오라클</p>
+                <p className="text-[13px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-1">행운의 오라클</p>
                 <div className="px-5 py-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl">
-                    <span className="text-xl font-black italic text-white tracking-widest">{direction}</span>
-                    <p className="text-[9px] text-slate-500 font-bold mt-1 uppercase">오늘의 번영 경로</p>
+                    <span className="text-xl font-black text-white tracking-widest">{direction}</span>
+                    <p className="text-[13px] text-slate-500 font-bold mt-1 uppercase">오늘의 번영 경로</p>
                 </div>
             </div>
 

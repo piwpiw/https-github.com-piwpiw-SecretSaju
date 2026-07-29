@@ -55,8 +55,8 @@ export default async function DocPage({
 
   return (
     <main className="relative min-h-screen overflow-hidden pb-32 text-white">
-      <div className="relative z-10 mx-auto max-w-4xl px-6 py-12">
-        <div className="mb-12 flex items-center justify-between">
+      <div className="relative z-10 mx-auto max-w-4xl px-0 sm:px-6 py-8">
+        <div className="mb-8 flex items-center justify-between">
           <Link
             href="/wiki"
             className="group flex items-center gap-3 text-slate-500 transition-all hover:text-white"
@@ -66,10 +66,10 @@ export default async function DocPage({
           </Link>
           <div className="flex items-center gap-4">
             <div
-              className="rounded-full px-3 py-1 text-xs font-medium"
+              className="rounded-full px-3 py-1 text-sm font-medium"
               style={{
                 backgroundColor: "var(--surface)",
-                color: "var(--text-secondary)",
+                color: "var(--text-muted)",
                 border: "1px solid var(--border-color)",
               }}
             >
@@ -90,16 +90,16 @@ export default async function DocPage({
           >
             {title}
           </h1>
-          <div className="flex items-center gap-3 text-xs" style={{ color: "var(--text-secondary)" }}>
+          <div className="flex items-center gap-3 text-sm" style={{ color: "var(--text-muted)" }}>
             <span>문서: {params.slug}</span>
             <span className="opacity-20">|</span>
             <span>사주 사전</span>
           </div>
         </div>
 
-        <div className="premium-card group relative mb-12 border-white/5 bg-white/[0.01] p-1 sm:p-1">
+        <div className="premium-card group relative mb-8 border-white/5 bg-white/[0.01] p-1 sm:p-1">
           <div className="premium-card-border" />
-          <div className="relative z-10 p-8 sm:p-12">
+          <div className="relative z-10 p-8 sm:p-6 sm:p-9">
             <article
               className="prose prose-invert prose-slate max-w-none
                 prose-headings:font-bold prose-headings:text-white
@@ -139,7 +139,7 @@ export default async function DocPage({
         </div>
 
         <div className="mt-20 text-center opacity-30">
-          <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
             본 문서는 시크릿사주의 자산이며 무단 복제를 금지합니다.
           </p>
         </div>

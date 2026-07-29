@@ -24,7 +24,9 @@ export default function LuckyTicker() {
     return (
     <div className="bg-slate-900/80 backdrop-blur-md border-t border-slate-800 py-1.5 overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 flex items-center gap-4">
-                <span className="text-[9px] font-black bg-indigo-500 text-white px-1.5 py-0.5 rounded tracking-widest uppercase shrink-0">실시간</span>
+                {/* indigo-500 위 흰 글자는 4.47:1 로 AA(4.5) 에 아슬하게 못 미친다.
+                    한 단계 진한 indigo-600 이면 6.29:1 이다. */}
+                <span className="text-[13px] font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded tracking-widest uppercase shrink-0">실시간</span>
                 <div className="relative h-4 flex-1">
                     <motion.div
                         key={index}
@@ -34,12 +36,18 @@ export default function LuckyTicker() {
                         className="absolute inset-0 flex items-center gap-2"
                     >
                         <span className={TICKER_ITEMS[index].color}>{TICKER_ITEMS[index].icon}</span>
-                        <span className="text-[10px] font-bold text-slate-400 truncate">{TICKER_ITEMS[index].text}</span>
+                        {/* 이 바는 두 테마 모두 어둡게 유지된다. slate-400 은 라이트에서
+                            3.79:1 로 모자라고 slate-300 이면 6.55:1 이다. */}
+                        <span className="text-[13px] font-bold text-slate-300 truncate">{TICKER_ITEMS[index].text}</span>
                     </motion.div>
                 </div>
-                <div className="flex items-center gap-1 opacity-40">
-                    <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-[8px] font-black text-slate-500 uppercase">실시간 동기화</span>
+                {/* opacity-40 을 통째로 씌운 데다 글자까지 slate-500 이라
+                    실효 대비가 1.61:1(다크) / 1.34:1(라이트) 이었다. 54개 라우트
+                    전부에 뜨는 바인데 사실상 안 보였다. 점만 흐리게 두고 글자는
+                    제 색을 갖게 한다. */}
+                <div className="flex items-center gap-1">
+                    <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse opacity-70" />
+                    <span className="text-[13px] font-black text-slate-300 uppercase">실시간 동기화</span>
                 </div>
             </div>
         </div>

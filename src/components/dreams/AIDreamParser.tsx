@@ -34,7 +34,7 @@ export default function AIDreamParser() {
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     placeholder="어젯밤 꿈의 내용을 상세히 적어주세요..."
-                    className="w-full h-48 bg-white/[0.02] border border-white/10 rounded-[2rem] p-6 text-sm text-white placeholder:text-slate-600 outline-none focus:border-indigo-500/50 transition-all resize-none italic font-medium"
+                    className="w-full h-48 bg-white/[0.02] border border-white/10 rounded-[2rem] p-6 text-sm text-white placeholder:text-slate-600 outline-none focus:border-indigo-500/50 transition-all resize-none font-medium"
                 />
 
                 <AnimatePresence>
@@ -56,7 +56,7 @@ export default function AIDreamParser() {
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 <Zap className={`w-5 h-5 ${isScanning ? 'animate-spin' : ''}`} />
-                <span className="text-sm font-black uppercase tracking-[0.2em] italic break-keep">
+                <span className="text-sm font-black uppercase tracking-[0.2em] break-keep">
                     {isScanning ? 'Synchronizing Neural Web...' : 'AI 꿈 엔진 해석하기'}
                 </span>
             </button>
@@ -93,7 +93,7 @@ export default function AIDreamParser() {
                         {keywords.map((kw) => (
                             <div key={kw} className="px-4 py-3 rounded-2xl bg-white/5 border border-white/5 flex flex-col items-center justify-center group hover:bg-white/10 transition-colors">
                                 <Sparkles className="w-3.5 h-3.5 text-indigo-400 mb-2 opacity-50 group-hover:opacity-100" />
-                                <span className="text-[11px] font-black text-white">{kw}</span>
+                                <span className="text-[13px] font-black text-white">{kw}</span>
                             </div>
                         ))}
                     </motion.div>
