@@ -15,7 +15,7 @@ export function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="mt-auto border-t border-white/10" style={{ backgroundColor: "var(--background)" }}>
+        <footer className="mt-auto border-t border-border-color" style={{ backgroundColor: "var(--background)" }}>
             <div className="max-w-6xl mx-auto px-4 py-10 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="md:col-span-2 space-y-4">
@@ -33,30 +33,30 @@ export function Footer() {
                     <div>
                         <h4 className="font-black text-sm mb-4 uppercase tracking-[0.22em] text-foreground">서비스</h4>
                         <ul className="grid grid-cols-2 gap-3 text-sm">
-                            <li><Link href="/luck" className="text-slate-300 hover:text-white transition-colors">운세/부적</Link></li>
-                            <li><Link href="/destiny" className="text-slate-300 hover:text-white transition-colors">사주/궁합</Link></li>
-                            <li><Link href="/healing" className="text-slate-300 hover:text-white transition-colors">희망/아트</Link></li>
-                            <li><Link href="/dreams" className="text-slate-300 hover:text-white transition-colors">꿈해몽</Link></li>
-                            <li><Link href="/daily" className="text-slate-300 hover:text-white transition-colors">오늘의운세</Link></li>
-                            <li><Link href="/consultation" className="text-slate-300 hover:text-white transition-colors">상담</Link></li>
-                            <li><Link href="/story" className="text-slate-300 hover:text-white transition-colors">운명 이야기</Link></li>
-                            <li><Link href="/more" className="text-slate-300 hover:text-white transition-colors">더보기</Link></li>
+                            <li><Link href="/luck" className="text-muted hover:text-foreground transition-colors">운세/부적</Link></li>
+                            <li><Link href="/destiny" className="text-muted hover:text-foreground transition-colors">사주/궁합</Link></li>
+                            <li><Link href="/healing" className="text-muted hover:text-foreground transition-colors">희망/아트</Link></li>
+                            <li><Link href="/dreams" className="text-muted hover:text-foreground transition-colors">꿈해몽</Link></li>
+                            <li><Link href="/daily" className="text-muted hover:text-foreground transition-colors">오늘의운세</Link></li>
+                            <li><Link href="/consultation" className="text-muted hover:text-foreground transition-colors">상담</Link></li>
+                            <li><Link href="/story" className="text-muted hover:text-foreground transition-colors">운명 이야기</Link></li>
+                            <li><Link href="/more" className="text-muted hover:text-foreground transition-colors">더보기</Link></li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="font-black text-sm mb-4 uppercase tracking-[0.22em] text-foreground">정보</h4>
                         <ul className="space-y-3 text-sm">
-                            <li><Link href="/faq" className="text-slate-300 hover:text-white transition-colors">{t('footer.faq') || '자주 묻는 질문'}</Link></li>
-                            <li><Link href="/terms" className="text-slate-300 hover:text-white transition-colors">{t('footer.terms') || '이용약관'}</Link></li>
-                            <li><Link href="/privacy" className="text-slate-300 hover:text-white transition-colors">{t('footer.privacy') || '개인정보처리방침'}</Link></li>
-                            <li><Link href="/refund" className="text-slate-300 hover:text-white transition-colors">{t('footer.refund') || '환불정책'}</Link></li>
-                            <li><Link href="/wiki" className="text-slate-300 hover:text-white transition-colors">{t('footer.wiki') || '사주백과'}</Link></li>
+                            <li><Link href="/faq" className="text-muted hover:text-foreground transition-colors">{t('footer.faq') || '자주 묻는 질문'}</Link></li>
+                            <li><Link href="/terms" className="text-muted hover:text-foreground transition-colors">{t('footer.terms') || '이용약관'}</Link></li>
+                            <li><Link href="/privacy" className="text-muted hover:text-foreground transition-colors">{t('footer.privacy') || '개인정보처리방침'}</Link></li>
+                            <li><Link href="/refund" className="text-muted hover:text-foreground transition-colors">{t('footer.refund') || '환불정책'}</Link></li>
+                            <li><Link href="/wiki" className="text-muted hover:text-foreground transition-colors">{t('footer.wiki') || '사주백과'}</Link></li>
                         </ul>
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-2 border-t border-white/10 pt-5">
+                <div className="flex flex-col gap-2 border-t border-border-color pt-5">
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-black text-muted tracking-[0.12em]">
                         <Link href="/terms" className="hover:text-white transition-colors">이용약관</Link>
                         <span className="w-1 h-1 rounded-full bg-slate-500/60"></span>

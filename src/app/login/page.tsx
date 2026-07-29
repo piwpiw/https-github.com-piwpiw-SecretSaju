@@ -12,14 +12,14 @@ export default function LoginPage() {
     // (z-60, 상단 32~97px) 아래로 파고들어 페이지 제목이 가려졌다.
     // 내비 높이만큼 위쪽 여백을 확보한다.
     return (
-        <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-6 pb-10 pt-28 relative overflow-hidden">
+        <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-0 sm:px-6 pb-10 pt-28 relative overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.18),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(236,72,153,0.12),transparent_55%)]" />
 
             <motion.div
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative z-10 max-w-lg w-full rounded-3xl border border-white/10 bg-slate-900/60 backdrop-blur-xl p-7"
+                className="relative z-10 max-w-lg w-full rounded-3xl border border-white/10 bg-slate-900/60 backdrop-blur-xl p-5 sm:p-7"
             >
                 <p className="text-[13px] font-black tracking-[0.18em] text-indigo-200 mb-2">시크릿사주</p>
                 <h1 className="text-3xl font-black leading-tight">로그인</h1>

@@ -5,8 +5,8 @@ import { HeartHandshake, ArrowRight, Sparkles, ArrowLeft } from 'lucide-react';
 
 export default function RelationshipPage() {
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center px-4 py-10 relative overflow-hidden">
-      <section className="w-full max-w-xl rounded-4xl bg-surface border border-border-color p-8 shadow-2xl text-left">
+    <main className="min-h-screen bg-background flex items-center justify-center px-0 sm:px-4 py-10 relative overflow-hidden">
+      <section className="w-full max-w-xl rounded-4xl bg-surface border border-border-color p-5 sm:p-8 shadow-2xl text-left">
         <div className="text-left">
           <HeartHandshake className="w-12 h-12 text-primary" aria-hidden="true" />
         </div>

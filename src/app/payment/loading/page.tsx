@@ -36,11 +36,11 @@ function PaymentLoadingContent() {
 
   if (isTimeout) {
     return (
-      <main className="min-h-screen bg-background flex items-center justify-center px-4 py-10">
+      <main className="min-h-screen bg-background flex items-center justify-center px-0 sm:px-4 py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-surface border border-border-color rounded-4xl p-8 max-w-md w-full text-center"
+          className="bg-surface border border-border-color rounded-4xl p-5 sm:p-8 max-w-md w-full text-center"
         >
           <AlertTriangle className="w-12 h-12 text-rose-400 mx-auto mb-6" />
           <h1 className="text-2xl font-black text-foreground mb-4">결제 처리 지연</h1>
@@ -70,7 +70,7 @@ function PaymentLoadingContent() {
   }
 
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center px-4 py-10">
+    <main className="min-h-screen bg-background flex items-center justify-center px-0 sm:px-4 py-10">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

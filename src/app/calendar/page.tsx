@@ -164,7 +164,7 @@ export default function CalendarPage() {
           })}
         </div>
 
-        <section className="mt-8 border border-white/10 rounded-2xl p-6 bg-gradient-to-br from-indigo-900/20 to-slate-900/60 shadow-xl relative overflow-hidden">
+        <section className="mt-8 border border-white/10 rounded-2xl p-4 sm:p-6 bg-gradient-to-br from-indigo-900/20 to-slate-900/60 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/10 blur-2xl rounded-full" />
           <p className="text-sm font-black uppercase tracking-[0.2em] text-fuchsia-300">오늘의 일진 상세 브리핑</p>
           <div className="flex items-end gap-3 mt-2">

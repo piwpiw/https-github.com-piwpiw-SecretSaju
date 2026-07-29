@@ -159,7 +159,7 @@ function CompatibilityContent() {
 
   if (profiles.length < 2) {
     return (
-      <main className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-6 pb-40">
+      <main className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-0 sm:px-6 pb-40">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-md w-full text-center space-y-10">
           <div className="w-24 h-24 rounded-[2rem] bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto shadow-2xl">
             <Users className="w-12 h-12 text-indigo-400" />
@@ -290,7 +290,7 @@ function CompatibilityContent() {
           </div>
 
           {error && (
-            <div role="alert" className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 flex items-center gap-4 text-sm font-black uppercase tracking-widest animate-bounce">
+            <div role="alert" className="p-4 sm:p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 flex items-center gap-4 text-sm font-black uppercase tracking-widest animate-bounce">
               <AlertTriangle className="w-4 h-4" /> {error}
             </div>
           )}
@@ -308,7 +308,7 @@ function CompatibilityContent() {
           {result && gradeInfo && (
             <motion.div initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }} className="mt-24 space-y-12">
               {/* Score Card */}
-              <div className="bg-slate-900/60 backdrop-blur-3xl rounded-[5rem] p-16 text-center border border-indigo-500/20 relative overflow-hidden shadow-2xl">
+              <div className="bg-slate-900/60 backdrop-blur-3xl rounded-[5rem] p-4 sm:p-16 text-center border border-indigo-500/20 relative overflow-hidden shadow-2xl">
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
 
                 <div className="space-y-4 mb-16">
@@ -375,7 +375,7 @@ function CompatibilityContent() {
               </div>
 
               {sajuA && sajuB && (
-                <div className="bg-slate-900/40 backdrop-blur-2xl rounded-[4rem] p-6 sm:p-9 border border-white/5 space-y-12">
+                <div className="bg-slate-900/40 backdrop-blur-2xl rounded-[4rem] p-4 sm:p-9 border border-white/5 space-y-12">
                   <h4 className="text-[13px] font-black text-slate-500 uppercase tracking-[0.4em] text-center">오행 공명 분석</h4>
 
                   {/* Pinpoint HD resonance Bridge & Radar overlay */}

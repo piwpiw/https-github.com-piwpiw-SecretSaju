@@ -68,7 +68,7 @@ export default function OracleBall({
                     <Sparkles className="w-3.5 h-3.5 animate-pulse" /> 채널링 공명
                 </div>
                 <h3 className="ui-title ui-title-gradient mb-3 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">{title}</h3>
-                <p className="text-micro-copy opacity-80">{description}</p>
+                <p className="text-micro-copy text-slate-300">{description}</p>
             </div>
 
             {/*

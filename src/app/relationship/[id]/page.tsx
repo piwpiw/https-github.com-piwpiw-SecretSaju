@@ -155,7 +155,7 @@ export default function RelationshipDetailPage() {
                         <motion.div
                             initial={{ x: -30, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                            className="premium-card p-6 sm:p-5 sm:p-8 flex flex-col items-center group bg-cyan-950/5 border-cyan-500/20"
+                            className="premium-card p-4 sm:p-5 sm:p-8 flex flex-col items-center group bg-cyan-950/5 border-cyan-500/20"
                         >
                             <div className="mystic-glow from-cyan-500/10" />
                             <div className="w-20 h-20 sm:w-28 sm:h-28 bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-white/10 shadow-2xl relative overflow-hidden group-hover:scale-110 transition-transform duration-700">
@@ -172,7 +172,7 @@ export default function RelationshipDetailPage() {
                         <motion.div
                             initial={{ x: 30, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                            className="premium-card p-6 sm:p-5 sm:p-8 flex flex-col items-center group bg-purple-950/5 border-purple-500/20"
+                            className="premium-card p-4 sm:p-5 sm:p-8 flex flex-col items-center group bg-purple-950/5 border-purple-500/20"
                         >
                             <div className="mystic-glow from-purple-500/10" />
                             <div className="w-20 h-20 sm:w-28 sm:h-28 bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-white/10 shadow-2xl relative overflow-hidden group-hover:scale-110 transition-transform duration-700">
@@ -191,7 +191,7 @@ export default function RelationshipDetailPage() {
                 <motion.div
                     initial={{ y: 40, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="bg-surface rounded-5xl p-6 sm:p-9 text-center mb-8 group border-2 border-yellow-500/30 overflow-hidden shadow-2xl relative"
+                    className="bg-surface rounded-5xl p-4 sm:p-9 text-center mb-8 group border-2 border-yellow-500/30 overflow-hidden shadow-2xl relative"
                 >
                     <div className="premium-card-border" />
                     <div className="mystic-glow from-yellow-500/10" />
@@ -244,7 +244,7 @@ export default function RelationshipDetailPage() {
                 <Link href={`/relationship/${profileId}/vs`}>
                     <motion.div
                         whileHover={{ scale: 1.02, y: -5 }}
-                        className="premium-card p-8 mb-8 border-cyan-400/30 bg-cyan-900/10 flex items-center justify-between group"
+                        className="premium-card p-5 sm:p-8 mb-8 border-cyan-400/30 bg-cyan-900/10 flex items-center justify-between group"
                     >
                         <div className="flex items-center gap-6 relative z-10">
                             <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-2xl flex items-center justify-center font-black text-white text-2xl shadow-lg ring-4 ring-white/5">
@@ -275,7 +275,7 @@ export default function RelationshipDetailPage() {
 
                         <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar snap-x">
                             {[...Array(10)].map((_, i) => (
-                                <div key={i} className="flex-shrink-0 w-32 p-6 rounded-[2.5rem] bg-white/5 border border-white/5 text-center snap-center hover:bg-white/10 transition-all group">
+                                <div key={i} className="flex-shrink-0 w-32 p-4 sm:p-6 rounded-[2.5rem] bg-white/5 border border-white/5 text-center snap-center hover:bg-white/10 transition-all group">
                                     <p className="text-[13px] font-black text-slate-500 mb-3">{i * 10}세 ~</p>
                                     <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
                                         <TrendingUp className="w-6 h-6" />
@@ -295,7 +295,7 @@ export default function RelationshipDetailPage() {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="bg-surface rounded-4xl p-8 border border-rose-500/20 relative overflow-hidden"
+                            className="bg-surface rounded-4xl p-5 sm:p-8 border border-rose-500/20 relative overflow-hidden"
                         >
                             <div className="absolute inset-0 bg-rose-500/5 pointer-events-none" />
                             <div className="flex items-start gap-6 relative z-10">
@@ -332,7 +332,7 @@ export default function RelationshipDetailPage() {
                                         {analysis.actionItems.map((item, i) => (
                                             <div
                                                 key={i}
-                                                className="p-6 rounded-2xl bg-background border border-border-color flex gap-4 shadow-sm"
+                                                className="p-4 sm:p-6 rounded-2xl bg-background border border-border-color flex gap-4 shadow-sm"
                                             >
                                                 <span className="text-primary font-black">0{i + 1}</span>
                                                 <p className="text-foreground text-sm font-medium tracking-wide leading-relaxed">{item}</p>
@@ -365,7 +365,7 @@ export default function RelationshipDetailPage() {
                             animate={{ opacity: 1, y: 0 }}
                             className="relative group"
                         >
-                            <div className="premium-card p-6 sm:p-9 blur-lg opacity-20 pointer-events-none border-white/5 shadow-none space-y-6">
+                            <div className="premium-card p-4 sm:p-9 blur-lg opacity-20 pointer-events-none border-white/5 shadow-none space-y-6">
                                 <div className="h-6 w-1/3 bg-white/10 rounded-full" />
                                 <div className="h-20 bg-white/10 rounded-3xl" />
                                 <div className="grid grid-cols-2 gap-4">
@@ -409,7 +409,7 @@ export default function RelationshipDetailPage() {
 
             <AnimatePresence>
                 {showConfirm && (
-                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 z-50">
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}

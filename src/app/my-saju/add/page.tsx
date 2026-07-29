@@ -147,7 +147,7 @@ export default function AddSajuPage() {
           </div>
         ) : null}
 
-        <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-white/10 bg-white/5 p-6" aria-label="사주 프로필 등록 폼">
+        <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-6" aria-label="사주 프로필 등록 폼">
           <div>
             <label className="text-sm font-semibold flex items-center gap-2 mb-2">
               <UserIcon className="w-4 h-4" /> 이름

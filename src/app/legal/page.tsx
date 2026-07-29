@@ -2,8 +2,8 @@ import { ShieldAlert } from "lucide-react";
 
 export default function LegalPage() {
     return (
-        <main className="min-h-screen bg-background pt-24 pb-20 px-4">
-            <div className="max-w-3xl mx-auto glass rounded-3xl p-8 border border-white/10">
+        <main className="min-h-screen bg-background pt-24 pb-20 px-0 sm:px-4">
+            <div className="max-w-3xl mx-auto glass rounded-3xl p-5 sm:p-8 border border-white/10">
                 <div className="flex items-center gap-3 mb-8 pb-6 border-b border-white/10">
                     <ShieldAlert className="w-8 h-8 text-orange-400" />
                     <h1 className="text-3xl font-bold text-white">법적 고지</h1>

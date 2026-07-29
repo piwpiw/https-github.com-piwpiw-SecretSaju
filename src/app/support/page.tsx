@@ -69,7 +69,7 @@ export default function SupportPage() {
       />
       <div className="pointer-events-none absolute left-0 top-0 h-[40vh] w-full bg-gradient-to-b from-pink-900/10 via-slate-950/50 to-transparent" />
 
-      <div className="relative z-10 mx-auto max-w-4xl px-6 py-8">
+      <div className="relative z-10 mx-auto max-w-4xl px-0 sm:px-6 py-8">
         <motion.button
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -123,7 +123,9 @@ export default function SupportPage() {
                   href={item.href}
                   className={`group relative block h-full overflow-hidden rounded-[2rem] border border-white/5 bg-gradient-to-br ${item.color} p-8 shadow-xl transition-all duration-300 hover:bg-slate-900/80 ${item.borderHover} ${item.shadowHover}`}
                 >
-                  <div className="absolute right-0 top-0 scale-150 p-6 opacity-0 transition-opacity group-hover:opacity-10 -rotate-12">
+                  {/* 장식 아이콘. scale-150 때문에 제목 위까지 넘어와 제목의
+                      클릭 판정을 가로챈다. 장식은 히트 테스트에서 빼 둔다. */}
+                  <div className="pointer-events-none absolute right-0 top-0 scale-150 p-6 opacity-0 transition-opacity group-hover:opacity-10 -rotate-12">
                     <item.icon className={`h-24 w-24 ${item.iconColor}`} />
                   </div>
 
@@ -145,7 +147,7 @@ export default function SupportPage() {
           </div>
 
           <motion.div variants={itemVariants} className="relative z-10 mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="group flex flex-col items-start rounded-[2rem] border border-slate-800 bg-slate-950/50 p-8 transition-colors hover:border-cyan-500/30">
+            <div className="group flex flex-col items-start rounded-[2rem] border border-slate-800 bg-slate-950/50 p-5 sm:p-8 transition-colors hover:border-cyan-500/30">
               <div className="mb-4 flex items-center gap-3 text-lg font-black tracking-tight text-cyan-400">
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-cyan-500/20 bg-cyan-500/10">
                   <MessageCircle className="h-4 w-4" />
@@ -166,7 +168,7 @@ export default function SupportPage() {
               </a>
             </div>
 
-            <div className="group relative overflow-hidden rounded-[2rem] border border-indigo-500/20 bg-indigo-950/20 p-8">
+            <div className="group relative overflow-hidden rounded-[2rem] border border-indigo-500/20 bg-indigo-950/20 p-5 sm:p-8">
               <div className="absolute -right-4 -top-4 p-4 opacity-5 transition-opacity group-hover:opacity-10">
                 <Shield className="h-32 w-32 text-indigo-400" />
               </div>

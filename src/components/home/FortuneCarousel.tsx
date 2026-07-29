@@ -39,7 +39,7 @@ export default function FortuneCarousel() {
                     </div>
                     <div className="min-w-0">
                         <h2 className="ui-title-gradient text-xl sm:text-2xl tracking-[0.08em]">운세 메뉴 <span className="text-indigo-400">모음</span></h2>
-                        <p className="text-micro-copy mt-1 opacity-80">오늘의 컨텐츠를 한 번에 탐색합니다</p>
+                        <p className="text-micro-copy text-slate-300 mt-1">오늘의 컨텐츠를 한 번에 탐색합니다</p>
                     </div>
                 </div>
                 <div className="flex gap-2 sm:gap-3 flex-shrink-0">

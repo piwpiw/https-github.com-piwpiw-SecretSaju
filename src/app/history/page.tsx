@@ -175,7 +175,7 @@ export default function HistoryPage() {
                                 exit={{ height: 0, opacity: 0 }}
                                 className="overflow-hidden"
                             >
-                                <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] space-y-6">
+                                <div className="p-5 sm:p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] space-y-6">
                                     <div className="space-y-6">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">

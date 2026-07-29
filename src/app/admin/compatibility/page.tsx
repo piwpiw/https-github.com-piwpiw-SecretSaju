@@ -153,7 +153,7 @@ export default function CompatibilityAdminPage() {
     const result = analyzeRelationship(sajuA, sajuB, 'lover');
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-pink-950 to-slate-950 text-white p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-pink-950 to-slate-950 text-white p-5 sm:p-8">
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="mb-8 text-center">
@@ -168,7 +168,7 @@ export default function CompatibilityAdminPage() {
                 {/* Selectors */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     {/* Person A */}
-                    <div className="bg-white/5 backdrop-blur-lg border border-pink-500/30 rounded-xl p-6">
+                    <div className="bg-white/5 backdrop-blur-lg border border-pink-500/30 rounded-xl p-4 sm:p-6">
                         <label htmlFor="compatibility-person-a" className="block text-xl font-bold mb-4 text-pink-400">
                             나 (Day Pillar)
                         </label>
@@ -193,7 +193,7 @@ export default function CompatibilityAdminPage() {
                     </div>
 
                     {/* Person B */}
-                    <div className="bg-white/5 backdrop-blur-lg border border-cyan-500/30 rounded-xl p-6">
+                    <div className="bg-white/5 backdrop-blur-lg border border-cyan-500/30 rounded-xl p-4 sm:p-6">
                         <label htmlFor="compatibility-person-b" className="block text-xl font-bold mb-4 text-cyan-400">
                             상대방 (Day Pillar)
                         </label>
@@ -223,7 +223,7 @@ export default function CompatibilityAdminPage() {
                     key={`${codeA}-${codeB}`}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-white/10 backdrop-blur-xl border-2 border-white/20 rounded-3xl p-8 max-w-4xl mx-auto shadow-2xl"
+                    className="bg-white/10 backdrop-blur-xl border-2 border-white/20 rounded-3xl p-5 sm:p-8 max-w-4xl mx-auto shadow-2xl"
                 >
                     {/* Main Score */}
                     <div className="text-center mb-6">

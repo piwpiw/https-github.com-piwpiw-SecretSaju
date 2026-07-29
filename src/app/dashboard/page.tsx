@@ -190,8 +190,8 @@ function DashboardContent() {
 
     if (!mainProfile) {
         return (
-            <main className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center px-6 pb-32 text-center">
-                <div className="bg-surface p-16 rounded-5xl border border-border-color max-w-2xl relative">
+            <main className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center px-0 sm:px-6 pb-32 text-center">
+                <div className="bg-surface p-4 sm:p-16 rounded-5xl border border-border-color max-w-2xl relative">
                     <Users className="w-24 h-24 mx-auto mb-6 text-muted opacity-50" />
                     <h1 className="text-4xl font-black mb-6 text-foreground">
                         {locale === 'ko' ? '연결된 프로필이 없습니다' : 'No Profiles Found'}
@@ -212,7 +212,7 @@ function DashboardContent() {
 
     return (
         <main className="min-h-screen relative overflow-hidden">
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-10 pb-32">
+            <div className="relative z-10 max-w-7xl mx-auto px-0 sm:px-6 py-10 sm:py-10 pb-32">
 
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-10 mb-8 sm:mb-20 text-center md:text-left">
                     <div>
@@ -230,26 +230,26 @@ function DashboardContent() {
                 </div>
 
                 <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-20">
-                    <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
+                    <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="rounded-4xl bg-surface p-4 sm:p-6 border border-border-color shadow-xl">
                         <p className="text-sm font-black uppercase tracking-[0.2em] text-muted">연결 수</p>
                         <p className="mt-3 text-4xl font-black text-foreground">{profiles.length}명</p>
                         <p className="text-sm text-muted mt-2">본인 포함 인연 관계 수</p>
                     </motion.div>
-                    <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
+                    <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }} className="rounded-4xl bg-surface p-4 sm:p-6 border border-border-color shadow-xl">
                         <p className="text-sm font-black uppercase tracking-[0.2em] text-muted">평균 궁합</p>
                         <p className="mt-3 text-4xl font-black text-foreground">{avgScore}%</p>
                         <div className="mt-4 h-2 bg-background rounded-full overflow-hidden border border-border/40">
                             <motion.div style={{ width: `${Math.max(avgScore, 5)}%` }} initial={{ width: 0 }} animate={{ width: `${Math.max(avgScore, 5)}%` }} className="h-full bg-gradient-to-r from-cyan-400 to-indigo-500" />
                         </div>
                     </motion.div>
-                    <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
+                    <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="rounded-4xl bg-surface p-4 sm:p-6 border border-border-color shadow-xl">
                         <p className="text-sm font-black uppercase tracking-[0.2em] text-muted">해금률</p>
                         <p className="mt-3 text-4xl font-black text-foreground">{unlockedRate}%</p>
                         <div className="mt-4 h-2 bg-background rounded-full overflow-hidden border border-border/40">
                             <div className={`h-full ${unlockedRate >= 70 ? 'bg-emerald-400' : unlockedRate >= 40 ? 'bg-yellow-400' : 'bg-rose-400'}`} style={{ width: `${unlockedRate}%` }} />
                         </div>
                     </motion.div>
-                    <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }} className="rounded-4xl bg-surface p-6 border border-border-color shadow-xl">
+                    <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }} className="rounded-4xl bg-surface p-4 sm:p-6 border border-border-color shadow-xl">
                         <p className="text-sm font-black uppercase tracking-[0.2em] text-muted">메인 프로필</p>
                         <p className="mt-3 text-xl font-black text-foreground">{mainProfile.name}</p>
                         <p className="text-sm text-muted mt-2">관계 분석 기준점</p>
@@ -257,7 +257,7 @@ function DashboardContent() {
                 </section>
 
                 <div className="mb-8 sm:mb-20">
-                    <Link href="/daily" className="group relative block w-full overflow-hidden rounded-3xl sm:rounded-4xl bg-gradient-to-br from-primary/20 via-surface to-background p-6 sm:p-8 border border-primary/30 shadow-2xl hover:border-primary/60 transition-all">
+                    <Link href="/daily" className="group relative block w-full overflow-hidden rounded-3xl sm:rounded-4xl bg-gradient-to-br from-primary/20 via-surface to-background p-4 sm:p-8 border border-primary/30 shadow-2xl hover:border-primary/60 transition-all">
                         <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-primary/10 rounded-full blur-3xl -mr-16 sm:-mr-20 -mt-16 sm:-mt-20 group-hover:bg-primary/20 transition-colors" />
                         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-6">
                             <div className="flex items-center gap-4 sm:gap-6">
@@ -276,7 +276,7 @@ function DashboardContent() {
                     </Link>
                 </div>
 
-                <div className="mb-16 sm:mb-24 bg-surface rounded-3xl sm:rounded-5xl p-6 sm:p-5 sm:p-8 border border-border-color shadow-2xl overflow-hidden min-h-[400px] sm:min-h-[500px] flex items-center justify-center relative">
+                <div className="mb-16 sm:mb-24 bg-surface rounded-3xl sm:rounded-5xl p-4 sm:p-5 sm:p-8 border border-border-color shadow-2xl overflow-hidden min-h-[400px] sm:min-h-[500px] flex items-center justify-center relative">
                     <DestinyNetwork
                         mainProfile={mainProfile}
                         relationships={relationships}
@@ -292,7 +292,7 @@ function DashboardContent() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.1 }}
                             onClick={() => router.push(`/relationship/${rel.profile.id}`)}
-                            className="bg-surface rounded-3xl sm:rounded-4xl p-6 sm:p-5 sm:p-8 border border-border-color hover:border-primary/40 transition-all cursor-pointer shadow-xl group hover:scale-[1.02]"
+                            className="bg-surface rounded-3xl sm:rounded-4xl p-4 sm:p-5 sm:p-8 border border-border-color hover:border-primary/40 transition-all cursor-pointer shadow-xl group hover:scale-[1.02]"
                         >
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-6">
@@ -375,7 +375,7 @@ function DashboardContent() {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
-                        className="mt-16 sm:mt-24 bg-surface rounded-3xl sm:rounded-5xl p-8 sm:p-16 border border-primary/20 relative overflow-hidden"
+                        className="mt-16 sm:mt-24 bg-surface rounded-3xl sm:rounded-5xl p-5 sm:p-16 border border-primary/20 relative overflow-hidden"
                     >
                         <div className="absolute top-0 left-0 w-2 h-full bg-primary" />
                         <div className="flex items-center gap-4 sm:gap-6 mb-8 sm:mb-8">
@@ -384,7 +384,7 @@ function DashboardContent() {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
                             {insights.map((insight, i) => (
-                                <div key={i} className="flex gap-4 sm:gap-6 items-start p-6 sm:p-8 rounded-3xl sm:rounded-4xl bg-background border border-border-color">
+                                <div key={i} className="flex gap-4 sm:gap-6 items-start p-4 sm:p-8 rounded-3xl sm:rounded-4xl bg-background border border-border-color">
                                     <div className="w-2.5 h-2.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
                                     <p className="text-lg sm:text-xl text-foreground font-bold leading-relaxed">{insight}</p>
                                 </div>

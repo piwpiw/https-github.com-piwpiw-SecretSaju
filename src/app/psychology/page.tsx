@@ -79,7 +79,7 @@ export default function PsychologyPage() {
           </button>
         </div>
 
-        <section className="bg-slate-900/55 border border-white/10 rounded-[2.5rem] p-8 md:p-6 sm:p-9">
+        <section className="bg-slate-900/55 border border-white/10 rounded-[2.5rem] p-5 md:p-6 sm:p-9">
           <div className="inline-flex items-center gap-2 text-indigo-300 font-black tracking-[0.2em] uppercase text-sm">
             <Brain className="w-4 h-4" /> 심리 성향 진단
           </div>
@@ -119,7 +119,7 @@ export default function PsychologyPage() {
         </section>
 
         {done ? (
-          <motion.section initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="mt-8 rounded-3xl border border-white/10 bg-slate-900/50 p-7 space-y-6">
+          <motion.section initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="mt-8 rounded-3xl border border-white/10 bg-slate-900/50 p-5 sm:p-7 space-y-6">
             <div className="text-sm text-emerald-300 font-black tracking-[0.2em]">결과</div>
             <h2 className="text-3xl font-black mt-1">{result.title}</h2>
             <p className="text-slate-300">점수: {result.score}/100</p>

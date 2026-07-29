@@ -332,7 +332,7 @@ export default function AINarrativeSection({
             </div>
             <div>
               <h3 className="mb-1 text-sm font-black uppercase tracking-widest leading-none text-indigo-200">AI 확장 해석</h3>
-              <p className="text-[13px] font-bold uppercase text-slate-500">
+              <p className="text-[13px] font-bold uppercase text-slate-400">
                 해석 페르소나: {persona} / 모델: {modelLabel}
               </p>
               <p className="mt-1 text-[13px] text-slate-300 break-keep">
@@ -382,7 +382,7 @@ export default function AINarrativeSection({
             </div>
           ) : null}
 
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2">
             {availableReaders.map((reader) => {
               const selected = reader.id === selectedReaderId;
               const recommended = reader.id === recommendedReader.id;
@@ -415,14 +415,14 @@ export default function AINarrativeSection({
                         setActiveReader(reader);
                         saveLastReaderId(queryType, reader.id);
                       }}
-                      className="flex-1 text-left disabled:opacity-60"
+                      className="min-w-0 flex-1 text-left disabled:opacity-60"
                     >
                       <p className="text-xl">{reader.heroEmoji}</p>
                       <p className="mt-2 text-sm font-black text-white break-keep">{reader.name}</p>
                       <p className="mt-2 text-sm leading-relaxed text-slate-300 break-keep">{reader.subtitle}</p>
                     </button>
 
-                    <div className="flex flex-col items-end gap-2">
+                    <div className="flex shrink-0 flex-col items-end gap-2">
                       {recommended ? (
                         <span className="rounded-full border border-emerald-300/30 bg-emerald-500/10 px-2 py-1 text-[13px] font-black uppercase tracking-[0.16em] text-emerald-100">
                           추천

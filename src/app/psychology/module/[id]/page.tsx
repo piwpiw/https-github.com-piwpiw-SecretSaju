@@ -70,7 +70,7 @@ export default function PsychologyModulePage({ params }: Props) {
           심리 분석으로 돌아가기
         </Link>
 
-        <div className="bg-surface border border-border-color rounded-4xl p-8 md:p-5 sm:p-8 space-y-6">
+        <div className="bg-surface border border-border-color rounded-4xl p-5 md:p-5 sm:p-8 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-black text-rose-300 bg-rose-500/10 border border-rose-500/20">
             <BrainCircuit className="w-4 h-4" />
             모듈 진단 화면

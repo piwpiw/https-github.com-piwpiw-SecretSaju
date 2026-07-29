@@ -49,7 +49,7 @@ export default function StoryPage() {
           <div className="bg-surface border border-border-color rounded-[2rem] overflow-hidden shadow-2xl relative flex flex-col md:flex-row min-h-[400px]">
             <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-            <div className="w-full md:w-1/2 bg-surface/50 border-r border-border-color p-6 sm:p-9 flex flex-col justify-center relative z-10">
+            <div className="w-full md:w-1/2 bg-surface/50 border-r border-border-color p-4 sm:p-9 flex flex-col justify-center relative z-10">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 rounded-full text-primary font-bold text-sm tracking-widest mb-6 w-fit break-keep">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                 에디터 추천
@@ -70,7 +70,7 @@ export default function StoryPage() {
               </div>
             </div>
 
-            <div className="w-full md:w-1/2 relative bg-background flex items-center justify-center p-6 sm:p-9 overflow-hidden border-t md:border-t-0 border-border-color">
+            <div className="w-full md:w-1/2 relative bg-background flex items-center justify-center p-4 sm:p-9 overflow-hidden border-t md:border-t-0 border-border-color">
               <div className="absolute w-[150%] h-[150%] bg-[url('/grid.svg')] opacity-10 animate-[spin_120s_linear_infinite]" />
               <div className="relative w-48 h-48 rounded-full border-4 border-primary/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-700 shadow-[0_0_50px_rgba(var(--color-primary),0.2)]">
                 <Sparkles className="w-20 h-20 text-primary" />
@@ -90,7 +90,7 @@ export default function StoryPage() {
             >
               <Link
                 href={`/story/${story.id}`}
-                className="flex flex-col h-full p-8 bg-background border border-border-color rounded-4xl hover:border-primary/50 hover:bg-surface transition-all group shadow-sm hover:shadow-xl"
+                className="flex flex-col h-full p-5 sm:p-8 bg-background border border-border-color rounded-4xl hover:border-primary/50 hover:bg-surface transition-all group shadow-sm hover:shadow-xl"
               >
                 <div className="flex items-center justify-between mb-6">
                   <span className="text-sm font-black text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">

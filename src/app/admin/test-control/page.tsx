@@ -45,7 +45,7 @@ export default function AdminTestControlPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white p-5 sm:p-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -59,19 +59,19 @@ export default function AdminTestControlPage() {
 
                 {/* Validation Stats */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                    <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
+                    <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6">
                         <div className="text-3xl font-bold text-cyan-400">
                             {totalCount}/60
                         </div>
                         <div className="text-sm text-slate-400 mt-1">Total Archetypes</div>
                     </div>
-                    <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
+                    <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6">
                         <div className="text-3xl font-bold text-green-400">
                             {completeCount}
                         </div>
                         <div className="text-sm text-slate-400 mt-1">Complete</div>
                     </div>
-                    <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
+                    <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6">
                         <div className="text-3xl font-bold text-purple-400">
                             {selectedIndex + 1}
                         </div>
@@ -80,7 +80,7 @@ export default function AdminTestControlPage() {
                 </div>
 
                 {/* Controls */}
-                <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6 mb-8">
+                <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6 mb-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Pillar Selector */}
                         <div>
@@ -176,7 +176,7 @@ export default function AdminTestControlPage() {
                 </div>
 
                 {/* Result Card Preview */}
-                <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-8">
+                <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5 sm:p-8">
                     <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
                         <span className="text-2xl">👑</span>
                         Result Card Preview
@@ -185,7 +185,7 @@ export default function AdminTestControlPage() {
                     {/* Archetype Display */}
                     <div className="space-y-6">
                         {/* Animal Info */}
-                        <div className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl p-6 border border-purple-500/20">
+                        <div className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl p-4 sm:p-6 border border-purple-500/20">
                             <div className="flex items-start justify-between">
                                 <div>
                                     <div className="text-sm text-purple-300 font-mono mb-1">
@@ -203,7 +203,7 @@ export default function AdminTestControlPage() {
                         </div>
 
                         {/* Base Traits */}
-                        <div className="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50">
+                        <div className="bg-slate-900/50 rounded-xl p-4 sm:p-6 border border-slate-700/50">
                             <h4 className="text-sm font-semibold text-cyan-400 mb-3">
                                 사회적 가면 (Social Mask)
                             </h4>
@@ -223,7 +223,7 @@ export default function AdminTestControlPage() {
                         </div>
 
                         {/* Age Context */}
-                        <div className="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50">
+                        <div className="bg-slate-900/50 rounded-xl p-4 sm:p-6 border border-slate-700/50">
                             <h4 className="text-sm font-semibold text-purple-400 mb-3">
                                 연령대별 훅 ({ageGroup})
                             </h4>
@@ -246,7 +246,7 @@ export default function AdminTestControlPage() {
                         </div>
 
                         {/* Secret Unlock Simulation */}
-                        <div className="relative bg-gradient-to-br from-pink-900/30 to-orange-900/30 rounded-xl p-6 border border-pink-500/30 overflow-hidden">
+                        <div className="relative bg-gradient-to-br from-pink-900/30 to-orange-900/30 rounded-xl p-4 sm:p-6 border border-pink-500/30 overflow-hidden">
                             <div className="absolute inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center">
                                 <div className="text-center">
                                     <div className="text-4xl mb-3">🔒</div>
@@ -270,7 +270,7 @@ export default function AdminTestControlPage() {
                 </div>
 
                 {/* Validation Grid (All 60 at a glance) */}
-                <div className="mt-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
+                <div className="mt-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6">
                     <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                         <span>👑</span>
                         All 60 Archetypes - Quick Validation

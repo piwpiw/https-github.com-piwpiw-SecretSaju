@@ -3,8 +3,8 @@ import { BookOpenText, ArrowRight, MessageCircleHeart } from 'lucide-react';
 
 export default function BlogRedirectPage() {
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center px-4 py-10">
-      <section className="w-full max-w-xl rounded-4xl bg-surface border border-border-color p-8 text-center shadow-2xl">
+    <main className="min-h-screen bg-background flex items-center justify-center px-0 sm:px-4 py-10">
+      <section className="w-full max-w-xl rounded-4xl bg-surface border border-border-color p-5 sm:p-8 text-center shadow-2xl">
         <BookOpenText className="w-12 h-12 mx-auto mb-5 text-primary" />
         <h1 className="text-2xl font-black text-foreground mb-3">스토리 중심 페이지로 통합 이동</h1>
         <p className="text-sm sm:text-base text-muted mb-8 leading-relaxed">

@@ -219,7 +219,7 @@ export default function LuckPage() {
                   <button
                     key={t.id}
                     onClick={() => handleSelect(t)}
-                    className="p-8 rounded-[2rem] bg-slate-900/40 backdrop-blur-xl border border-white/5 hover:border-indigo-500/40 transition-all group flex items-center gap-6 text-left relative overflow-hidden"
+                    className="p-5 sm:p-8 rounded-[2rem] bg-slate-900/40 backdrop-blur-xl border border-white/5 hover:border-indigo-500/40 transition-all group flex items-center gap-6 text-left relative overflow-hidden"
                   >
                     <div className={cn(
                       "w-20 h-24 rounded-2xl bg-gradient-to-br flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform",
@@ -336,17 +336,17 @@ export default function LuckPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
-                  <div className="bg-white/5 border border-white/5 p-6 rounded-3xl">
+                  <div className="bg-white/5 border border-white/5 p-4 sm:p-6 rounded-3xl">
                     <p className="text-[13px] font-black text-indigo-300 uppercase tracking-widest mb-2">선택된 부적</p>
                     <p className="text-sm font-black text-white">{selectedTalisman.name}</p>
                   </div>
-                  <div className="bg-white/5 border border-white/5 p-6 rounded-3xl md:col-span-2">
+                  <div className="bg-white/5 border border-white/5 p-4 sm:p-6 rounded-3xl md:col-span-2">
                     <p className="text-[13px] font-black text-indigo-300 uppercase tracking-widest mb-2">전략적 조언</p>
                     <p className="text-sm font-medium text-slate-200 leading-relaxed">{getRitualAdvice(selectedTalisman.id)}</p>
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/5 p-8 rounded-3xl text-left">
+                <div className="bg-white/5 border border-white/5 p-5 sm:p-8 rounded-3xl text-left">
                   <h4 className="text-[13px] font-black text-indigo-300 uppercase tracking-[0.3em]">상세 메시지</h4>
                   <p className="text-sm font-medium text-slate-300 leading-relaxed mt-3">
                     {activeName}님을 위한 {selectedTalisman.name}의 기운을 담았습니다.

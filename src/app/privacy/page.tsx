@@ -22,7 +22,7 @@ export default function PrivacyPage() {
           </div>
 
           <div className="space-y-10 text-muted text-base leading-8 whitespace-pre-line font-medium">
-            <p className="text-lg text-foreground bg-background p-6 rounded-2xl border border-border-color">
+            <p className="text-lg text-foreground bg-background p-4 sm:p-6 rounded-2xl border border-border-color">
               Secret Saju는 서비스 제공에 필요한 최소한의 개인정보만 수집하며, 결제 검증, 계정 관리, 고객지원,
               보안 대응 목적 외에는 이용하지 않습니다.
             </p>
@@ -46,7 +46,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="text-foreground font-black text-2xl mb-4">3. 보관 및 삭제</h2>
-              <p className="p-6 bg-background rounded-2xl border border-border-color text-foreground leading-relaxed">
+              <p className="p-4 sm:p-6 bg-background rounded-2xl border border-border-color text-foreground leading-relaxed">
                 이용자는 탈퇴 요청 또는 삭제 요청을 할 수 있습니다. 계정 삭제가 확정되면 서비스 데이터는 내부 정책과
                 관계 법령에 따라 삭제 또는 분리 보관됩니다. 다만 전자상거래, 세무, 분쟁 대응에 필요한 일부 기록은 법정
                 보존 기간 동안 암호화하여 보관될 수 있습니다.

@@ -97,7 +97,7 @@ export default function HistoryResultPage() {
             <ArrowLeft className="w-4 h-4" />
             목록으로 돌아가기
           </Link>
-          <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
+          <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-8 text-center">
             <AlertCircle className="w-10 h-10 text-rose-400 mx-auto mb-3" />
             <h1 className="text-xl font-bold">기록을 찾을 수 없습니다.</h1>
             <p className="text-sm text-slate-400 mt-2">존재하지 않거나 삭제된 분석 기록입니다.</p>
@@ -156,7 +156,7 @@ export default function HistoryResultPage() {
           </Link>
         </div>
 
-        <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-6">
           <div className="flex items-center gap-3 mb-3">
             <span className={`w-10 h-10 rounded-xl bg-black/30 flex items-center justify-center ${info.color}`}>{info.icon}</span>
             <div>
@@ -171,7 +171,7 @@ export default function HistoryResultPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-white/10 bg-black/30 p-6 space-y-3">
+        <section className="rounded-2xl border border-white/10 bg-black/30 p-4 sm:p-6 space-y-3">
           <h2 className="text-sm font-bold">결과 요약</h2>
           <p className="text-sm text-slate-300">
             유형 <span className="text-indigo-300 font-black">{typeLabel}</span> | 소스 경로:
@@ -183,7 +183,7 @@ export default function HistoryResultPage() {
         </section>
 
         {isTarot ? (
-          <section className="rounded-2xl border border-white/10 bg-black/30 p-6 space-y-4">
+          <section className="rounded-2xl border border-white/10 bg-black/30 p-4 sm:p-6 space-y-4">
             <h2 className="text-sm font-bold">타로 결과</h2>
             <div className="grid md:grid-cols-3 gap-3">
               {(Array.isArray(parsedResult?.cards) ? parsedResult.cards : []).map((card: any, idx: number) => (
@@ -217,7 +217,7 @@ export default function HistoryResultPage() {
             </details>
           </section>
         ) : isTojeong ? (
-          <section className="rounded-2xl border border-white/10 bg-black/30 p-6 space-y-4">
+          <section className="rounded-2xl border border-white/10 bg-black/30 p-4 sm:p-6 space-y-4">
             <h2 className="text-sm font-bold">토정 결과</h2>
             <div className="grid md:grid-cols-3 gap-3">
               <article className="rounded-xl border border-white/10 bg-white/5 p-4">
@@ -255,7 +255,7 @@ export default function HistoryResultPage() {
             </div>
           </section>
         ) : isNaming ? (
-          <section className="rounded-2xl border border-white/10 bg-black/30 p-6 space-y-4">
+          <section className="rounded-2xl border border-white/10 bg-black/30 p-4 sm:p-6 space-y-4">
             <h2 className="text-sm font-bold">작명 결과</h2>
             <div className="grid md:grid-cols-2 gap-3">
               <article className="rounded-xl border border-white/10 bg-white/5 p-4">
@@ -275,7 +275,7 @@ export default function HistoryResultPage() {
             </div>
           </section>
         ) : isAstrology ? (
-          <section className="rounded-2xl border border-white/10 bg-black/30 p-6 space-y-4">
+          <section className="rounded-2xl border border-white/10 bg-black/30 p-4 sm:p-6 space-y-4">
             <h2 className="text-sm font-bold">별자리 분석</h2>
             <div className="rounded-xl border border-white/10 bg-white/5 p-4">
               <p className="text-sm text-slate-400">별자리 / 기준일</p>
@@ -303,7 +303,7 @@ export default function HistoryResultPage() {
             </div>
           </section>
         ) : isDream ? (
-          <section className="rounded-2xl border border-white/10 bg-black/30 p-6 space-y-4">
+          <section className="rounded-2xl border border-white/10 bg-black/30 p-4 sm:p-6 space-y-4">
             <h2 className="text-sm font-bold">해몽 결과</h2>
             <div className="rounded-xl border border-white/10 bg-white/5 p-4">
               <p className="text-sm text-slate-400">입력 문장</p>
@@ -315,7 +315,7 @@ export default function HistoryResultPage() {
             </div>
           </section>
         ) : (
-          <section className="rounded-2xl border border-white/10 bg-black/30 p-6">
+          <section className="rounded-2xl border border-white/10 bg-black/30 p-4 sm:p-6">
             <h2 className="text-sm font-bold mb-3">원본 결과 데이터</h2>
             <pre className="text-sm text-slate-200 whitespace-pre-wrap break-all">
               {JSON.stringify(log.result, null, 2)}

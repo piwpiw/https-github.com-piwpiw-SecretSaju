@@ -142,19 +142,19 @@ export default function SajuListPage() {
         </ScrollReveal>
 
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="rounded-3xl border border-border-color bg-gradient-to-br from-slate-900/70 to-surface p-6">
+          <div className="rounded-3xl border border-border-color bg-gradient-to-br from-slate-900/70 to-surface p-4 sm:p-6">
             <p className="text-sm font-black uppercase tracking-widest text-muted">프로필 커버리지</p>
             <div className="mt-4 h-2 rounded-full bg-black/30 border border-white/10">
               <div className="h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${completionRate}%` }} />
             </div>
             <p className="mt-3 text-sm text-muted">현재 {completionRate}%</p>
           </div>
-          <div className="rounded-3xl border border-border-color bg-gradient-to-br from-indigo-900/20 to-surface p-6">
+          <div className="rounded-3xl border border-border-color bg-gradient-to-br from-indigo-900/20 to-surface p-4 sm:p-6">
             <p className="text-sm font-black uppercase tracking-widest text-muted">관계 맵 가동률</p>
             <p className="mt-4 text-3xl font-black">{profiles.length > 1 ? `${profiles.length - 1}개` : "0개"}</p>
             <p className="mt-2 text-sm text-muted">연결 가능한 관계 후보군</p>
           </div>
-          <div className="rounded-3xl border border-border-color bg-gradient-to-br from-rose-900/20 to-surface p-6">
+          <div className="rounded-3xl border border-border-color bg-gradient-to-br from-rose-900/20 to-surface p-4 sm:p-6">
             <p className="text-sm font-black uppercase tracking-widest text-muted">다음 액션</p>
             <p className="mt-4 text-xl font-black">프로필 점검 1회</p>
             <p className="mt-2 text-sm text-muted">오늘도 관계 분석 정확도 향상</p>
@@ -304,7 +304,7 @@ export default function SajuListPage() {
 
       {pendingDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-md rounded-3xl border border-border-color bg-surface p-6">
+          <div className="w-full max-w-md rounded-3xl border border-border-color bg-surface p-4 sm:p-6">
             <div className="flex items-start justify-between mb-2">
               <h3 className="text-xl font-black">프로필 삭제</h3>
               <Sparkles className="w-5 h-5 text-muted" />

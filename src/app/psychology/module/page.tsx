@@ -3,8 +3,8 @@ import { Brain, ArrowRight, ArrowLeft } from 'lucide-react';
 
 export default function PsychologyModuleHomePage() {
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center px-4 py-10">
-      <section className="w-full max-w-xl rounded-4xl bg-surface border border-border-color p-8 text-center shadow-2xl">
+    <main className="min-h-screen bg-background flex items-center justify-center px-0 sm:px-4 py-10">
+      <section className="w-full max-w-xl rounded-4xl bg-surface border border-border-color p-5 sm:p-8 text-center shadow-2xl">
         <Brain className="w-12 h-12 mx-auto mb-5 text-primary" />
         <h1 className="text-2xl font-black text-foreground mb-3">심리 진단은 통합 페이지에서 시작됩니다</h1>
         <p className="text-sm sm:text-base text-muted mb-8 leading-relaxed">

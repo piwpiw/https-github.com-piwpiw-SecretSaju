@@ -99,7 +99,7 @@ export default function FortuneReadersPage() {
             const favorite = favoriteIds.includes(reader.id);
 
             return (
-              <article key={reader.id} className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
+              <article key={reader.id} className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-4 sm:p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-3xl">{reader.heroEmoji}</p>

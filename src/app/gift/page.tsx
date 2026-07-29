@@ -101,7 +101,7 @@ export default function GiftPage() {
   };
 
   return (
-    <main className="min-h-screen relative overflow-hidden flex flex-col items-center pt-24 pb-40 px-6">
+    <main className="min-h-screen relative overflow-hidden flex flex-col items-center pt-24 pb-40 px-0 sm:px-6">
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -144,7 +144,7 @@ export default function GiftPage() {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="w-full max-w-2xl bg-surface rounded-5xl border border-border-color p-6 sm:p-9 md:p-16 relative shadow-2xl overflow-hidden z-10"
+        className="w-full max-w-2xl bg-surface rounded-5xl border border-border-color p-4 sm:p-9 md:p-16 relative shadow-2xl overflow-hidden z-10"
       >
         <div className="absolute top-0 right-0 w-64 h-64 bg-pink-500/10 blur-3xl rounded-full opacity-50" />
 

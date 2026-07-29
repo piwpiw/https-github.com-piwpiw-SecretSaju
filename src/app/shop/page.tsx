@@ -38,7 +38,7 @@ export default function ShopPage() {
               전문가급 오라클 젤리로 무제한 개인 통찰
             </p>
             {FREE_LAUNCH ? (
-              <div className="mx-auto mt-8 max-w-2xl rounded-[2rem] border border-emerald-400/30 bg-emerald-500/10 p-6">
+              <div className="mx-auto mt-8 max-w-2xl rounded-[2rem] border border-emerald-400/30 bg-emerald-500/10 p-4 sm:p-6">
                 <p className="text-[13px] font-black tracking-[0.25em] text-emerald-200 break-keep">무료 오픈</p>
                 <h2 className="mt-3 text-2xl font-black text-white break-keep">지금은 모든 기능이 무료입니다</h2>
                 <p className="mt-3 text-sm leading-7 text-emerald-50/90 break-keep">
@@ -82,7 +82,7 @@ export default function ShopPage() {
         </ScrollReveal>
 
         <ScrollReveal direction="up" delay={0.28}>
-          <section className="mt-16 rounded-[2rem] border border-white/10 bg-white/[0.04] p-8">
+          <section className="mt-16 rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 sm:p-8">
             <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div className="max-w-2xl">
                 <p className="text-[13px] font-black tracking-[0.25em] text-fuchsia-200 break-keep">시그니처 리더 멤버십</p>

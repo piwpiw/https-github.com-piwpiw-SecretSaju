@@ -163,7 +163,9 @@ export default function PalmistryPage() {
     <main className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden pb-24">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_0%,rgba(20,184,166,0.16),transparent_45%)]" />
 
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 relative z-10">
+      {/* 좌우 여백은 레이아웃이 8px 를 이미 준다. 여기서 또 주면 카드 안쪽
+          p-5 까지 겹쳐 390px 화면에서 글자 폭이 300px 밑으로 떨어진다. */}
+      <div className="max-w-2xl mx-auto px-0 sm:px-6 py-6 relative z-10">
         <div className="flex items-center justify-between mb-5">
           <button
             onClick={() => router.back()}
@@ -219,7 +221,7 @@ export default function PalmistryPage() {
               <img src={preview} alt="올린 손바닥 사진" className="w-full max-h-[420px] object-contain" />
             </div>
           ) : (
-            <div className="mt-5 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] p-6 text-center">
+            <div className="mt-5 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] p-4 sm:p-6 text-center">
               <Hand className="w-10 h-10 mx-auto text-emerald-300/70" />
               <p className="mt-3 text-[15px] text-slate-300 break-keep">
                 아직 올린 사진이 없습니다.
@@ -269,7 +271,7 @@ export default function PalmistryPage() {
         </section>
 
         {analyzing && (
-          <section className="mt-4 rounded-3xl border border-white/10 bg-slate-900/60 p-6 text-center">
+          <section className="mt-4 rounded-3xl border border-white/10 bg-slate-900/60 p-4 sm:p-6 text-center">
             <Loader2 className="w-6 h-6 mx-auto text-emerald-300 animate-spin" />
             <p className="mt-3 text-[15px] text-slate-300">사진에서 손금을 읽는 중입니다…</p>
           </section>

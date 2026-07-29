@@ -71,7 +71,7 @@ export default function ConsultationPage() {
     <main className="min-h-screen bg-slate-950 text-white relative overflow-hidden pb-40">
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5 pointer-events-none" />
 
-      <div className="max-w-2xl mx-auto px-4 pt-10">
+      <div className="max-w-2xl mx-auto px-0 sm:px-4 pt-10">
         <button
           type="button"
           onClick={() => router.back()}
@@ -99,7 +99,7 @@ export default function ConsultationPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.08 }}
-              className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-3xl p-6 hover:bg-slate-800 hover:border-amber-500/50 transition-all group"
+              className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-3xl p-4 sm:p-6 hover:bg-slate-800 hover:border-amber-500/50 transition-all group"
             >
               <div className="flex gap-6">
                 <div className="w-20 h-20 bg-slate-800 rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform shadow-xl">
@@ -172,7 +172,7 @@ export default function ConsultationPage() {
           ))}
         </div>
 
-        <div className="mt-12 p-6 bg-slate-900/30 border border-slate-800 rounded-3xl flex items-center justify-between">
+        <div className="mt-12 p-4 sm:p-6 bg-slate-900/30 border border-slate-800 rounded-3xl flex items-center justify-between">
           <div className="flex items-center gap-4">
             <ShieldCheck className="w-8 h-8 text-indigo-400" />
             <div>

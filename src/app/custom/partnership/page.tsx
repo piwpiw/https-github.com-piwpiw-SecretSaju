@@ -155,7 +155,7 @@ export default function PartnershipPage() {
             </div>
           </div>
 
-          <div className="p-8 sm:p-5 sm:p-8 bg-gradient-to-br from-slate-900/60 to-indigo-950/20 rounded-[2rem] border border-white/10 shadow-[0_0_40px_rgba(79,70,229,0.1)] relative overflow-hidden backdrop-blur-md">
+          <div className="p-5 sm:p-5 sm:p-8 bg-gradient-to-br from-slate-900/60 to-indigo-950/20 rounded-[2rem] border border-white/10 shadow-[0_0_40px_rgba(79,70,229,0.1)] relative overflow-hidden backdrop-blur-md">
             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none" />
 
             <form onSubmit={handleSubmit} className="space-y-6 relative z-10">

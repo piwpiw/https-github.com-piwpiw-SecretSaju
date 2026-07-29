@@ -455,7 +455,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row items-center justify-between px-4 gap-4">
                 <div className="text-center sm:text-left">
                   <h2 className="ui-title-gradient text-2xl sm:text-3xl tracking-[0.08em] leading-none">글로벌 <span className="text-indigo-500">운세 동기화</span></h2>
-                  <p className="text-micro-copy mt-2 sm:mt-3 opacity-80 font-black text-indigo-200">
+                  <p className="text-micro-copy mt-2 sm:mt-3 font-black text-indigo-200">
                     {clientHour === null
                       ? "오늘의 운세 흐름을 준비 중입니다"
                       : clientHour >= 5 && clientHour < 11
@@ -603,7 +603,7 @@ export default function HomePage() {
                 { label: "궁합보기", icon: "💖", link: "/compatibility" }
               ].map((item, idx) => (
                 <Link key={idx} href={item.link}>
-                  <div className="premium-card p-6 flex flex-col items-center justify-center gap-3 group hover:border-primary/50 transition-all text-center h-full">
+                  <div className="premium-card p-4 sm:p-6 flex flex-col items-center justify-center gap-3 group hover:border-primary/50 transition-all text-center h-full">
                     <span className="text-3xl group-hover:scale-125 transition-transform">{item.icon}</span>
                     <span className="text-[13px] font-black text-slate-400 uppercase tracking-widest">{item.label}</span>
                     <div className="noise-texture opacity-[0.05]" />

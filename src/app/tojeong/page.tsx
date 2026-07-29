@@ -194,7 +194,7 @@ export default function TojeongPage() {
           <JellyBalance />
         </div>
 
-        <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-8 md:p-5 sm:p-8">
+        <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-5 md:p-5 sm:p-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-slate-800/70 text-sm font-black uppercase tracking-[0.3em] text-amber-300">
             <CalendarDays className="w-4 h-4" />
             토정비결
@@ -237,7 +237,7 @@ export default function TojeongPage() {
         </section>
 
         {!profile && (
-          <section className="mt-8 rounded-3xl border border-amber-300/20 bg-amber-500/10 p-6 text-amber-100 text-sm">
+          <section className="mt-8 rounded-3xl border border-amber-300/20 bg-amber-500/10 p-4 sm:p-6 text-amber-100 text-sm">
             현재 사용 가능한 프로필이 없습니다. 먼저 프로필을 등록해 주세요.
             <div className="mt-3">
               <Link href="/my-saju/add" className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 text-slate-900 font-black">
@@ -249,7 +249,7 @@ export default function TojeongPage() {
 
         {report && (
           <>
-            <section className="mt-8 bg-slate-900/55 border border-white/10 rounded-[2rem] p-8">
+            <section className="mt-8 bg-slate-900/55 border border-white/10 rounded-[2rem] p-5 sm:p-8">
               <div className="flex items-start justify-between">
                 <div>
                   <div className="text-sm text-amber-300 font-black tracking-[0.2em]">신뢰도 점수</div>
@@ -313,14 +313,14 @@ export default function TojeongPage() {
             </section>
 
             <section className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <article className="rounded-3xl border border-white/10 bg-slate-900/45 p-6">
+              <article className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 sm:p-6">
                 <div className="inline-flex items-center gap-2 text-emerald-300 text-sm font-black">
                   <WalletCards className="w-4 h-4" /> 연간 주제
                 </div>
                 <p className="mt-2 text-sm text-slate-200">{report.theme}</p>
                 <p className="mt-2 text-slate-400">{getPillarNameKo(getDayPillarIndex(new Date(report.year, 0, 1)))} 중심 해석</p>
               </article>
-              <article className="rounded-3xl border border-white/10 bg-slate-900/45 p-6">
+              <article className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 sm:p-6">
                 <div className="inline-flex items-center gap-2 text-sky-300 text-sm font-black">
                   <Briefcase className="w-4 h-4" /> 강점
                 </div>
@@ -330,7 +330,7 @@ export default function TojeongPage() {
                   ))}
                 </ul>
               </article>
-              <article className="rounded-3xl border border-white/10 bg-slate-900/45 p-6">
+              <article className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 sm:p-6">
                 <div className="inline-flex items-center gap-2 text-rose-300 text-sm font-black">
                   <CheckCircle2 className="w-4 h-4" /> 주의점
                 </div>
@@ -342,7 +342,7 @@ export default function TojeongPage() {
               </article>
             </section>
 
-            <section className="mt-8 rounded-[2rem] border border-white/10 bg-slate-900/55 p-8">
+            <section className="mt-8 rounded-[2rem] border border-white/10 bg-slate-900/55 p-5 sm:p-8">
               <h3 className="text-xl font-black">월별 핵심 액션 포인트</h3>
               <div className="mt-4 grid md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {report.monthly.slice(0, 9).map((month) => (
@@ -365,7 +365,7 @@ export default function TojeongPage() {
               </div>
             </section>
 
-            <section className="mt-8 rounded-3xl border border-white/10 bg-slate-900/55 p-6">
+            <section className="mt-8 rounded-3xl border border-white/10 bg-slate-900/55 p-4 sm:p-6">
               <details open={openAll}>
                 <summary className="font-black text-lg mb-3 flex items-center gap-2">
                   <Lightbulb className="w-4 h-4 text-cyan-300" /> 실행 액션
@@ -378,7 +378,7 @@ export default function TojeongPage() {
               </details>
             </section>
 
-            <section className="mt-6 rounded-3xl border border-white/10 bg-slate-900/55 p-6">
+            <section className="mt-6 rounded-3xl border border-white/10 bg-slate-900/55 p-4 sm:p-6">
               <details open={openAll}>
                 <summary className="font-black text-lg mb-3">근거 로그</summary>
                 <ul className="space-y-2 text-sm text-slate-200">

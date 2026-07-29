@@ -378,7 +378,7 @@ export default function NamingPage() {
           <JellyBalance />
         </header>
 
-        <section className="bg-slate-900/60 border border-white/10 rounded-[2.4rem] p-6 sm:p-8 mb-8">
+        <section className="bg-slate-900/60 border border-white/10 rounded-[2.4rem] p-4 sm:p-8 mb-8">
           <div className="text-3xl sm:text-4xl font-black">
             <Edit3 className="inline-block w-6 h-6 mr-2" />
             작명 분석
@@ -469,7 +469,7 @@ export default function NamingPage() {
         {result && (
           <AnimatePresence>
             <motion.section initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-              <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-7">
+              <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-5 sm:p-7">
                 <div className="flex flex-wrap items-end justify-between gap-4">
                   <div>
                     <div className="text-sm tracking-[0.3em] text-slate-500">결과 요약</div>
@@ -497,7 +497,7 @@ export default function NamingPage() {
               </section>
 
               <section className="grid lg:grid-cols-2 gap-6">
-                <details className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-6" open>
+                <details className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-4 sm:p-6" open>
                   <summary className="font-black text-lg mb-3">
                     음절 단위 분석
                   </summary>
@@ -516,7 +516,7 @@ export default function NamingPage() {
                   </div>
                 </details>
 
-                <details className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-6" open>
+                <details className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-4 sm:p-6" open>
                   <summary className="font-black text-lg mb-3">오행 분포</summary>
                   <div className="space-y-3">
                     {Object.entries(result.elementDistribution).map(([element, count]) => {
@@ -548,7 +548,7 @@ export default function NamingPage() {
                 </details>
               </section>
 
-              <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-6">
+              <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-4 sm:p-6">
                 <div className="font-black mb-3">시나리오 추천</div>
                 <div className="mt-3 flex gap-2 flex-wrap">
                   {SCENARIOS.map((item) => (
@@ -581,7 +581,7 @@ export default function NamingPage() {
                 </div>
               </section>
 
-              <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-6">
+              <section className="bg-slate-900/60 border border-white/10 rounded-[2rem] p-4 sm:p-6">
                 <details className="space-y-3" open>
                   <summary className="font-black text-lg">성향 요약</summary>
                   <div className="grid md:grid-cols-2 gap-3">

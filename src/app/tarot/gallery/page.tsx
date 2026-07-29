@@ -121,7 +121,6 @@ export default function TarotGalleryPage() {
                                                 number={card.number}
                                                 rank={card.rank}
                                                 arcana={card.arcana}
-                                                sequence={card.sequence}
                                             />
                                         </div>
                                         {imageUrl ? (

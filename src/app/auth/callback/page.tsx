@@ -111,11 +111,11 @@ export default function AuthCallback() {
     }, [router]);
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-background px-6">
+        <main className="min-h-screen flex items-center justify-center bg-background px-0 sm:px-6">
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-surface p-6 sm:p-9 rounded-4xl border border-border-color shadow-2xl text-center max-w-md w-full"
+                className="bg-surface p-4 sm:p-9 rounded-4xl border border-border-color shadow-2xl text-center max-w-md w-full"
             >
                 <div
                     className={`w-24 h-24 rounded-3xl ${isError ? 'bg-rose-500/10 border-rose-500/30' : 'bg-primary/10 border-primary/30'} border flex items-center justify-center mx-auto mb-8 shadow-xl ${isError ? 'shadow-rose-500/20' : 'shadow-primary/20'}`}

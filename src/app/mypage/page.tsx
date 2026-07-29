@@ -144,7 +144,7 @@ export default function MyPage() {
 
   if (!user) {
     return (
-      <main className="min-h-screen relative overflow-hidden flex items-center justify-center px-6 py-10 bg-slate-950">
+      <main className="min-h-screen relative overflow-hidden flex items-center justify-center px-0 sm:px-6 py-10 bg-slate-950">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.08),transparent_70%)]" />
         <motion.div
           initial={{ opacity: 0, y: 24, scale: 0.97 }}
@@ -183,7 +183,7 @@ export default function MyPage() {
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] opacity-10" style={{ background: "radial-gradient(circle, rgba(168,85,247,0.3) 0%, transparent 70%)" }} />
       </div>
 
-      <div className="max-w-4xl mx-auto px-5 py-10 relative z-10">
+      <div className="max-w-4xl mx-auto px-0 sm:px-5 py-10 relative z-10">
 
         {/* ── Header ─────────────────────────────────── */}
         <motion.div
@@ -388,7 +388,7 @@ export default function MyPage() {
               initial={{ scale: 0.9, opacity: 0, y: 16 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 16 }}
-              className="w-full max-w-sm rounded-[2.5rem] border border-white/10 bg-slate-900/95 backdrop-blur-2xl p-8 text-center"
+              className="w-full max-w-sm rounded-[2.5rem] border border-white/10 bg-slate-900/95 backdrop-blur-2xl p-5 sm:p-8 text-center"
             >
               <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto mb-5">
                 <LogOut className="w-7 h-7 text-rose-400" />

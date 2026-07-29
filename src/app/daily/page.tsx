@@ -154,7 +154,7 @@ export default function DailyFortunePage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px]" style={{ background: "radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%)" }} />
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-10 relative z-10">
+      <div className="max-w-2xl mx-auto px-0 sm:px-5 py-10 relative z-10">
 
         {/* Nav */}
         <div className="flex items-center justify-between mb-6">
@@ -164,7 +164,7 @@ export default function DailyFortunePage() {
           </button>
           <div className="text-center">
             <h1 className="text-lg font-black text-white tracking-tight">일일 운세</h1>
-            {now && <p className="text-[13px] font-bold text-slate-500 uppercase tracking-widest flex items-center justify-center gap-1">
+            {now && <p className="text-[13px] font-bold text-slate-400 uppercase tracking-widest flex items-center justify-center gap-1">
               {getTimeIcon(now.getHours())} {now.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}
             </p>}
           </div>
@@ -307,7 +307,7 @@ export default function DailyFortunePage() {
               )}
 
               {/* Time Segments */}
-              <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-6">
+              <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-4 sm:p-6">
                 <p className="text-[13px] font-black uppercase tracking-[0.25em] text-slate-500 mb-4">시간대별 에너지</p>
                 <div className="grid grid-cols-3 gap-3">
                   {SEGMENTS.map((seg) => {

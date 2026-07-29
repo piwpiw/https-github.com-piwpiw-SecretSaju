@@ -68,7 +68,7 @@ export default function StoryDetailPage({ params }: Props) {
         </article>
 
         <section
-          className="mt-8 bg-surface border border-border-color rounded-4xl p-8 md:p-5 sm:p-8 shadow-xl leading-relaxed whitespace-pre-line text-base md:text-lg"
+          className="mt-8 bg-surface border border-border-color rounded-4xl p-5 md:p-5 sm:p-8 shadow-xl leading-relaxed whitespace-pre-line text-base md:text-lg"
           aria-label={`${story.title} 본문`}
         >
           {story.content}

@@ -71,7 +71,7 @@ export default function WikiPage() {
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-6 bg-surface p-6 rounded-3xl border border-border-color shadow-lg">
+                    <div className="flex items-center gap-6 bg-surface p-4 sm:p-6 rounded-3xl border border-border-color shadow-lg">
                         <div className="text-right border-r border-border-color pr-6">
                             <div className="text-sm font-bold text-muted uppercase tracking-widest mb-1">{locale === 'ko' ? '최종 갱신' : 'Last Updated'}</div>
                             <div className="text-xl font-black">2026.02.26</div>
@@ -106,7 +106,7 @@ export default function WikiPage() {
                                         <Link
                                             key={doc.slug}
                                             href={`/wiki/${doc.slug}`}
-                                            className="bg-surface p-8 rounded-4xl border border-border-color hover:border-primary/50 group transition-all shadow-md hover:shadow-xl hover:-translate-y-1 relative overflow-hidden"
+                                            className="bg-surface p-5 sm:p-8 rounded-4xl border border-border-color hover:border-primary/50 group transition-all shadow-md hover:shadow-xl hover:-translate-y-1 relative overflow-hidden"
                                         >
                                             <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-10 transition-opacity">
                                                 <doc.icon className="w-24 h-24 text-primary" />
@@ -125,7 +125,7 @@ export default function WikiPage() {
                                         </Link>
                                     ))
                                 ) : (
-                                    <div className="col-span-full p-6 sm:p-9 rounded-4xl bg-surface border border-dashed border-border-color flex flex-col items-center justify-center gap-4">
+                                    <div className="col-span-full p-4 sm:p-9 rounded-4xl bg-surface border border-dashed border-border-color flex flex-col items-center justify-center gap-4">
                                         <Sparkles className="w-10 h-10 text-muted opacity-50" />
                                         <span className="text-xl font-bold text-muted uppercase tracking-widest">{locale === 'ko' ? '문서 없음' : 'No Documents'}</span>
                                     </div>

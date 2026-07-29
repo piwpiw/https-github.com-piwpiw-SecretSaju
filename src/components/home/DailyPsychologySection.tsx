@@ -29,7 +29,7 @@ export default function DailyPsychologySection() {
                     </div>
                     <div>
                         <h2 className="ui-title-gradient text-2xl sm:text-3xl tracking-[0.08em]">심리 <span className="text-rose-400">요약</span></h2>
-                        <p className="text-micro-copy mt-2 opacity-80">오늘의 심리/운세 인사이트를 빠르게 확인하세요</p>
+                        <p className="text-micro-copy text-slate-300 mt-2">오늘의 심리/운세 인사이트를 빠르게 확인하세요</p>
                     </div>
                 </div>
                 <Link href="/psychology" className="px-4 py-2.5 sm:px-6 sm:py-3 rounded-2xl bg-white/5 border border-white/10 text-[13px] font-black text-rose-300 hover:bg-rose-500 hover:text-white transition-all uppercase tracking-[0.3em] flex items-center gap-2 sm:gap-3">
@@ -77,7 +77,7 @@ export default function DailyPsychologySection() {
             </div>
 
             <div className="mt-8 sm:mt-12 text-center">
-                <p className="text-micro-copy text-slate-500">신경 네트워크 업데이트: 2026.02.28</p>
+                <p className="text-micro-copy text-slate-400">신경 네트워크 업데이트: 2026.02.28</p>
             </div>
         </section>
     );

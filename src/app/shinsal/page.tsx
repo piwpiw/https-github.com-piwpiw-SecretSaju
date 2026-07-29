@@ -66,7 +66,7 @@ export default function ShinsalPage() {
           <JellyBalance />
         </div>
 
-        <section className="bg-slate-900/60 border border-white/10 rounded-[2.3rem] p-8 md:p-6 sm:p-9">
+        <section className="bg-slate-900/60 border border-white/10 rounded-[2.3rem] p-5 md:p-6 sm:p-9">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fuchsia-500/10 border border-fuchsia-400/30 text-fuchsia-200 font-black uppercase tracking-[0.2em] text-sm">
             <Shield className="w-4 h-4" /> 신살 진단
           </div>
@@ -109,7 +109,7 @@ export default function ShinsalPage() {
           <motion.section
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-8 rounded-3xl border border-white/10 bg-slate-900/50 p-7"
+            className="mt-8 rounded-3xl border border-white/10 bg-slate-900/50 p-5 sm:p-7"
           >
             <div className="flex items-center gap-3 text-emerald-300 font-black">
               <ShieldCheck className="w-5 h-5" /> 선택 항목 상세

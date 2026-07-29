@@ -14,13 +14,11 @@
 
 type Props = {
   suit?: string | null;
-  /** 마이너 카드 숫자 (1~10), 코트 카드는 없음 */
+  /** 마이너는 카드 숫자(1~10, 코트는 없음), 메이저는 아르카나 번호(0~21) */
   number?: number | null;
   /** 코트 카드 약자 (P/N/Q/K) 또는 메이저 번호 */
   rank?: string | null;
   arcana?: string;
-  /** 메이저 아르카나 순번 (0~21) */
-  sequence?: number | null;
   isReversed?: boolean;
   className?: string;
 };
@@ -58,7 +56,6 @@ export default function TarotCardArt({
   number,
   rank,
   arcana,
-  sequence,
   isReversed = false,
   className = '',
 }: Props) {
@@ -95,7 +92,9 @@ export default function TarotCardArt({
               className="text-2xl font-black tracking-widest"
               style={{ color: style.ink }}
             >
-              {typeof sequence === 'number' ? romanize(sequence) : style.glyph}
+              {/* 메이저 번호는 카드의 number(0~21). 덱 전체 정렬용 sequence(1~78)를
+                  쓰면 바보=I, 세계=XXII 처럼 한 칸씩 밀린다. */}
+              {typeof number === 'number' ? romanize(number) : style.glyph}
             </span>
           </>
         ) : court ? (

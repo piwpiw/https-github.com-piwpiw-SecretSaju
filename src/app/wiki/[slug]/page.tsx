@@ -55,7 +55,7 @@ export default async function DocPage({
 
   return (
     <main className="relative min-h-screen overflow-hidden pb-32 text-white">
-      <div className="relative z-10 mx-auto max-w-4xl px-6 py-8">
+      <div className="relative z-10 mx-auto max-w-4xl px-0 sm:px-6 py-8">
         <div className="mb-8 flex items-center justify-between">
           <Link
             href="/wiki"

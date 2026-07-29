@@ -82,7 +82,10 @@ export default function RootLayout({
                 >
                   본문으로 건너뛰기
                 </a>
-                <main id="main-content" className="flex-1 w-full max-w-7xl mx-auto relative px-4 md:px-8">
+                {/* 모바일 좌우 여백은 8px 만 준다. 각 화면이 자기 카드에 p-5(20px)를
+                    또 주기 때문에, 여기서 16px 를 주면 양쪽 36px 씩 총 72px(390의 18%)가
+                    글자가 들어가기 전에 사라졌다. */}
+                <main id="main-content" className="flex-1 w-full max-w-7xl mx-auto relative px-2 sm:px-4 md:px-8">
                   <div className="noise-texture opacity-[0.02]" />
                   {children}
                 </main>

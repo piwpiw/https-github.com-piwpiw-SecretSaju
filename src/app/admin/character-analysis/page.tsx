@@ -16,7 +16,7 @@ export default function CharacterAnalysisPage() {
     const pillarName = getPillarNameKo(selectedIndex);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white p-5 sm:p-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -29,7 +29,7 @@ export default function CharacterAnalysisPage() {
                 </div>
 
                 {/* Selector */}
-                <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
+                <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6">
                     <label htmlFor="character-analysis-pillar" className="block text-sm font-semibold mb-2 text-cyan-400">
                         인물 선택
                     </label>
@@ -59,7 +59,7 @@ export default function CharacterAnalysisPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl p-6 border border-purple-500/20"
+                            className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl p-4 sm:p-6 border border-purple-500/20"
                         >
                             <div className="text-6xl mb-4 text-center">🐾</div>
                             <h2 className="text-3xl font-bold text-center mb-2">
@@ -78,7 +78,7 @@ export default function CharacterAnalysisPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-white/5 backdrop-blur-lg border border-cyan-500/30 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-cyan-500/30 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4 text-cyan-400">
                                 💫 성격 유형
@@ -104,7 +104,7 @@ export default function CharacterAnalysisPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="bg-gradient-to-br from-yellow-900/20 to-orange-900/20 border border-yellow-500/30 rounded-xl p-6"
+                            className="bg-gradient-to-br from-yellow-900/20 to-orange-900/20 border border-yellow-500/30 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-3 text-yellow-400">
                                 📜 인생 모토
@@ -121,7 +121,7 @@ export default function CharacterAnalysisPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4">⚖️ 오행 균형도</h3>
 
@@ -187,7 +187,7 @@ export default function CharacterAnalysisPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4">🎯 핵심 특징</h3>
 
@@ -227,7 +227,7 @@ export default function CharacterAnalysisPage() {
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4">🌟 인생 5대 영역</h3>
                             <p className="text-sm text-slate-400 mb-6">
@@ -277,7 +277,7 @@ export default function CharacterAnalysisPage() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4">⭐ 특수 신살</h3>
 

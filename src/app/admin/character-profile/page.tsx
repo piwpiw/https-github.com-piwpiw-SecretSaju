@@ -25,7 +25,7 @@ export default function CharacterProfilePage() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white p-5 sm:p-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -38,7 +38,7 @@ export default function CharacterProfilePage() {
                 </div>
 
                 {/* Selector */}
-                <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
+                <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6">
                     <label htmlFor="character-profile-pillar" className="block text-sm font-semibold mb-2 text-cyan-400">
                         캐릭터 선택
                     </label>
@@ -68,7 +68,7 @@ export default function CharacterProfilePage() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl p-6 border border-purple-500/20"
+                            className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl p-4 sm:p-6 border border-purple-500/20"
                         >
                             <div className="flex items-start justify-between mb-4">
                                 <div>
@@ -103,7 +103,7 @@ export default function CharacterProfilePage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                             style={{
                                 borderColor: profile.wuxing.color + "40",
                             }}
@@ -150,7 +150,7 @@ export default function CharacterProfilePage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                                 ⭐ 특수 능력 (신살)
@@ -195,7 +195,7 @@ export default function CharacterProfilePage() {
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-6">
                                 📊 5차원 스탯 (100점 만점)
@@ -244,7 +244,7 @@ export default function CharacterProfilePage() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-gradient-to-br from-slate-900/50 to-purple-900/30 border border-cyan-500/30 rounded-xl p-6"
+                            className="bg-gradient-to-br from-slate-900/50 to-purple-900/30 border border-cyan-500/30 rounded-xl p-4 sm:p-6"
                         >
                             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                                 🎮 캐릭터 시트

@@ -109,7 +109,7 @@ export default function AdvancedScoringPage() {
     const gangYak = calculateGangYak(fourPillars);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 text-white p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 text-white p-5 sm:p-8">
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -125,7 +125,7 @@ export default function AdvancedScoringPage() {
                 </div>
 
                 {/* Selector */}
-                <div className="mb-8 bg-white/10 backdrop-blur-lg border border-yellow-500/30 rounded-xl p-6">
+                <div className="mb-8 bg-white/10 backdrop-blur-lg border border-yellow-500/30 rounded-xl p-4 sm:p-6">
                     <label htmlFor="advanced-scoring-pillar" className="block text-sm font-semibold mb-2 text-yellow-400">
                         일주 선택
                     </label>
@@ -171,7 +171,7 @@ export default function AdvancedScoringPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-2xl p-8 border-2 border-purple-500/30"
+                            className="bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-2xl p-5 sm:p-8 border-2 border-purple-500/30"
                         >
                             <div className="text-7xl mb-4 text-center animate-bounce">
                                 🐾
@@ -194,7 +194,7 @@ export default function AdvancedScoringPage() {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="bg-gradient-to-br from-yellow-600/20 to-orange-600/20 border-2 border-yellow-500/50 rounded-2xl p-8 text-center"
+                            className="bg-gradient-to-br from-yellow-600/20 to-orange-600/20 border-2 border-yellow-500/50 rounded-2xl p-5 sm:p-8 text-center"
                         >
                             <div className="text-sm text-yellow-300 mb-2 font-semibold">
                                 종합 점수 (신강/신약)
@@ -228,7 +228,7 @@ export default function AdvancedScoringPage() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/20 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/20 rounded-xl p-4 sm:p-6"
                         >
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-2xl font-bold text-cyan-400">
@@ -261,7 +261,7 @@ export default function AdvancedScoringPage() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/20 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/20 rounded-xl p-4 sm:p-6"
                         >
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-2xl font-bold text-green-400">
@@ -294,7 +294,7 @@ export default function AdvancedScoringPage() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="bg-white/5 backdrop-blur-lg border border-white/20 rounded-xl p-6"
+                            className="bg-white/5 backdrop-blur-lg border border-white/20 rounded-xl p-4 sm:p-6"
                         >
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-2xl font-bold text-purple-400">

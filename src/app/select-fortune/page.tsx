@@ -180,7 +180,7 @@ export default function SelectionPage() {
                         { icon: Star, label: locale === 'ko' ? '운명 리뷰' : '운명 리뷰', href: '/inquiry' },
                         { icon: Flame, label: locale === 'ko' ? '특별 부적' : '특별 부적', href: '/gift' },
                     ].map((item, i) => (
-                        <Link key={i} href={item.href} className="bg-surface rounded-4xl p-8 border border-border-color flex flex-col items-center justify-center text-center gap-4 group hover:border-primary/30 transition-all hover:bg-background shadow-md hover:shadow-lg">
+                        <Link key={i} href={item.href} className="bg-surface rounded-4xl p-5 sm:p-8 border border-border-color flex flex-col items-center justify-center text-center gap-4 group hover:border-primary/30 transition-all hover:bg-background shadow-md hover:shadow-lg">
                             <div className="relative">
                                 <div className="w-16 h-16 rounded-3xl bg-background border border-border-color flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
                                     <item.icon className="w-8 h-8 text-muted group-hover:text-primary transition-colors" />
@@ -198,7 +198,7 @@ export default function SelectionPage() {
 
                 {/* No profiles state */}
                 {profiles.length === 0 && (
-                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-16 bg-surface rounded-5xl p-16 text-center border-2 border-dashed border-primary/30 relative overflow-hidden group">
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-16 bg-surface rounded-5xl p-4 sm:p-16 text-center border-2 border-dashed border-primary/30 relative overflow-hidden group">
                         <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors duration-700" />
                         <div className="relative z-10">
                             <div className="w-24 h-24 bg-primary/10 rounded-4xl flex items-center justify-center mx-auto mb-6 border border-primary/20">

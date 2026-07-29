@@ -152,7 +152,7 @@ export default function EncyclopediaPage() {
                   exit={{ opacity: 0, scale: 0.9 }}
                   key={term.id}
                   id={showId ? `index-${currentInitial}` : undefined}
-                  className="rounded-3xl border border-white/5 bg-white/5 p-6 hover:bg-white/10 transition-all hover:border-indigo-500/30 group relative overflow-hidden"
+                  className="rounded-3xl border border-white/5 bg-white/5 p-4 sm:p-6 hover:bg-white/10 transition-all hover:border-indigo-500/30 group relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
                     <Sparkles className="w-5 h-5 text-indigo-400" />

@@ -36,7 +36,7 @@ export default function FortuneReaderDetailPage() {
           <div className="w-11 h-11" />
         </header>
 
-        <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-8">
+        <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-5 sm:p-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-6xl">{reader.heroEmoji}</p>
@@ -86,7 +86,7 @@ export default function FortuneReaderDetailPage() {
           </div>
         </section>
 
-        <section className="mt-8 rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+        <section className="mt-8 rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:p-6">
           <p className="text-sm font-black text-white">이 리더를 추천하는 경우</p>
           <div className="mt-4 space-y-3 text-sm text-slate-200">
             <p>1. 해설이 너무 어렵게 느껴지면 쉬운 번역형 리더가 적합합니다.</p>

@@ -191,7 +191,7 @@ export default function MorePage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {group.items.map((item) => (
                   <Link key={item.link} href={item.link}>
-                    <div className="bg-surface border border-border-color p-6 rounded-3xl hover:-translate-y-1 hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group flex items-center justify-between h-full">
+                    <div className="bg-surface border border-border-color p-4 sm:p-6 rounded-3xl hover:-translate-y-1 hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group flex items-center justify-between h-full">
                       <div className="flex items-center gap-5">
                         <div className="w-14 h-14 rounded-2xl bg-background border border-border-color flex items-center justify-center relative overflow-hidden shrink-0">
                           <div className={`absolute inset-0 opacity-10 ${item.color.replace("text", "bg")} group-hover:opacity-30 transition-opacity`} />

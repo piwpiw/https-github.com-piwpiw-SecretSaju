@@ -109,7 +109,7 @@ export default function DestinyPage() {
                   <Link
                     key={i}
                     href={item.href}
-                    className="p-6 rounded-[2.5rem] bg-slate-900/40 backdrop-blur-xl border border-white/5 hover:border-indigo-500/30 transition-all group hover:-translate-y-1"
+                    className="p-4 sm:p-6 rounded-[2.5rem] bg-slate-900/40 backdrop-blur-xl border border-white/5 hover:border-indigo-500/30 transition-all group hover:-translate-y-1"
                   >
                     <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
                       <Icon className="w-6 h-6" />

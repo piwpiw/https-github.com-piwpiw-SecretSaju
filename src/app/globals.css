@@ -259,8 +259,9 @@ body {
   z-index: 2;
 }
 
+/* 색은 지정하지 않는다. 이 클래스를 쓰는 곳은 테마와 무관하게 어두운
+   히어로 배경 위라서, 테마 토큰을 쓰면 라이트 모드에서 글자가 사라진다. */
 .text-micro-copy {
-  color: var(--text-muted);
   @apply text-[13px] uppercase tracking-[0.28em] font-black;
 }
 

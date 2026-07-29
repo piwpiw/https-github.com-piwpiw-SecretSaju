@@ -68,7 +68,7 @@ export default function HealingPage() {
       <div className="absolute inset-x-0 top-0 h-[55dvh] bg-[radial-gradient(circle_at_70%_0%,rgba(16,185,129,0.2),transparent_60%)] pointer-events-none" />
       <div className="absolute -left-32 top-40 w-96 h-96 rounded-full bg-indigo-700/10 blur-3xl pointer-events-none" />
 
-      <div className="max-w-3xl mx-auto px-5 py-10 relative z-10">
+      <div className="max-w-3xl mx-auto px-0 sm:px-5 py-10 relative z-10">
         <header className="flex items-center justify-between mb-6">
           <button
             type="button"
@@ -85,7 +85,7 @@ export default function HealingPage() {
           <JellyBalance />
         </header>
 
-        <section className="rounded-3xl border border-white/10 bg-slate-900/60 p-6 mb-8">
+        <section className="rounded-3xl border border-white/10 bg-slate-900/60 p-4 sm:p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm text-slate-400">대상 프로필</p>
@@ -111,7 +111,7 @@ export default function HealingPage() {
           </div>
         </section>
 
-        <section className="rounded-[2rem] border border-amber-500/20 bg-amber-500/5 p-8 text-center mb-8">
+        <section className="rounded-[2rem] border border-amber-500/20 bg-amber-500/5 p-5 sm:p-8 text-center mb-8">
           <p className="text-[13px] tracking-[0.25em] font-black text-amber-300 mb-3 break-keep">오늘의 한 장</p>
           <h2 className="text-2xl font-black mb-2">힐링 포춘 1회 뽑기</h2>
           <p className="text-sm text-slate-400 mb-6">젤리 1개를 사용해 오늘의 회복 메시지를 확인합니다.</p>
@@ -123,7 +123,7 @@ export default function HealingPage() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                className="rounded-3xl border border-amber-500/30 bg-black/20 p-6"
+                className="rounded-3xl border border-amber-500/30 bg-black/20 p-4 sm:p-6"
               >
                 <p className="text-lg font-black text-amber-100 leading-relaxed">“{result}”</p>
                 <button

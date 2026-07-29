@@ -84,7 +84,7 @@ export default function AstrologyPage() {
     : 0;
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 px-6 py-8 relative overflow-hidden font-sans">
+    <main className="min-h-screen bg-slate-950 text-slate-100 px-0 sm:px-6 py-8 relative overflow-hidden font-sans">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_5%,rgba(99,102,241,0.2),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.2),transparent_48%)] pointer-events-none" />
       <div className="max-w-5xl mx-auto relative z-10 space-y-6">
         <div className="flex items-center justify-between">
@@ -92,7 +92,7 @@ export default function AstrologyPage() {
           <p className="text-sm text-slate-400 tracking-[0.3em]">별자리 연구소</p>
         </div>
 
-        <section className="rounded-[2rem] border border-white/10 bg-slate-900/65 p-7 md:p-9">
+        <section className="rounded-[2rem] border border-white/10 bg-slate-900/65 p-5 sm:p-7 md:p-9">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-300/25 bg-indigo-500/10 text-[13px] text-indigo-200 font-black tracking-[0.3em]">
             <CalendarDays className="w-3.5 h-3.5" />
             별자리
@@ -153,14 +153,14 @@ export default function AstrologyPage() {
         </section>
 
         {!report ? (
-          <section className="rounded-3xl border border-indigo-300/20 bg-indigo-500/10 p-6 text-sm text-indigo-100">
+          <section className="rounded-3xl border border-indigo-300/20 bg-indigo-500/10 p-4 sm:p-6 text-sm text-indigo-100">
             ‘리포트 생성’을 누르면 한 달 흐름을 볼 수 있어요.
           </section>
         ) : null}
 
         {report ? (
           <>
-            <section className="rounded-[1.8rem] border border-white/10 bg-black/35 p-7 space-y-5">
+            <section className="rounded-[1.8rem] border border-white/10 bg-black/35 p-5 sm:p-7 space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
                   <p className="text-sm text-slate-400">날짜: {report.selectedDate}</p>
@@ -250,7 +250,7 @@ export default function AstrologyPage() {
             </section>
 
             <section className="grid lg:grid-cols-2 gap-4">
-              <details className="rounded-[1.8rem] border border-white/10 bg-slate-900/55 p-7" open={openAll}>
+              <details className="rounded-[1.8rem] border border-white/10 bg-slate-900/55 p-5 sm:p-7" open={openAll}>
                 <summary className="font-black text-lg mb-4 flex items-center gap-2">
                   <Star className="w-4 h-4 text-emerald-300" /> 강점 / 위험 신호
                 </summary>
@@ -264,7 +264,7 @@ export default function AstrologyPage() {
                 </div>
               </details>
 
-              <details className="rounded-[1.8rem] border border-white/10 bg-slate-900/55 p-7" open={openAll}>
+              <details className="rounded-[1.8rem] border border-white/10 bg-slate-900/55 p-5 sm:p-7" open={openAll}>
                 <summary className="font-black text-lg mb-4">월간 흐름</summary>
                 <div className="space-y-2 max-h-72 overflow-auto pr-1">
                   {report.monthTrend.map((item) => (
@@ -283,7 +283,7 @@ export default function AstrologyPage() {
               </details>
             </section>
 
-            <section className="rounded-[1.8rem] border border-white/10 bg-black/35 p-7">
+            <section className="rounded-[1.8rem] border border-white/10 bg-black/35 p-5 sm:p-7">
               <h3 className="text-xl font-black mb-3">근거</h3>
               <div className="mt-4 space-y-3">
                 {report.evidence.map((item) => (

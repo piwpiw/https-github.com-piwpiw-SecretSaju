@@ -138,7 +138,6 @@ function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard
                   number={card.number}
                   rank={card.rank}
                   arcana={card.arcana}
-                  sequence={card.sequence}
                   isReversed={card.isReversed}
                 />
               </div>
@@ -386,7 +385,7 @@ export default function TarotPage() {
 
         {/* 좁은 화면에서 p-5 sm:p-8(좌우 80px)은 320px 뷰포트의 콘텐츠 폭을 238px까지 깎아
             카드 내용이 잘렸습니다. 모바일에서는 여백을 줄이고 sm 이상에서 원래 값으로 복귀. */}
-        <section className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 sm:rounded-[2rem] sm:p-5 sm:p-8 md:p-5 sm:p-8 relative overflow-hidden group">
+        <section className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-4 sm:rounded-[2rem] sm:p-5 sm:p-8 md:p-5 sm:p-8 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px] -mr-48 -mt-48 pointer-events-none group-hover:bg-indigo-600/20 transition-all duration-1000" />
 
           <div className="flex items-center gap-4 mb-6 relative z-10">
@@ -405,15 +404,15 @@ export default function TarotPage() {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <article className="p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
+            <article className="p-4 sm:p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
               <div className="text-[13px] text-slate-500 font-black uppercase tracking-widest mb-1">변칙성</div>
               <div className="text-xl font-black text-rose-300">역방향 {spreadPulse.reversedRate}</div>
             </article>
-            <article className="p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
+            <article className="p-4 sm:p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
               <div className="text-[13px] text-slate-500 font-black uppercase tracking-widest mb-1">에너지 밀도</div>
               <div className="text-xl font-black text-indigo-300">메이저 {spreadPulse.majorCount}장</div>
             </article>
-            <article className="p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
+            <article className="p-4 sm:p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
               <div className="text-[13px] text-slate-500 font-black uppercase tracking-widest mb-1">흐름 성향</div>
               <div className={`text-xl font-black ${toneColor(spreadPulse.flowTone)}`}>{spreadPulse.flowTone}</div>
             </article>
@@ -520,7 +519,7 @@ export default function TarotPage() {
                   </section>
 
                   <section className="grid md:grid-cols-2 gap-6 items-start">
-                    <div className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-8 space-y-6">
+                    <div className="bg-slate-900/60 border border-white/10 rounded-[2.5rem] p-5 sm:p-8 space-y-6">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
                           <HistoryIcon className="w-5 h-5 text-indigo-400" />
@@ -543,7 +542,7 @@ export default function TarotPage() {
                       </div>
                     </div>
 
-                    <div className="bg-indigo-600/5 border border-indigo-500/20 rounded-[2.5rem] p-8 space-y-6 relative overflow-hidden">
+                    <div className="bg-indigo-600/5 border border-indigo-500/20 rounded-[2.5rem] p-5 sm:p-8 space-y-6 relative overflow-hidden">
                       <Shield className="absolute -bottom-8 -right-8 w-32 h-32 text-indigo-500/5" />
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">

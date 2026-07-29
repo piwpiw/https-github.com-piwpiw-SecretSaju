@@ -159,7 +159,7 @@ function FortuneContent() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px]" style={{ background: "radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%)" }} />
       </div>
 
-      <div className="max-w-3xl mx-auto px-5 py-10 relative z-10">
+      <div className="max-w-3xl mx-auto px-0 sm:px-5 py-10 relative z-10">
         {/* Header */}
         <header className="flex items-center justify-between mb-6">
           <button onClick={() => router.back()}
@@ -177,7 +177,7 @@ function FortuneContent() {
         <motion.form
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           onSubmit={handleCalculate}
-          className="rounded-[2.5rem] border border-white/10 bg-slate-900/60 backdrop-blur-xl p-8 mb-8 relative overflow-hidden"
+          className="rounded-[2.5rem] border border-white/10 bg-slate-900/60 backdrop-blur-xl p-5 sm:p-8 mb-8 relative overflow-hidden"
         >
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
 
@@ -246,7 +246,7 @@ function FortuneContent() {
             <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
 
               {/* Summary hero */}
-              <div className="rounded-[2.5rem] border border-indigo-500/20 bg-slate-900/60 backdrop-blur-xl p-8 relative overflow-hidden">
+              <div className="rounded-[2.5rem] border border-indigo-500/20 bg-slate-900/60 backdrop-blur-xl p-5 sm:p-8 relative overflow-hidden">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent" />
                 <div className="absolute top-4 right-6">
                   <span className="px-3 py-1 rounded-full text-sm font-black bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
@@ -297,7 +297,7 @@ function FortuneContent() {
               />
 
               {/* Score bars */}
-              <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-8">
+              <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-5 sm:p-8">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2.5">
                     <BarChart3 className="w-5 h-5 text-indigo-400" />
@@ -316,7 +316,7 @@ function FortuneContent() {
               </div>
 
               {/* Monthly Trend */}
-              <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-8">
+              <div className="rounded-[2.5rem] border border-white/8 bg-white/[0.02] p-5 sm:p-8">
                 <div className="flex items-center gap-2.5 mb-6">
                   <CalendarDays className="w-5 h-5 text-amber-400" />
                   <h3 className="text-sm font-black text-white uppercase tracking-widest">{year}년 월별 흐름</h3>
@@ -337,7 +337,7 @@ function FortuneContent() {
 
               {/* CTA */}
               <Link href={`/dashboard?profileId=${profileId}`}
-                className="flex items-center justify-between p-6 rounded-[2rem] border border-white/8 bg-white/[0.02] hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all group">
+                className="flex items-center justify-between p-4 sm:p-6 rounded-[2rem] border border-white/8 bg-white/[0.02] hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all group">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
                     <Sparkles className="w-6 h-6 text-white" />
