@@ -250,7 +250,8 @@ describe('절기 — 독립 기준값과의 대조', () => {
             }
         }
 
-        expect(maxErrorMinutes, `가장 큰 편차 — ${worst}`).toBeLessThanOrEqual(SOLAR_TERM_UNCERTAINTY_MINUTES);
+        // Meeus 27장 자체의 공표 정확도가 약 51초다. 그보다 좁게 요구할 수 없다.
+        expect(maxErrorMinutes, `가장 큰 편차 — ${worst}`).toBeLessThanOrEqual(1.5);
     });
 
     it('반환한 시각의 태양 황경이 목표 황경과 일치한다', () => {
@@ -260,8 +261,9 @@ describe('절기 — 독립 기준값과의 대조', () => {
                 let diff = calculateSolarLongitude(jd) - term.longitude;
                 if (diff > 180) diff -= 360;
                 if (diff < -180) diff += 360;
-                // 이분 탐색의 종료 조건(0.001도) 안쪽
-                expect(Math.abs(diff), `${year} ${term.name}`).toBeLessThan(0.002);
+                // 이분 탐색은 0.086초까지 좁히지만, 반환하는 Date 가 초 단위로
+                // 잘리므로 왕복 오차의 바닥은 1초(=1.14e-5도)다.
+                expect(Math.abs(diff), `${year} ${term.name}`).toBeLessThan(0.00002);
             }
         }
     });
@@ -277,13 +279,21 @@ describe('절기 — 독립 기준값과의 대조', () => {
 describe('절기 경계 근접 판정', () => {
     it('절입 직전은 오차 한계 안으로 잡힌다', () => {
         const lichun = findSolarTermDate(315, 2024);
-        const justBefore = new Date(lichun.getTime() - 5 * 60_000);
+        const justBefore = new Date(lichun.getTime() - 1 * 60_000);
         const proximity = getSolarTermProximity(justBefore);
 
         expect(proximity.term.name).toBe('입춘');
         expect(proximity.withinUncertainty).toBe(true);
         expect(proximity.isMonthBoundary).toBe(true);
-        expect(proximity.minutesFromBoundary).toBeCloseTo(5, 0);
+        expect(proximity.minutesFromBoundary).toBeCloseTo(1, 0);
+    });
+
+    it('한계 밖(5분)은 더 이상 경고 대상이 아니다', () => {
+        // 저차 급수를 쓰던 시절에는 ±12분이라 5분도 경고 대상이었다.
+        // VSOP87 로 바꾼 뒤 한계가 2분으로 좁아졌다.
+        const lichun = findSolarTermDate(315, 2024);
+        const fiveMinutesBefore = new Date(lichun.getTime() - 5 * 60_000);
+        expect(getSolarTermProximity(fiveMinutesBefore).withinUncertainty).toBe(false);
     });
 
     it('절입에서 멀면 한계 밖이다', () => {

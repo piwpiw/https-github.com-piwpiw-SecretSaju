@@ -18,6 +18,7 @@ export default defineConfig({
             'tests/logic/calendar-standard.test.ts',
             'tests/logic/engine-invariants.test.ts',
             'tests/logic/tarot-deck.test.ts',
+            'tests/logic/solar-terms-almanac.test.ts',
             'tests/logic/ai-routing.test.ts',
             'tests/logic/auth-callback-message.test.ts',
             'tests/logic/payment-flow.test.ts',

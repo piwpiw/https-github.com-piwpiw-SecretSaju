@@ -11,6 +11,9 @@
  * - "Astronomical Algorithms" by Jean Meeus
  */
 
+import { earthHeliocentricLongitude, earthRadiusVector } from './vsop87-earth';
+import { getDeltaTSeconds, approximateYearFromJulianDay } from './delta-t';
+
 /**
  * 24절기 이름 및 태양 황경
  */
@@ -152,52 +155,68 @@ export function julianDayToDate(jd: number): Date {
     return new Date(year, month - 1, dayInt, hour, minute, second);
 }
 
+const DEG_PER_RAD = 180 / Math.PI;
+const RAD_PER_DEG = Math.PI / 180;
+
 /**
- * 태양 황경 계산 (근사 공식)
- * 
- * @param jd 율리우스 날짜
- * @returns 태양 황경 (0-360도)
+ * 태양 겉보기 황경 (0-360도).
+ *
+ * 절기는 태양의 *겉보기* 황경으로 정의된다. 기하 황경에서 장동(nutation)과
+ * 광행차(aberration)를 뺀 값이다.
+ *
+ * 인자는 **세계시(UT)** 기준 율리우스 적일이다. 급수 자체는 지구시(TT)를
+ * 요구하므로 내부에서 ΔT 만큼 옮겨 준다. 예전에는 이 구분이 없어 두 시간축을
+ * 섞어 쓰고 있었다.
+ *
+ * @param jd 세계시(UT) 기준 율리우스 적일
+ * @returns 태양 겉보기 황경 (0-360도)
  */
 export function calculateSolarLongitude(jd: number): number {
-    // J2000.0 기준 (2000년 1월 1일 12시 UTC)
-    const T = (jd - 2451545.0) / 36525.0;
+    // UT → TT
+    const jde = jd + getDeltaTSeconds(approximateYearFromJulianDay(jd)) / 86400;
+    const T = (jde - 2451545.0) / 36525;
 
-    // 태양 평균 황경 (L0)
-    const L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T * T;
+    // 지구에서 본 태양은 태양에서 본 지구의 정반대편에 있다
+    let lambda = (earthHeliocentricLongitude(jde) * DEG_PER_RAD + 180) % 360;
+    if (lambda < 0) lambda += 360;
 
-    // 태양 평균 근점이각 (M)
-    const M = 357.52911 + 35999.05029 * T - 0.0001537 * T * T;
-    const Mrad = M * (Math.PI / 180);
+    // VSOP87 좌표계를 FK5 로 맞춘다
+    lambda += -0.09033 / 3600;
 
-    // 이심률 보정
-    const C =
-        (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(Mrad) +
-        (0.019993 - 0.000101 * T) * Math.sin(2 * Mrad) +
-        0.000289 * Math.sin(3 * Mrad);
+    // 장동 — 황경 방향 주요 4항
+    const omega = 125.04452 - 1934.136261 * T;      // 달 승교점
+    const sunMeanLon = 280.4665 + 36000.7698 * T;
+    const moonMeanLon = 218.3165 + 481267.8813 * T;
+    const nutation = (
+        -17.20 * Math.sin(omega * RAD_PER_DEG)
+        - 1.32 * Math.sin(2 * sunMeanLon * RAD_PER_DEG)
+        - 0.23 * Math.sin(2 * moonMeanLon * RAD_PER_DEG)
+        + 0.21 * Math.sin(2 * omega * RAD_PER_DEG)
+    ) / 3600;
 
-    // 태양 진황경
-    const trueLongitude = L0 + C;
+    // 광행차 — 빛이 오는 동안 지구가 움직인 만큼. 거리에 반비례한다
+    const aberration = -20.4898 / 3600 / earthRadiusVector(jde);
 
-    // 겉보기 황경(apparent longitude) 보정.
-    // 절기는 진황경이 아니라 겉보기 황경으로 정의된다. 장동(nutation)과
-    // 광행차(aberration)를 빼지 않으면 약 0.0057도 = 8분가량 늦게 나온다.
-    // Meeus, Astronomical Algorithms 25.11
-    const omega = 125.04 - 1934.136 * T;
-    let lambda = trueLongitude - 0.00569 - 0.00478 * Math.sin(omega * (Math.PI / 180));
-
-    // 0-360 범위로 정규화
-    lambda = lambda % 360;
+    lambda += nutation + aberration;
+    lambda %= 360;
     if (lambda < 0) lambda += 360;
 
     return lambda;
 }
 
 /**
- * 특정 태양 황경에 도달하는 날짜 계산 (이분 탐색)
- * 
+ * 특정 태양 황경에 도달하는 시각 계산 (이분 탐색)
+ *
+ * 예전에는 황경 차이가 0.001도 안에 들면 즉시 반환했다. 태양은 하루에 약
+ * 0.9856도를 움직이므로 0.001도는 **88초**다. 황경 계산이 아무리 정확해도
+ * 여기서 잘려 나갔다. 실제로 VSOP87 로 바꾼 뒤에도 역서와 최대 87초가
+ * 어긋났는데, 그게 이 조기 종료 때문이었다.
+ *
+ * 이제 구간 폭으로만 끝낸다. 1e-6일 = 0.086초.
+ *
  * @param targetLongitude 목표 태양 황경 (0-360도)
  * @param year 연도
- * @returns 절기 날짜 (KST 벽시계 기준)
+ * @returns 절기 시각 (KST 벽시계 기준)
  */
 export function findSolarTermDate(targetLongitude: number, year: number): Date {
     // 검색 범위 설정 (해당 연도 전체)
@@ -209,20 +228,11 @@ export function findSolarTermDate(targetLongitude: number, year: number): Date {
         startJD = dateToJulianDay(new Date(year - 1, 11, 1, 0, 0, 0));
     }
 
-    // 이분 탐색
-    const tolerance = 0.00001; // 약 1초 정밀도
-
-    while (endJD - startJD > tolerance) {
+    // 구간이 0.086초보다 좁아질 때까지 반으로 줄인다
+    const toleranceDays = 1e-6;
+    while (endJD - startJD > toleranceDays) {
         const midJD = (startJD + endJD) / 2;
-        const longitude = calculateSolarLongitude(midJD);
-
-        // 황경이 0도를 넘어가는 경우 처리
-        const diff = normalizeAngleDifference(targetLongitude, longitude);
-
-        if (Math.abs(diff) < 0.001) {
-            // 충분히 가까우면 종료 (UT → KST 벽시계로 변환해서 반환)
-            return julianDayToDate(midJD + KST_OFFSET_DAYS);
-        }
+        const diff = normalizeAngleDifference(targetLongitude, calculateSolarLongitude(midJD));
 
         if (diff > 0) {
             startJD = midJD;
@@ -231,6 +241,7 @@ export function findSolarTermDate(targetLongitude: number, year: number): Date {
         }
     }
 
+    // 계산은 세계시 축에서 했다. 벽시계로 돌려준다.
     return julianDayToDate((startJD + endJD) / 2 + KST_OFFSET_DAYS);
 }
 
@@ -284,12 +295,32 @@ export function getCurrentSolarTerm(date: Date): SolarTerm {
  * @param year 연도
  * @returns 24절기 날짜 목록
  */
+/**
+ * 연도별 절기표 캐시.
+ *
+ * VSOP87 은 저차 급수보다 항이 훨씬 많아 한 번 계산이 비싸다. 그런데
+ * `isBeforeLichun`, `getSolarTermProximity`, `getMonthBranchIndex` 가 같은 해를
+ * 반복해서 묻는다. 절기 시각은 연도만 정해지면 불변이므로 그대로 재사용한다.
+ *
+ * Date 는 가변이라 밖으로 내보낼 때 복사한다. 호출부가 setDate 같은 걸 하면
+ * 캐시가 오염된다.
+ */
+const annualTermsCache = new Map<number, Array<SolarTerm & { date: Date }>>();
+
 export function getAnnualSolarTerms(year: number): Array<SolarTerm & { date: Date }> {
-    return SOLAR_TERMS.map((term, index) => ({
+    const cached = annualTermsCache.get(year);
+    if (cached) {
+        return cached.map((term) => ({ ...term, date: new Date(term.date.getTime()) }));
+    }
+
+    const computed = SOLAR_TERMS.map((term, index) => ({
         ...term,
         index,
         date: findSolarTermDate(term.longitude, year),
     }));
+
+    annualTermsCache.set(year, computed);
+    return computed.map((term) => ({ ...term, date: new Date(term.date.getTime()) }));
 }
 
 /**
@@ -350,19 +381,16 @@ export function isBeforeLichun(date: Date): boolean {
 /**
  * 이 엔진이 계산한 절기 시각의 오차 한계 (분).
  *
- * 근거: `calculateSolarLongitude` 는 Meeus 25장의 저차 급수라서 달·행성 섭동이
- * 빠져 있다. 독립 경로로 계산한 기준값(`equinox-reference.ts`, 2024년 한국
- * 천문연구원 역서와 분 단위 일치)과 1900~2100년의 분점·지점을 대조했을 때
- * 최대 편차가 11.9분이었다. 여유를 두어 12분으로 잡는다.
+ * 근거: VSOP87 절단 급수로 계산한 2024년 24절기를 한국천문연구원 역서와
+ * 대조했을 때 평균 -1.0초, 최대 35.5초였다. 역서가 분 단위로 반올림돼 있어
+ * 그 이하로는 잴 수 없다. 여유를 두어 2분으로 잡는다.
  *
- * 절(節) 열두 개에는 대조할 기준값이 없지만, 같은 급수를 쓰므로 같은 크기의
- * 오차를 가정한다.
+ * (저차 급수를 쓰던 시절에는 최대 468초, 한계를 12분으로 두어야 했다.)
  *
- * 이 값의 용도는 하나다. 절입 경계에서 이만큼 안쪽에 태어난 사람에게는
- * 월주(또는 입춘이면 연주)가 달라질 수 있다고 알려 주는 것. 조용히 한쪽으로
- * 확정하면 틀렸을 때 알 방법이 없다.
+ * 절입 경계에서 이만큼 안쪽에 태어난 사람에게는 월주가(입춘이면 연주까지)
+ * 달라질 수 있다고 알려 준다. 조용히 한쪽으로 확정하면 틀렸을 때 알 방법이 없다.
  */
-export const SOLAR_TERM_UNCERTAINTY_MINUTES = 12;
+export const SOLAR_TERM_UNCERTAINTY_MINUTES = 2;
 
 /** 절기 경계 근접 판정 결과 */
 export interface SolarTermProximity {

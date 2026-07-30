@@ -91,43 +91,7 @@ export function getCardinalJDE(point: CardinalPoint, year: number): number {
 }
 
 /**
- * TT - UT (ΔT), 초 단위. Espenak & Meeus 다항식.
- *
- * 천문 급수는 지구시(TT)를 인자로 받지만 우리가 다루는 시각은 세계시(UT)다.
- * 2024년 기준 두 축의 차이는 약 69초다. 기준값을 벽시계와 비교할 때 필요하다.
+ * ΔT 재수출. 이 파일을 쓰는 테스트가 기준값을 벽시계로 옮길 때 필요하다.
+ * 정의는 `delta-t.ts` 한 곳에만 둔다.
  */
-export function getDeltaTSeconds(year: number): number {
-    let t: number;
-
-    if (year >= 2005 && year < 2050) {
-        t = year - 2000;
-        return 62.92 + 0.32217 * t + 0.005589 * t * t;
-    }
-    if (year >= 1986 && year < 2005) {
-        t = year - 2000;
-        return 63.86 + 0.3345 * t - 0.060374 * t * t + 0.0017275 * t ** 3
-            + 0.000651814 * t ** 4 + 0.00002373599 * t ** 5;
-    }
-    if (year >= 1961 && year < 1986) {
-        t = year - 1975;
-        return 45.45 + 1.067 * t - (t * t) / 260 - (t ** 3) / 718;
-    }
-    if (year >= 1941 && year < 1961) {
-        t = year - 1950;
-        return 29.07 + 0.407 * t - (t * t) / 233 + (t ** 3) / 2547;
-    }
-    if (year >= 1920 && year < 1941) {
-        t = year - 1920;
-        return 21.20 + 0.84493 * t - 0.076100 * t * t + 0.0020936 * t ** 3;
-    }
-    if (year >= 1900 && year < 1920) {
-        t = year - 1900;
-        return -2.79 + 1.494119 * t - 0.0598939 * t * t + 0.0061966 * t ** 3 - 0.000197 * t ** 4;
-    }
-    if (year >= 2050 && year <= 2150) {
-        return -20 + 32 * ((year - 1820) / 100) ** 2 - 0.5628 * (2150 - year);
-    }
-
-    const u = (year - 1820) / 100;
-    return -20 + 32 * u * u;
-}
+export { getDeltaTSeconds } from './delta-t';
