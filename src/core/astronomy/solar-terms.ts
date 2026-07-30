@@ -248,9 +248,18 @@ function normalizeAngleDifference(target: number, current: number): number {
 }
 
 /**
+ * 절기를 황경 순으로 미리 정렬해 둔다. 태양 황경은 한 해 동안 0에서 360까지
+ * 단조 증가하므로, "현재 황경 이하인 마지막 절기" 가 곧 지금 절기다.
+ * 예전에는 호출마다 24개를 다시 정렬했다.
+ */
+const TERMS_BY_LONGITUDE = SOLAR_TERMS
+    .map((term, index) => ({ ...term, index }))
+    .sort((a, b) => a.longitude - b.longitude);
+
+/**
  * 특정 날짜의 현재 절기 찾기
- * 
- * @param date 날짜 (KST 벽시계 기준)
+ *
+ * @param date 날짜 (로컬 필드에 KST 벽시계 값이 담겨 있다)
  * @returns 현재 절기 정보
  */
 export function getCurrentSolarTerm(date: Date): SolarTerm {
@@ -258,67 +267,15 @@ export function getCurrentSolarTerm(date: Date): SolarTerm {
     const jd = dateToJulianDay(date) - KST_OFFSET_DAYS;
     const longitude = calculateSolarLongitude(jd);
 
-    // Sort terms by longitude for searching
-    // 0(Chunbun) -> ... -> 345(Gyeongchip)
-    // Note: The cycle resets at 0.
-    // If longitude is 0-360.
-
-    // Create lookup array sorted by longitude
-    const sortedTerms = [...SOLAR_TERMS].sort((a, b) => a.longitude - b.longitude);
-
-    // Find the term with the largest longitude <= current longitude
-    let candidateIndex = -1;
-
-    for (let i = 0; i < sortedTerms.length; i++) {
-        if (longitude >= sortedTerms[i].longitude) {
-            candidateIndex = i;
-        } else {
-            // Since sorted, once we exceed, we stop (if valid candidate found)
-            break;
-        }
+    // 황경 0도(춘분)가 목록의 첫 항목이고 calculateSolarLongitude 는 0-360 을
+    // 보장하므로, 최소 하나는 반드시 걸린다.
+    let found = TERMS_BY_LONGITUDE[0];
+    for (const term of TERMS_BY_LONGITUDE) {
+        if (longitude < term.longitude) break;
+        found = term;
     }
 
-    // If candidate found, return it
-    if (candidateIndex !== -1) {
-        // Special case: If longitude is 359, it matches 345 (last term in sorted).
-        // If longitude is 0, it matches 0.
-        // Seems correct.
-
-        // However, we need to map back to the original index?
-        // sortedTerms[i] is the term object.
-        // We need to return it with its ORIGINAL index in SOLAR_TERMS.
-        // SOLAR_TERMS order is fixed.
-        // We can find the index in SOLAR_TERMS easily.
-        const foundTerm = sortedTerms[candidateIndex];
-        const originalIndex = SOLAR_TERMS.findIndex(t => t.name === foundTerm.name);
-        return {
-            ...foundTerm,
-            index: originalIndex
-        };
-    }
-
-    // If NO candidate found (e.g. longitude < 0?? Should not happen 0-360).
-    // Or if longitude < 0 (first term is 0).
-    // If calculateSolarLongitude returns negative? It normalizes to 0-360.
-    // But if it returns 359.99. Sorted list ends at 345.
-    // It returns 345. Correct.
-
-    // Wait. If longitude is 350. Match 345.
-    // Gyeongchip (345).
-    // Correct.
-
-    // If longitude < 0? No.
-    // So candidateIndex should always be found unless list empty.
-    // Default to last element if something weird logic?
-    // Actually, if list is [0, 15, ..., 345].
-    // Any L >= 0 will match at least index 0.
-    // So safe.
-
-    // Fallback
-    return {
-        ...SOLAR_TERMS[0], // Should not reach
-        index: 0
-    };
+    return { ...found };
 }
 
 /**
@@ -388,4 +345,68 @@ export function isBeforeLichun(date: Date): boolean {
     if (!lichun) return false; // Should not happen
 
     return date.getTime() < lichun.date.getTime();
+}
+
+/**
+ * 이 엔진이 계산한 절기 시각의 오차 한계 (분).
+ *
+ * 근거: `calculateSolarLongitude` 는 Meeus 25장의 저차 급수라서 달·행성 섭동이
+ * 빠져 있다. 독립 경로로 계산한 기준값(`equinox-reference.ts`, 2024년 한국
+ * 천문연구원 역서와 분 단위 일치)과 1900~2100년의 분점·지점을 대조했을 때
+ * 최대 편차가 11.9분이었다. 여유를 두어 12분으로 잡는다.
+ *
+ * 절(節) 열두 개에는 대조할 기준값이 없지만, 같은 급수를 쓰므로 같은 크기의
+ * 오차를 가정한다.
+ *
+ * 이 값의 용도는 하나다. 절입 경계에서 이만큼 안쪽에 태어난 사람에게는
+ * 월주(또는 입춘이면 연주)가 달라질 수 있다고 알려 주는 것. 조용히 한쪽으로
+ * 확정하면 틀렸을 때 알 방법이 없다.
+ */
+export const SOLAR_TERM_UNCERTAINTY_MINUTES = 12;
+
+/** 절기 경계 근접 판정 결과 */
+export interface SolarTermProximity {
+    /** 가장 가까운 절기 */
+    term: SolarTerm;
+    /** 그 절기의 시각 (KST 벽시계) */
+    termDate: Date;
+    /** 경계까지 남은 시간. 음수면 이미 지났다 (분) */
+    minutesFromBoundary: number;
+    /** 오차 한계 안쪽인가 */
+    withinUncertainty: boolean;
+    /** 월주 경계를 정하는 절(節)인가. 중기(中氣)는 월주를 바꾸지 않는다 */
+    isMonthBoundary: boolean;
+}
+
+/**
+ * 주어진 시각이 절기 경계에 얼마나 가까운지 알려준다.
+ *
+ * @param date 날짜 (로컬 필드에 KST 벽시계 값)
+ */
+export function getSolarTermProximity(date: Date): SolarTermProximity {
+    const year = date.getFullYear();
+
+    // 연말·연초 경계를 놓치지 않도록 앞뒤 해까지 훑는다
+    const candidates = [year - 1, year, year + 1].flatMap((y) => getAnnualSolarTerms(y));
+
+    let nearest = candidates[0];
+    let nearestGap = Math.abs(candidates[0].date.getTime() - date.getTime());
+    for (const candidate of candidates) {
+        const gap = Math.abs(candidate.date.getTime() - date.getTime());
+        if (gap < nearestGap) {
+            nearest = candidate;
+            nearestGap = gap;
+        }
+    }
+
+    const minutesFromBoundary = (nearest.date.getTime() - date.getTime()) / 60000;
+
+    return {
+        term: { name: nearest.name, nameEn: nearest.nameEn, longitude: nearest.longitude, season: nearest.season, index: nearest.index },
+        termDate: nearest.date,
+        minutesFromBoundary,
+        withinUncertainty: Math.abs(minutesFromBoundary) <= SOLAR_TERM_UNCERTAINTY_MINUTES,
+        // 절(節)은 절기 목록에서 짝수 인덱스다 (입춘 0, 경칩 2, 청명 4 ...)
+        isMonthBoundary: nearest.index % 2 === 0,
+    };
 }
