@@ -262,7 +262,8 @@ function buildFallbackPillars(birthDate: Date, hour: number, minute: number, isT
   const yearPillar = getYearPillar(base);
   const monthPillar = getMonthPillar(base, yearPillar.stemIndex);
   const dayPillar = getDayPillar(base);
-  const hourPillar = getHourPillar(hourAnchor, dayPillar.stemIndex);
+  // 진태양시로 환산하지 않은 KST 벽시계 값이므로 30분 관례를 쓰는 경계가 맞다
+  const hourPillar = getHourPillar(hourAnchor, dayPillar.stemIndex, 'kst-civil');
   return { year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar };
 }
 

@@ -216,7 +216,8 @@ export async function generateDailyFortune(profile: SajuProfile, locale: "ko" | 
   const hourlyFlow: HourlyFlowPoint[] = DAILY_FLOW_WINDOWS.map((window, index) => {
     const anchor = new Date(targetDate);
     anchor.setHours(window.hour, 0, 0, 0);
-    const hourPillar = getHourPillar(anchor, todayPillar.stemIndex);
+    // 시각을 그대로 쓰는 흐름표이므로 보정 없는 KST 경계를 쓴다
+    const hourPillar = getHourPillar(anchor, todayPillar.stemIndex, 'kst-civil');
     const hourEl = STEM_ELEMENTS[hourPillar.stem];
     const branchEl = BRANCH_ELEMENTS[hourPillar.branch];
 

@@ -119,11 +119,7 @@ export function getMonthPillar(date: Date, yearStemIndex: number): GanJi {
     const monthStemIndex = (startStemIndex + monthOffset) % 10;
 
     // Find combined GanJi index
-    const ganjiIndex = SIXTY_GANJI.findIndex(
-        g => g.stemIndex === monthStemIndex && g.branchIndex === monthBranchIndex
-    );
-
-    return SIXTY_GANJI[ganjiIndex];
+    return SIXTY_GANJI[getGanJiIndex(monthStemIndex, monthBranchIndex)];
 }
 
 /**
@@ -161,6 +157,48 @@ export function getDayPillar(date: Date): GanJi {
 export type HourBoundaryMode = 'true-solar' | 'kst-civil';
 
 /**
+ * 자시가 시작하는 시각을 자정 기준 분으로 돌려준다.
+ *
+ * 시지 경계를 판단하는 곳이 두 군데(여기와 야자시 판별)라서, 예전에는 한쪽이
+ * 23:00 을 쓰고 다른 쪽이 23:30 을 쓰는 일이 생겼다. 기준을 한 곳에서만
+ * 정의해 두 곳이 갈라지지 않게 한다.
+ */
+export function getJaSiStartMinutes(boundary: HourBoundaryMode): number {
+    return boundary === 'true-solar' ? 23 * 60 : 23 * 60 + 30;
+}
+
+/**
+ * 천간·지지 인덱스 쌍으로 60갑자 인덱스를 구한다.
+ *
+ * 천간은 10, 지지는 12 주기이고 최소공배수가 60이므로, 짝이 맞는 조합은
+ * 60개뿐이다(홀짝이 어긋난 조합은 존재하지 않는다). 예전에는 `findIndex` 로
+ * 훑었는데, 없는 조합이 들어오면 -1 이 나와 `SIXTY_GANJI[-1]` 즉 undefined 를
+ * 그대로 반환했다. 지금까지 그런 조합이 들어온 적은 없지만, 조용히 undefined 를
+ * 흘리는 경로는 남겨 둘 이유가 없다.
+ *
+ * 중국인의 나머지 정리로 직접 구하고, 짝이 안 맞으면 즉시 던진다.
+ */
+export function getGanJiIndex(stemIndex: number, branchIndex: number): number {
+    const s = ((stemIndex % 10) + 10) % 10;
+    const b = ((branchIndex % 12) + 12) % 12;
+
+    if ((s - b) % 2 !== 0) {
+        throw new Error(
+            `존재하지 않는 간지 조합입니다: 천간 ${s}(${STEMS[s]}) · 지지 ${b}(${BRANCHES[b]}). ` +
+            '천간과 지지는 홀짝이 같아야 합니다.'
+        );
+    }
+
+    // i ≡ s (mod 10), i ≡ b (mod 12) 를 만족하는 0..59 의 유일한 i
+    for (let i = s; i < 60; i += 10) {
+        if (i % 12 === b) return i;
+    }
+
+    // 위 반복은 짝이 맞으면 반드시 답을 찾는다. 여기까지 오면 논리가 깨진 것이다.
+    throw new Error(`간지 인덱스를 찾지 못했습니다: ${s}, ${b}`);
+}
+
+/**
  * Calculates Hour Pillar (Si-ju)
  * Based on Day Stem and Time.
  *
@@ -187,7 +225,7 @@ export function getHourPillar(
 
     // 자시의 시작점을 자정 기준 분으로 표현한다.
     // 진태양시 기준이면 23:00, KST 시계 기준이면 23:30.
-    const jaStartMinutes = boundary === 'true-solar' ? 23 * 60 : 23 * 60 + 30;
+    const jaStartMinutes = getJaSiStartMinutes(boundary);
 
     const minutesOfDay = hours * 60 + minutes;
     const shifted = (minutesOfDay - jaStartMinutes + 1440) % 1440; // 자시 시작 -> 0
@@ -197,9 +235,5 @@ export function getHourPillar(
     const startStemIndex = (dayStemIndex % 5 * 2) % 10;
     const hourStemIndex = (startStemIndex + hourBranchIndex) % 10;
 
-    const ganjiIndex = SIXTY_GANJI.findIndex(
-        g => g.stemIndex === hourStemIndex && g.branchIndex === hourBranchIndex
-    );
-
-    return SIXTY_GANJI[ganjiIndex];
+    return SIXTY_GANJI[getGanJiIndex(hourStemIndex, hourBranchIndex)];
 }

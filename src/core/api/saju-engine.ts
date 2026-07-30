@@ -19,7 +19,10 @@ import {
     getKoreaCivilOffsetsFromWallClock,
     koreaWallClockToUTC,
 } from '../astronomy/timezone';
-import { isBeforeLichun } from '../astronomy/solar-terms';
+import { isBeforeLichun,
+    getSolarTermProximity,
+    SOLAR_TERM_UNCERTAINTY_MINUTES,
+} from '../astronomy/solar-terms';
 import { getYearPillar, getMonthPillar, getDayPillar, getHourPillar, FourPillars, GanJi, HourBoundaryMode } from '../calendar/ganji';
 import { handleJasiLogic } from '../calendar/yajasi';
 import { solarToLunar } from '../calendar/lunar-solar';
@@ -260,13 +263,24 @@ export class SajuEngine {
         const dayBaseTime = isTimeUnknown || lineageProfile.dayBoundaryPolicy === 'civil'
             ? baseDateKST
             : hourStemBaseTime;
-        const dayJasiResult = handleJasiLogic(dayBaseTime, strictYajasi);
-        const hourJasiResult = handleJasiLogic(hourStemBaseTime, strictYajasi);
-        const dayPillar = isTimeUnknown ? getDayPillar(baseDateKST) : dayJasiResult.dayPillar;
         // 시지 경계는 위에서 고른 기준 시계에 맞춰 잘라야 한다. 진태양시로 이미
         // 환산한 시각에 KST 30분 관례를 또 얹으면 보정이 두 번 들어간다.
-        const hourBoundary: HourBoundaryMode =
-            hourBranchBaseTime === trueSolarTime ? 'true-solar' : 'kst-civil';
+        //
+        // 예전에는 `hourBranchBaseTime === trueSolarTime` 처럼 객체 동일성으로
+        // 판정했다. 중간에 누가 날짜를 복제하기만 해도 조용히 'kst-civil' 로
+        // 떨어져, 경계 30분 안에 태어난 사람의 시주가 한 칸씩 밀린다.
+        // 정책 값에서 직접 끌어내 그런 여지를 없앤다.
+        const usesTrueSolarClock =
+            !isTimeUnknown
+            && lineageProfile.hourPillarSource === 'true-solar'
+            && lineageProfile.hourBranchPolicy === 'hour-source';
+        const hourBoundary: HourBoundaryMode = usesTrueSolarClock ? 'true-solar' : 'kst-civil';
+
+        // 야자시 판정도 같은 경계를 써야 한다. 기준이 갈라지면 23:00~23:29 가
+        // 해시인데 자시로 취급되어 시주의 천간이 다음 날에서 뽑힌다.
+        const dayJasiResult = handleJasiLogic(dayBaseTime, strictYajasi, hourBoundary);
+        const hourJasiResult = handleJasiLogic(hourStemBaseTime, strictYajasi, hourBoundary);
+        const dayPillar = isTimeUnknown ? getDayPillar(baseDateKST) : dayJasiResult.dayPillar;
         const hourPillar = isTimeUnknown
             ? getHourPillar(baseDateKST, dayPillar.stemIndex, 'kst-civil')
             : getHourPillar(hourBranchBaseTime, hourJasiResult.hourStemStemIndexUsed, hourBoundary);
@@ -284,6 +298,21 @@ export class SajuEngine {
             && hourBranchBaseTime.getHours() !== hourStemBaseTime.getHours()
         ) {
             warnings.push('Hour branch used the civil-time bucket while hour stem followed a shifted hour-source policy.');
+        }
+
+        // 절기 경계에서 오차 한계 안쪽이면 조용히 확정하지 않고 알린다.
+        // 이 엔진의 태양 황경은 저차 급수라 절입 시각에 최대 12분 오차가 있다.
+        // 그 안에 태어난 사람은 월주(입춘이면 연주까지) 자체가 달라질 수 있다.
+        const termProximity = getSolarTermProximity(baseDateKST);
+        if (termProximity.withinUncertainty && termProximity.isMonthBoundary) {
+            const away = Math.abs(termProximity.minutesFromBoundary).toFixed(0);
+            const affected = termProximity.term.name === '입춘' ? '연주와 월주' : '월주';
+            warnings.push(
+                `${termProximity.term.name} 절입에서 ${away}분 거리입니다. `
+                + `이 엔진의 절기 시각 오차 한계(±${SOLAR_TERM_UNCERTAINTY_MINUTES}분) 안이라 `
+                + `${affected}가 달라질 수 있습니다. 만세력으로 확인하세요.`
+            );
+            qualityPenalty.push(12);
         }
 
         const fourPillars: FourPillars = {
