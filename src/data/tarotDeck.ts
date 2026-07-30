@@ -27,7 +27,7 @@ export type DrawnTarotCard = TarotDeckCardWithImage & {
 };
 
 const MAJOR_ARCANA: TarotDeckCard[] = [
-  ["The Fool", "愚者", "새로운 시작과 순수함, 낙관적인 모험을 상징합니다."],
+  ["The Fool", "바보", "새로운 시작과 순수함, 낙관적인 모험을 상징합니다."],
   ["The Magician", "마법사", "잠재력의 발현과 집중, 기술의 실천을 상징합니다."],
   ["The High Priestess", "여사제", "직관과 숨은 정보의 인식을 의미합니다."],
   ["The Empress", "여황제", "풍요·돌봄·성장 에너지를 나타냅니다."],
@@ -59,7 +59,7 @@ const MAJOR_ARCANA: TarotDeckCard[] = [
   rank: en,
   number: index,
   keywords: ["major", "arcana", kr, en],
-  meaning_upright: `${kr}은 ${desc}`,
+  meaning_upright: `${kr}${topicParticle(kr)} ${desc}`,
   meaning_reversed: `${kr}의 정반대 축인 회피와 지연을 경계하세요. 느려지는 지점에서 리듬을 조절하세요.`,
   image_key: `major-${codeSafe(en)}`,
   is_active: true,
@@ -83,9 +83,13 @@ const MINOR_RANKS: Array<{ short: string; label_en: string; label_kr: string }> 
   { short: "8", label_en: "Eight", label_kr: "8" },
   { short: "9", label_en: "Nine", label_kr: "9" },
   { short: "10", label_en: "Ten", label_kr: "10" },
-  { short: "J", label_en: "Page", label_kr: "시종" },
-  { short: "Q", label_en: "Queen", label_kr: "퀸" },
-  { short: "K", label_en: "King", label_kr: "킹" },
+  // 코트 카드는 네 장이다. 트럼프(J/Q/K)와 달리 타로에는 기사(Knight)가 있다.
+  // 예전에는 J/Q/K 세 장만 있어서 수트마다 13장, 덱 전체가 74장이었다.
+  // 78장이어야 하는 덱에서 기사 넉 장이 통째로 빠져 있었다.
+  { short: "P", label_en: "Page", label_kr: "시종" },
+  { short: "N", label_en: "Knight", label_kr: "기사" },
+  { short: "Q", label_en: "Queen", label_kr: "여왕" },
+  { short: "K", label_en: "King", label_kr: "왕" },
 ];
 
 function codeSafe(input: string) {
@@ -95,12 +99,12 @@ function codeSafe(input: string) {
 /**
  * 마이너 아르카나 의미.
  *
- * 예전에는 52장이 전부 같은 문장을 썼다. 역방향은 죄다 "과속, 불균형, 강한
+ * 예전에는 마이너 전부가 같은 문장을 썼다. 역방향은 죄다 "과속, 불균형, 강한
  * 고정관념이 나타나기 쉬운 구간입니다." 였다. 어떤 카드를 뽑아도 결과가
  * 같으니 카드를 뽑는 의미가 없었다.
  *
  * 전통 구조 그대로 수트(어느 영역인가)와 숫자(그 영역의 어느 단계인가)를
- * 조합해 만든다. 4 x 13 = 52장이 서로 다른 문장을 갖는다.
+ * 조합해 만든다. 4 x 14 = 56장이 서로 다른 문장을 갖는다.
  */
 const SUIT_MEANING: Record<TarotSuit, { area: string; verb: string; caution: string }> = {
   wands: { area: "일과 추진력", verb: "밀고 나가는 힘", caution: "서두르다 태우는 에너지" },
@@ -120,17 +124,35 @@ const RANK_MEANING: Record<string, { up: string; down: string }> = {
   "8": { up: "손에 익어 속도가 붙습니다. 지금 흐름을 타세요", down: "빨라진 만큼 놓치는 것이 늘고 있습니다" },
   "9": { up: "거의 다 왔습니다. 마지막 한 걸음이 남았습니다", down: "다 온 줄 알고 힘을 뺀 상태입니다" },
   "10": { up: "한 바퀴를 다 돌았습니다. 매듭짓고 다음을 여세요", down: "혼자 너무 많이 짊어져 넘치고 있습니다" },
-  J: { up: "배우는 자리입니다. 서툴러도 해 보는 쪽이 남습니다", down: "재고 따지느라 첫걸음을 못 떼고 있습니다" },
+  P: { up: "배우는 자리입니다. 서툴러도 해 보는 쪽이 남습니다", down: "재고 따지느라 첫걸음을 못 떼고 있습니다" },
+  N: { up: "움직여서 뚫는 자리입니다. 지금은 속도가 무기입니다", down: "방향을 안 정한 채 달려 헛돌고 있습니다" },
   Q: { up: "품어서 다스리는 자리입니다. 사람이 따릅니다", down: "챙기다 지쳐 마음이 굳어 가고 있습니다" },
   K: { up: "판을 쥐고 이끄는 자리입니다. 결정하면 따라옵니다", down: "쥐려는 힘이 세져 주변이 숨 막혀 합니다" },
 };
 
-/** 앞 글자 받침에 따라 을/를 을 고른다 ("태도을" 같은 오타를 막는다) */
-function objectParticle(word: string): string {
+/** 앞 글자에 받침이 있는가. 한글이 아니면 판단하지 않는다 */
+function hasFinalConsonant(word: string): boolean | null {
   const last = word.trim().slice(-1);
   const code = last.charCodeAt(0);
-  if (code < 0xac00 || code > 0xd7a3) return "을";
-  return (code - 0xac00) % 28 === 0 ? "를" : "을";
+  if (code < 0xac00 || code > 0xd7a3) return null;
+  return (code - 0xac00) % 28 !== 0;
+}
+
+/** 앞 글자 받침에 따라 을/를 을 고른다 ("태도을" 같은 오타를 막는다) */
+function objectParticle(word: string): string {
+  const final = hasFinalConsonant(word);
+  return final === false ? "를" : "을";
+}
+
+/**
+ * 앞 글자 받침에 따라 은/는 을 고른다.
+ *
+ * 메이저 22장의 설명이 `${이름}은` 으로 고정돼 있었다. 카드 이름 절반이
+ * 받침 없이 끝나서 "마법사은", "악마은", "세계은" 처럼 나왔다.
+ */
+function topicParticle(word: string): string {
+  const final = hasFinalConsonant(word);
+  return final === false ? "는" : "은";
 }
 
 function minorUpright(suit: TarotSuit, rank: string, nameKr: string) {
