@@ -45,7 +45,11 @@ const deck = [
     }))),
 ];
 
-const missing = deck.filter((card) => !existsSync(`${DECK_DIR}/${card.code}.png`));
+// --all 이면 이미 있는 카드까지 포함한다. 특정 카드를 다시 뽑을 때 필요하다.
+const includeExisting = process.argv.includes('--all');
+const missing = includeExisting
+  ? deck
+  : deck.filter((card) => !existsSync(`${DECK_DIR}/${card.code}.jpg`));
 const jobs = missing.map((card) => ({ code: card.code, name: card.name_en, prompt: buildPrompt(card) }));
 const unbuildable = jobs.filter((job) => !job.prompt);
 

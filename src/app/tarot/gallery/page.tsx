@@ -5,7 +5,7 @@ import Image from "next/image";
 import TarotCardArt from "@/components/tarot/TarotCardArt";
 import Link from "next/link";
 import { ArrowLeft, Library, Target, LayoutGrid } from "lucide-react";
-import { getTarotDeckRows, TarotDeckCard, TarotArcanaType, TarotSuit, DEFAULT_TAROT_THEME, TarotTheme } from "@/data/tarotDeck";
+import { getTarotDeckRows, resolveTarotImageUrl, TarotDeckCard, TarotArcanaType, TarotSuit, DEFAULT_TAROT_THEME, TarotTheme } from "@/data/tarotDeck";
 
 export default function TarotGalleryPage() {
     const [activeTab, setActiveTab] = useState<"ALL" | "MAJOR" | "MINOR">("ALL");
@@ -106,7 +106,9 @@ export default function TarotGalleryPage() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
                     {filteredDeck.map((card) => {
-                        const imageUrl = activeTheme === "svg_fallback" ? "" : `/tarot-decks/${activeTheme}/${card.code}.png`;
+                        // 경로를 여기서 또 조립하면 안 된다. 확장자를 jpg 로 바꿀 때
+                        // 해석기만 고치고 이 줄을 놓쳐 갤러리만 깨질 뻔했다.
+                        const imageUrl = activeTheme === "svg_fallback" ? "" : resolveTarotImageUrl(card, activeTheme);
 
                         return (
                             <article key={card.code} className="group flex flex-col items-center">

@@ -121,8 +121,10 @@ describe('한국어 표기', () => {
 describe('이미지 경로', () => {
     it('78장 모두 같은 규칙의 경로를 만든다', () => {
         for (const card of deck) {
+            // 확장자는 jpg 다. 채색 일러스트라 무손실로 둘 이유가 없고,
+            // PNG 로 두면 같은 그림이 3배 이상 무겁다.
             expect(resolveTarotImageUrl(card), card.code)
-                .toMatch(/^\/tarot-decks\/[a-z_]+\/[A-Z]{2}\d{2}(-[A-Z0-9]{1,2})?\.png$/);
+                .toMatch(/^\/tarot-decks\/[a-z_]+\/[A-Z]{2}\d{2}(-[A-Z0-9]{1,2})?\.jpg$/);
         }
         expect(new Set(deck.map((c) => resolveTarotImageUrl(c))).size).toBe(78);
     });

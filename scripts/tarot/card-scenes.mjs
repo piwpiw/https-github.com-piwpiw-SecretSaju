@@ -60,11 +60,21 @@ export const COURT_SCENES = {
 };
 
 /** 카드 하나의 프롬프트를 만든다 */
+/** 메이저 번호를 로마 숫자로. 기존 16장이 카드 위쪽에 이 표기를 갖고 있다 */
+const ROMAN = ['0', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X',
+  'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX', 'XXI'];
+
 export function buildPrompt(card) {
   if (card.arcana === 'major') {
     const scene = MAJOR_SCENES[card.code];
     if (!scene) return null;
-    return `Tarot card "${card.name_en}". ${scene}. ${STYLE_SUFFIX}`;
+    const numeral = ROMAN[card.number] ?? '';
+    // 기존 카드는 위쪽에 로마 숫자, 아래쪽에 영문 이름 띠를 갖는다.
+    // 이걸 빼먹으면 새로 넣은 카드만 번호가 없어 한 벌로 안 보인다.
+    return `Tarot card "${card.name_en}". ${scene}. `
+      + `The roman numeral ${numeral} in a small ornate cartouche at the top of the card, `
+      + `the title "${card.name_en.toUpperCase()}" on a gold banner at the bottom. `
+      + `${STYLE_SUFFIX}`;
   }
 
   const motif = SUIT_MOTIF[card.suit];
