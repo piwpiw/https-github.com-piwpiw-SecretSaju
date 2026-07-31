@@ -19,14 +19,33 @@ export const STYLE_SUFFIX = [
   'no text except the card title banner',
 ].join(', ');
 
-/** 실사 이미지가 없는 메이저 6장 */
+/** 메이저 22장의 장면 */
 export const MAJOR_SCENES = {
+  MA00: 'The Fool: a young traveller in a bright embroidered tunic stepping off a sunlit cliff edge, a small white rose in one hand, a knapsack tied to a staff over the shoulder, a small white dog leaping at the heels, snowy peaks behind',
+  MA01: 'The Magician: a robed figure standing at an altar with one arm raised holding a wand toward the sky and the other pointing to the ground, a wand, cup, sword and pentacle laid on the table, a lemniscate above the head, roses and lilies twining around',
+  MA02: 'The High Priestess: a veiled priestess seated between one black pillar and one white pillar, a crescent moon at her feet, a horned lunar crown, a scroll held against her blue robe, a curtain of pomegranates behind her',
+  MA03: 'The Empress: a serene crowned woman with twelve stars in her diadem, reclining on a cushioned throne in a field of ripe wheat, a heart-shaped shield bearing the sign of Venus beside her, a waterfall and cypress trees behind',
+  MA04: 'The Emperor: a bearded ruler in red robes and armour seated on a grey stone throne carved with four rams heads, an ankh sceptre in one hand and an orb in the other, barren red mountains behind',
+  MA05: 'The Hierophant: a mitred priest enthroned between two stone pillars, a triple cross sceptre raised in one hand and the other lifted in blessing, two tonsured acolytes kneeling before him, two crossed keys at his feet',
+  // 전통 도상은 나체의 남녀지만, 일반 서비스라 시대풍 옷을 입힌다.
+  // 천사·나무·산은 그대로 두어 카드의 의미는 잃지 않는다.
+  MA06: 'The Lovers: a man and a woman in flowing medieval robes, fully clothed, standing apart in a green garden and looking up, a winged angel with outstretched arms in the clouds above them, a flaming tree behind the man and a fruiting tree with a coiled serpent behind the woman, a mountain between them',
+  MA07: 'The Chariot: an armoured prince standing in a stone chariot beneath a starry canopy, a crescent moon on each shoulder plate, holding a wand, drawn by one black sphinx and one white sphinx, a walled city behind',
+  MA08: 'Strength: a calm woman in a white gown with a lemniscate above her head and a garland of flowers at her waist, gently closing the jaws of a tawny lion with her bare hands, a golden meadow behind',
+  MA09: 'The Hermit: an old bearded man in a grey hooded cloak standing alone on a snowy summit, raising a lantern holding a six-pointed star, leaning on a long wooden staff, night sky behind',
+  MA10: 'Wheel of Fortune: a great golden wheel inscribed with mystic letters turning in the sky, a sphinx bearing a sword resting on top, a serpent descending on the left and a jackal-headed figure rising on the right, a winged bull, lion, eagle and angel reading books in the four corners of the clouds',
+  MA11: 'Justice: a crowned figure enthroned between two pillars under a violet veil, holding an upright sword in the right hand and a pair of balanced golden scales in the left, red robes and a square clasp at the breast',
+  MA12: 'The Hanged Man: a man in a blue tunic and red hose suspended upside down by one ankle from a living T-shaped wooden cross, the free leg crossed behind the other, hands behind his back, a golden nimbus of light around his serene head',
+  MA13: 'Death: an armoured skeletal rider on a pale white horse carrying a black banner with a white five-petalled rose, a fallen king and a kneeling bishop and child before him, a river and two towers with the sun rising between them behind',
+  MA14: 'Temperance: a large winged angel in a white robe with a solar disc on the brow, one foot on land and one in a pool, pouring water between two golden cups in an unbroken arc, irises growing on the bank and a crowned path leading to distant mountains',
   // 전통 도상은 사슬에 묶인 나체 남녀지만, 일반 서비스라 옷을 입힌다.
   // 뿔·사슬·역오각성은 그대로 두어 카드의 의미는 잃지 않는다.
   MA15: 'The Devil: a horned goat-headed figure perched on a black pedestal, an inverted pentagram above its brow, below it a man and a woman in simple dark medieval robes, fully clothed, loosely chained by the neck to the pedestal, small horns on their heads, torchlight and embers',
+  MA16: 'The Tower: a tall grey stone tower on a rocky crag struck by a bolt of lightning, its golden crown blasted off the top, flames bursting from the windows, two figures in medieval robes falling headlong through the dark sky, yellow sparks scattered around',
   MA17: 'The Star: a kneeling woman pouring water from two urns, one into a pool and one onto the earth, a large eight-pointed star and seven smaller stars in the night sky, an ibis in a tree',
   MA18: 'The Moon: a full moon with a face between two grey towers, a dog and a wolf howling, a crayfish emerging from a pool, a winding path leading to the horizon',
-  MA19: 'The Sun: a radiant sun with a face, a naked child riding a white horse, a red banner streaming, tall sunflowers behind a garden wall',
+  // 전통 도상은 나체 아이지만 그대로 둘 수 없다. 옷을 입힌다.
+  MA19: 'The Sun: a radiant sun with a face, a joyful child in a simple white tunic riding a white horse, a red banner streaming, tall sunflowers behind a garden wall',
   MA20: 'Judgement: an angel blowing a golden trumpet from the clouds, figures rising from open coffins with arms raised, grey mountains behind',
   MA21: 'The World: a dancing figure draped in violet cloth inside a green laurel wreath, holding two wands, with a lion, bull, eagle and angel in the four corners',
 };
