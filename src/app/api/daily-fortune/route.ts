@@ -92,7 +92,10 @@ function fallbackFortune(date: Date, pillarIndex: number, locale: Locale): {
   element: string;
   caution: string;
 } {
-  const lineIndex = Math.max(0, Math.min(pillarIndex, DAILY_LINES_KO.length - 1)) % DAILY_LINES_KO.length;
+  // 일주 인덱스(0~59)를 문구 10개에 고르게 나눈다.
+  // 예전에는 `Math.min(pillarIndex, 9)` 로 **잘라내서**, 인덱스 9 이상인 일주가
+  // 전부 마지막 문구를 썼다. 2026년 365일 중 311일(85%)이 같은 문구였다.
+  const lineIndex = ((pillarIndex % DAILY_LINES_KO.length) + DAILY_LINES_KO.length) % DAILY_LINES_KO.length;
   const lines = locale === "en" ? DAILY_LINES_EN : DAILY_LINES_KO;
   const elements = locale === "en" ? FORTUNE_ELEMENTS_EN : FORTUNE_ELEMENTS_KO;
   const colors = locale === "en" ? LUCKY_COLORS_EN : LUCKY_COLORS_KO;

@@ -163,16 +163,36 @@ export function analyzeElements(saju: FourPillars, baseDateKST?: Date): ElementA
     let sum = 0;
     const entries = Object.entries(scores) as [Element, number][];
 
+    // 마지막 원소가 잔여값을 받아 합을 정확히 100 으로 맞춘다.
+    //
+    // 예전에는 잔여가 음수일 때 `Math.max(0, ...)` 로 0 에 붙였다. 앞 네 개의
+    // 반올림 합이 101 이 되면(수(水) 원점수가 0 인 사주에서 실제로 일어난다)
+    // 합이 101 이 되어 바로 아래 불변식 검사가 예외를 던졌다. 그러면 엔진 전체가
+    // fallback 으로 떨어져 오행이 20/20/20/20/20 인 **완벽히 평평한 차트**가
+    // 나가고, 용신·강약·격국·십성이 통째로 사라졌다. 오류로 보이지 않는 게 문제였다.
+    //
+    // 잔여가 음수면 가장 큰 값에서 그만큼 덜어낸다. 합은 언제나 100 이 된다.
     entries.forEach(([el, val], idx) => {
         if (idx === entries.length - 1) {
-            // Last one takes the remainder to ensure exact 100
-            normalizedScores[el] = Math.max(0, 100 - sum);
+            normalizedScores[el] = 100 - sum;
         } else {
             const rounded = Math.round((val / rawTotal) * 100);
             normalizedScores[el] = rounded;
             sum += rounded;
         }
     });
+
+    const lastElement = entries[entries.length - 1][0];
+    if (normalizedScores[lastElement] < 0) {
+        const debt = -normalizedScores[lastElement];
+        normalizedScores[lastElement] = 0;
+        // 반올림으로 부풀려진 만큼을 가장 큰 원소에서 되돌린다
+        const largest = entries
+            .slice(0, -1)
+            .map(([el]) => el)
+            .reduce((a, b) => (normalizedScores[a] >= normalizedScores[b] ? a : b));
+        normalizedScores[largest] -= debt;
+    }
 
     // 3. Invariant Check: If score is 0, basic count must also be 0 in this model (Surface + Hidden)
     // Actually, in some cases a score could be purely from hidden stems, but if basic count is 0, 

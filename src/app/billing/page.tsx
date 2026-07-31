@@ -10,7 +10,10 @@ export default function BillingPage() {
           <span className="text-sm font-bold">뒤로</span>
         </Link>
 
-        <div className="bg-surface border border-border-color rounded-5xl p-4 sm:p-8 sm:p-16 shadow-2xl">
+        {/* 모바일에서는 카드 여백을 줄이고, 카드 안의 카드는 더 줄인다(p-3 / p-2.5).
+            레이아웃 8px + 카드 16px + 안쪽 카드 12px + 테두리 2px = 한 면 38px 라
+            본문이 314/390(0.81)까지 좁아졌었다. sm: 이상 값은 그대로 둔다. */}
+        <div className="bg-surface border border-border-color rounded-5xl p-3 sm:p-8 sm:p-16 shadow-2xl">
           <div className="flex items-center gap-6 mb-8 pb-12 border-b border-border-color">
             <div className="w-20 h-20 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center">
               <CreditCard className="w-10 h-10 text-primary" />
@@ -22,24 +25,24 @@ export default function BillingPage() {
           </div>
 
           <div className="grid gap-5 md:grid-cols-3">
-            <Link href="/shop" className="rounded-3xl border border-border-color bg-background p-3 sm:p-6 hover:border-primary/40 transition-colors">
+            <Link href="/shop" className="rounded-3xl border border-border-color bg-background p-2.5 sm:p-6 hover:border-primary/40 transition-colors">
               <CreditCard className="w-6 h-6 text-primary" />
               <h2 className="mt-4 text-lg font-black text-foreground">상품 보기</h2>
               <p className="mt-2 text-sm text-muted">젤리 충전, 프리미엄, 멤버십 상품을 실제 결제 경로에서 확인합니다.</p>
             </Link>
-            <Link href="/refund" className="rounded-3xl border border-border-color bg-background p-3 sm:p-6 hover:border-primary/40 transition-colors">
+            <Link href="/refund" className="rounded-3xl border border-border-color bg-background p-2.5 sm:p-6 hover:border-primary/40 transition-colors">
               <RefreshCw className="w-6 h-6 text-primary" />
               <h2 className="mt-4 text-lg font-black text-foreground">환불 정책</h2>
               <p className="mt-2 text-sm text-muted">환불 가능 기준, 처리 절차, 검토 범위를 확인합니다.</p>
             </Link>
-            <Link href="/inquiry" className="rounded-3xl border border-border-color bg-background p-3 sm:p-6 hover:border-primary/40 transition-colors">
+            <Link href="/inquiry" className="rounded-3xl border border-border-color bg-background p-2.5 sm:p-6 hover:border-primary/40 transition-colors">
               <Receipt className="w-6 h-6 text-primary" />
               <h2 className="mt-4 text-lg font-black text-foreground">결제 문의</h2>
               <p className="mt-2 text-sm text-muted">영수증, 결제 확인, 구독 문의는 고객지원으로 접수합니다.</p>
             </Link>
           </div>
 
-          <div className="mt-8 rounded-3xl border border-secondary/20 bg-secondary/5 p-3 sm:p-6">
+          <div className="mt-8 rounded-3xl border border-secondary/20 bg-secondary/5 p-2.5 sm:p-6">
             <div className="flex items-center gap-3 text-muted font-black">
               <ShieldCheck className="w-5 h-5" /> 현재 운영 기준
             </div>

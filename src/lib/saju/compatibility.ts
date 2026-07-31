@@ -44,16 +44,50 @@ function resolveRelationshipType(relationshipType: RelationshipType): SchemaRela
     return "other";
 }
 
+/**
+ * 합·충 판정.
+ *
+ * 예전에는 셋 다 껍데기였다. 합은 "같은 글자"를 합으로 봤고 충은 늘 false 였다.
+ * 그래서 갑기합·자축합 같은 정통 최고 궁합이 55점(보통)으로 나오고, 정작
+ * 완전히 같은 일주만 88점을 받았다. 충 감점(-15)은 도달할 수 없는 죽은 코드였다.
+ *
+ * 표는 `src/core/myeongni/interactions.ts` 에 이미 올바른 것이 있으므로 같은
+ * 내용을 쓴다.
+ */
+
+/** 천간합 — 갑기·을경·병신·정임·무계 */
+const STEM_HAP_PAIRS: ReadonlyArray<readonly [Stem, Stem]> = [
+    ['갑', '기'], ['을', '경'], ['병', '신'], ['정', '임'], ['무', '계'],
+];
+
+/** 지지 육합 — 자축·인해·묘술·진유·사신·오미 */
+const BRANCH_HAP_PAIRS: ReadonlyArray<readonly [Branch, Branch]> = [
+    ['자', '축'], ['인', '해'], ['묘', '술'], ['진', '유'], ['사', '신'], ['오', '미'],
+];
+
+/** 지지 충 — 마주 보는 여섯 쌍 */
+const BRANCH_CHUNG_PAIRS: ReadonlyArray<readonly [Branch, Branch]> = [
+    ['자', '오'], ['축', '미'], ['인', '신'], ['묘', '유'], ['진', '술'], ['사', '해'],
+];
+
+function matchesPair<T extends string>(
+    pairs: ReadonlyArray<readonly [T, T]>,
+    a: T,
+    b: T,
+): boolean {
+    return pairs.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+}
+
 function checkStemHap(stemA: Stem, stemB: Stem): boolean {
-    return stemA === stemB;
+    return matchesPair(STEM_HAP_PAIRS, stemA, stemB);
 }
 
 function checkBranchHap(branchA: Branch, branchB: Branch): boolean {
-    return branchA === branchB;
+    return matchesPair(BRANCH_HAP_PAIRS, branchA, branchB);
 }
 
 function checkBranchChung(branchA: Branch, branchB: Branch): boolean {
-    return false;
+    return matchesPair(BRANCH_CHUNG_PAIRS, branchA, branchB);
 }
 
 function calculateBalanceScore(elementsA: ElementAnalysisResult, elementsB: ElementAnalysisResult): number {

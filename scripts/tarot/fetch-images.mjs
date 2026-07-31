@@ -84,7 +84,7 @@ const STYLE_INSTRUCTION = referenceBase64
   : '';
 
 async function generateOne(job) {
-  const parts = [{ text: `${job.prompt}\n\n${STYLE_INSTRUCTION}` }];
+  const parts = [{ text: `${job.prompt}\n\n${STYLE_INSTRUCTION}\n\nSquare 1:1 image, ${EXPECTED_EDGE}x${EXPECTED_EDGE}.` }];
   if (referenceBase64) {
     parts.push({ inline_data: { mime_type: 'image/jpeg', data: referenceBase64 } });
   }
@@ -113,10 +113,48 @@ async function generateOne(job) {
     throw new Error(`이미지가 오지 않았습니다: ${JSON.stringify(data).slice(0, 300)}`);
   }
 
+  const buffer = Buffer.from(base64, 'base64');
+
+  if (buffer[0] !== 0xFF || buffer[1] !== 0xD8) {
+    throw new Error('JPEG 가 아닙니다');
+  }
+
+  const size = readJpegSize(buffer);
+  if (!size || size.width !== size.height || size.width !== EXPECTED_EDGE) {
+    throw new Error(
+      `크기가 ${size ? `${size.width}x${size.height}` : '판독 불가'} 입니다. `
+      + `${EXPECTED_EDGE}x${EXPECTED_EDGE} 를 기대했습니다.`
+    );
+  }
+
   // 응답은 JPEG 다. 확장자를 png 로 두면 이름이 내용과 어긋난다.
   // 실제로 처음에 그렇게 저장해서 62장이 "png 라는 이름의 jpeg" 가 됐다.
-  writeFileSync(`${DECK_DIR}/${job.code}.jpg`, Buffer.from(base64, 'base64'));
+  writeFileSync(`${DECK_DIR}/${job.code}.jpg`, buffer);
 }
+
+/**
+ * JPEG 의 가로·세로를 읽는다.
+ *
+ * `gemini-3-pro-image` 는 정사각형을 요구해도 가끔 세로(848x1264)를 돌려준다.
+ * 실제로 78장 중 3장이 그렇게 들어와 있었고, 화면에서는 카드가 눌려 보인다.
+ * 받은 뒤에 재서 아니면 다시 뽑는다.
+ */
+function readJpegSize(buffer) {
+  let i = 2;
+  while (i < buffer.length - 9) {
+    if (buffer[i] !== 0xFF) { i += 1; continue; }
+    const marker = buffer[i + 1];
+    // SOF0/SOF1/SOF2 에 크기가 들어 있다
+    if (marker === 0xC0 || marker === 0xC1 || marker === 0xC2) {
+      return { height: buffer.readUInt16BE(i + 5), width: buffer.readUInt16BE(i + 7) };
+    }
+    i += 2 + buffer.readUInt16BE(i + 2);
+  }
+  return null;
+}
+
+/** 카드는 정사각형이어야 한다. 덱 안에서 한 장만 비율이 다르면 바로 눈에 띈다. */
+const EXPECTED_EDGE = 1024;
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
