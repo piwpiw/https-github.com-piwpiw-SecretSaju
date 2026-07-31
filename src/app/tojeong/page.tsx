@@ -119,9 +119,15 @@ export default function TojeongPage() {
         birthYear: birthDate.getFullYear(),
         birthMonth: birthDate.getMonth() + 1,
         birthDay: birthDate.getDate(),
-        birthBranchIndex: birthPillar.fourPillars?.day?.branchIndex ?? getDayPillarIndex(birthDate),
+        // birthBranchIndex 는 띠(연지)로 쓰인다. 엔진의 연주는 입춘 경계를
+        // 반영하므로 그대로 쓰고, 없을 때만 달력 연도로 근사한다.
+        // 예전에는 여기에 일지를, yearPillarIndex 에는 해당 연도 1월 1일의
+        // "일주" 인덱스를 넣고 있어서 띠와 연간지가 모두 틀렸다.
+        birthBranchIndex: birthPillar.fourPillars?.year?.branchIndex
+          ?? (((birthDate.getFullYear() - 4) % 12) + 12) % 12,
         birthPillarIndex: birthPillar.fourPillars?.day?.ganjiIndex ?? getDayPillarIndex(birthDate),
-        yearPillarIndex: getDayPillarIndex(new Date(selectedYear, 0, 1)),
+        // 보려는 해의 연간지 (1984년 = 갑자 = 0)
+        yearPillarIndex: (((selectedYear - 4) % 60) + 60) % 60,
         year: selectedYear,
         birthDayOfYear: dayOfYear(birthDate),
         isFemale: profile.gender === "female",

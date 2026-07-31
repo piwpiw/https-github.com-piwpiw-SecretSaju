@@ -5,6 +5,8 @@
  * RPG 게임의 "패시브 스킬"과 유사
  */
 
+import { SIXTY_GANJI } from "@/core/calendar/ganji";
+
 export type SinsalType = "길신" | "흉신" | "중성";
 
 export interface Sinsal {
@@ -191,20 +193,33 @@ export const SINSAL_DEFINITIONS: Record<string, Sinsal> = {
 };
 
 /**
- * 일주에 따른 신살 판정
- * 
- * 실제 명리학 공식
+ * 일주 하나만 보고 판정하는 신살.
+ *
+ * 도화·역마·화개는 원래 연지(또는 일지)를 기준으로 다른 기둥의 지지를 보는
+ * 살이지만, 여기는 일주 코드 하나만 받는 자리다(사주 전체 기준 판정은
+ * `src/core/myeongni/sinsal.ts` 의 `analyzeSinsal` 이 한다). 그래서 이 파일은
+ * 지지 자체의 부류로 보는 통용 간법을 쓴다:
+ *
+ * - 도화지: 자오묘유 (각 삼합국의 목욕지)
+ * - 역마지: 인신사해 (각 삼합국의 병지)
+ * - 화개지: 진술축미 (각 삼합국의 고지)
+ *
+ * 예전 코드는 역마 표를 `if (yima[jiji])` 로 검사해 12지지 전부 참이 되어
+ * 역마살이 모든 일주에 붙었고, 화개는 자기 지지끼리 비교하고 있었다.
+ * 공망은 기둥 하나로는 판정 자체가 성립하지 않는다 — 어떤 기둥도 자기가
+ * 속한 순(旬)의 공망지를 지지로 가질 수 없으므로, 하드코딩돼 있던 가짜
+ * 판정을 제거했다(60갑자 중 아무 조합도 자기 공망이 아니다).
  */
-export function calculateSinsal(pillarCode: string, birthYear?: number): Sinsal[] {
+export function calculateSinsal(pillarCode: string): Sinsal[] {
     const sinsals: Sinsal[] = [];
 
-    // 천간-지지 분리
     const codeMap = getPillarHanja(pillarCode);
     if (!codeMap) return [];
 
     const { cheongan, jiji } = codeMap;
+    const pillar = cheongan + jiji;
 
-    // 1. 천을귀인 (천간 기준)
+    // 1. 천을귀인 — 일간이 자기 지지에서 귀인을 만나는 네 일주(일귀).
     const tianyi: Record<string, string[]> = {
         甲: ["丑", "未"],
         乙: ["子", "申"],
@@ -221,80 +236,62 @@ export function calculateSinsal(pillarCode: string, birthYear?: number): Sinsal[
         sinsals.push(SINSAL_DEFINITIONS.천을귀인);
     }
 
-    // 2. 도화살 (지지 기준)
-    const taohua = ["子", "午", "卯", "酉"];
-    if (taohua.includes(jiji)) {
+    // 2. 도화살 — 도화지
+    if (["子", "午", "卯", "酉"].includes(jiji)) {
         sinsals.push(SINSAL_DEFINITIONS.도화살);
     }
 
-    // 3. 역마살
-    const yima: Record<string, string[]> = {
-        寅: ["申"], 午: ["申"], 戌: ["申"],
-        申: ["寅"], 子: ["寅"], 辰: ["寅"],
-        巳: ["亥"], 酉: ["亥"], 丑: ["亥"],
-        亥: ["巳"], 卯: ["巳"], 未: ["巳"],
-    };
-    if (yima[jiji]) {
+    // 3. 역마살 — 역마지
+    if (["寅", "申", "巳", "亥"].includes(jiji)) {
         sinsals.push(SINSAL_DEFINITIONS.역마살);
     }
 
-    // 4. 화개살
-    const huagai: Record<string, string[]> = {
-        寅: ["戌"], 午: ["戌"], 戌: ["戌"],
-        申: ["辰"], 子: ["辰"], 辰: ["辰"],
-        巳: ["丑"], 酉: ["丑"], 丑: ["丑"],
-        亥: ["未"], 卯: ["未"], 未: ["未"],
-    };
-    if (huagai[jiji]?.includes(jiji)) {
+    // 4. 화개살 — 화개지
+    if (["辰", "戌", "丑", "未"].includes(jiji)) {
         sinsals.push(SINSAL_DEFINITIONS.화개살);
     }
 
-    // 5. 공망 (갑자 순서 기반)
-    const gongmang = checkGongmang(pillarCode);
-    if (gongmang) {
-        sinsals.push(SINSAL_DEFINITIONS.공망);
+    // 5. 문창귀인 — 일간의 문창지가 마침 자기 지지인 여섯 일주
+    const munchang: Record<string, string> = {
+        甲: "巳", 乙: "午", 丙: "申", 丁: "酉", 戊: "申",
+        己: "酉", 庚: "亥", 辛: "子", 壬: "寅", 癸: "卯",
+    };
+    if (munchang[cheongan] === jiji) {
+        sinsals.push(SINSAL_DEFINITIONS.문창귀인);
+    }
+
+    // 6. 백호대살 — 간지 조합 자체로 정해지는 일곱 기둥
+    if (["甲辰", "乙未", "丙戌", "丁丑", "戊辰", "壬戌", "癸丑"].includes(pillar)) {
+        sinsals.push(SINSAL_DEFINITIONS.백호대살);
+    }
+
+    // 7. 괴강살 — 진·술 위의 무·경·임
+    if (["戊辰", "戊戌", "庚辰", "庚戌", "壬辰", "壬戌"].includes(pillar)) {
+        sinsals.push(SINSAL_DEFINITIONS.괴강살);
+    }
+
+    // 8. 양인살 — 일간의 양인이 자기 지지인 세 일주(일인)
+    if (["丙午", "戊午", "壬子"].includes(pillar)) {
+        sinsals.push(SINSAL_DEFINITIONS.양인살);
     }
 
     return sinsals;
 }
 
-/**
- * 공망 계산 (60갑자 순서 기반)
- */
-function checkGongmang(pillarCode: string): boolean {
-    const gongmangPairs: string[][] = [
-        ["GAP_JA", "EUL_CHUK"], // 戌亥 공망
-        ["BYEONG_JA", "JEONG_CHUK"], // 申酉
-        // ... 나머지 조합도 추가 필요
-    ];
-
-    // 간단 구현 (일부만)
-    const gongmangCodes = ["GAP_SUL", "EUL_HAE", "BYEONG_SIN", "JEONG_YU"];
-    return gongmangCodes.includes(pillarCode);
-}
+const STEM_HANJA = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+const BRANCH_HANJA = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 
 /**
- * 일주 코드 → 한자 변환
+ * 일주 코드 → 한자 변환.
+ *
+ * 예전에는 60개 중 12개만 손으로 적어 둔 표를 썼고, 나머지 48개 일주는
+ * 여기서 null 이 나와 신살이 통째로 빈 배열이었다. 코드 목록은
+ * `SIXTY_GANJI` 가 이미 갖고 있으므로 그것으로 전체 표를 만든다.
  */
+const CODE_TO_HANJA: Record<string, { cheongan: string; jiji: string }> = Object.fromEntries(
+    SIXTY_GANJI.map(g => [g.code, { cheongan: STEM_HANJA[g.stemIndex], jiji: BRANCH_HANJA[g.branchIndex] }])
+);
+
 function getPillarHanja(pillarCode: string): { cheongan: string; jiji: string } | null {
-    const mapping: Record<string, [string, string]> = {
-        GAP_JA: ["甲", "子"],
-        EUL_CHUK: ["乙", "丑"],
-        BYEONG_IN: ["丙", "寅"],
-        JEONG_MYO: ["丁", "卯"],
-        MU_JIN: ["戊", "辰"],
-        GI_SA: ["己", "巳"],
-        GYEONG_O: ["庚", "午"],
-        SIN_MI: ["辛", "未"],
-        IM_SIN: ["壬", "申"],
-        GYE_YU: ["癸", "酉"],
-        GAP_SUL: ["甲", "戌"],
-        EUL_HAE: ["乙", "亥"],
-        // ... (60개 전부)
-    };
-
-    const result = mapping[pillarCode];
-    if (!result) return null;
-
-    return { cheongan: result[0], jiji: result[1] };
+    return CODE_TO_HANJA[pillarCode] ?? null;
 }

@@ -14,6 +14,7 @@ import { calculateOneSipsong, analyzeSipsong } from '@/core/myeongni/sipsong';
 import { SIXTY_GANJI, GanJi, Stem } from '@/core/calendar/ganji';
 import { analyzeRelationship } from '@/lib/saju/compatibility';
 import { calculateHighPrecisionSaju, HighPrecisionSajuResult, ElementAnalysisResult } from '@/core/api/saju-engine';
+import { calculateSinsal } from '@/lib/saju/sinsal';
 
 function ganji(fullName: string): GanJi {
     const found = SIXTY_GANJI.find(g => g.fullName === fullName);
@@ -120,4 +121,50 @@ describe('오행 정규화 — 반올림 잔차가 있어도 합은 항상 100',
             expect(values.some(v => v !== 20)).toBe(true);
         });
     }
+});
+
+describe('일주 신살 — 60갑자 전체가 판정된다', () => {
+    // 수정 전에는 코드→한자 표가 12개뿐이라 48개 일주가 빈 배열을 받았고,
+    // 역마살 표는 `if (yima[jiji])` 로 12지지 전부 참이라 모든 일주에 붙었다.
+    it('빈 결과인 일주가 없다 (도화·역마·화개지가 12지지를 덮는다)', () => {
+        for (const g of SIXTY_GANJI) {
+            expect(calculateSinsal(g.code).length, g.fullName).toBeGreaterThan(0);
+        }
+    });
+
+    it('신살별 개수가 고전 이론값과 일치한다', () => {
+        const counts: Record<string, number> = {};
+        for (const g of SIXTY_GANJI) {
+            for (const s of calculateSinsal(g.code)) {
+                counts[s.name] = (counts[s.name] || 0) + 1;
+            }
+        }
+        expect(counts).toEqual({
+            도화살: 20,   // 자오묘유 × 5
+            역마살: 20,   // 인신사해 × 5 (수정 전 60)
+            화개살: 20,   // 진술축미 × 5
+            천을귀인: 4,  // 일귀: 정유 정해 계사 계묘
+            문창귀인: 6,  // 병신 정유 무신 기유 임인 계묘
+            백호대살: 7,
+            괴강살: 6,
+            양인살: 3,    // 일인: 병오 무오 임자
+        });
+    });
+
+    it('정유 일주는 천을귀인·문창귀인·도화살을 함께 가진다', () => {
+        const names = calculateSinsal('JEONG_YU').map(s => s.name);
+        expect(names).toContain('천을귀인');
+        expect(names).toContain('문창귀인');
+        expect(names).toContain('도화살');
+    });
+
+    it('갑자 일주는 도화살뿐이다 (수정 전에는 역마살도 붙었다)', () => {
+        expect(calculateSinsal('GAP_JA').map(s => s.name)).toEqual(['도화살']);
+    });
+
+    it('공망은 더 이상 일주 단독으로 판정하지 않는다', () => {
+        // 어떤 기둥도 자기 순(旬)의 공망지를 지지로 가질 수 없다.
+        // 예전 하드코딩 대상이던 갑술로 확인한다.
+        expect(calculateSinsal('GAP_SUL').map(s => s.name)).not.toContain('공망');
+    });
 });
