@@ -21,7 +21,9 @@ export const STYLE_SUFFIX = [
 
 /** 실사 이미지가 없는 메이저 6장 */
 export const MAJOR_SCENES = {
-  MA15: 'The Devil: a horned goat-headed figure perched on a black pedestal, an inverted pentagram above its brow, a naked man and woman loosely chained below, torchlight',
+  // 전통 도상은 사슬에 묶인 나체 남녀지만, 일반 서비스라 옷을 입힌다.
+  // 뿔·사슬·역오각성은 그대로 두어 카드의 의미는 잃지 않는다.
+  MA15: 'The Devil: a horned goat-headed figure perched on a black pedestal, an inverted pentagram above its brow, below it a man and a woman in simple dark medieval robes, fully clothed, loosely chained by the neck to the pedestal, small horns on their heads, torchlight and embers',
   MA17: 'The Star: a kneeling woman pouring water from two urns, one into a pool and one onto the earth, a large eight-pointed star and seven smaller stars in the night sky, an ibis in a tree',
   MA18: 'The Moon: a full moon with a face between two grey towers, a dog and a wolf howling, a crayfish emerging from a pool, a winding path leading to the horizon',
   MA19: 'The Sun: a radiant sun with a face, a naked child riding a white horse, a red banner streaming, tall sunflowers behind a garden wall',
