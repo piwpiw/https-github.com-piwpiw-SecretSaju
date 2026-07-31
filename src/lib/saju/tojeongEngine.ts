@@ -49,6 +49,7 @@ const YEARLY_THEMES = [
   "행복 가속형",
 ];
 
+const STEM_NAMES = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"];
 const BRANCH_NAMES = ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"];
 const BRANCH_ANIMALS = ["쥐", "소", "호랑이", "토끼", "용", "뱀", "말", "양", "원숭이", "닭", "개", "돼지"];
 
@@ -189,9 +190,9 @@ export function buildTojeongReport(params: {
   } = params;
 
   const age = year - birthYear + 1;
-  const branch = BRANCH_NAMES[birthBranchIndex % 12];
   const animal = BRANCH_ANIMALS[birthBranchIndex % 12];
-  const yearBranch = BRANCH_NAMES[yearPillarIndex % 12];
+  // yearPillarIndex 는 보려는 해의 60갑자 인덱스 (예: 2026년 = 병오 = 42)
+  const yearGanjiName = STEM_NAMES[yearPillarIndex % 10] + BRANCH_NAMES[yearPillarIndex % 12];
   const yearShift = Math.abs((yearPillarIndex % 12) - (birthPillarIndex % 12));
   const relationIndex = (birthPillarIndex + yearPillarIndex + birthDayOfYear + (isFemale ? 7 : 3)) % YEARLY_THEMES.length;
   const baseSeed = (birthPillarIndex * 7 + yearPillarIndex + (isFemale ? -6 : 5) + age) % 100;
@@ -232,8 +233,8 @@ export function buildTojeongReport(params: {
       tone,
       summary,
       tips: [
-        `${branch}띠 특성상 ${animal} 기운이 안정성에 유리하게 반응합니다.`,
-        `${yearBranch}주기 기준으로 일정 누적 관리를 권장합니다.`,
+        `${animal}띠 특성상 ${animal} 기운이 안정성에 유리하게 반응합니다.`,
+        `${yearGanjiName}년 주기 기준으로 일정 누적 관리를 권장합니다.`,
         pickFromList(tipBank, idx * 2 + 3) || tipBank[0],
       ].filter(Boolean),
     };
