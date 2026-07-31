@@ -44,18 +44,22 @@ function FailContent() {
     return '/shop';
   };
 
+  // 모바일 여백은 레이아웃(src/app/layout.tsx)이 주는 좌우 8px 로 끝낸다. 여기서 p-2 를
+  // 또 주고 카드 p-4 안에 실패 안내 상자를 한 겹 더 두면 상자가 3겹이 되어 본문이
+  // 262/390(0.67)까지 좁아졌다. sm: 이상(데스크톱) 값은 그대로 둔다.
   return (
-    <div className="min-h-screen flex items-center justify-center p-2 sm:p-4 bg-background">
+    <div className="min-h-screen flex items-center justify-center p-0 sm:p-4 bg-background">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-surface p-4 sm:p-8 md:p-6 sm:p-9 rounded-4xl shadow-2xl max-w-md w-full text-center border border-border-color"
+        className="bg-surface p-3 sm:p-8 md:p-6 sm:p-9 rounded-4xl shadow-2xl max-w-md w-full text-center border border-border-color"
       >
         <div className="flex flex-col items-center">
           <XCircle className="w-16 h-16 sm:w-20 sm:h-20 text-rose-500 mb-6" />
           <h2 className="text-2xl sm:text-3xl font-black text-foreground uppercase tracking-tight mb-2">결제 실패</h2>
 
-          <div className="bg-rose-500/10 border border-rose-500/20 p-3 sm:p-6 rounded-2xl mt-6 w-full">
+          {/* 카드 안의 카드라 모바일 여백을 바깥(p-3)보다 더 줄인다. */}
+          <div className="bg-rose-500/10 border border-rose-500/20 p-2.5 sm:p-6 rounded-2xl mt-6 w-full">
             <div className="flex items-start gap-3 text-left">
               <AlertCircle className="w-6 h-6 text-rose-400 shrink-0 mt-0.5" />
               <div>

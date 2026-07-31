@@ -10,7 +10,10 @@ export default function AccountDeletePage() {
           <span className="text-sm font-bold">뒤로</span>
         </Link>
 
-        <div className="bg-surface border border-border-color rounded-5xl p-4 sm:p-8 sm:p-16 shadow-2xl">
+        {/* 모바일에서는 카드 여백을 줄이고, 카드 안의 카드는 더 줄인다(p-3 / p-2.5).
+            레이아웃 8px + 카드 16px + 안쪽 카드 12px + 테두리 2px = 한 면 38px 라
+            본문이 314/390(0.81)까지 좁아졌었다. sm: 이상 값은 그대로 둔다. */}
+        <div className="bg-surface border border-border-color rounded-5xl p-3 sm:p-8 sm:p-16 shadow-2xl">
           <div className="flex items-center gap-6 mb-8 pb-12 border-b border-border-color">
             <div className="w-20 h-20 rounded-3xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center">
               <AlertTriangle className="w-10 h-10 text-rose-400" />
@@ -22,7 +25,7 @@ export default function AccountDeletePage() {
           </div>
 
           <div className="space-y-6 text-muted leading-8">
-            <div className="rounded-3xl border border-border-color bg-background p-3 sm:p-6">
+            <div className="rounded-3xl border border-border-color bg-background p-2.5 sm:p-6">
               <h2 className="text-xl font-black text-foreground">탈퇴 전에 확인할 내용</h2>
               <ul className="mt-3 list-disc pl-6 space-y-2 text-sm">
                 <li>구매한 젤리, 프리미엄 해설, 멤버십 상태는 복구되지 않을 수 있습니다.</li>
@@ -31,7 +34,7 @@ export default function AccountDeletePage() {
               </ul>
             </div>
 
-            <div className="rounded-3xl border border-rose-500/20 bg-rose-500/5 p-3 sm:p-6">
+            <div className="rounded-3xl border border-rose-500/20 bg-rose-500/5 p-2.5 sm:p-6">
               <div className="flex items-center gap-2 text-rose-300 font-black">
                 <ShieldAlert className="w-5 h-5" /> 현재 처리 방식
               </div>

@@ -89,8 +89,10 @@ function SuccessContent() {
     void verifyPayment();
   }, [router, searchParams]);
 
+  // 모바일은 레이아웃(src/app/layout.tsx)이 이미 좌우 8px 를 준다. 여기서 또 p-2 를
+  // 주면 카드 p-5(20px)와 합쳐 한 면 37px 가 사라져 본문이 316/390(0.81)까지 좁아졌다.
   return (
-    <div className="min-h-screen flex items-center justify-center p-2 sm:p-4 bg-background">
+    <div className="min-h-screen flex items-center justify-center p-0 sm:p-4 bg-background">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
