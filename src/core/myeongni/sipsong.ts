@@ -46,21 +46,47 @@ const ELEMENT_CONTROL = {
 const YANG_STEMS = new Set(['갑', '병', '무', '경', '임']);
 const YANG_BRANCHS = new Set(['자', '인', '진', '오', '신', '술']);
 
-function isYang(char: Stem | Branch): boolean {
-    if (Object.keys(STEM_ELEMENTS).includes(char as string)) {
-        return YANG_STEMS.has(char as Stem);
-    }
-    return YANG_BRANCHS.has(char as Branch);
+/**
+ * 대상이 천간인지 지지인지.
+ *
+ * 이 구분이 왜 필요한가:
+ * 한글 표기에서 천간과 지지가 겹치는 글자가 하나 있다. **신**이다.
+ * 천간 신(辛)은 음금, 지지 신(申)은 양금이다. 음양이 반대다.
+ *
+ * 예전에는 글자만 보고 `STEM_ELEMENTS` 에 있으면 천간으로 단정했다. 그래서
+ * 지지 申 이 들어오면 辛 으로 취급돼 음양이 뒤집혔고, 십성이 한 칸씩 어긋났다.
+ *
+ *     갑 + 지지 신(申)  →  정관   (정답 편관)
+ *     무 + 지지 신(申)  →  상관   (정답 식신)
+ *
+ * 사주 네 자리 중 하나가 申 일 확률이 30% 가량이라 드문 일도 아니었다.
+ * 글자로 추측하지 말고 부르는 쪽이 알려 준다.
+ */
+export type SipsongTargetKind = 'stem' | 'branch';
+
+function isYang(char: Stem | Branch, kind: SipsongTargetKind): boolean {
+    return kind === 'stem' ? YANG_STEMS.has(char as Stem) : YANG_BRANCHS.has(char as Branch);
 }
 
-export function calculateOneSipsong(selfStem: Stem, target: Stem | Branch): Sipsong {
+/**
+ * 일간 기준으로 대상 글자의 십성을 구한다.
+ *
+ * @param selfStem 일간
+ * @param target   대상 글자
+ * @param kind     대상이 천간인지 지지인지. 기본값은 천간
+ */
+export function calculateOneSipsong(
+    selfStem: Stem,
+    target: Stem | Branch,
+    kind: SipsongTargetKind = 'stem'
+): Sipsong {
     const selfElement = STEM_ELEMENTS[selfStem];
-    const targetElement = (Object.keys(STEM_ELEMENTS).includes(target as string))
+    const targetElement = kind === 'stem'
         ? STEM_ELEMENTS[target as Stem]
         : BRANCH_ELEMENTS[target as Branch];
 
-    const selfYang = isYang(selfStem);
-    const targetYang = isYang(target);
+    const selfYang = isYang(selfStem, 'stem');
+    const targetYang = isYang(target, kind);
     const samePolarity = selfYang === targetYang;
 
     if (selfElement === targetElement) {
@@ -97,12 +123,12 @@ export function analyzeSipsong(saju: FourPillars): SipsongResult {
     const self = saju.day.stem; // Day Master
 
     return {
-        yearStem: calculateOneSipsong(self, saju.year.stem),
-        yearBranch: calculateOneSipsong(self, saju.year.branch),
-        monthStem: calculateOneSipsong(self, saju.month.stem),
-        monthBranch: calculateOneSipsong(self, saju.month.branch),
-        dayBranch: calculateOneSipsong(self, saju.day.branch),
-        hourStem: calculateOneSipsong(self, saju.hour.stem),
-        hourBranch: calculateOneSipsong(self, saju.hour.branch),
+        yearStem: calculateOneSipsong(self, saju.year.stem, 'stem'),
+        yearBranch: calculateOneSipsong(self, saju.year.branch, 'branch'),
+        monthStem: calculateOneSipsong(self, saju.month.stem, 'stem'),
+        monthBranch: calculateOneSipsong(self, saju.month.branch, 'branch'),
+        dayBranch: calculateOneSipsong(self, saju.day.branch, 'branch'),
+        hourStem: calculateOneSipsong(self, saju.hour.stem, 'stem'),
+        hourBranch: calculateOneSipsong(self, saju.hour.branch, 'branch'),
     };
 }
