@@ -51,14 +51,18 @@ const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODE
 const DECK_DIR = 'public/tarot-decks/standard';
 
 /** 화풍을 붙들어 둘 참조 카드. 이미 들어와 있는 16장 중 하나 */
-const STYLE_REFERENCE = `${DECK_DIR}/MA00.png`;
+const STYLE_REFERENCE = `${DECK_DIR}/MA00.jpg`;
 
 const args = process.argv.slice(2);
 const limit = Number(args[args.indexOf('--limit') + 1]) || Infinity;
 const forceCode = args.includes('--force') ? args[args.indexOf('--force') + 1] : null;
 
 /** 프롬프트 목록은 generate-missing.mjs 가 만든다. 문장을 두 곳에 두지 않는다. */
-const jobsJson = execFileSync('node', ['scripts/tarot/generate-missing.mjs', '--json'], {
+// --force 로 특정 카드를 다시 뽑을 때는 "없는 카드" 목록에 그 카드가 없다.
+// 이미 받아 둔 카드이기 때문이다. 그때는 전체 목록을 받아 온다.
+const listArgs = ['scripts/tarot/generate-missing.mjs', '--json'];
+if (forceCode) listArgs.push('--all');
+const jobsJson = execFileSync('node', listArgs, {
   encoding: 'utf8',
   maxBuffer: 32 * 1024 * 1024,
 });
@@ -82,7 +86,7 @@ const STYLE_INSTRUCTION = referenceBase64
 async function generateOne(job) {
   const parts = [{ text: `${job.prompt}\n\n${STYLE_INSTRUCTION}` }];
   if (referenceBase64) {
-    parts.push({ inline_data: { mime_type: 'image/png', data: referenceBase64 } });
+    parts.push({ inline_data: { mime_type: 'image/jpeg', data: referenceBase64 } });
   }
 
   const response = await fetch(`${ENDPOINT}?key=${API_KEY}`, {
@@ -109,7 +113,9 @@ async function generateOne(job) {
     throw new Error(`이미지가 오지 않았습니다: ${JSON.stringify(data).slice(0, 300)}`);
   }
 
-  writeFileSync(`${DECK_DIR}/${job.code}.png`, Buffer.from(base64, 'base64'));
+  // 응답은 JPEG 다. 확장자를 png 로 두면 이름이 내용과 어긋난다.
+  // 실제로 처음에 그렇게 저장해서 62장이 "png 라는 이름의 jpeg" 가 됐다.
+  writeFileSync(`${DECK_DIR}/${job.code}.jpg`, Buffer.from(base64, 'base64'));
 }
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -119,7 +125,7 @@ let failed = 0;
 console.log(`${jobs.length}장 생성 시작 (모델 ${MODEL})\n`);
 
 for (const [index, job] of jobs.entries()) {
-  const target = `${DECK_DIR}/${job.code}.png`;
+  const target = `${DECK_DIR}/${job.code}.jpg`;
   if (existsSync(target) && !forceCode) {
     console.log(`[${index + 1}/${jobs.length}] ${job.code} 이미 있음, 건너뜀`);
     continue;

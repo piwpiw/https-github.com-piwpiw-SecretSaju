@@ -303,7 +303,8 @@ export function resolveTarotImageUrl(card: TarotDeckCard, theme: TarotTheme = DE
   if (theme === "svg_fallback") {
     return makeCardSvgImage(card);
   }
-  // Standard and other themes use static files in the public directory
-  // e.g. /tarot-decks/standard/MA00.png
-  return `/tarot-decks/${theme}/${card.code}.png`;
+  // 카드 그림은 JPEG 다. 생성 모델이 JPEG 를 돌려주고, 채색 일러스트라
+  // 무손실로 둘 이유가 없다. PNG 로 두면 같은 그림이 3배 이상 무겁다.
+  // e.g. /tarot-decks/standard/MA00.jpg
+  return `/tarot-decks/${theme}/${card.code}.jpg`;
 }
