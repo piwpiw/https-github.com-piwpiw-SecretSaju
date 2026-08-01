@@ -77,7 +77,11 @@ export function calculateDaewunStartAge(birthDate: Date, isForward: boolean): nu
         targetTermDate = prevTerms.length > 0 ? prevTerms[prevTerms.length - 1].date : undefined;
     }
 
-    if (!targetTermDate) return 5; // Fallback
+    if (!targetTermDate) {
+        // 앞뒤 3개년 절기를 모두 훑으므로 여기 도달하면 절기 데이터 자체가
+        // 깨진 것이다. 조용히 임의값을 돌려주는 대신 즉시 드러낸다.
+        throw new Error(`대운수 계산 실패: ${birthDate.toISOString()} 주변에서 절입을 찾지 못했습니다.`);
+    }
 
     const diffMs = Math.abs(targetTermDate.getTime() - birthDate.getTime());
     const totalDays = diffMs / (1000 * 60 * 60 * 24);
@@ -140,6 +144,10 @@ export function getDaewunAtAge(daewun: DaewunInfo, age: number): DaewunInfo['pil
     return daewun.pillars.find(d => age >= d.startAge && age <= d.endAge) || null;
 }
 
+/**
+ * 달력 연도 라벨의 간지. "2026년은 병오년" 같은 연 단위 리포트용이다.
+ * "지금 이 순간의 세운"은 입춘 경계를 타야 하므로 `calculateSaewunForDate` 를 쓴다.
+ */
 export function calculateSaewun(year: number): GanJi {
     const REFERENCE_YEAR = 1984;
     const yearDiff = year - REFERENCE_YEAR;
@@ -147,8 +155,19 @@ export function calculateSaewun(year: number): GanJi {
     return getGanJiFromIndex(yearIndex);
 }
 
+/**
+ * 특정 시점의 세운. 세운의 해는 1월 1일이 아니라 입춘에 바뀐다 —
+ * 매년 1월 1일~입춘 사이에는 전년도 간지가 세운이다. 연주와 같은 규칙이므로
+ * `getYearPillar` 를 그대로 쓴다.
+ */
+export function calculateSaewunForDate(date: Date): GanJi {
+    return getYearPillar(date);
+}
+
 export function getSaewunInfo(birthDate: Date, targetYear: number): SaewunInfo {
-    const age = targetYear - birthDate.getFullYear(); // approx Korean age logic or simple age
+    // 세는나이: 태어난 해를 1세로 센다. 대운수(起運數)가 세는나이 진입
+    // 나이이므로 여기서도 같은 규약을 쓴다.
+    const age = targetYear - birthDate.getFullYear() + 1;
     const pillar = calculateSaewun(targetYear);
     return { year: targetYear, pillar, age };
 }
@@ -182,10 +201,23 @@ export function getIlunInfo(date: Date): IlunInfo {
 
 export function getCurrentUnInfo(birthDate: Date, pillars: FourPillars, gender: 'M' | 'F'): CurrentUnInfo {
     const now = new Date();
-    const currentAge = now.getFullYear() - birthDate.getFullYear();
+    // 세는나이 (태어난 해 = 1세). 대운수가 세는나이 진입 나이이므로 현행
+    // 대운 선택도 같은 규약이어야 한다. 예전에는 연나이(만 규약도 아닌
+    // 단순 차)를 써서 대운 전환이 표준 만세력보다 1년 늦게 잡혔다.
+    const currentAge = now.getFullYear() - birthDate.getFullYear() + 1;
     const daewun = calculateDaewun(birthDate, pillars, gender);
     const currentDaewun = getDaewunAtAge(daewun, currentAge);
-    const saewun = getSaewunInfo(birthDate, now.getFullYear());
+
+    // 세운의 해는 입춘에 바뀐다. 1월 1일~입춘 사이에는 전년도 간지가 세운.
+    const saewunPillar = calculateSaewunForDate(now);
+    const saewunYear = saewunPillar.ganjiIndex === calculateSaewun(now.getFullYear()).ganjiIndex
+        ? now.getFullYear()
+        : now.getFullYear() - 1;
+    const saewun: SaewunInfo = {
+        year: saewunYear,
+        pillar: saewunPillar,
+        age: currentAge,
+    };
     const wolun = getWolunInfo(now);
     const ilun = getIlunInfo(now);
 

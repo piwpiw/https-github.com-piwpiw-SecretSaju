@@ -1182,7 +1182,8 @@ function ResultCard({
                 </div>
               ) : null}
               <div className="grid gap-2">
-                {daewun.pillars.slice(0, 6).map((phase: any, index: number) => (
+                {/* 9개 대운 전부 표시 — 6개로 자르면 60대 중반 이후가 통째로 사라진다 */}
+                {daewun.pillars.map((phase: any, index: number) => (
                   <div key={`${phase?.order}-${phase?.startAge}`} className="rounded-lg bg-gradient-to-r from-indigo-500/10 to-slate-900/20 border border-white/10 p-3">
                     <div className="flex items-center justify-between gap-2">
                       <div className="font-black text-indigo-200 text-sm inline-flex items-center gap-2">
