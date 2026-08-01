@@ -127,10 +127,12 @@ export function getTenGodSummary(term: string, locale: "ko" | "en" = "ko"): stri
   return guide.plain;
 }
 
+// 십성 10개를 빠짐없이 나눈다. 예전에는 편재가 어느 그룹에도 없어서
+// VS 궁합 대결에서 편재 많은 사주가 전 항목 과소평가됐다.
 export const TEN_GOD_GROUPS = {
   leadership: ["비견", "겁재", "편관"],
   empathy: ["식신", "정인", "편인"],
-  logic: ["정재", "정관", "상관"],
+  logic: ["정재", "편재", "정관", "상관"],
 } as const;
 
 export const ELEMENT_ACTIONS: Record<string, string[]> = {

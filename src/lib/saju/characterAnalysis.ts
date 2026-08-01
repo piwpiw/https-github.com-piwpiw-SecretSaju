@@ -186,20 +186,29 @@ function analyzeWuxingBalance(pillarCode: string): CharacterAnalysis["wuxing_bal
     const dominant = wuxing.dominant;
     const lacking = elements.find((e) => e.presence === "없음")?.element || null;
 
-    // 균형도 판단
-    const nonZeroCount = elements.filter((e) => e.presenceValue > 0).length;
-    let overall_balance: CharacterAnalysis["wuxing_balance"]["overall_balance"];
-    if (nonZeroCount === 5) overall_balance = "매우 균형";
-    else if (nonZeroCount === 4) overall_balance = "균형";
-    else if (nonZeroCount === 3) overall_balance = "약간 불균형";
-    else overall_balance = "불균형";
+    // 균형도 판단 — 일주 두 글자에는 오행이 최대 2종뿐이므로, 종 수가 아니라
+    // 두 글자 사이의 관계로 본다. 예전 기준(5종=매우 균형, 4종=균형, 3종=약간
+    // 불균형)은 이 스케일에서 수학적으로 도달 불가라 60갑자 전부 "불균형"으로
+    // 나왔다. 서로 다른 두 오행은 반드시 상생 아니면 상극 관계다.
+    const SHENG_NEXT: Record<WuxingElement, WuxingElement> = {
+        木: "火", 火: "土", 土: "金", 金: "水", 水: "木",
+    };
+    const isSameElement = wuxing.cheongan === wuxing.jiji;
+    const isSheng =
+        SHENG_NEXT[wuxing.cheongan] === wuxing.jiji || SHENG_NEXT[wuxing.jiji] === wuxing.cheongan;
 
-    const interpretation =
-        overall_balance === "불균형"
-            ? `${WUXING_INFO[dominant].name_kr}이 지나치게 강합니다. 다른 영역도 발전시켜야 균형잡힌 삶을 살 수 있습니다.`
-            : overall_balance === "약간 불균형"
-                ? `${WUXING_INFO[dominant].name_kr}이 강하지만, 전체적으로 나쁘지 않은 균형입니다.`
-                : `오행이 고르게 분포되어 있어 안정적입니다.`;
+    let overall_balance: CharacterAnalysis["wuxing_balance"]["overall_balance"];
+    let interpretation: string;
+    if (isSameElement) {
+        overall_balance = "불균형";
+        interpretation = `${WUXING_INFO[dominant].name_kr}이 지나치게 강합니다. 다른 영역도 발전시켜야 균형잡힌 삶을 살 수 있습니다.`;
+    } else if (isSheng) {
+        overall_balance = "균형";
+        interpretation = `천간과 지지가 서로 살리는 상생 조합이라 기운의 흐름이 안정적입니다.`;
+    } else {
+        overall_balance = "약간 불균형";
+        interpretation = `${WUXING_INFO[dominant].name_kr}이 강하지만 천간과 지지가 부딪히는 상극 조합이라, 강점을 살리려면 완급 조절이 필요합니다.`;
+    }
 
     return {
         elements,

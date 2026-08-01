@@ -139,9 +139,13 @@ export class SajuProfileRepository {
                 .eq('id', id);
 
             if (error) throw new Error(`Failed to delete profile: ${error.message}`);
-            return;
         }
 
+        // Supabase 클라이언트가 있어도 로컬 저장분은 지워야 한다. create() 는
+        // 비 UUID 사용자(로그인 전)일 때 localStorage 로 폴백하는데, 예전에는
+        // 여기서 클라이언트만 있으면 바로 return 해서 그 프로필이 삭제 버튼을
+        // 눌러도 새로고침하면 되살아났다. DB 에 없는 id 의 delete 는 no-op 라
+        // 항상 호출해도 안전하다.
         this.deleteLocal(id);
     }
 
