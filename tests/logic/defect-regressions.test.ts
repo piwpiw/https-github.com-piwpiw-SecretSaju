@@ -15,6 +15,10 @@ import { SIXTY_GANJI, GanJi, Stem } from '@/core/calendar/ganji';
 import { analyzeRelationship } from '@/lib/saju/compatibility';
 import { calculateHighPrecisionSaju, HighPrecisionSajuResult, ElementAnalysisResult } from '@/core/api/saju-engine';
 import { calculateSinsal } from '@/lib/saju/sinsal';
+import { calculateGangYak } from '@/lib/saju/advancedScoring';
+import { TEN_GOD_GROUPS } from '@/lib/saju/terminology';
+import { SIGNS as ZODIAC_SIGNS } from '@/lib/saju/astrologyEngine';
+import { analyzeCharacter } from '@/lib/saju/characterAnalysis';
 
 function ganji(fullName: string): GanJi {
     const found = SIXTY_GANJI.find(g => g.fullName === fullName);
@@ -166,5 +170,69 @@ describe('일주 신살 — 60갑자 전체가 판정된다', () => {
         // 어떤 기둥도 자기 순(旬)의 공망지를 지지로 가질 수 없다.
         // 예전 하드코딩 대상이던 갑술로 확인한다.
         expect(calculateSinsal('GAP_SUL').map(s => s.name)).not.toContain('공망');
+    });
+});
+
+describe('강약 — 토왕절과 득세 스케일', () => {
+    function p(y: [string, string], m: [string, string], d: [string, string], h: [string, string]) {
+        return {
+            year: { stem: y[0], branch: y[1] }, month: { stem: m[0], branch: m[1] },
+            day: { stem: d[0], branch: d[1] }, hour: { stem: h[0], branch: h[1] },
+        } as unknown as Parameters<typeof calculateGangYak>[0];
+    }
+
+    it('진월(토왕절) 무토는 득령 만점이다', () => {
+        // 수정 전에는 辰을 봄(木旺) 행에 편입시켜 토 일간 득령이 0점이었고,
+        // 무토 전왕 사주가 "신약"으로 나와 억부용신이 반대로 나갈 수 있었다.
+        const s = calculateGangYak(p(['무', '술'], ['무', '진'], ['무', '술'], ['기', '미']));
+        expect(s.deukryeong).toBe(30);
+        expect(s.level).toBe('신강');
+    });
+
+    it('술·축·미월에서도 토가 왕이다', () => {
+        for (const mb of ['술', '축', '미']) {
+            const s = calculateGangYak(p(['무', '자'], ['무', mb], ['무', '자'], ['임', '자']));
+            expect(s.deukryeong, `${mb}월`).toBe(30);
+        }
+    });
+
+    it('돕는 천간 3개면 득세가 문서상 만점(40)에 실제로 도달한다', () => {
+        // 일간 제외 천간은 3개뿐인데 예전에는 1개당 10점이라 최대 30이었다.
+        const s = calculateGangYak(p(['갑', '자'], ['을', '인'], ['갑', '인'], ['계', '묘']));
+        expect(s.deukse).toBe(40);
+    });
+});
+
+describe('십성 그룹 — 10개 전부가 어느 그룹엔가 속한다', () => {
+    it('편재가 빠져 있지 않다', () => {
+        const all = Object.values(TEN_GOD_GROUPS).flat() as string[];
+        const ten = ['비견', '겁재', '식신', '상관', '편재', '정재', '편관', '정관', '편인', '정인'];
+        for (const god of ten) {
+            expect(all, god).toContain(god);
+        }
+    });
+});
+
+describe('점성 데이터 — 행운 행성 표기', () => {
+    it('중복·존재하지 않는 행성명이 없다', () => {
+        const REAL = new Set(['태양', '달', '수성', '금성', '화성', '목성', '토성', '천왕성', '해왕성', '명왕성']);
+        for (const sign of ZODIAC_SIGNS) {
+            const planets: string[] = (sign as any).luckyPlanets;
+            expect(new Set(planets).size, sign.name).toBe(planets.length);
+            for (const pl of planets) expect(REAL.has(pl), `${sign.name}: ${pl}`).toBe(true);
+        }
+    });
+});
+
+describe('일주 오행 균형 — 도달 가능한 분기', () => {
+    it('60갑자가 전부 "불균형"으로 나오지 않는다', () => {
+        // 예전 기준(5종=매우 균형 등)은 일주 2글자 스케일에서 도달 불가였다.
+        const dist: Record<string, number> = {};
+        for (const g of SIXTY_GANJI) {
+            const b = analyzeCharacter(g.code).wuxing_balance.overall_balance;
+            dist[b] = (dist[b] || 0) + 1;
+        }
+        expect(Object.keys(dist).length).toBeGreaterThan(1);
+        expect(dist['균형'] ?? 0).toBeGreaterThan(0);
     });
 });

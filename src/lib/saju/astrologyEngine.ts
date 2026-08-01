@@ -63,7 +63,7 @@ type ZodiacDefinition = Omit<AstrologyProfile, "keywords"> & {
   endDay: number;
 };
 
-const SIGNS: ZodiacDefinition[] = [
+export const SIGNS: ZodiacDefinition[] = [
   {
     code: "ARIES",
     name: "양자리",
@@ -123,7 +123,7 @@ const SIGNS: ZodiacDefinition[] = [
     modality: "mutable",
     lord: "수성",
     quality: "사고형",
-    luckyPlanets: ["수성", "수성"],
+    luckyPlanets: ["수성", "금성"],
     luckyDirection: "북",
     luckyColors: ["하늘색", "은색", "은회색"],
     strengths: ["관찰력", "소통", "학습 속도"],
@@ -238,7 +238,7 @@ const SIGNS: ZodiacDefinition[] = [
     modality: "fixed",
     lord: "명왕성",
     quality: "집중형",
-    luckyPlanets: ["명왕성", "플루토"],
+    luckyPlanets: ["명왕성", "화성"],
     luckyDirection: "북동",
     luckyColors: ["남색", "보라", "진홍"],
     strengths: ["통찰", "집중", "복구력"],
@@ -330,7 +330,7 @@ const SIGNS: ZodiacDefinition[] = [
     modality: "mutable",
     lord: "해왕성",
     quality: "공감형",
-    luckyPlanets: ["해왕성", "해성"],
+    luckyPlanets: ["해왕성", "목성"],
     luckyDirection: "동남",
     luckyColors: ["연파랑", "은회", "청록"],
     strengths: ["직관", "공감", "융통성"],
@@ -353,14 +353,16 @@ const MOON_PHASES: Array<{ name: string; symbol: string; description: string }> 
   { name: "Waning Crescent", symbol: "🌘", description: "회복과 휴식, 정리의 흐름이 강합니다." },
 ];
 
+// getDay() 는 0=일요일이다. 예전에는 0에 "월"을 배정해 모든 요일이
+// 한 칸씩 밀려 있었다.
 const PLANET_BY_WEEKDAY: Record<number, { planet: string; effect: string }> = {
-  0: { planet: "월", effect: "휴식과 기초 정비에 유리합니다." },
-  1: { planet: "화", effect: "의사결정 속도를 시험하고 실행 기반으로 정리하세요." },
-  2: { planet: "수", effect: "데이터 정렬이 중요한 날입니다." },
-  3: { planet: "목", effect: "협업 커뮤니케이션을 정교하게 하세요." },
-  4: { planet: "금", effect: "금전 운용 규칙을 점검하세요." },
-  5: { planet: "토", effect: "장기 계획의 방향을 점검하는 데 유리합니다." },
-  6: { planet: "일", effect: "회복 루틴을 먼저 넣고 진행하세요." },
+  0: { planet: "일", effect: "회복 루틴을 먼저 넣고 진행하세요." },
+  1: { planet: "월", effect: "휴식과 기초 정비에 유리합니다." },
+  2: { planet: "화", effect: "의사결정 속도를 시험하고 실행 기반으로 정리하세요." },
+  3: { planet: "수", effect: "데이터 정렬이 중요한 날입니다." },
+  4: { planet: "목", effect: "협업 커뮤니케이션을 정교하게 하세요." },
+  5: { planet: "금", effect: "금전 운용 규칙을 점검하세요." },
+  6: { planet: "토", effect: "장기 계획의 방향을 점검하는 데 유리합니다." },
 };
 
 const isInRange = (date: Date, sign: ZodiacDefinition) => {
