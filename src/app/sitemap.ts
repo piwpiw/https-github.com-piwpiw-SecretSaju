@@ -1,45 +1,58 @@
 import { MetadataRoute } from 'next';
 import { APP_CONFIG } from '@/config/env';
 
+/**
+ * 공개(마케팅 가치가 있는) 라우트만 담는다.
+ *
+ * 제외 기준: 인증·결제 결과·개인 데이터·토큰 링크성 라우트는 색인 대상이
+ * 아니다 — login, auth/*, payment/*, billing, mypage, dashboard, history,
+ * analysis-history, my-saju/*, account/delete, admin, result/[token], gift.
+ * robots.ts 의 disallow 목록과 함께 관리한다.
+ */
+
+/** [경로, changeFrequency, priority] */
+const PUBLIC_ROUTES: Array<[string, 'daily' | 'weekly' | 'monthly', number]> = [
+    ['/', 'daily', 1],
+    ['/saju', 'weekly', 0.9],
+    ['/tarot', 'weekly', 0.9],
+    ['/fortune', 'daily', 0.8],
+    ['/daily', 'daily', 0.8],
+    ['/compatibility', 'weekly', 0.8],
+    ['/tojeong', 'weekly', 0.8],
+    ['/dreams', 'weekly', 0.7],
+    ['/astrology', 'weekly', 0.7],
+    ['/palmistry', 'weekly', 0.7],
+    ['/naming', 'weekly', 0.7],
+    ['/luck', 'weekly', 0.7],
+    ['/shinsal', 'weekly', 0.7],
+    ['/destiny', 'weekly', 0.7],
+    ['/calendar', 'daily', 0.7],
+    ['/healing', 'weekly', 0.6],
+    ['/psychology', 'weekly', 0.6],
+    ['/relationship', 'weekly', 0.6],
+    ['/fortune-readers', 'weekly', 0.6],
+    ['/encyclopedia', 'monthly', 0.6],
+    ['/wiki', 'monthly', 0.6],
+    ['/blog', 'weekly', 0.6],
+    ['/story', 'monthly', 0.5],
+    ['/about', 'monthly', 0.5],
+    ['/shop', 'weekly', 0.5],
+    ['/faq', 'monthly', 0.5],
+    ['/support', 'monthly', 0.5],
+    ['/terms', 'monthly', 0.3],
+    ['/privacy', 'monthly', 0.3],
+    ['/refund', 'monthly', 0.3],
+    ['/legal', 'monthly', 0.3],
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
     const baseUrl = APP_CONFIG.BASE_URL || 'https://secret-saju.vercel.app';
+    const lastModified = new Date();
 
-    return [
-        {
-            url: `${baseUrl}/`,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 1,
-        },
-        {
-            url: `${baseUrl}/saju`,
-            lastModified: new Date(),
-            changeFrequency: 'weekly',
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/destiny`,
-            lastModified: new Date(),
-            changeFrequency: 'weekly',
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/calendar`,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 0.7,
-        },
-        {
-            url: `${baseUrl}/tarot`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.6,
-        },
-        {
-            url: `${baseUrl}/support`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.5,
-        },
-    ];
+    return PUBLIC_ROUTES.map(([path, changeFrequency, priority]) => ({
+        url: `${baseUrl}${path === '/' ? '' : path}/`.replace(/\/$/, path === '/' ? '/' : ''),
+        lastModified,
+        changeFrequency,
+        priority,
+    }));
 }
