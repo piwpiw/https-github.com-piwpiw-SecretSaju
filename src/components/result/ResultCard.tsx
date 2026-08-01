@@ -486,6 +486,11 @@ function ResultCard({
   const yongshinCandidates = canonicalFeatures?.yongshinCandidates?.slice(0, 4) || [];
   const transitInteractions = canonicalFeatures?.transitInteractions?.slice(0, 6) || [];
   const currentUn = canonicalFeatures?.luckCycles?.currentUn;
+  // 엔진이 사주 전체 기준으로 계산하는 신살·지장간 — 예전에는 계산만 되고
+  // 결과 카드 어디에도 표시되지 않았다.
+  const sinsalList = canonicalFeatures?.auxiliarySignals?.sinsal || [];
+  const hiddenStemRows = canonicalFeatures?.hiddenStems || [];
+  const pillarLabelKo: Record<string, string> = { year: "년주", month: "월주", day: "일주", hour: "시주" };
 
   const premiumBulletsByFocus: Record<InsightFocus, string[]> = {
     base: [
@@ -1217,6 +1222,42 @@ function ResultCard({
                   </div>
                 ))}
               </div>
+            </div>
+          ) : null}
+
+          {sinsalList.length ? (
+            <div className="rounded-xl border border-fuchsia-300/20 bg-fuchsia-500/5 p-4 space-y-3">
+              <p className="text-sm font-bold text-fuchsia-100 inline-flex items-center gap-2">✨ 신살 (사주 전체 기준)</p>
+              <div className="grid gap-2">
+                {sinsalList.map((item, idx) => (
+                  <div key={`${item.type}-${item.pillar}-${idx}`} className="rounded-lg border border-white/10 bg-black/20 p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-black text-fuchsia-200">{item.name}</span>
+                      <span className="text-[13px] rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-slate-300">
+                        {pillarLabelKo[item.pillar] ?? item.pillar}
+                      </span>
+                    </div>
+                    <p className="mt-1.5 text-sm text-slate-300 leading-relaxed break-keep">{item.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {hiddenStemRows.length ? (
+            <div className="rounded-xl border border-emerald-300/20 bg-emerald-500/5 p-4 space-y-3">
+              <p className="text-sm font-bold text-emerald-100 inline-flex items-center gap-2">🌱 지장간 (지지 속 천간)</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {hiddenStemRows.map((row) => (
+                  <div key={row.pillar} className="rounded-lg border border-white/10 bg-black/20 p-3 text-center">
+                    <p className="text-[13px] font-bold text-slate-400">{pillarLabelKo[row.pillar] ?? row.pillar} · {row.branch}</p>
+                    <p className="mt-1.5 text-sm font-black text-emerald-200 tracking-widest">
+                      {row.stems.map((s) => s.stem).join(" ")}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[13px] text-slate-500">지지 안에 숨어 흐르는 천간으로, 드러난 여덟 글자 아래의 잠재 기운을 봅니다.</p>
             </div>
           ) : null}
 
