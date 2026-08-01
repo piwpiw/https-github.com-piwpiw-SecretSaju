@@ -269,7 +269,15 @@ export default function MyPage() {
         >
           <StatCard label="경험치" value={nyang} unit="exp" color="text-indigo-400" icon={Award} percent={level.percent} />
           <StatCard label="포커스" value={`${focusScore}`} unit="%" color="text-emerald-400" icon={Zap} percent={focusScore} />
-          <StatCard label="젤리 잔액" value={churu} unit="🍀" color="text-amber-400" icon={Gem} />
+          {/* 무료 오픈 기간에는 게이트 개방용 내부 잔액(999999)이 그대로
+              노출되지 않도록 PremiumWalletCard 처럼 "무료"로 표기한다. */}
+          <StatCard
+            label="젤리 잔액"
+            value={isFreeLaunch ? "무료" : churu}
+            unit={isFreeLaunch ? "" : "🍀"}
+            color="text-amber-400"
+            icon={Gem}
+          />
         </motion.div>
 
         {/* ── Main Actions ────────────────────────────── */}

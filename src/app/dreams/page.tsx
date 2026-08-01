@@ -47,8 +47,10 @@ export default function DreamsPage() {
           interpretation,
           matchedKeyword: matchedKey || null,
         },
-        resultUrl: "/dreams",
         resultPreview: interpretation,
+      },
+      {
+        resultUrlFactory: (id) => `/analysis-history/DREAM/${id}`,
       }
     );
     setStatus(saved ? "기록에 저장되었습니다." : "기록 저장에 실패했습니다.");

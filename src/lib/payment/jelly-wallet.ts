@@ -85,8 +85,12 @@ export const PRICING_TIERS: PricingTier[] = [
  * Initialize wallet if it doesn't exist
  */
 function initializeWallet(): JellyWallet {
+    // 신규 지갑은 0 에서 시작한다. 예전 기본값 999999999999 는 무료 기간이
+    // 끝난 뒤 모든 신규 유저가 1조 젤리를 들고 시작하는 잠복 결함이었다.
+    // 무료 기간(FREE_LAUNCH) 게이트는 hasSufficientBalance/isUnlocked 가
+    // 잔액과 무관하게 열어주므로 이 값에 의존하지 않는다.
     const defaultWallet: JellyWallet = {
-        balance: 999999999999,
+        balance: 0,
         totalPurchased: 0,
         totalConsumed: 0,
         history: [],

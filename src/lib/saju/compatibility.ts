@@ -1,6 +1,7 @@
 import { HighPrecisionSajuResult, ElementAnalysisResult } from "@/core/api/saju-engine";
 import { Stem, Branch } from "@/core/calendar/ganji";
 import { RelationshipType as SchemaRelationshipType } from "@/types/schema";
+import { connectiveParticle } from "@/data/tarotDeck";
 
 export type RelationshipType = SchemaRelationshipType | string;
 
@@ -125,7 +126,8 @@ function getChemistryDescription(sajuA: HighPrecisionSajuResult, sajuB: HighPrec
 
     const elemA = sajuA.elements.mainElement;
     const elemB = sajuB.elements.mainElement;
-    return `${elemA}와 ${elemB}의 상호작용으로 균형을 찾아가는 관계입니다.`;
+    // 받침 유무에 따라 와/과 선택 — "목와" 같은 조사 오류 방지
+    return `${elemA}${connectiveParticle(elemA)} ${elemB}의 상호작용으로 균형을 찾아가는 관계입니다.`;
 }
 
 function getAdvice(score: number, relationshipType: RelationshipType): string {

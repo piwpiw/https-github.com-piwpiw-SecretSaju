@@ -31,7 +31,7 @@ const STEPS: Step[] = [
 function SajuPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { consumeChuru, churu, isAdmin } = useWallet();
+  const { consumeChuru, addChuru, churu, isAdmin } = useWallet();
 
   const [profiles, setProfiles] = useState<SajuProfile[]>([]);
   const [selectedProfileId, setSelectedProfileId] = useState("");
@@ -181,7 +181,17 @@ function SajuPageContent() {
       );
     } catch (error) {
       console.error("[SajuPage]", error);
-      setNotice("사주 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+      // 무료 기간/관리자는 consumeChuru 가 차감 없이 true 를 반환하므로,
+      // 실제로 차감된 경우에만 환불한다.
+      const wasCharged = !FREE_LAUNCH && !isAdmin;
+      if (wasCharged) {
+        addChuru(3);
+      }
+      setNotice(
+        wasCharged
+          ? "사주 분석 중 오류가 발생했습니다. 사용한 젤리 3개는 환불되었습니다. 잠시 후 다시 시도해 주세요."
+          : "사주 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+      );
     } finally {
       setLoading(false);
     }

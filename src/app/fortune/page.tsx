@@ -270,7 +270,7 @@ function FortuneContent() {
               <section className="grid gap-3 md:grid-cols-3">
                 <ResultSummaryCard
                   title="🧭 지금의 나"
-                  body={`당신의 ${year}년은 ${result.pillarName} 리듬이 전면에 서며, ${result.summary} 쪽으로 읽히는 해입니다.`}
+                  body={`당신의 ${year}년은 ${result.pillarName} 리듬이 전면에 서는 해입니다. ${result.summary}`}
                   tone="bg-cyan-500/10 border-cyan-300/20"
                 />
                 <ResultSummaryCard
