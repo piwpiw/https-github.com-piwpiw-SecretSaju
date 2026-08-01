@@ -74,7 +74,7 @@ export default function AddSajuPage() {
     const newProfile = await SajuProfileRepository.create(request, userId);
 
     if (!isFirst) {
-      consumeJelly(1, "unlock_profile", { profileId: newProfile.id, profileName: name });
+      await consumeJelly(1, "unlock_profile", { profileId: newProfile.id, profileName: name });
       triggerBalanceUpdate();
     }
 

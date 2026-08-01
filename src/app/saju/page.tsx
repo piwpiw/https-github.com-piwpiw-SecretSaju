@@ -14,6 +14,7 @@ import { getArchetypeByCode } from "@/lib/saju/archetypes";
 import AdvancedInterpretationPanel from "@/components/saju/AdvancedInterpretationPanel";
 import { trackStartAnalysis } from "@/lib/app/analytics";
 import JellyShopModal from "@/components/shop/JellyShopModal";
+import { getBalance, hasSufficientBalance } from "@/lib/payment/jelly-wallet";
 import { FREE_LAUNCH } from "@/config/constants";
 
 type Step = {
@@ -31,7 +32,7 @@ const STEPS: Step[] = [
 function SajuPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { consumeChuru, addChuru, churu, isAdmin } = useWallet();
+  const { consumeJelly, addJelly, isAdmin } = useWallet();
 
   const [profiles, setProfiles] = useState<SajuProfile[]>([]);
   const [selectedProfileId, setSelectedProfileId] = useState("");
@@ -134,19 +135,19 @@ function SajuPageContent() {
     const selected = getSourceProfile();
     if (!selected) return;
 
-    if (!isAdmin && churu < 3) {
+    if (!hasSufficientBalance(3)) {
       setNotice("젤리가 부족합니다. 3젤리가 필요해요.");
       return;
     }
 
-    const consumed = consumeChuru(3);
+    const consumed = await consumeJelly(3, "saju_premium_analysis");
     if (!consumed) {
       setNotice("젤리 차감에 실패했습니다. 잠시 후 다시 시도해 주세요.");
       return;
     }
 
     // GA4: 분석 시작 이벤트
-    trackStartAnalysis(useManualInput ? 'manual' : 'profile', churu);
+    trackStartAnalysis(useManualInput ? 'manual' : 'profile', getBalance());
 
     setLoading(true);
     setNotice(null);
@@ -181,11 +182,11 @@ function SajuPageContent() {
       );
     } catch (error) {
       console.error("[SajuPage]", error);
-      // 무료 기간/관리자는 consumeChuru 가 차감 없이 true 를 반환하므로,
-      // 실제로 차감된 경우에만 환불한다.
+      // 무료 기간/관리자는 consumeJelly 가 차감 없이 true 를 반환하므로,
+      // 실제로 차감된 경우에만 환불한다. 환불은 히스토리에 트랜잭션으로 남는다.
       const wasCharged = !FREE_LAUNCH && !isAdmin;
       if (wasCharged) {
-        addChuru(3);
+        addJelly(3, "refund_calc_failure");
       }
       setNotice(
         wasCharged

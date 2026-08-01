@@ -16,6 +16,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import JellyShopModal from "@/components/shop/JellyShopModal";
 import { useWallet } from "@/components/payment/WalletProvider";
+import { hasSufficientBalance } from "@/lib/payment/jelly-wallet";
 import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
 import {
   getFavoriteReaderIds,
@@ -157,7 +158,7 @@ export default function AINarrativeSection({
   queryType = "result",
   categoryFocus,
 }: Props) {
-  const { consumeChuru, churu, isAdmin } = useWallet();
+  const { consumeJelly, isAdmin } = useWallet();
   // Starts as "control" on both server and the client's first render so the
   // initial reader order matches SSR output; the real variant is applied
   // after mount via the effect below (avoids a hydration mismatch).
@@ -269,12 +270,12 @@ export default function AINarrativeSection({
         ? "Gemini 1.5"
         : activeModel;
 
-  const handleUnlockReader = (reader: FortuneReaderProfile) => {
+  const handleUnlockReader = async (reader: FortuneReaderProfile) => {
     const cost = getReaderUnlockCost(reader);
 
     if (reader.tier === "signature") {
       if (membershipActive || isAdmin) return;
-      if (churu < 5 || !consumeChuru(5)) {
+      if (!hasSufficientBalance(5) || !(await consumeJelly(5, "reader_membership"))) {
         setShowShop(true);
         return;
       }
@@ -286,7 +287,7 @@ export default function AINarrativeSection({
       setUnlockedReaderIds(unlockReader(reader.id));
       return;
     }
-    if (churu < cost || !consumeChuru(cost)) {
+    if (!hasSufficientBalance(cost) || !(await consumeJelly(cost, `reader_unlock_${reader.id}`))) {
       setShowShop(true);
       return;
     }

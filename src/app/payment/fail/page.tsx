@@ -58,9 +58,11 @@ function FailContent() {
           <XCircle className="w-16 h-16 sm:w-20 sm:h-20 text-rose-500 mb-6" />
           <h2 className="text-2xl sm:text-3xl font-black text-foreground uppercase tracking-tight mb-2">결제 실패</h2>
 
-          {/* 카드 안의 카드라 모바일 여백을 바깥(p-3)보다 더 줄인다. */}
+          {/* 카드 안의 카드라 모바일 여백을 바깥(p-3)보다 더 줄인다.
+              모바일에서는 아이콘을 문단 위로 올린다 — 옆에 두면 아이콘(24)+
+              간격(12)만으로 본문 폭이 기준(콘텐츠 폭 0.82) 아래로 내려간다. */}
           <div className="bg-rose-500/10 border border-rose-500/20 p-2.5 sm:p-6 rounded-2xl mt-6 w-full">
-            <div className="flex items-start gap-3 text-left">
+            <div className="flex flex-col sm:flex-row items-start gap-2 sm:gap-3 text-left">
               <AlertCircle className="w-6 h-6 text-rose-400 shrink-0 mt-0.5" />
               <div>
                 <p className="text-rose-400 font-bold text-base sm:text-lg">실패 코드: {normalizedCode || '확인 불가'}</p>

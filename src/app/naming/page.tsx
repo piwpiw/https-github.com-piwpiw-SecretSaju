@@ -7,6 +7,7 @@ import { ArrowLeft, CheckCircle2, ChevronRight, Edit3, Heart, Loader2, RefreshCw
 import JellyBalance from "@/components/shop/JellyBalance";
 import { useWallet } from "@/components/payment/WalletProvider";
 import { useProfiles } from "@/components/profile/ProfileProvider";
+import { hasSufficientBalance } from "@/lib/payment/jelly-wallet";
 import LuxuryToast from "@/components/ui/LuxuryToast";
 import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
 
@@ -204,7 +205,7 @@ function buildScenarioAdvice(scenario: ScenarioKey) {
 
 export default function NamingPage() {
   const router = useRouter();
-  const { consumeChuru, churu, isAdmin } = useWallet();
+  const { consumeJelly } = useWallet();
   const { profiles, activeProfile, setActiveProfileById } = useProfiles();
 
   const [name, setName] = useState("");
@@ -278,12 +279,12 @@ export default function NamingPage() {
       return;
     }
 
-    if (!isAdmin && churu < 30) {
+    if (!hasSufficientBalance(30)) {
       toast("젤리가 부족합니다. 충전 후 실행해 주세요.");
       return;
     }
 
-    if (!consumeChuru(30)) {
+    if (!(await consumeJelly(30, "naming_analysis"))) {
       toast("젤리 차감에 실패했습니다.");
       return;
     }
