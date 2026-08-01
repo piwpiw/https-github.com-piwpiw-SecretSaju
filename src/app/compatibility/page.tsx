@@ -36,6 +36,13 @@ const RELATIONSHIP_PRESETS: { labelKey: string; value: ProfileRelationshipType; 
   { labelKey: "common.relation.other", value: "other", icon: "✨" },
 ];
 
+const PILLAR_POSITION_LABELS: Record<string, string> = {
+  year: "연주",
+  month: "월주",
+  day: "일주",
+  hour: "시주",
+};
+
 const GRADE_CONFIG = {
   best: { icon: "🏆", label: "최상", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20 shadow-amber-950/20" },
   good: { icon: "💎", label: "우수", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20 shadow-emerald-950/20" },
@@ -381,6 +388,137 @@ function CompatibilityContent() {
                   <p className="text-lg font-bold text-slate-300">{result.advice}</p>
                 </div>
               </div>
+
+              {/* Full four-pillar precision analysis */}
+              {result.details && (
+                <div className="bg-slate-900/40 backdrop-blur-2xl rounded-[3rem] p-5 sm:p-10 border border-white/5 space-y-10">
+                  <h4 className="text-[13px] font-black text-slate-500 uppercase tracking-[0.4em] text-center">사주 전체 정밀 궁합</h4>
+
+                  {/* Sub-score grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {[
+                      { label: "일주 합충", value: result.details.harmonyScore, suffix: "점" },
+                      { label: "사주 합충", value: result.details.pillarScore ?? 0, suffix: "점" },
+                      { label: "십성 시너지", value: result.details.sipsongScore ?? 0, suffix: "점" },
+                      { label: "오행 보완", value: result.details.complement?.percent ?? result.details.balanceScore, suffix: result.details.complement ? "%" : "점" },
+                    ].map((item) => (
+                      <div key={item.label} className="rounded-3xl bg-black/20 border border-white/5 p-5 text-center space-y-2">
+                        <p className="text-[11px] font-black uppercase tracking-widest text-slate-500">{item.label}</p>
+                        <p className={cn(
+                          "text-2xl font-black tracking-tighter",
+                          item.value > 0 ? "text-emerald-400" : item.value < 0 ? "text-rose-400" : "text-slate-300"
+                        )}>
+                          {item.value > 0 && item.suffix === "점" ? "+" : ""}{item.value}<span className="text-sm opacity-60 ml-0.5">{item.suffix}</span>
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {result.details.hourPillarIncluded === false && (
+                    <p className="text-center text-[12px] font-bold text-amber-400/80 bg-amber-500/5 border border-amber-500/10 rounded-2xl px-4 py-3">
+                      태어난 시간 정보가 없어 시주를 제외하고 연·월·일주 기준으로 정밀 분석했습니다.
+                    </p>
+                  )}
+
+                  {/* Pillar interactions */}
+                  <div className="space-y-4">
+                    <h5 className="text-[13px] font-black text-indigo-500 uppercase tracking-widest border-b border-white/10 pb-2 flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4" /> 기둥별 합·충·형·해·파
+                    </h5>
+                    {result.details.pillarInteractions && result.details.pillarInteractions.length > 0 ? (
+                      <ul className="space-y-3">
+                        {result.details.pillarInteractions.map((it, i) => (
+                          <li key={`${it.position}-${it.kind}-${i}`} className="flex items-start gap-4 rounded-2xl bg-black/20 border border-white/5 p-4">
+                            <div className="flex-shrink-0 flex flex-col items-center gap-1">
+                              <span className="px-2 py-1 rounded-lg bg-white/5 text-[11px] font-black uppercase tracking-widest text-slate-400">
+                                {PILLAR_POSITION_LABELS[it.position] ?? it.position}
+                              </span>
+                              <span className={cn(
+                                "text-[12px] font-black",
+                                it.delta > 0 ? "text-emerald-400" : "text-rose-400"
+                              )}>
+                                {it.delta > 0 ? `+${it.delta}` : it.delta}
+                              </span>
+                            </div>
+                            <div className="space-y-1">
+                              <p className={cn("text-sm font-black", it.delta > 0 ? "text-emerald-300" : "text-rose-300")}>{it.label}</p>
+                              <p className="text-[13px] font-medium text-slate-400 leading-relaxed break-keep">{it.description}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm font-bold text-slate-500 bg-black/20 border border-white/5 rounded-2xl p-4">
+                        네 기둥 사이에 특별한 합이나 충이 없는 담백한 조합입니다. 큰 굴곡 없이 서로의 자리를 지키는 관계입니다.
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Sipsong mutual relation */}
+                  {result.details.sipsongRelation && (
+                    <div className="space-y-4">
+                      <h5 className="text-[13px] font-black text-purple-500 uppercase tracking-widest border-b border-white/10 pb-2 flex items-center gap-2">
+                        <Star className="w-4 h-4" /> 십성으로 본 관계 역학
+                      </h5>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="rounded-2xl bg-indigo-500/5 border border-indigo-500/10 p-5 space-y-2">
+                          <p className="text-[11px] font-black uppercase tracking-widest text-indigo-400">
+                            {selectedPersonA?.name}에게 {selectedPersonB?.name}은(는)
+                          </p>
+                          <p className="text-lg font-black text-white">
+                            {result.details.sipsongRelation.aToB.sipsong} · {result.details.sipsongRelation.aToB.headline}
+                          </p>
+                          <p className="text-[13px] font-medium text-slate-400 leading-relaxed break-keep">{result.details.sipsongRelation.aToB.description}</p>
+                        </div>
+                        <div className="rounded-2xl bg-purple-500/5 border border-purple-500/10 p-5 space-y-2">
+                          <p className="text-[11px] font-black uppercase tracking-widest text-purple-400">
+                            {selectedPersonB?.name}에게 {selectedPersonA?.name}은(는)
+                          </p>
+                          <p className="text-lg font-black text-white">
+                            {result.details.sipsongRelation.bToA.sipsong} · {result.details.sipsongRelation.bToA.headline}
+                          </p>
+                          <p className="text-[13px] font-medium text-slate-400 leading-relaxed break-keep">{result.details.sipsongRelation.bToA.description}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Element complement */}
+                  {result.details.complement && (
+                    <div className="space-y-4">
+                      <h5 className="text-[13px] font-black text-emerald-500 uppercase tracking-widest border-b border-white/10 pb-2 flex items-center gap-2">
+                        <MessageCircle className="w-4 h-4" /> 보완 오행
+                      </h5>
+                      <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/10 p-5 space-y-3">
+                        <div className="flex items-center gap-4">
+                          <div className="flex-1 h-2 rounded-full bg-black/30 overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-400"
+                              style={{ width: `${result.details.complement.percent}%` }}
+                            />
+                          </div>
+                          <span className="text-lg font-black text-emerald-400">{result.details.complement.percent}%</span>
+                        </div>
+                        <p className="text-[13px] font-medium text-slate-400 leading-relaxed break-keep">{result.details.complement.summary}</p>
+                        {(result.details.complement.aReceives.length > 0 || result.details.complement.bReceives.length > 0) && (
+                          <div className="flex flex-wrap gap-2 pt-1">
+                            {result.details.complement.aReceives.map((el) => (
+                              <span key={`a-${el}`} className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[12px] font-black text-indigo-300">
+                                {selectedPersonA?.name} ← {el}
+                              </span>
+                            ))}
+                            {result.details.complement.bReceives.map((el) => (
+                              <span key={`b-${el}`} className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-[12px] font-black text-purple-300">
+                                {selectedPersonB?.name} ← {el}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {sajuA && sajuB && (
                 <div className="bg-slate-900/40 backdrop-blur-2xl rounded-[4rem] p-4 sm:p-9 border border-white/5 space-y-12">
