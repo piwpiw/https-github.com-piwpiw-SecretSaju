@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, type FormEvent } from "react";
 import confetti from "canvas-confetti";
+import { validateBirthInput } from "@/lib/app/validation";
 
 interface BirthInputRetroProps {
     onSubmit: (data: {
@@ -10,6 +11,7 @@ interface BirthInputRetroProps {
         month: number;
         day: number;
         name: string;
+        gender: "M" | "F";
         hour: number;
         minute: number;
         timeKnown: boolean;
@@ -21,9 +23,13 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
     const [year, setYear] = useState("");
     const [month, setMonth] = useState("");
     const [day, setDay] = useState("");
+    // 성별은 대운 순행/역행 방향을 가른다. 예전에는 폼이 성별을 받지 않아
+    // 홈 사주가 전원 여성("F")으로 계산됐다 — 기본값 여성으로 기존 동작을 보존.
+    const [gender, setGender] = useState<"M" | "F">("F");
     const [hour, setHour] = useState("12");
     const [minute, setMinute] = useState("00");
     const [timeKnown, setTimeKnown] = useState(true);
+    const [dateError, setDateError] = useState("");
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -32,11 +38,22 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
         const parsedDay = Number.parseInt(day, 10);
         const parsedHour = Number.parseInt(hour, 10);
         const parsedMinute = Number.parseInt(minute, 10);
-        const safeYear = Number.isFinite(parsedYear) ? parsedYear : 1990;
-        const safeMonth = Number.isFinite(parsedMonth) ? Math.min(12, Math.max(1, parsedMonth)) : 1;
-        const safeDay = Number.isFinite(parsedDay) ? Math.min(31, Math.max(1, parsedDay)) : 1;
         const safeHour = Number.isFinite(parsedHour) ? Math.min(23, Math.max(0, parsedHour)) : 12;
         const safeMinute = Number.isFinite(parsedMinute) ? Math.min(59, Math.max(0, parsedMinute)) : 0;
+
+        // 예전에는 일자를 1~31로 클램프만 해서 2월 31일이 Date 롤오버로
+        // 3월 3일이 되어 엉뚱한 사주가 계산됐다. 존재하지 않는 날짜는
+        // 에러를 보여주고 제출을 막는다.
+        if (!Number.isFinite(parsedYear) || !Number.isFinite(parsedMonth) || !Number.isFinite(parsedDay)) {
+            setDateError("생년월일을 모두 입력해 주세요.");
+            return;
+        }
+        const validation = validateBirthInput({ year: parsedYear, month: parsedMonth, day: parsedDay });
+        if (!validation.ok) {
+            setDateError(validation.message);
+            return;
+        }
+        setDateError("");
 
         try {
             if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
@@ -50,9 +67,10 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
 
         onSubmit({
             name,
-            year: safeYear,
-            month: safeMonth,
-            day: safeDay,
+            year: parsedYear,
+            month: parsedMonth,
+            day: parsedDay,
+            gender,
             hour: timeKnown ? safeHour : 12,
             minute: timeKnown ? safeMinute : 0,
             timeKnown
@@ -100,6 +118,7 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
                             inputMode="numeric"
                             value={year}
                             onChange={(e) => {
+                                setDateError("");
                                 const val = e.target.value.replace(/[^0-9]/g, '');
                                 if (val.length === 8) {
                                     setYear(val.substring(0, 4));
@@ -129,7 +148,7 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
                                 type="text"
                                 inputMode="numeric"
                                 value={month}
-                                onChange={(e) => setMonth(e.target.value.replace(/[^0-9]/g, ''))}
+                                onChange={(e) => { setDateError(""); setMonth(e.target.value.replace(/[^0-9]/g, '')); }}
                                 placeholder="1~12"
                                 maxLength={2}
                                 required
@@ -142,12 +161,44 @@ export default function BirthInputRetro({ onSubmit }: BirthInputRetroProps) {
                                 type="text"
                                 inputMode="numeric"
                                 value={day}
-                                onChange={(e) => setDay(e.target.value.replace(/[^0-9]/g, ''))}
+                                onChange={(e) => { setDateError(""); setDay(e.target.value.replace(/[^0-9]/g, '')); }}
                                 placeholder="1~31"
                                 maxLength={2}
                                 required
                                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white text-base focus:outline-none focus:border-indigo-500/60 focus:bg-indigo-500/5 transition-all placeholder:text-slate-600 text-center"
                             />
+                        </div>
+                    </div>
+
+                    {dateError && (
+                        <p role="alert" className="text-[13px] text-rose-300 font-bold text-center -mt-1">
+                            {dateError}
+                        </p>
+                    )}
+
+                    {/* Gender — 대운 순행/역행 방향을 가르는 값 */}
+                    <div>
+                        <label className="block text-sm font-medium text-slate-300 mb-2">성별</label>
+                        <div role="radiogroup" aria-label="성별 선택" className="grid grid-cols-2 gap-3">
+                            {([
+                                { value: "F", label: "여성" },
+                                { value: "M", label: "남성" },
+                            ] as const).map((option) => (
+                                <button
+                                    key={option.value}
+                                    type="button"
+                                    role="radio"
+                                    aria-checked={gender === option.value}
+                                    onClick={() => setGender(option.value)}
+                                    className={`w-full rounded-xl px-4 py-3.5 text-base font-medium border transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70 ${
+                                        gender === option.value
+                                            ? "bg-indigo-500/10 border-indigo-500/60 text-white"
+                                            : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10"
+                                    }`}
+                                >
+                                    {option.label}
+                                </button>
+                            ))}
                         </div>
                     </div>
 

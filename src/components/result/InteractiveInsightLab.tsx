@@ -105,10 +105,12 @@ function getFocusComment(
     return `${label} 십성이 ${value}% 비중으로 반복됩니다. 기본 성향 해석의 중요한 축으로 읽으면 좋습니다.`;
   }
 
-  if (focus === "love") return `${label} 점수 ${value}는 관계에서 감정 소모를 얼마나 감당하는지와 연결됩니다. ${extra ?? ""}`.trim();
-  if (focus === "money") return `${label} 점수 ${value}는 재물 흐름을 컨트롤하는 체력과 안정성에 연결됩니다. ${extra ?? ""}`.trim();
-  if (focus === "career") return `${label} 점수 ${value}는 업무 압박과 성과 지속력에 직접 연결됩니다. ${extra ?? ""}`.trim();
-  return `${label} 점수 ${value}는 일간 에너지를 구성하는 핵심 요소입니다. ${extra ?? ""}`.trim();
+  // 숫자 뒤에 단위 명사 "점"을 붙여 조사를 "은"으로 고정한다.
+  // `${value}는` 는 값에 따라 "1는", "100는" 처럼 조사가 어긋났다.
+  if (focus === "love") return `${label} 점수 ${value}점은 관계에서 감정 소모를 얼마나 감당하는지와 연결됩니다. ${extra ?? ""}`.trim();
+  if (focus === "money") return `${label} 점수 ${value}점은 재물 흐름을 컨트롤하는 체력과 안정성에 연결됩니다. ${extra ?? ""}`.trim();
+  if (focus === "career") return `${label} 점수 ${value}점은 업무 압박과 성과 지속력에 직접 연결됩니다. ${extra ?? ""}`.trim();
+  return `${label} 점수 ${value}점은 일간 에너지를 구성하는 핵심 요소입니다. ${extra ?? ""}`.trim();
 }
 
 export default function InteractiveInsightLab({ elements, tenGods, gangyak, focus, onFocusChange }: Props) {

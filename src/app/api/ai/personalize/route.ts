@@ -62,6 +62,22 @@ export async function POST(req: NextRequest) {
             }
         }
 
+        // Cache miss: deduct BEFORE invoking the LLM so users without balance
+        // never trigger (and cost us) a generation call.
+        if (!isMock && user) {
+            const deduction = await deductJelly(user.id, 300, `Premium Analysis (Generated): ${code}`);
+            if (!deduction.success) {
+                return NextResponse.json(
+                    {
+                        error: 'Insufficient jellies',
+                        code: 'INSUFFICIENT_JELLIES',
+                        balance: deduction.currentBalance,
+                    },
+                    { status: 402 }
+                );
+            }
+        }
+
         const aiText = await generatePersonalizedFortune(
             archetype.animal_name,
             ageGroup,
@@ -81,20 +97,6 @@ export async function POST(req: NextRequest) {
                 },
                 { onConflict: 'request_hash' }
             );
-        }
-
-        if (!isMock && user) {
-            const deduction = await deductJelly(user.id, 300, `Premium Analysis (Generated): ${code}`);
-            if (!deduction.success) {
-                return NextResponse.json(
-                    {
-                        error: 'Insufficient jellies',
-                        code: 'INSUFFICIENT_JELLIES',
-                        balance: deduction.currentBalance,
-                    },
-                    { status: 402 }
-                );
-            }
         }
 
         return NextResponse.json({ success: true, text: aiText, cached: false });

@@ -157,7 +157,7 @@ export default function HomePage() {
     setClientHour(new Date().getHours());
   }, []);
 
-  const handleBirthSubmit = async (data: { name: string; year: number; month: number; day: number; hour: number; minute: number; timeKnown?: boolean }) => {
+  const handleBirthSubmit = async (data: { name: string; year: number; month: number; day: number; gender: "M" | "F"; hour: number; minute: number; timeKnown?: boolean }) => {
     setFlowState("loading");
 
     try {
@@ -165,7 +165,7 @@ export default function HomePage() {
       const parsedMinute = Number.isNaN(data.minute) ? 0 : data.minute;
       const birthDate = new Date(data.year, data.month - 1, data.day, parsedHour, parsedMinute);
       const timeStr = `${parsedHour.toString().padStart(2, '0')}:${parsedMinute.toString().padStart(2, '0')}`;
-      const result = await calculateSaju(birthDate, "F", timeStr, 'solar', data.timeKnown === false);
+      const result = await calculateSaju(birthDate, data.gender === "M" ? "M" : "F", timeStr, 'solar', data.timeKnown === false);
       const resultProfileName = data.name?.trim() || "명주인";
       const safeArchetype = getArchetypeByCode(result.code, result.ageGroup);
 

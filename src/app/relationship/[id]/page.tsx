@@ -7,7 +7,7 @@ import { analyzeRelationship, RelationshipAnalysis } from '@/lib/saju/compatibil
 import { calculateHighPrecisionSaju } from '@/core/api/saju-engine';
 import { ArrowLeft, Lock, Sparkles, AlertTriangle, CheckCircle2, TrendingUp, ChevronRight, Loader2, Zap } from 'lucide-react';
 import Link from 'next/link';
-import JellyBalance from '@/components/shop/JellyBalance';
+import JellyBalance, { triggerBalanceUpdate } from '@/components/shop/JellyBalance';
 import JellyShopModal from '@/components/shop/JellyShopModal';
 import { isUnlocked, unlockContent, hasSufficientBalance } from '@/lib/payment/jelly-wallet';
 import { parseCivilDate } from '@/lib/saju/civil-date';
@@ -110,7 +110,9 @@ export default function RelationshipDetailPage() {
         if (result.success) {
             setUnlocked(true);
             setShowConfirm(false);
-            window.dispatchEvent(new CustomEvent('jelly-balance-update'));
+            // JellyBalance 는 'jellyBalanceUpdate' 이벤트를 듣는다 — 다른 이름의
+            // CustomEvent 를 직접 쏘면 잔액 배지가 갱신되지 않았다.
+            triggerBalanceUpdate();
         }
     };
 

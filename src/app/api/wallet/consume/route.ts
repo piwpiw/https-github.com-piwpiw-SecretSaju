@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/integrations/supabase';
 import { getAuthenticatedUser } from '@/lib/auth/api-auth';
+import { deductJelly } from '@/lib/payment/wallet-server';
 
 /**
  * POST /api/wallet/consume
@@ -29,6 +30,13 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        if (!Number.isFinite(Number(jellies)) || Number(jellies) <= 0) {
+            return NextResponse.json(
+                { error: 'Jellies must be a positive number' },
+                { status: 400 }
+            );
+        }
+
         const supabase = getSupabaseAdmin();
 
         // Get authenticated user
@@ -52,42 +60,33 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        // Check wallet balance
-        const { data: wallet, error: walletError } = await supabase
-            .from('jelly_wallets')
-            .select('balance')
-            .eq('user_id', user.id)
-            .single();
+        // Atomically deduct balance + record the transaction via RPC `deduct_jellies`.
+        // No DB trigger updates jelly_wallets on a bare jelly_transactions insert,
+        // so a plain insert here would consume nothing (see wallet-server.ts).
+        const deduction = await deductJelly(user.id, Number(jellies), purpose, { profile_id, feature });
 
-        if (walletError || !wallet) {
-            return NextResponse.json(
-                { error: 'Wallet not found' },
-                { status: 404 }
-            );
-        }
+        if (!deduction.success) {
+            if (deduction.error === 'Wallet not found') {
+                return NextResponse.json(
+                    { error: 'Wallet not found' },
+                    { status: 404 }
+                );
+            }
 
-        if (wallet.balance < jellies) {
-            return NextResponse.json(
-                { error: 'Insufficient jellies', balance: wallet.balance },
-                { status: 400 }
-            );
-        }
+            // Covers both the pre-check ('Insufficient jellies') and the RPC race
+            // failure ('Insufficient balance or user not found').
+            if (typeof deduction.error === 'string' && deduction.error.includes('Insufficient')) {
+                return NextResponse.json(
+                    {
+                        error: 'Insufficient jellies',
+                        code: 'INSUFFICIENT_JELLIES',
+                        balance: deduction.currentBalance,
+                    },
+                    { status: 402 }
+                );
+            }
 
-        // Create consumption transaction (triggers will update wallet)
-        const { data: transaction, error: txError } = await supabase
-            .from('jelly_transactions')
-            .insert({
-                user_id: user.id,
-                type: 'consume',
-                jellies,
-                purpose,
-                metadata: { profile_id, feature },
-            })
-            .select()
-            .single();
-
-        if (txError) {
-            console.error('Error creating transaction:', txError);
+            console.error('Error consuming jellies:', deduction.error);
             return NextResponse.json(
                 { error: 'Failed to consume jellies' },
                 { status: 500 }
@@ -111,18 +110,10 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        // Get updated balance
-        const { data: updatedWallet } = await supabase
-            .from('jelly_wallets')
-            .select('balance')
-            .eq('user_id', user.id)
-            .single();
-
         return NextResponse.json({
             success: true,
-            transaction_id: transaction.id,
             jellies_consumed: jellies,
-            new_balance: updatedWallet?.balance || 0,
+            new_balance: deduction.remainingBalance ?? 0,
         });
 
     } catch (error) {

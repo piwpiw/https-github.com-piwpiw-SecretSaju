@@ -131,17 +131,23 @@ const RANK_MEANING: Record<string, { up: string; down: string }> = {
 };
 
 /** 앞 글자에 받침이 있는가. 한글이 아니면 판단하지 않는다 */
-function hasFinalConsonant(word: string): boolean | null {
+export function hasFinalConsonant(word: string): boolean | null {
   const last = word.trim().slice(-1);
   const code = last.charCodeAt(0);
-  if (code < 0xac00 || code > 0xd7a3) return null;
+  if (Number.isNaN(code) || code < 0xac00 || code > 0xd7a3) return null;
   return (code - 0xac00) % 28 !== 0;
 }
 
 /** 앞 글자 받침에 따라 을/를 을 고른다 ("태도을" 같은 오타를 막는다) */
-function objectParticle(word: string): string {
+export function objectParticle(word: string): string {
   const final = hasFinalConsonant(word);
   return final === false ? "를" : "을";
+}
+
+/** 앞 글자 받침에 따라 와/과 를 고른다. 받침이 있으면 "과" ("목와" 방지) */
+export function connectiveParticle(word: string): string {
+  const final = hasFinalConsonant(word);
+  return final === true ? "과" : "와";
 }
 
 /**
@@ -150,7 +156,7 @@ function objectParticle(word: string): string {
  * 메이저 22장의 설명이 `${이름}은` 으로 고정돼 있었다. 카드 이름 절반이
  * 받침 없이 끝나서 "마법사은", "악마은", "세계은" 처럼 나왔다.
  */
-function topicParticle(word: string): string {
+export function topicParticle(word: string): string {
   const final = hasFinalConsonant(word);
   return final === false ? "는" : "은";
 }

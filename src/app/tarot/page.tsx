@@ -29,7 +29,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
-import { DrawnTarotCard, buildTarotDeckCards, pickCardsFromDeck, TarotSuit } from "@/data/tarotDeck";
+import { DrawnTarotCard, buildTarotDeckCards, pickCardsFromDeck, TarotSuit, objectParticle } from "@/data/tarotDeck";
 import AmbientSoundPortal from "@/components/ui/AmbientSoundPortal";
 import ReadingProgressBar from "@/components/ui/ReadingProgressBar";
 import AIIntelligenceBadge from "@/components/ui/AIIntelligenceBadge";
@@ -66,7 +66,7 @@ const TAROT_3D_STYLES = `
 `;
 
 const SUIT_LABELS_KO: Record<string, string> = {
-  wands: "완드",
+  wands: "완즈",
   cups: "컵",
   swords: "소드",
   pentacles: "펜타클",
@@ -314,21 +314,13 @@ export default function TarotPage() {
     window.setTimeout(() => {
       const deck = buildTarotDeckCards();
       const picked = pickCardsFromDeck(deck, 3);
-      const persistPayload = buildPersistPayload(picked);
 
       setCards([...picked]);
       setIsDrawing(false);
       setStatus("운명의 신호가 감지되었습니다. 카드를 터치하여 확인하세요.");
       setShowResults(true);
-
-      saveAnalysisToHistory({
-        type: "TAROT",
-        title: "타로 리딩",
-        subtitle: "3장 전개 결과",
-        resultUrl: "/tarot",
-        resultPreview: persistPayload.cards.map((card) => card.name).join(", "),
-        result: persistPayload,
-      });
+      // 저장은 "리포트 저장" 버튼(saveCurrent)에서만 한다.
+      // 예전에는 뽑을 때도 자동 저장해 같은 스프레드가 이력에 두 번 쌓였다.
     }, 1200);
   };
 
@@ -345,14 +337,20 @@ export default function TarotPage() {
     setIsSaving(true);
     try {
       const payload = buildPersistPayload(cards);
-      saveAnalysisToHistory({
-        type: "TAROT",
-        title: "타로 리딩",
-        subtitle: "3장 전개 결과",
-        resultUrl: "/tarot",
-        resultPreview: payload.cards.map((card) => card.name).join(", "),
-        result: payload,
-      });
+      saveAnalysisToHistory(
+        {
+          type: "TAROT",
+          title: "타로 리딩",
+          subtitle: "3장 전개 결과",
+          resultPreview: payload.cards.map((card) => card.name).join(", "),
+          result: payload,
+        },
+        {
+          // /history 상세보기가 저장된 payload 를 렌더링하도록 개별 기록
+          // 상세 경로를 저장한다. 정적 "/tarot" 링크는 빈 새 페이지로 갔다.
+          resultUrlFactory: (id) => `/analysis-history/TAROT/${id}`,
+        }
+      );
       setStatus("저장됨");
     } finally {
       setTimeout(() => setStatus(""), 1200);
@@ -502,7 +500,7 @@ export default function TarotPage() {
                       title="🔮 The Essence"
                       icon={Star}
                       tone="border-indigo-400/20 bg-indigo-500/5"
-                      body={`${spreadCards[1]?.name_kr}를 중심으로 보면, 지금의 당신은 상황을 피하기보다 의미를 읽고 방향을 다시 잡아야 하는 국면에 있습니다.`}
+                      body={`${spreadCards[1]?.name_kr}${objectParticle(spreadCards[1]?.name_kr ?? "")} 중심으로 보면, 지금의 당신은 상황을 피하기보다 의미를 읽고 방향을 다시 잡아야 하는 국면에 있습니다.`}
                     />
                     <ResultSummaryCard
                       title="📚 The Insight"

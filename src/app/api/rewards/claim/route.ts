@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/integrations/supabase';
+import { getAuthenticatedUser } from '@/lib/auth/api-auth';
 import { SIGNUP_REWARDS } from '@/lib/referral/referrals';
 
 type RewardType = 'signup' | 'first_saju' | 'profile_save' | 'referral_success' | 'first_purchase' | 'review';
@@ -21,11 +22,13 @@ export async function POST(req: NextRequest) {
 
         const supabase = getSupabaseAdmin();
 
-        // Get authenticated user
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        // Get authenticated user from the request (cookie/bearer token) — the
+        // service-role client has no session, so supabase.auth.getUser() would
+        // always fail here.
+        const { user, error: authError } = await getAuthenticatedUser(req);
 
         if (authError || !user) {
-            return NextResponse.json(
+            return authError || NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 401 }
             );
@@ -118,6 +121,49 @@ export async function POST(req: NextRequest) {
                 { error: 'Failed to add jellies' },
                 { status: 500 }
             );
+        }
+
+        // Manually credit the wallet — no DB trigger updates jelly_wallets on a
+        // jelly_transactions insert (same pattern as payment/verify).
+        const { data: wallet, error: walletLookupError } = await supabase
+            .from('jelly_wallets')
+            .select('balance')
+            .eq('user_id', user.id)
+            .single();
+
+        if (walletLookupError && walletLookupError.code !== 'PGRST116') {
+            console.error('Error loading wallet:', walletLookupError);
+            return NextResponse.json(
+                { error: 'Failed to add jellies' },
+                { status: 500 }
+            );
+        }
+
+        if (wallet) {
+            const { error: walletUpdateError } = await supabase
+                .from('jelly_wallets')
+                .update({ balance: wallet.balance + jellies })
+                .eq('user_id', user.id);
+
+            if (walletUpdateError) {
+                console.error('Error updating wallet:', walletUpdateError);
+                return NextResponse.json(
+                    { error: 'Failed to add jellies' },
+                    { status: 500 }
+                );
+            }
+        } else {
+            const { error: walletInsertError } = await supabase
+                .from('jelly_wallets')
+                .insert({ user_id: user.id, balance: jellies });
+
+            if (walletInsertError) {
+                console.error('Error initializing wallet:', walletInsertError);
+                return NextResponse.json(
+                    { error: 'Failed to add jellies' },
+                    { status: 500 }
+                );
+            }
         }
 
         return NextResponse.json({

@@ -268,10 +268,13 @@ function buildFallbackPillars(birthDate: Date, hour: number, minute: number, isT
 }
 
 function buildEmergencyPillars(): any {
+  // 60\uAC11\uC790 \uC5F0\uC18D 4\uAC1C: \uAC11\uC790(0)\u00B7\uC744\uCD95(1)\u00B7\uBCD1\uC778(2)\u00B7\uC815\uBB18(3).
+  // \uC608\uC804\uC5D0\uB294 year stem \uC774 "\uAC00", day stem \uC774 "\uBC15" \uC73C\uB85C \uC801\uD600 \uC788\uC5C8\uB294\uB370
+  // \uB458 \uB2E4 \uCC9C\uAC04(\uAC11\uC744\uBCD1\uC815\uBB34\uAE30\uACBD\uC2E0\uC784\uACC4)\uC774 \uC544\uB2CC \uC624\uD0C0\uC600\uB2E4.
   return {
-    year: { stem: "\uAC00", branch: "\uC790", ganjiIndex: 0, stemIndex: 0, branchIndex: 0 },
+    year: { stem: "\uAC11", branch: "\uC790", ganjiIndex: 0, stemIndex: 0, branchIndex: 0 },
     month: { stem: "\uC744", branch: "\uCD95", ganjiIndex: 1, stemIndex: 1, branchIndex: 1 },
-    day: { stem: "\uBC15", branch: "\uC778", ganjiIndex: 2, stemIndex: 2, branchIndex: 2 },
+    day: { stem: "\uBCD1", branch: "\uC778", ganjiIndex: 2, stemIndex: 2, branchIndex: 2 },
     hour: { stem: "\uC815", branch: "\uBB18", ganjiIndex: 3, stemIndex: 3, branchIndex: 3 },
   };
 }

@@ -162,19 +162,23 @@ export default function TojeongPage() {
         trustScore: trustScore(output),
         scoreBands,
       });
-      saveAnalysisToHistory({
-        type: "TOJEONG",
-        title: `${profile.name} 토정비결`,
-        subtitle: `${selectedYear}년 연간 운세`,
-        profileId: profile.id,
-        profileName: profile.name,
-        resultUrl: "/tojeong",
-        resultPreview: `${output.mainGrade} ${output.mainScore}점`,
-        result: {
-          ...output,
-          trustScore: trustScore(output),
+      saveAnalysisToHistory(
+        {
+          type: "TOJEONG",
+          title: `${profile.name} 토정비결`,
+          subtitle: `${selectedYear}년 연간 운세`,
+          profileId: profile.id,
+          profileName: profile.name,
+          resultPreview: `${output.mainGrade} ${output.mainScore}점`,
+          result: {
+            ...output,
+            trustScore: trustScore(output),
+          },
         },
-      });
+        {
+          resultUrlFactory: (id) => `/analysis-history/TOJEONG/${id}`,
+        }
+      );
       toast(`${selectedYear}년 토정비결이 계산되었습니다.`);
     } catch (error) {
       console.error(error);

@@ -150,7 +150,7 @@ export default function TarotGalleryPage() {
                                 </div>
                                 <div className="mt-4 text-center px-2">
                                     <p className="text-[13px] text-slate-400 font-bold uppercase tracking-widest truncate w-full">{card.name_en}</p>
-                                    <p className="text-sm text-slate-500 mt-1 line-clamp-2 leading-relaxed">{card.meaning_upright}</p>
+                                    <p className="text-sm text-slate-400 mt-1 line-clamp-2 leading-relaxed">{card.meaning_upright}</p>
                                 </div>
                             </article>
                         );
