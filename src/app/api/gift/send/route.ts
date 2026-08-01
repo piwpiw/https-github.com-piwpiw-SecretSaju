@@ -26,7 +26,6 @@ export async function POST(req: Request) {
 
         // 1. Generate an exchange token for the gift result
         const resultToken = crypto.randomUUID();
-        const encodedToken = encodeURIComponent(resultToken);
         const expiresAt = new Date(Date.now() + GIFT_TOKEN_TTL_SECONDS * 1000).toISOString();
 
         // In production:
@@ -37,8 +36,11 @@ export async function POST(req: Request) {
         if (!domain) {
             return NextResponse.json({ error: '서버 설정 오류로 발송할 수 없습니다. 잠시 후 다시 시도해 주세요.' }, { status: 500 });
         }
-        const resultLink = `${new URL(`/result/${encodedToken}`, domain).toString()}`;
-        const emailResult = await sendSajuResultEmail(targetEmail, senderName, resultLink);
+        // TODO: 토큰 영속화(gift 테이블 저장) 후 결과 링크(`/result/{token}`) 복원.
+        // resultToken이 아직 DB에 저장되지 않아 `/result/{token}` 링크는 수신자에게
+        // 빈 페이지로 이어진다. 죽은 링크 대신 서비스 홈으로 안내한다.
+        const giftLink = new URL('/', domain).toString();
+        const emailResult = await sendSajuResultEmail(targetEmail, senderName, giftLink);
 
         if (!emailResult.success) {
             return NextResponse.json({ error: '이메일 발송에 실패했습니다. 잠시 후 다시 시도해 주세요.' }, { status: 500 });

@@ -37,7 +37,9 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query;
 
     if (error) {
-      return NextResponse.json({ campaigns: [], error: error.message }, { status: 200 });
+      // A failed query is a server-side fault — surface it as 5xx instead of a
+      // 200 that clients would treat as an empty-but-successful result.
+      return NextResponse.json({ campaigns: [], error: error.message }, { status: 500 });
     }
 
     const campaigns = (data || []).map((item: CampaignRow) => ({
