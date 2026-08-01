@@ -132,6 +132,7 @@ export async function sendSajuResultEmail(to: string, senderName: string, result
                         아래 버튼을 눌러 당신의 진짜 모습을 확인하세요.
                     </p>
                     <a href="${resultLink}" style="display: inline-block; padding: 14px 28px; background-color: #d946ef; color: #fff; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 16px;">결과 카드 열어보기</a>
+                    <p style="margin-top: 24px; color: #64748b; font-size: 12px;">결과 카드 링크는 발송일로부터 3일간 유효합니다.</p>
                 </div>
             `,
         });

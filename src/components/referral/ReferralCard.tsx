@@ -1,20 +1,28 @@
 ﻿'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Check, Copy, Gift, Sparkles, Users } from 'lucide-react';
+import { Check, Copy, Gift, Sparkles, Ticket, Users } from 'lucide-react';
 import { trackEvent } from '@/lib/app/analytics';
+import { triggerBalanceUpdate } from '@/components/shop/JellyBalance';
+import { useAuthStatus } from '@/lib/auth/auth-status';
 
 interface ReferralCardProps {
   className?: string;
 }
 
 export default function ReferralCard({ className = '' }: ReferralCardProps) {
+  const { isAuthenticated } = useAuthStatus();
   const [code, setCode] = useState<string | null>(null);
   const [referralUrl, setReferralUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [redeemCode, setRedeemCode] = useState('');
+  const [redeemLoading, setRedeemLoading] = useState(false);
+  const [redeemSuccess, setRedeemSuccess] = useState<string | null>(null);
+  const [redeemError, setRedeemError] = useState<string | null>(null);
 
   const generateCode = async () => {
     if (loading) return;
@@ -40,6 +48,57 @@ export default function ReferralCard({ className = '' }: ReferralCardProps) {
       setError('초대 코드 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const redeemReferralCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = redeemCode.trim().toUpperCase();
+    if (!trimmed || redeemLoading) return;
+
+    setRedeemError(null);
+    setRedeemSuccess(null);
+    setRedeemLoading(true);
+
+    try {
+      const response = await fetch('/api/referral/redeem', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: trimmed }),
+      });
+
+      const payload = await response.json().catch(() => null);
+
+      if (response.ok && payload?.success) {
+        const reward = Number(payload.newUserReward ?? 0);
+        setRedeemSuccess(
+          reward > 0
+            ? `초대 코드 적용 완료! 젤리 ${reward}개가 적립되었어요.`
+            : '초대 코드가 적용되었어요.'
+        );
+        setRedeemCode('');
+        triggerBalanceUpdate();
+        trackEvent('referral_complete', { method: 'redeem' });
+        return;
+      }
+
+      const serverError = typeof payload?.error === 'string' ? payload.error : '';
+
+      if (response.status === 401 || response.status === 403) {
+        setRedeemError('로그인 후 초대 코드를 입력할 수 있어요.');
+      } else if (response.status === 404) {
+        setRedeemError('유효하지 않은 초대 코드예요. 코드를 다시 확인해 주세요.');
+      } else if (response.status === 409) {
+        setRedeemError('이미 초대 코드를 사용했거나, 사용된 코드예요.');
+      } else if (response.status === 400 && serverError.toLowerCase().includes('own')) {
+        setRedeemError('본인의 초대 코드는 입력할 수 없어요.');
+      } else {
+        setRedeemError('초대 코드 적용에 실패했어요. 잠시 후 다시 시도해 주세요.');
+      }
+    } catch {
+      setRedeemError('초대 코드 적용에 실패했어요. 잠시 후 다시 시도해 주세요.');
+    } finally {
+      setRedeemLoading(false);
     }
   };
 
@@ -138,6 +197,54 @@ export default function ReferralCard({ className = '' }: ReferralCardProps) {
       )}
 
       {error && <p role="alert" className="mt-4 text-sm text-rose-400 text-center">{error}</p>}
+
+      <div className="mt-8 pt-8 border-t border-border-color">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-9 h-9 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center">
+            <Ticket className="w-4 h-4 text-primary" />
+          </div>
+          <div>
+            <h4 className="text-base font-black text-foreground">초대 코드 입력</h4>
+            <p className="text-sm text-muted font-medium">친구에게 받은 코드를 입력하면 젤리를 적립해 드려요.</p>
+          </div>
+        </div>
+
+        {!isAuthenticated ? (
+          <p className="text-sm text-muted text-center py-3 rounded-2xl bg-background border border-border-color">
+            초대 코드 입력은{' '}
+            <Link href="/login" className="text-primary font-bold underline underline-offset-2">
+              로그인
+            </Link>
+            {' '}후 이용할 수 있어요.
+          </p>
+        ) : (
+          <form onSubmit={redeemReferralCode} className="flex gap-2">
+            <input
+              type="text"
+              value={redeemCode}
+              onChange={(e) => setRedeemCode(e.target.value.toUpperCase())}
+              placeholder="예: USERABC123"
+              aria-label="초대 코드 입력"
+              maxLength={20}
+              className="flex-1 min-w-0 px-4 py-3 rounded-2xl bg-background border border-border-color text-foreground font-bold tracking-widest uppercase placeholder:normal-case placeholder:tracking-normal placeholder:font-medium placeholder:text-muted/50 focus:outline-none focus:border-primary transition-colors"
+            />
+            <button
+              type="submit"
+              disabled={redeemLoading || !redeemCode.trim()}
+              className="px-5 py-3 rounded-2xl bg-primary text-white font-black text-sm shadow-lg hover:shadow-primary/20 transition-all disabled:opacity-50"
+            >
+              {redeemLoading ? '확인 중...' : '적용'}
+            </button>
+          </form>
+        )}
+
+        {redeemSuccess && (
+          <p role="status" className="mt-3 text-sm text-emerald-400 text-center font-bold">{redeemSuccess}</p>
+        )}
+        {redeemError && (
+          <p role="alert" className="mt-3 text-sm text-rose-400 text-center">{redeemError}</p>
+        )}
+      </div>
 
       <p className="mt-6 text-sm text-muted/60 text-center leading-relaxed">초대 코드는 신규 사용자 1회만 유효하며, 본인 초대는 제외됩니다.</p>
     </motion.div>
