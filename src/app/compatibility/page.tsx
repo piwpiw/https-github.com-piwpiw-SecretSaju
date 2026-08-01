@@ -15,6 +15,7 @@ import { analyzeRelationship, RelationshipAnalysis } from "@/lib/saju/compatibil
 import { RelationshipType as ProfileRelationshipType } from "@/types/schema";
 import { useProfiles } from "@/components/profile/ProfileProvider";
 import { useWallet } from "@/components/payment/WalletProvider";
+import { hasSufficientBalance } from "@/lib/payment/jelly-wallet";
 import JellyBalance from "@/components/shop/JellyBalance";
 import { useLocale } from "@/lib/app/i18n";
 import ElementPolygon from "@/components/ui/ElementPolygon";
@@ -57,7 +58,7 @@ function CompatibilityContent() {
   const searchParams = useSearchParams();
   const { t, locale } = useLocale();
   const { profiles, activeProfile } = useProfiles();
-  const { consumeChuru, churu, isAdmin } = useWallet();
+  const { consumeJelly } = useWallet();
 
   const [personAId, setPersonAId] = useState("");
   const [personBId, setPersonBId] = useState("");
@@ -98,7 +99,7 @@ function CompatibilityContent() {
     return () => cancelAnimationFrame(frame);
   }, [result]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setResult(null);
@@ -115,15 +116,22 @@ function CompatibilityContent() {
       return;
     }
 
-    if (!isAdmin && churu < 30) {
+    if (!hasSufficientBalance(30)) {
       setToastMsg("궁합 정밀 분석에는 30 젤리가 필요합니다.");
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
       return;
     }
 
+    const consumed = await consumeJelly(30, "compatibility_analysis");
+    if (!consumed) {
+      setToastMsg("젤리 차감에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+      return;
+    }
+
     setLoading(true);
-    consumeChuru(30);
 
     const parseBirth = (dateStr: string) => parseCivilDate(dateStr) ?? new Date(1990, 0, 1, 12, 0, 0, 0);
 

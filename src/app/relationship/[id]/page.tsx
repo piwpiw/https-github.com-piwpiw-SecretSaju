@@ -34,6 +34,7 @@ export default function RelationshipDetailPage() {
     const [mainProfile, setMainProfile] = useState<any | null>(null);
     const [targetProfile, setTargetProfile] = useState<any | null>(null);
     const [analysis, setAnalysis] = useState<RelationshipAnalysis | null>(null);
+    const [mainDaewun, setMainDaewun] = useState<import('@/core/myeongni/daewun').DaewunInfo | null>(null);
     const [unlocked, setUnlocked] = useState(false);
     const [showShop, setShowShop] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -87,6 +88,7 @@ export default function RelationshipDetailPage() {
             );
 
             setAnalysis(rel);
+            setMainDaewun(mainSaju.daewun ?? null);
             setUnlocked(isAdmin || isUnlocked(profileId));
         } catch (error) {
             console.error("Relationship analysis error:", error);
@@ -103,10 +105,10 @@ export default function RelationshipDetailPage() {
         setShowConfirm(true);
     };
 
-    const confirmUnlock = () => {
+    const confirmUnlock = async () => {
         if (!profileId) return;
 
-        const result = unlockContent(profileId);
+        const result = await unlockContent(profileId);
         if (result.success) {
             setUnlocked(true);
             setShowConfirm(false);
@@ -261,8 +263,10 @@ export default function RelationshipDetailPage() {
                     </motion.div>
                 </Link>
 
-                {/* 8.2 Life Timeline (Daewun) */}
-                {analysis && mainProfile && (
+                {/* 8.2 Life Timeline (Daewun) — 실계산 대운. 예전에는 [...Array(10)]
+                    으로 "기운 N / 분석 중" 을 하드코딩해 계산과 무관한 가짜
+                    타임라인이 표시됐다. */}
+                {analysis && mainProfile && mainDaewun && (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -276,18 +280,20 @@ export default function RelationshipDetailPage() {
                         </div>
 
                         <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar snap-x">
-                            {[...Array(10)].map((_, i) => (
-                                <div key={i} className="flex-shrink-0 w-32 p-4 sm:p-6 rounded-[2.5rem] bg-white/5 border border-white/5 text-center snap-center hover:bg-white/10 transition-all group">
-                                    <p className="text-[13px] font-black text-slate-500 mb-3">{i * 10}세 ~</p>
+                            {mainDaewun.pillars.map((phase) => (
+                                <div key={phase.order} className="flex-shrink-0 w-32 p-4 sm:p-6 rounded-[2.5rem] bg-white/5 border border-white/5 text-center snap-center hover:bg-white/10 transition-all group">
+                                    <p className="text-[13px] font-black text-slate-500 mb-3">{phase.startAge}~{phase.endAge}세</p>
                                     <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
                                         <TrendingUp className="w-6 h-6" />
                                     </div>
-                                    <p className="text-sm font-black text-white">기운 {i + 1}</p>
-                                    <p className="text-[13px] font-bold text-slate-500 mt-1 uppercase tracking-widest">분석 중</p>
+                                    <p className="text-sm font-black text-white">{phase.pillar.fullName}</p>
+                                    <p className="text-[13px] font-bold text-slate-500 mt-1">{phase.order}번째 대운</p>
                                 </div>
                             ))}
                         </div>
-                        <p className="mt-4 text-[13px] text-slate-400 text-center">※ 대운의 변화는 인생의 큰 방향성을 결정짓는 10개 마디입니다.</p>
+                        <p className="mt-4 text-[13px] text-slate-400 text-center">
+                            ※ {mainProfile.name}님의 대운은 {mainDaewun.startAge}세에 시작하며 {mainDaewun.isForward ? '순행' : '역행'}합니다. 대운은 인생의 큰 방향을 정하는 10년 단위 마디입니다.
+                        </p>
                     </motion.div>
                 )}
 

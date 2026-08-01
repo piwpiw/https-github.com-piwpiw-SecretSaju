@@ -7,6 +7,7 @@ import { useLocale } from "@/lib/app/i18n";
 import { useRouter } from "next/navigation";
 import AuthRequiredNotice from "@/components/auth/AuthRequiredNotice";
 import { useWallet } from "@/components/payment/WalletProvider";
+import { hasSufficientBalance } from "@/lib/payment/jelly-wallet";
 import JellyBalance from "@/components/shop/JellyBalance";
 import JellyShopModal from "@/components/shop/JellyShopModal";
 import { useAuthStatus } from "@/lib/auth/auth-status";
@@ -15,7 +16,7 @@ export default function GiftPage() {
   const { t, locale } = useLocale();
   const router = useRouter();
   const { isAuthenticated } = useAuthStatus();
-  const { consumeChuru, churu, isAdmin } = useWallet();
+  const { consumeJelly, isAdmin } = useWallet();
   const [isShopModalOpen, setIsShopModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", birthDate: "", email: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,7 +42,7 @@ export default function GiftPage() {
       return;
     }
 
-    if (!isAdmin && churu < 3) {
+    if (!hasSufficientBalance(3)) {
       setIsShopModalOpen(true);
       return;
     }
@@ -49,7 +50,7 @@ export default function GiftPage() {
     // Claim the lock before the first side effect (jelly deduction).
     submitLockRef.current = true;
 
-    const consumed = consumeChuru(3);
+    const consumed = await consumeJelly(3, "gift_send");
     if (!consumed) {
       submitLockRef.current = false;
       setSubmitError(locale === 'ko' ? "젤리 차감에 실패했습니다. 잠시 후 다시 시도해 주세요." : "Failed to deduct Jelly.");

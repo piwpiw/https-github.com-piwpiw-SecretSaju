@@ -6,6 +6,7 @@ import { ArrowLeft, Calendar, CalendarDays, Loader2, Sparkles, WalletCards, Brie
 import JellyBalance from "@/components/shop/JellyBalance";
 import { useWallet } from "@/components/payment/WalletProvider";
 import { useProfiles } from "@/components/profile/ProfileProvider";
+import { hasSufficientBalance } from "@/lib/payment/jelly-wallet";
 import LuxuryToast from "@/components/ui/LuxuryToast";
 import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
 import { calculateSajuFromBirthdate, getDayPillarIndex, getPillarNameKo } from "@/lib/saju";
@@ -58,7 +59,7 @@ function ResultSummaryCard({ title, body, tone }: { title: string; body: string;
 }
 
 export default function TojeongPage() {
-  const { consumeChuru, churu, isAdmin } = useWallet();
+  const { consumeJelly } = useWallet();
   const { profiles, activeProfile } = useProfiles();
 
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
@@ -88,12 +89,12 @@ export default function TojeongPage() {
       return;
     }
 
-    if (!isAdmin && churu < 40) {
+    if (!hasSufficientBalance(40)) {
       toast("토큰이 부족합니다. 충전 후 사용하세요.");
       return;
     }
 
-    const ok = consumeChuru(40);
+    const ok = await consumeJelly(40, "tojeong_report");
     if (!ok) {
       toast("토큰 결제 실패. 다시 시도하세요.");
       return;

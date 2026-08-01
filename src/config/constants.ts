@@ -43,33 +43,65 @@ export const BUSINESS_INFO = {
 // JELLY ECONOMY
 // ============================================
 
+/**
+ * 신규 지갑 생성 시 1회 지급되는 웰컴 보너스 젤리.
+ * 잔액은 0에서 시작하고, 보너스는 명시적인 'welcome_bonus' 트랜잭션으로
+ * 적립되어 히스토리에 근거가 남는다 (jelly-wallet.ts 참조).
+ */
+export const WELCOME_JELLY = 3;
+
+/**
+ * 판매 상품 정의의 단일 소스.
+ * jelly-wallet.ts 의 `PRICING_TIERS` 는 이 배열을 re-export 한다.
+ * (과거에는 영문 라벨 버전과 한글 라벨 버전이 중복 정의되어 있었다.)
+ */
+export interface JellyPricingTier {
+  id: 'taste' | 'smart' | 'pro' | 'donation';
+  jellies: number;
+  bonus: number;
+  price: number;
+  label: string;
+  badge?: string;
+  popular?: boolean;
+}
+
+export const JELLY_PRICING_TIERS: readonly JellyPricingTier[] = [
+  {
+    id: 'taste',
+    jellies: 1,
+    bonus: 0,
+    price: 990,
+    label: '맛보기',
+  },
+  {
+    id: 'smart',
+    jellies: 3,
+    bonus: 1,
+    price: 2900,
+    label: '똑똑이',
+    badge: '25% 할인',
+  },
+  {
+    id: 'pro',
+    jellies: 10,
+    bonus: 3,
+    price: 9900,
+    label: '프로',
+    badge: '최고 가성비',
+    popular: true,
+  },
+  {
+    id: 'donation',
+    jellies: 50,
+    bonus: 10,
+    price: 49000,
+    label: '개발자 후원 (VIP)',
+    badge: 'Bohemian VIP',
+  },
+];
+
 export const JELLY_PRICING = {
-  TIERS: [
-    {
-      id: 'taste',
-      jellies: 1,
-      bonus: 0,
-      price: 990,
-      label: 'Starter',
-    },
-    {
-      id: 'smart',
-      jellies: 3,
-      bonus: 1,
-      price: 2900,
-      label: 'Starter Plus',
-      badge: 'Best Value',
-    },
-    {
-      id: 'pro',
-      jellies: 10,
-      bonus: 3,
-      price: 9900,
-      label: 'Pro',
-      badge: 'Most Popular',
-      popular: true,
-    },
-  ],
+  TIERS: JELLY_PRICING_TIERS,
   COSTS: {
     UNLOCK_PROFILE: 1,
     UNLOCK_SECTION: 1,

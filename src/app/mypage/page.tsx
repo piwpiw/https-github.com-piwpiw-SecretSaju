@@ -99,7 +99,7 @@ function StatCard({ label, value, unit, color, icon: Icon, percent }: {
 
 export default function MyPage() {
   const router = useRouter();
-  const { churu, nyang, isFreeLaunch } = useWallet();
+  const { jelly, isFreeLaunch } = useWallet();
   const [user, setUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showShop, setShowShop] = useState(false);
@@ -107,12 +107,15 @@ export default function MyPage() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [greeting, setGreeting] = useState("안녕하세요");
 
-  const focusScore = Math.min(100, Math.floor((nyang / 1000) * 100));
-  const level = nyang >= 1000
+  // 경험치 시스템은 미구현 상태다. 레거시 nyang 포인트는 적립 경로가 없어 항상
+  // 0 이었고, 지갑 단일화(젤리)와 함께 제거되었다 — 표시 동작은 동일하게 0 고정.
+  const exp = 0;
+  const focusScore = Math.min(100, Math.floor((exp / 1000) * 100));
+  const level = exp >= 1000
     ? { name: "다이아 티어", badge: "💎", color: "text-fuchsia-400", border: "border-fuchsia-500/30", bg: "bg-fuchsia-500/10", percent: 100 }
-    : nyang >= 300
-      ? { name: "실버 티어", badge: "⭐", color: "text-slate-300", border: "border-slate-400/30", bg: "bg-slate-400/10", percent: Math.min(100, (nyang / 1000) * 100) }
-      : { name: "브론즈 티어", badge: "🔥", color: "text-amber-400", border: "border-amber-500/30", bg: "bg-amber-500/10", percent: Math.min(100, (nyang / 300) * 100) };
+    : exp >= 300
+      ? { name: "실버 티어", badge: "⭐", color: "text-slate-300", border: "border-slate-400/30", bg: "bg-slate-400/10", percent: Math.min(100, (exp / 1000) * 100) }
+      : { name: "브론즈 티어", badge: "🔥", color: "text-amber-400", border: "border-amber-500/30", bg: "bg-amber-500/10", percent: Math.min(100, (exp / 300) * 100) };
 
   useEffect(() => {
     const h = new Date().getHours();
@@ -247,7 +250,7 @@ export default function MyPage() {
           transition={{ delay: 0.1 }}
           className="mb-6"
         >
-          <PremiumWalletCard jellies={churu} isFreeLaunch={isFreeLaunch} onClickCharge={() => setShowShop(true)} />
+          <PremiumWalletCard jellies={jelly} isFreeLaunch={isFreeLaunch} onClickCharge={() => setShowShop(true)} />
         </motion.div>
 
         {/* ── Referral ────────────────────────────────── */}
@@ -267,13 +270,13 @@ export default function MyPage() {
           transition={{ delay: 0.2 }}
           className="grid grid-cols-3 gap-3 mb-8"
         >
-          <StatCard label="경험치" value={nyang} unit="exp" color="text-indigo-400" icon={Award} percent={level.percent} />
+          <StatCard label="경험치" value={exp} unit="exp" color="text-indigo-400" icon={Award} percent={level.percent} />
           <StatCard label="포커스" value={`${focusScore}`} unit="%" color="text-emerald-400" icon={Zap} percent={focusScore} />
-          {/* 무료 오픈 기간에는 게이트 개방용 내부 잔액(999999)이 그대로
-              노출되지 않도록 PremiumWalletCard 처럼 "무료"로 표기한다. */}
+          {/* 무료 오픈 기간에는 잔액이 기능을 막지 않으므로 숫자 대신
+              PremiumWalletCard 처럼 "무료"로 표기한다. */}
           <StatCard
             label="젤리 잔액"
-            value={isFreeLaunch ? "무료" : churu}
+            value={isFreeLaunch ? "무료" : jelly}
             unit={isFreeLaunch ? "" : "🍀"}
             color="text-amber-400"
             icon={Gem}

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useWallet } from "@/components/payment/WalletProvider";
 import { useProfiles } from "@/components/profile/ProfileProvider";
+import { hasSufficientBalance } from "@/lib/payment/jelly-wallet";
 import JellyBalance from "@/components/shop/JellyBalance";
 import LuxuryToast from "@/components/ui/LuxuryToast";
 import { cn } from "@/lib/app/utils";
@@ -97,7 +98,7 @@ function getRitualAdvice(talismanId?: TalismanId) {
 export default function LuckPage() {
   const router = useRouter();
   const { profiles, activeProfile, setActiveProfileById } = useProfiles();
-  const { consumeChuru, churu, isAdmin } = useWallet();
+  const { consumeJelly } = useWallet();
 
   const [phase, setPhase] = useState<"intro" | "select" | "ritual" | "result">("intro");
   const [selectedTalisman, setSelectedTalisman] = useState<Talisman | null>(null);
@@ -109,7 +110,7 @@ export default function LuckPage() {
   const activeName = activeProfile?.name || "사용자";
 
   const handleStart = () => {
-    if (!isAdmin && churu < 5) {
+    if (!hasSufficientBalance(5)) {
       setToastMsg("부적 의식을 시작하려면 최소 5 젤리가 필요합니다.");
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
@@ -126,7 +127,14 @@ export default function LuckPage() {
   const handleBurn = async () => {
     if (isBurning) return;
     setIsBurning(true);
-    consumeChuru(5);
+    const consumed = await consumeJelly(5, "talisman_ritual");
+    if (!consumed) {
+      setToastMsg("젤리 차감에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+      setIsBurning(false);
+      return;
+    }
 
     // Artificial ritual delay
     await new Promise((r) => setTimeout(r, 3000));

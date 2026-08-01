@@ -27,7 +27,7 @@ const APP_ONLY_FEATURES = [
 
 export default function HealingPage() {
   const router = useRouter();
-  const { consumeChuru } = useWallet();
+  const { consumeJelly } = useWallet();
   const { profiles, activeProfile, setActiveProfileById } = useProfiles();
 
   const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ export default function HealingPage() {
     setErrorMsg(null);
     setLoading(true);
     try {
-      const consumed = consumeChuru(1);
+      const consumed = await consumeJelly(1, "healing_fortune");
       if (!consumed) {
         setErrorMsg("젤리가 부족합니다.");
         return;

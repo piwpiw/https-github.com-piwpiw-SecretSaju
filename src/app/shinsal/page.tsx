@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import JellyBalance from "@/components/shop/JellyBalance";
 import { useWallet } from "@/components/payment/WalletProvider";
+import { hasSufficientBalance } from "@/lib/payment/jelly-wallet";
 import { FREE_LAUNCH } from "@/config/constants";
 
 type ShinSalType = {
@@ -32,20 +33,20 @@ function badgeClass(level: ShinSalType["risk"]) {
 
 export default function ShinsalPage() {
   const router = useRouter();
-  const { churu, consumeChuru, isAdmin } = useWallet();
+  const { consumeJelly } = useWallet();
   const [run, setRun] = useState(false);
   const [selected, setSelected] = useState<ShinSalType | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleRun = () => {
+  const handleRun = async () => {
     setErrorMessage("");
 
-    if (!isAdmin && churu < 5) {
+    if (!hasSufficientBalance(5)) {
       setErrorMessage("신살 분석은 5젤리가 필요합니다.");
       return;
     }
 
-    const consumed = consumeChuru(5);
+    const consumed = await consumeJelly(5, "shinsal_reading");
     if (!consumed) {
       setErrorMessage("젤리 차감에 실패했습니다. 잠시 후 다시 시도해 주세요.");
       return;

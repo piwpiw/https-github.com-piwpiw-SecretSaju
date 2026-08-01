@@ -3,8 +3,11 @@
 import { motion } from 'framer-motion';
 import { Candy, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { getBalance } from '@/lib/payment/jelly-wallet';
+import { BALANCE_UPDATE_EVENT, getBalance } from '@/lib/payment/jelly-wallet';
 import { FREE_LAUNCH } from '@/config/constants';
+
+// 잔액 변경 이벤트는 이제 엔진이 직접 쏜다. 기존 소비처 호환을 위해 re-export.
+export { triggerBalanceUpdate } from '@/lib/payment/jelly-wallet';
 
 interface JellyBalanceProps {
     onClick?: () => void;
@@ -28,11 +31,11 @@ export default function JellyBalance({
 
         window.addEventListener('storage', handleStorageChange);
         // Custom event for same-tab updates
-        window.addEventListener('jellyBalanceUpdate', updateBalance);
+        window.addEventListener(BALANCE_UPDATE_EVENT, updateBalance);
 
         return () => {
             window.removeEventListener('storage', handleStorageChange);
-            window.removeEventListener('jellyBalanceUpdate', updateBalance);
+            window.removeEventListener(BALANCE_UPDATE_EVENT, updateBalance);
         };
     }, []);
 
@@ -111,9 +114,4 @@ export default function JellyBalance({
             )}
         </motion.button>
     );
-}
-
-// Helper function to trigger balance update across components
-export function triggerBalanceUpdate() {
-    window.dispatchEvent(new Event('jellyBalanceUpdate'));
 }

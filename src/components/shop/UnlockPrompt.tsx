@@ -36,7 +36,7 @@ export default function UnlockPrompt({
 
         setIsUnlocking(true);
 
-        const result = unlockContent(profileId, sectionId, cost);
+        const result = await unlockContent(profileId, sectionId, cost);
 
         if (result.success) {
             triggerBalanceUpdate();
