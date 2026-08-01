@@ -1,3 +1,6 @@
+import { solarToLunar, type LunarDate } from "@/core/calendar/lunar-solar";
+import { getTojeongGwesa, type TojeongGwesaFortune } from "@/data/tojeongGwesa";
+
 export type TojeongCategory = "career" | "money" | "love" | "health" | "relationships";
 
 export type TojeongCategoryResult = {
@@ -24,6 +27,41 @@ export type TojeongSourceSignal = {
   value: string;
 };
 
+export type TojeongGweBasis = "lunar" | "solar-approx";
+
+export type TojeongGwe = {
+  /** 상중하 결합 표기: "111" ~ "863" */
+  code: string;
+  /** 상괘 1~8 (건천·태택·리화·진뢰·손풍·감수·간산·곤지) */
+  upper: number;
+  /** 중괘 1~6 */
+  middle: number;
+  /** 하괘 1~3 */
+  lower: number;
+  /** 상괘의 8괘 이름 (예: "건천(乾天)") */
+  upperName: string;
+  title: string;
+  summary: string;
+  fortune: TojeongGwesaFortune;
+  monthlyHint: string;
+  /**
+   * lunar: 음력 변환(Intl Chinese calendar) 성공, 음력 월·일 기반.
+   * solar-approx: 음력 변환 불가 환경 → 양력 월·일 기반 근사.
+   */
+  basis: TojeongGweBasis;
+  /** 산출에 쓰인 중간값 (검증·근거 표시용) */
+  inputs: {
+    age: number;
+    lunarMonth: number;
+    lunarDay: number;
+    /** 대월 30 / 소월 29 (양력 근사 시 해당 양력 월 일수 기준 30/29 매핑) */
+    monthSizeValue: number;
+    taeseSu: number;
+    wolgeonSu: number;
+    iljinSu: number;
+  };
+};
+
 export type TojeongReport = {
   year: number;
   profileName: string;
@@ -32,6 +70,11 @@ export type TojeongReport = {
   mainGrade: string;
   theme: string;
   oneLineSummary: string;
+  /**
+   * 정통 방식(상·중·하 3괘 → 144괘) 산출 결과.
+   * 음력 변환이 불가능한 환경 등 산출 실패 시 생략된다 (하위 호환).
+   */
+  gwe?: TojeongGwe;
   categories: TojeongCategoryResult[];
   monthly: TojeongMonthly[];
   strengths: string[];
@@ -119,6 +162,271 @@ const MONTH_HINTS = [
   ["평판 관리", "기록 기반 판단", "안정적 재투자", "규칙적인 수면", "팀 피드백", "비상 대응"],
 ];
 
+// ─────────────────────────────────────────────────────────────────────────────
+// 정통 토정비결 괘 산출 (상·중·하 3괘 → 144괘)
+//
+// 산출 규칙(전통 골격):
+//   상괘 = (나이 + 그 해 태세수) % 8            — 나머지 0이면 8
+//   중괘 = (생월 월수(대월30/소월29) + 월건수) % 6 — 나머지 0이면 6
+//   하괘 = (음력 생일 수 + 일진수) % 3           — 나머지 0이면 3
+//
+// [정직성 고지 — 현대 재구성 방식]
+// 태세수·월건수·일진수는 원래 전통 수리표(선척수 등)에서 뽑는 값이지만,
+// 이 저장소는 그 표의 정확한 원전을 확보하지 못했다. 따라서 아래 구현은
+// 해당 간지의 60갑자 순번에서 "천간 순번(1~10) + 지지 순번(1~12)" 을 취하는
+// 결정적(deterministic) 유도식을 쓰며, 이는 전통 수리표의 인용이 아니라
+// 간지 인덱스 기반의 '현대 재구성 방식'이다. UI 근거 로그에도 동일하게 명시한다.
+//
+// 음력 처리: src/core/calendar/lunar-solar.ts 의 Intl Chinese calendar 변환을
+// 사용해 실제 음력 생월·생일과 월대소(대월30/소월29)를 반영한다. 런타임이
+// 음력 변환을 지원하지 않으면 양력 월·일 기반 근사로 내려가고 basis 를
+// "solar-approx" 로 표시한다.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const GWE_UPPER_NAMES = [
+  "건천(乾天)", "태택(兌澤)", "리화(離火)", "진뢰(震雷)",
+  "손풍(巽風)", "감수(坎水)", "간산(艮山)", "곤지(坤地)",
+];
+
+/** 나머지가 0이면 최댓값(n)으로 치환하는 전통식 나머지 */
+function remainderOrMax(value: number, n: number): number {
+  const r = ((value % n) + n) % n;
+  return r === 0 ? n : r;
+}
+
+/** 60갑자 인덱스(0=갑자) → 천간 순번(1~10) + 지지 순번(1~12). 현대 재구성 유도식. */
+function ganjiNumber(index60: number): number {
+  const i = ((index60 % 60) + 60) % 60;
+  return (i % 10) + 1 + (i % 12) + 1;
+}
+
+/** 연도 → 60갑자 인덱스 (1984년 = 갑자 = 0). 입춘 경계는 적용하지 않는 연 단위 근사. */
+function yearGanjiIndex(year: number): number {
+  return (((year - 4) % 60) + 60) % 60;
+}
+
+/** 그 해의 태세수 (현대 재구성: 연간지의 천간·지지 순번 합) */
+export function getTaeseSu(year: number): number {
+  return ganjiNumber(yearGanjiIndex(year));
+}
+
+/**
+ * 그 해 음력 m월의 월건수 (현대 재구성).
+ * 월지: 1월=인(寅) 기준, 월간: 오호둔(연간에 따른 월간 기점) 규칙으로 유도한
+ * 월 간지의 천간·지지 순번 합.
+ */
+export function getWolgeonSu(year: number, lunarMonth: number): number {
+  const m = remainderOrMax(lunarMonth, 12);
+  const yearStem = yearGanjiIndex(year) % 10;
+  const monthBranch = (m + 1) % 12; // 1월 → 인(2)
+  const monthStem = ((yearStem % 5) * 2 + 2 + (m - 1)) % 10;
+  return monthStem + 1 + monthBranch + 1;
+}
+
+/** 기준일: 2000-01-01 = 무오(인덱스 54). src/lib/saju/index.ts 의 일주 기준과 동일. */
+const DAY_GANJI_REFERENCE_UTC = Date.UTC(2000, 0, 1);
+const DAY_GANJI_REFERENCE_INDEX = 54;
+
+/** 양력 날짜 → 일진(일주) 60갑자 인덱스 */
+export function getDayGanjiIndex(date: Date): number {
+  const target = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+  const days = Math.floor((target - DAY_GANJI_REFERENCE_UTC) / 86400000);
+  return (((DAY_GANJI_REFERENCE_INDEX + days) % 60) + 60) % 60;
+}
+
+/** 그 날의 일진수 (현대 재구성: 일진 간지의 천간·지지 순번 합) */
+export function getIljinSu(date: Date): number {
+  return ganjiNumber(getDayGanjiIndex(date));
+}
+
+/**
+ * 순수 괘 번호 유도식. 태세수/월건수/일진수와 월수·생일수를 받아
+ * 상(1~8)·중(1~6)·하(1~3)와 코드("111"~"863")를 결정한다.
+ */
+export function deriveGweNumbers(params: {
+  age: number;
+  monthSizeValue: number;
+  dayNumber: number;
+  taeseSu: number;
+  wolgeonSu: number;
+  iljinSu: number;
+}): { upper: number; middle: number; lower: number; code: string } {
+  const upper = remainderOrMax(params.age + params.taeseSu, 8);
+  const middle = remainderOrMax(params.monthSizeValue + params.wolgeonSu, 6);
+  const lower = remainderOrMax(params.dayNumber + params.iljinSu, 3);
+  return { upper, middle, lower, code: `${upper}${middle}${lower}` };
+}
+
+/** solarToLunar 를 안전하게 호출 (Intl Chinese calendar 미지원 환경 대비) */
+function tryToLunar(date: Date): LunarDate | null {
+  try {
+    return solarToLunar(date);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * (음력 연·월·일) → 양력 Date 근사 탐색.
+ * lunarToSolar 의 전 구간 선형 탐색 대신, solarToLunar 를 이용해
+ * 추정치에서 날짜 차이만큼 보정해 가는 반복 수렴 방식(호출 수십 회 이내).
+ */
+function tryFindSolarDateForLunar(lunarYear: number, lunarMonth: number, lunarDay: number): Date | null {
+  // 음력 m월은 대략 양력 m+1월 무렵
+  let guess = new Date(lunarYear, lunarMonth - 1, Math.min(lunarDay, 28));
+  guess = new Date(guess.getFullYear(), guess.getMonth(), guess.getDate() + 30);
+
+  for (let iter = 0; iter < 24; iter += 1) {
+    const parsed = tryToLunar(guess);
+    if (!parsed) return null;
+    const yearDiff = lunarYear - parsed.year;
+    const monthDiff = lunarMonth - parsed.month;
+    const dayDiff = lunarDay - parsed.day;
+    if (yearDiff === 0 && monthDiff === 0 && dayDiff === 0 && !parsed.isLeapMonth) {
+      return guess;
+    }
+    let step = Math.round(yearDiff * 354 + monthDiff * 29.5 + dayDiff);
+    if (step === 0) {
+      // 같은 숫자의 윤달에 착지한 경우 → 평달로 한 달 이동
+      step = parsed.isLeapMonth ? -29 : 29;
+    }
+    guess = new Date(guess.getFullYear(), guess.getMonth(), guess.getDate() + step);
+  }
+  return null;
+}
+
+/** 해당 음력 월이 대월(30일)인지 판정. anchorSolar 는 그 음력 월 내부의 양력 날짜. */
+function isBigLunarMonth(anchorSolar: Date, anchorLunar: LunarDate): boolean | null {
+  const probe = new Date(
+    anchorSolar.getFullYear(),
+    anchorSolar.getMonth(),
+    anchorSolar.getDate() + (30 - anchorLunar.day)
+  );
+  const parsed = tryToLunar(probe);
+  if (!parsed) return null;
+  return (
+    parsed.year === anchorLunar.year &&
+    parsed.month === anchorLunar.month &&
+    parsed.isLeapMonth === anchorLunar.isLeapMonth &&
+    parsed.day === 30
+  );
+}
+
+/** 양력 근사 시 월수: 그 양력 월의 일수(31/30→30, 29/28→29)로 대소 매핑 */
+function solarApproxMonthSize(year: number, month: number): number {
+  const daysInMonth = new Date(year, month, 0).getDate();
+  return daysInMonth >= 30 ? 30 : 29;
+}
+
+/**
+ * 정통 방식 토정비결 괘 산출.
+ * birthMonth/birthDay 는 프로필에 입력된 그대로의 값이며,
+ * calendarType === "lunar" 면 이미 음력 수치로 간주한다.
+ */
+export function calculateTojeongGwe(params: {
+  birthYear: number;
+  birthMonth: number;
+  birthDay: number;
+  calendarType?: "solar" | "lunar";
+  targetYear: number;
+}): TojeongGwe | null {
+  const { birthYear, birthMonth, birthDay, targetYear } = params;
+  const calendarType = params.calendarType === "lunar" ? "lunar" : "solar";
+
+  if (!Number.isFinite(birthYear) || !Number.isFinite(birthMonth) || !Number.isFinite(birthDay)) {
+    return null;
+  }
+
+  // 세는나이 (한국식)
+  const age = Math.max(1, targetYear - birthYear + 1);
+
+  let basis: TojeongGweBasis = "lunar";
+  let lunarMonth: number;
+  let lunarDay: number;
+  let birthSolarAnchor: Date | null = null;
+  let birthLunar: LunarDate | null = null;
+
+  if (calendarType === "lunar") {
+    lunarMonth = birthMonth;
+    lunarDay = birthDay;
+    birthSolarAnchor = tryFindSolarDateForLunar(birthYear, birthMonth, birthDay);
+    birthLunar = birthSolarAnchor
+      ? { year: birthYear, month: birthMonth, day: birthDay, isLeapMonth: false }
+      : null;
+    if (!birthSolarAnchor) {
+      // 음력 입력이므로 월·일 수치는 그대로 쓰되, 월대소 판정만 불가 → 근사 표기
+      basis = "solar-approx";
+    }
+  } else {
+    const solarBirth = new Date(birthYear, birthMonth - 1, birthDay);
+    const converted = tryToLunar(solarBirth);
+    if (converted) {
+      lunarMonth = converted.month;
+      lunarDay = converted.day;
+      birthSolarAnchor = solarBirth;
+      birthLunar = converted;
+    } else {
+      // 음력 변환 불가 환경 → 양력 월·일 기반 근사 (UI에 고지)
+      basis = "solar-approx";
+      lunarMonth = birthMonth;
+      lunarDay = birthDay;
+    }
+  }
+
+  // 중괘의 월수: 대월 30 / 소월 29
+  let monthSizeValue: number;
+  if (birthSolarAnchor && birthLunar) {
+    const big = isBigLunarMonth(birthSolarAnchor, birthLunar);
+    monthSizeValue = big === null ? solarApproxMonthSize(birthYear, birthMonth) : big ? 30 : 29;
+    if (big === null) basis = "solar-approx";
+  } else {
+    monthSizeValue = solarApproxMonthSize(birthYear, birthMonth);
+  }
+
+  // 일진수: 보려는 해의 (음력) 생일에 해당하는 양력 날짜의 일진
+  let birthdayInTargetYear: Date | null = null;
+  if (basis === "lunar") {
+    birthdayInTargetYear =
+      tryFindSolarDateForLunar(targetYear, lunarMonth, lunarDay) ??
+      (lunarDay === 30 ? tryFindSolarDateForLunar(targetYear, lunarMonth, 29) : null);
+  }
+  if (!birthdayInTargetYear) {
+    // 근사: 보려는 해의 같은 양력 월·일 (2/29 등은 그 달 말일로 보정)
+    const clampedDay = Math.min(birthDay, new Date(targetYear, birthMonth, 0).getDate());
+    birthdayInTargetYear = new Date(targetYear, birthMonth - 1, clampedDay);
+  }
+
+  const taeseSu = getTaeseSu(targetYear);
+  const wolgeonSu = getWolgeonSu(targetYear, lunarMonth);
+  const iljinSu = getIljinSu(birthdayInTargetYear);
+
+  const { upper, middle, lower, code } = deriveGweNumbers({
+    age,
+    monthSizeValue,
+    dayNumber: lunarDay,
+    taeseSu,
+    wolgeonSu,
+    iljinSu,
+  });
+
+  const gwesa = getTojeongGwesa(code);
+  if (!gwesa) return null;
+
+  return {
+    code,
+    upper,
+    middle,
+    lower,
+    upperName: GWE_UPPER_NAMES[upper - 1],
+    title: gwesa.title,
+    summary: gwesa.summary,
+    fortune: gwesa.fortune,
+    monthlyHint: gwesa.monthlyHint,
+    basis,
+    inputs: { age, lunarMonth, lunarDay, monthSizeValue, taeseSu, wolgeonSu, iljinSu },
+  };
+}
+
 function normalizeScore(value: number): number {
   const bounded = Math.round(value);
   return Math.max(30, Math.min(99, bounded));
@@ -175,6 +483,11 @@ export function buildTojeongReport(params: {
   year: number;
   birthDayOfYear: number;
   isFemale: boolean;
+  /**
+   * 프로필의 달력 유형 (생략 시 양력으로 간주).
+   * "lunar" 면 birthMonth/birthDay 를 이미 음력 수치로 간주하고 144괘를 산출한다.
+   */
+  calendarType?: "solar" | "lunar";
 }) {
   const {
     profileName,
@@ -187,6 +500,7 @@ export function buildTojeongReport(params: {
     year,
     birthDayOfYear,
     isFemale,
+    calendarType,
   } = params;
 
   const age = year - birthYear + 1;
@@ -256,6 +570,36 @@ export function buildTojeongReport(params: {
     "실패 가능성이 큰 일정은 반드시 1회 분기 리뷰에서만 결정하세요.",
   ];
 
+  // 정통 144괘 산출 — 실패해도 기존 리포트는 그대로 반환 (하위 호환)
+  let gwe: TojeongGwe | undefined;
+  try {
+    gwe = calculateTojeongGwe({
+      birthYear,
+      birthMonth,
+      birthDay,
+      calendarType,
+      targetYear: year,
+    }) ?? undefined;
+  } catch {
+    gwe = undefined;
+  }
+
+  const gweSources: TojeongSourceSignal[] = gwe
+    ? [
+        {
+          name: "괘 산출",
+          value: `상 ${gwe.upper}·중 ${gwe.middle}·하 ${gwe.lower} = ${gwe.code}괘 — 상괘 (나이 ${gwe.inputs.age}+태세수 ${gwe.inputs.taeseSu})%8, 중괘 (월수 ${gwe.inputs.monthSizeValue}+월건수 ${gwe.inputs.wolgeonSu})%6, 하괘 (생일수 ${gwe.inputs.lunarDay}+일진수 ${gwe.inputs.iljinSu})%3`,
+        },
+        {
+          name: "괘 기준",
+          value:
+            gwe.basis === "lunar"
+              ? "음력 생월·생일과 월대소(대월30/소월29) 반영. 태세수·월건수·일진수는 간지 순번 기반 현대 재구성 방식"
+              : "음력 변환 불가로 양력 월·일 기반 근사. 태세수·월건수·일진수는 간지 순번 기반 현대 재구성 방식",
+        },
+      ]
+    : [];
+
   return {
     year,
     profileName,
@@ -263,6 +607,7 @@ export function buildTojeongReport(params: {
     mainScore,
     mainGrade: mainTone,
     theme,
+    gwe,
     oneLineSummary: `${age}세 기준, 올해는 ${theme} 기조로 목표를 선명하게 압축하면 성취도가 높습니다.`,
     categories: detailedCategories,
     monthly,
@@ -270,6 +615,7 @@ export function buildTojeongReport(params: {
     cautions,
     actionPlans,
     sources: [
+      ...gweSources,
       { name: "기준", value: "일주/대운 기반 일간-연주 상호 관계" },
       { name: "보정", value: "연령, 성별, 월별 경과(계절) 보정" },
       { name: "범위", value: "월별 점수 12칸 + 핵심운 5칸(경력/금전/애정/건강/관계)" },

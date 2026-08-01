@@ -49,6 +49,13 @@ function toneToColor(tone: TojeongScore) {
   return "from-rose-400 to-rose-600";
 }
 
+const GWE_FORTUNE_BADGE: Record<string, { label: string; className: string }> = {
+  great: { label: "대길", className: "bg-emerald-500/15 text-emerald-300 border-emerald-300/40" },
+  good: { label: "길", className: "bg-cyan-500/15 text-cyan-300 border-cyan-300/40" },
+  mixed: { label: "평", className: "bg-amber-500/15 text-amber-300 border-amber-300/40" },
+  caution: { label: "주의", className: "bg-rose-500/15 text-rose-300 border-rose-300/40" },
+};
+
 function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
   return (
     <div className={`rounded-3xl border p-5 ${tone}`}>
@@ -132,6 +139,8 @@ export default function TojeongPage() {
         year: selectedYear,
         birthDayOfYear: dayOfYear(birthDate),
         isFemale: profile.gender === "female",
+        // 정통 144괘 산출용 — "lunar" 프로필이면 birthMonth/birthDay 를 음력으로 간주
+        calendarType: profile.calendarType === "lunar" ? "lunar" : "solar",
       });
 
       const scoreBands: ViewReport["scoreBands"] = [
@@ -170,7 +179,7 @@ export default function TojeongPage() {
           subtitle: `${selectedYear}년 연간 운세`,
           profileId: profile.id,
           profileName: profile.name,
-          resultPreview: `${output.mainGrade} ${output.mainScore}점`,
+          resultPreview: `${output.gwe ? `제 ${output.gwe.code}괘 · ` : ""}${output.mainGrade} ${output.mainScore}점`,
           result: {
             ...output,
             trustScore: trustScore(output),
@@ -260,6 +269,35 @@ export default function TojeongPage() {
 
         {report && (
           <>
+            {report.gwe && (
+              <section className="mt-8 rounded-[2rem] border border-amber-300/25 bg-gradient-to-br from-slate-900/80 via-slate-900/60 to-amber-500/5 p-5 sm:p-8">
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-slate-800/70 text-sm font-black tracking-[0.2em] text-amber-300">
+                    제 {report.gwe.code} 괘
+                  </div>
+                  <span className="text-sm text-slate-400">
+                    상 {report.gwe.upper} · 중 {report.gwe.middle} · 하 {report.gwe.lower} — {report.gwe.upperName}
+                  </span>
+                  <span
+                    className={`ml-auto px-3 py-1 rounded-full border text-sm font-black ${
+                      (GWE_FORTUNE_BADGE[report.gwe.fortune] ?? GWE_FORTUNE_BADGE.mixed).className
+                    }`}
+                  >
+                    {(GWE_FORTUNE_BADGE[report.gwe.fortune] ?? GWE_FORTUNE_BADGE.mixed).label}
+                  </span>
+                </div>
+                <h2 className="mt-4 text-2xl md:text-3xl font-black text-white">{report.gwe.title}</h2>
+                <p className="mt-3 text-sm md:text-base leading-relaxed text-slate-200">{report.gwe.summary}</p>
+                <p className="mt-3 text-sm text-cyan-200/90">월별 힌트 · {report.gwe.monthlyHint}</p>
+                <p className="mt-4 text-xs leading-relaxed text-slate-500">
+                  {report.gwe.basis === "lunar"
+                    ? "음력 생월·생일과 월대소(대월 30/소월 29)를 반영해 상·중·하 3괘를 산출했습니다."
+                    : "이 환경에서는 음력 변환이 불가해 양력 월·일 기반 근사로 산출했습니다."}
+                  {" "}태세수·월건수·일진수는 전통 수리표 원문이 아닌 간지 순번 기반의 현대 재구성 방식이며, 괘사 역시 전통 원문의 인용이 아니라 8괘 상징에 근거한 현대적 재해석입니다.
+                </p>
+              </section>
+            )}
+
             <section className="mt-8 bg-slate-900/55 border border-white/10 rounded-[2rem] p-5 sm:p-8">
               <div className="flex items-start justify-between">
                 <div>

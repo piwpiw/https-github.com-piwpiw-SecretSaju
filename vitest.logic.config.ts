@@ -23,6 +23,7 @@ export default defineConfig({
             'tests/logic/defect-regressions.test.ts',
             'tests/logic/compatibility-full.test.ts',
             'tests/logic/daewun.test.ts',
+            'tests/logic/tojeong-gwe.test.ts',
             'tests/logic/ai-routing.test.ts',
             'tests/logic/auth-callback-message.test.ts',
             'tests/logic/payment-flow.test.ts',

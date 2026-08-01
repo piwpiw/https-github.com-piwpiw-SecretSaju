@@ -95,7 +95,7 @@ export default function DreamsPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-black text-white uppercase tracking-widest leading-none">AI 꿈 해몽 비서</h1>
-                <p className="text-[13px] font-black text-emerald-500/60 uppercase tracking-[0.2em] mt-1">사전 기반 다중 상징 분석</p>
+                <p className="text-[13px] font-black text-emerald-300 uppercase tracking-[0.2em] mt-1">사전 기반 다중 상징 분석</p>
               </div>
             </div>
 
