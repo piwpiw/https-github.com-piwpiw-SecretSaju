@@ -480,16 +480,21 @@ function ResultCard({
       { label: "득세", value: Number(gangyak?.deukse || 0), hint: "주변 천간의 보조 에너지" },
     ];
   const strengthProfile = canonicalFeatures?.strengthProfile;
-  const boundaryInfo = canonicalFeatures?.chartCore.calendarBoundaries;
-  const lineagePolicy = canonicalFeatures?.chartCore.lineageProfile;
+  const boundaryInfo = canonicalFeatures?.chartCore?.calendarBoundaries;
+  const lineagePolicy = canonicalFeatures?.chartCore?.lineageProfile;
   const structureCandidates = canonicalFeatures?.structureCandidates?.slice(0, 3) || [];
   const yongshinCandidates = canonicalFeatures?.yongshinCandidates?.slice(0, 4) || [];
   const transitInteractions = canonicalFeatures?.transitInteractions?.slice(0, 6) || [];
   const currentUn = canonicalFeatures?.luckCycles?.currentUn;
   // 엔진이 사주 전체 기준으로 계산하는 신살·지장간 — 예전에는 계산만 되고
   // 결과 카드 어디에도 표시되지 않았다.
-  const sinsalList = canonicalFeatures?.auxiliarySignals?.sinsal || [];
-  const hiddenStemRows = canonicalFeatures?.hiddenStems || [];
+  // 출생 시간 미상이면 시주는 12:00 폴백 추정치이므로, 근거 없는 시주
+  // 신살·지장간을 표시하지 않는다.
+  const hourIsFallback = canonicalFeatures?.timeContext?.timeUnknownFallbackUsed ?? false;
+  const sinsalList = (canonicalFeatures?.auxiliarySignals?.sinsal || [])
+    .filter((item) => !hourIsFallback || item.pillar !== "hour");
+  const hiddenStemRows = (canonicalFeatures?.hiddenStems || [])
+    .filter((row) => !hourIsFallback || row.pillar !== "hour");
   const pillarLabelKo: Record<string, string> = { year: "년주", month: "월주", day: "일주", hour: "시주" };
 
   const premiumBulletsByFocus: Record<InsightFocus, string[]> = {

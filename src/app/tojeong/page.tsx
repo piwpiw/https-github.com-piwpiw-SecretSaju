@@ -141,6 +141,7 @@ export default function TojeongPage() {
         isFemale: profile.gender === "female",
         // 정통 144괘 산출용 — "lunar" 프로필이면 birthMonth/birthDay 를 음력으로 간주
         calendarType: profile.calendarType === "lunar" ? "lunar" : "solar",
+        isLeapMonth: profile.isLeapMonth,
       });
 
       const scoreBands: ViewReport["scoreBands"] = [

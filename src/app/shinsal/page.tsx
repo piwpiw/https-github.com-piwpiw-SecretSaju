@@ -86,9 +86,14 @@ export default function ShinsalPage() {
             });
 
             const fp = saju.fourPillars;
-            setPillarsLabel([fp.year, fp.month, fp.day, fp.hour].map((p) => p.fullName).join(" · "));
+            // 시간 미상이면 시주는 12:00 폴백에서 유도된 추정치다 — 근거 없는
+            // 시주 신살을 결과에 넣지 않는다.
+            const timeUnknown = saju.canonicalFeatures?.timeContext?.timeUnknownFallbackUsed ?? false;
+            const shownPillars = timeUnknown ? [fp.year, fp.month, fp.day] : [fp.year, fp.month, fp.day, fp.hour];
+            setPillarsLabel(shownPillars.map((p) => p.fullName).join(" · ") + (timeUnknown ? " (시주 제외 — 출생 시간 미상)" : ""));
 
-            const list = saju.canonicalFeatures?.auxiliarySignals?.sinsal ?? [];
+            const list = (saju.canonicalFeatures?.auxiliarySignals?.sinsal ?? [])
+                .filter((s) => !timeUnknown || s.pillar !== "hour");
             setResults(list.map((s) => ({
                 name: s.name,
                 pillar: PILLAR_KO[s.pillar] ?? s.pillar,

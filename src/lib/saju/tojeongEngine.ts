@@ -271,26 +271,42 @@ function tryToLunar(date: Date): LunarDate | null {
  * lunarToSolar 의 전 구간 선형 탐색 대신, solarToLunar 를 이용해
  * 추정치에서 날짜 차이만큼 보정해 가는 반복 수렴 방식(호출 수십 회 이내).
  */
-function tryFindSolarDateForLunar(lunarYear: number, lunarMonth: number, lunarDay: number): Date | null {
+function tryFindSolarDateForLunar(lunarYear: number, lunarMonth: number, lunarDay: number, wantLeapMonth: boolean = false): Date | null {
   // 음력 m월은 대략 양력 m+1월 무렵
   let guess = new Date(lunarYear, lunarMonth - 1, Math.min(lunarDay, 28));
   guess = new Date(guess.getFullYear(), guess.getMonth(), guess.getDate() + 30);
 
+  const matches = (parsed: LunarDate | null): boolean =>
+    !!parsed && parsed.year === lunarYear && parsed.month === lunarMonth
+    && parsed.day === lunarDay && parsed.isLeapMonth === wantLeapMonth;
+
   for (let iter = 0; iter < 24; iter += 1) {
     const parsed = tryToLunar(guess);
     if (!parsed) return null;
+    if (matches(parsed)) return guess;
+
     const yearDiff = lunarYear - parsed.year;
     const monthDiff = lunarMonth - parsed.month;
     const dayDiff = lunarDay - parsed.day;
-    if (yearDiff === 0 && monthDiff === 0 && dayDiff === 0 && !parsed.isLeapMonth) {
-      return guess;
-    }
     let step = Math.round(yearDiff * 354 + monthDiff * 29.5 + dayDiff);
     if (step === 0) {
-      // 같은 숫자의 윤달에 착지한 경우 → 평달로 한 달 이동
-      step = parsed.isLeapMonth ? -29 : 29;
+      // 같은 숫자의 윤달에 착지했거나 반올림이 0으로 떨어진 경우.
+      // 예전에는 ±29 점프로 빠져나가려 했는데, 윤달이 낀 해의 월말
+      // 날짜(예: 2004년 평2월 30일)에서는 두 추정치 사이를 영원히
+      // 진동해 수렴에 실패했다. 조잡한 점프 대신 아래의 유한 선형
+      // 탐색으로 넘긴다.
+      break;
     }
     guess = new Date(guess.getFullYear(), guess.getMonth(), guess.getDate() + step);
+  }
+
+  // 폴백: 마지막 추정치 주변 ±60일을 하루 단위로 훑는다. 목표 음력일이
+  // 실존하면 이 범위 안에 반드시 있다(추정 오차는 윤달 한 달 수준).
+  for (let offset = 0; offset <= 60; offset += 1) {
+    for (const sign of offset === 0 ? [1] : [1, -1]) {
+      const probe = new Date(guess.getFullYear(), guess.getMonth(), guess.getDate() + offset * sign);
+      if (matches(tryToLunar(probe))) return probe;
+    }
   }
   return null;
 }
@@ -328,12 +344,19 @@ export function calculateTojeongGwe(params: {
   birthMonth: number;
   birthDay: number;
   calendarType?: "solar" | "lunar";
+  /** 음력 입력이 윤달인 경우 (프로필의 isLeapMonth) */
+  isLeapMonth?: boolean;
   targetYear: number;
 }): TojeongGwe | null {
   const { birthYear, birthMonth, birthDay, targetYear } = params;
   const calendarType = params.calendarType === "lunar" ? "lunar" : "solar";
+  const isLeapMonth = calendarType === "lunar" && params.isLeapMonth === true;
 
   if (!Number.isFinite(birthYear) || !Number.isFinite(birthMonth) || !Number.isFinite(birthDay)) {
+    return null;
+  }
+  // 범위 밖 입력(월 13, 일 0 등)이 근거 로그까지 흘러가지 않게 막는다
+  if (birthMonth < 1 || birthMonth > 12 || birthDay < 1 || birthDay > 31) {
     return null;
   }
 
@@ -349,9 +372,9 @@ export function calculateTojeongGwe(params: {
   if (calendarType === "lunar") {
     lunarMonth = birthMonth;
     lunarDay = birthDay;
-    birthSolarAnchor = tryFindSolarDateForLunar(birthYear, birthMonth, birthDay);
+    birthSolarAnchor = tryFindSolarDateForLunar(birthYear, birthMonth, birthDay, isLeapMonth);
     birthLunar = birthSolarAnchor
-      ? { year: birthYear, month: birthMonth, day: birthDay, isLeapMonth: false }
+      ? { year: birthYear, month: birthMonth, day: birthDay, isLeapMonth }
       : null;
     if (!birthSolarAnchor) {
       // 음력 입력이므로 월·일 수치는 그대로 쓰되, 월대소 판정만 불가 → 근사 표기
@@ -488,6 +511,8 @@ export function buildTojeongReport(params: {
    * "lunar" 면 birthMonth/birthDay 를 이미 음력 수치로 간주하고 144괘를 산출한다.
    */
   calendarType?: "solar" | "lunar";
+  /** 음력 프로필의 윤달 여부 */
+  isLeapMonth?: boolean;
 }) {
   const {
     profileName,
@@ -501,6 +526,7 @@ export function buildTojeongReport(params: {
     birthDayOfYear,
     isFemale,
     calendarType,
+    isLeapMonth,
   } = params;
 
   const age = year - birthYear + 1;
@@ -578,6 +604,7 @@ export function buildTojeongReport(params: {
       birthMonth,
       birthDay,
       calendarType,
+      isLeapMonth,
       targetYear: year,
     }) ?? undefined;
   } catch {

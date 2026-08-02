@@ -167,6 +167,7 @@ export default function VSModePage() {
           birthTime: main.birthTime || "12:00",
           gender: main.gender === "male" ? "M" : "F",
           calendarType: main.calendarType,
+          isTimeUnknown: main.isTimeUnknown,
         });
 
         const resB = await calculateHighPrecisionSaju({
@@ -174,6 +175,7 @@ export default function VSModePage() {
           birthTime: target.birthTime || "12:00",
           gender: target.gender === "male" ? "M" : "F",
           calendarType: target.calendarType,
+          isTimeUnknown: target.isTimeUnknown,
         });
 
         setMainProfile(main);

@@ -149,12 +149,14 @@ function CompatibilityContent() {
           birthTime: personA.birthTime || "12:00",
           gender: personA.gender === "male" ? "M" : "F",
           calendarType: personA.calendarType,
+          isTimeUnknown: personA.isTimeUnknown,
         });
         const hpB = await calculateHighPrecisionSaju({
           birthDate: parseBirth(personB.birthdate),
           birthTime: personB.birthTime || "12:00",
           gender: personB.gender === "male" ? "M" : "F",
           calendarType: personB.calendarType,
+          isTimeUnknown: personB.isTimeUnknown,
         });
         setSajuA(hpA);
         setSajuB(hpB);
