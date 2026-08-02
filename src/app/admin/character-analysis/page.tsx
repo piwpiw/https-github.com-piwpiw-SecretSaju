@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { PILLAR_CODES, getPillarNameKo } from "@/lib/saju";
 import { analyzeCharacter } from "@/lib/saju/characterAnalysis";
@@ -323,7 +324,7 @@ export default function CharacterAnalysisPage() {
                     <p className="text-sm text-slate-400 mt-2">
                         ← <a href="/admin/test-control" className="text-cyan-400 hover:underline">관리자 대시보드</a>
                         {" | "}
-                        <a href="/" className="text-cyan-400 hover:underline">홈</a>
+                        <Link href="/" className="text-cyan-400 hover:underline">홈</Link>
                     </p>
                 </div>
             </div>
