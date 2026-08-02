@@ -269,3 +269,25 @@ describe("buildTojeongReport 통합 (하위 호환)", () => {
     expect(a.gwe?.code).toBe(b.gwe?.code);
   });
 });
+
+describe('적대적 검증에서 나온 경계 수정 (dda1c0d 리뷰)', () => {
+    it('윤달이 낀 해의 평달 말일이 수렴한다 (2004 평2월 30일)', () => {
+        // 수정 전: 반복 탐색이 윤2월에 착지 후 ±29 진동으로 수렴 실패 →
+        // 근사 강등 + 월대소 오판(29)으로 중괘가 달라졌다.
+        const r = calculateTojeongGwe({ birthYear: 2004, birthMonth: 2, birthDay: 30, calendarType: 'lunar', targetYear: 2026 });
+        expect(r?.basis).toBe('lunar');
+        expect(r?.inputs.monthSizeValue).toBe(30);
+    });
+
+    it('윤달 출생을 평달과 구분한다 (2004 윤2/12 vs 평2/12)', () => {
+        const leap = calculateTojeongGwe({ birthYear: 2004, birthMonth: 2, birthDay: 12, calendarType: 'lunar', isLeapMonth: true, targetYear: 2026 });
+        const plain = calculateTojeongGwe({ birthYear: 2004, birthMonth: 2, birthDay: 12, calendarType: 'lunar', isLeapMonth: false, targetYear: 2026 });
+        expect(leap?.basis).toBe('lunar');
+        expect(plain?.basis).toBe('lunar');
+        expect(leap?.code).not.toBe(plain?.code);
+    });
+
+    it('범위 밖 음력 입력(월 13)은 null', () => {
+        expect(calculateTojeongGwe({ birthYear: 1990, birthMonth: 13, birthDay: 5, calendarType: 'lunar', targetYear: 2026 })).toBeNull();
+    });
+});

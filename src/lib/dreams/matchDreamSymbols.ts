@@ -83,7 +83,11 @@ function isSingleCharContextOk(text: string, index: number, alias: string): bool
   // 문장 끝 또는 비한글(공백·문장부호)이면 단독 단어로 본다 ("맑은 물 이었다")
   if (!next || !HANGUL_SYLLABLE.test(next)) return true;
   // 한글이 이어지면 조사 허용 목록에 있을 때만 매칭 ("물이", "물을")
-  return SINGLE_CHAR_NEXT_ALLOWED.has(next);
+  if (!SINGLE_CHAR_NEXT_ALLOWED.has(next)) return false;
+  // 조사 뒤에 또 한글이 붙으면 조사가 아니라 복합어의 일부일 가능성이 높다
+  // ("돈가스"의 '가', "별의별"의 '의'). 조사는 어절 끝에서 끝나야 한다.
+  const afterParticle = index + alias.length + 1 < text.length ? text[index + alias.length + 1] : '';
+  return !afterParticle || !HANGUL_SYLLABLE.test(afterParticle);
 }
 
 /** 상징 조합 해석 규칙 — 두 상징이 함께 매칭되면 문구를 추가한다 */

@@ -146,3 +146,19 @@ describe('dreamDictionary — 사전 무결성', () => {
     }
   });
 });
+
+describe('복합어 오매칭 방지 (dda1c0d 리뷰 수정)', () => {
+    it('"돈가스" 는 돈꿈이 아니다 (조사 뒤 한글 연속 차단)', () => {
+        expect(matchDreamSymbols('돈가스를 맛있게 먹었다').matches.map(m => m.symbol)).not.toContain('돈');
+    });
+    it('"별의별" 은 별꿈이 아니다', () => {
+        expect(matchDreamSymbols('별의별 생각이 다 들었다').matches.map(m => m.symbol)).not.toContain('별');
+    });
+    it('"이사님" 은 집꿈이 아니고 "이사하는" 은 집꿈이다', () => {
+        expect(matchDreamSymbols('이사님과 회의하는 꿈').matches.map(m => m.symbol)).not.toContain('집');
+        expect(matchDreamSymbols('이사하는 꿈을 꿨다').matches.map(m => m.symbol)).toContain('집');
+    });
+    it('르 불규칙 "날아올랐다" 도 비행으로 잡는다', () => {
+        expect(matchDreamSymbols('하늘로 날아올랐다').matches.map(m => m.symbol)).toContain('비행');
+    });
+});

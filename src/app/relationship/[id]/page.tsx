@@ -72,13 +72,15 @@ export default function RelationshipDetailPage() {
                 birthDate: mainBirthDate,
                 birthTime: main.birthTime || '12:00',
                 gender: main.gender === 'male' ? 'M' : 'F',
-                calendarType: main.calendarType
+                calendarType: main.calendarType,
+                isTimeUnknown: main.isTimeUnknown,
             });
             const targetSaju = await calculateHighPrecisionSaju({
                 birthDate: targetBirthDate,
                 birthTime: target.birthTime || '12:00',
                 gender: target.gender === 'male' ? 'M' : 'F',
-                calendarType: target.calendarType
+                calendarType: target.calendarType,
+                isTimeUnknown: target.isTimeUnknown,
             });
 
             const rel = analyzeRelationship(
