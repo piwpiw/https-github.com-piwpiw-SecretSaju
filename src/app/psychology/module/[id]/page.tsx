@@ -34,7 +34,7 @@ const MODULE_LIBRARY: Record<string, ModuleDefinition> = {
 };
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 function ResultSummaryCard({ title, body, tone }: { title: string; body: string; tone: string }) {
@@ -46,7 +46,8 @@ function ResultSummaryCard({ title, body, tone }: { title: string; body: string;
   );
 }
 
-export default function PsychologyModulePage({ params }: Props) {
+export default async function PsychologyModulePage(props: Props) {
+  const params = await props.params;
   const { id } = params;
   const moduleLabel = decodeURIComponent(id);
   const moduleKey = moduleLabel.toLowerCase();

@@ -6,7 +6,7 @@ import { getAuthenticatedUser } from '@/lib/auth/api-auth';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const requestCookies = cookieStore.getAll().map((entry) => `${entry.name}=${entry.value}`).join('; ');
   const isMockAdmin = cookieStore.get('secret_paws_mock_admin')?.value === 'true';
 
@@ -14,8 +14,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     return <>{children}</>;
   }
 
-  const host = headers().get('host') || 'localhost:3000';
-  const proto = headers().get('x-forwarded-proto') || 'http';
+  const host = (await headers()).get('host') || 'localhost:3000';
+  const proto = (await headers()).get('x-forwarded-proto') || 'http';
   const request = new NextRequest(`${proto}://${host}/admin`, {
     headers: {
       cookie: requestCookies,

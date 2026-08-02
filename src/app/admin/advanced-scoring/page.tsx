@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { PILLAR_CODES, getPillarNameKo } from "@/lib/saju";
 import {
@@ -330,7 +331,7 @@ export default function AdvancedScoringPage() {
                 <p className="mt-2">
                         ← <a href="/admin/character-analysis" className="text-yellow-400 hover:underline">캐릭터 분석</a>
                         {" | "}
-                        <a href="/" className="text-yellow-400 hover:underline">홈</a>
+                        <Link href="/" className="text-yellow-400 hover:underline">홈</Link>
                     </p>
                 </div>
             </div>

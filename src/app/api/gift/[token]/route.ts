@@ -12,10 +12,8 @@ import { getGiftResult } from '../gift-store';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(
-    _req: Request,
-    { params }: { params: { token: string } }
-) {
+export async function GET(_req: Request, props: { params: Promise<{ token: string }> }) {
+    const params = await props.params;
     try {
         const token = decodeURIComponent(params?.token ?? '');
         const result = await getGiftResult(token);
