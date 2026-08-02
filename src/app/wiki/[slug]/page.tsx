@@ -30,11 +30,12 @@ export function generateStaticParams() {
   }));
 }
 
-export default async function DocPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function DocPage(
+  props: {
+    params: Promise<{ slug: string }>;
+  }
+) {
+  const params = await props.params;
   const filePath = slugToPath[params.slug];
 
   if (!filePath) {

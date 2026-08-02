@@ -6,11 +6,12 @@ type SearchParams = {
   status?: string;
 };
 
-export default function PsychologyPremiumReportPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
+export default async function PsychologyPremiumReportPage(
+  props: {
+    searchParams: Promise<SearchParams>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const profileId = searchParams.profileId || "";
   const status = searchParams.status || "processing";
   const isReady = status === "ready";

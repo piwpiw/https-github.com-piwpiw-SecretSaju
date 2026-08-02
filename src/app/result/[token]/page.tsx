@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 type Props = {
-  params: { token: string };
+  params: Promise<{ token: string }>;
 };
 
 function NoticeCard({
@@ -49,7 +49,8 @@ function NoticeCard({
   );
 }
 
-export default async function GiftResultPage({ params }: Props) {
+export default async function GiftResultPage(props: Props) {
+  const params = await props.params;
   const token = decodeURIComponent(params.token);
   const result = await getGiftResult(token);
 

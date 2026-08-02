@@ -4,12 +4,13 @@ import { ArrowLeft, ArrowRight, Calendar, Clock, ChevronRight } from "lucide-rea
 import { STORY_ITEMS } from "../data";
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
-export default function StoryDetailPage({ params }: Props) {
+export default async function StoryDetailPage(props: Props) {
+  const params = await props.params;
   const storyId = Number(params.id);
   const currentIndex = STORY_ITEMS.findIndex((story) => story.id === storyId);
 

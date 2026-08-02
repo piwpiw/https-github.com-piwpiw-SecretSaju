@@ -83,14 +83,13 @@
     "gray-matter": "^4.0.3",
     "html2canvas": "^1.4.1",
     "lucide-react": "^0.454.0",
-    "next": "^14.2.35",
+    "next": "^15.5.22",
     "next-mdx-remote": "^6.0.0",
-    "next-pwa": "^5.6.0",
     "openai": "^6.25.0",
     "pg": "^8.19.0",
     "qrcode.react": "^4.2.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "resend": "^6.9.2",
     "stripe": "^20.3.1",
     "tailwind-merge": "^2.5.4"
@@ -99,13 +98,13 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^22.9.0",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/ui": "^4.0.18",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.1",
-    "eslint-config-next": "14.2.18",
+    "eslint-config-next": "^15.5.22",
     "jsdom": "^27.4.0",
     "playwright": "^1.58.2",
     "postcss": "^8.4.49",
@@ -116,5 +115,8 @@
   },
   "optionalDependencies": {
     "@rollup/rollup-win32-x64-msvc": "^4.59.0"
+  },
+  "overrides": {
+    "sharp": "^0.35.3"
   }
 }

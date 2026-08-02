@@ -14,7 +14,7 @@ const nextConfig = {
     dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  swcMinify: true,
+  // swcMinify 는 Next 15 에서 옵션 자체가 제거됨 (기본 동작)
   compiler: {
     removeConsole: process.env.NODE_ENV === "production"
       ? {
@@ -56,56 +56,10 @@ const nextConfig = {
   },
 };
 
-const withPWA = require("next-pwa")({
-  dest: "public",
-  disable: process.env.NODE_ENV === "development",
-  register: true,
-  skipWaiting: true,
-
-  // ⚠️ 아래 runtimeCaching 은 현재 **동작하지 않는다**.
-  //
-  // 서비스워커가 한 번도 등록되지 않기 때문이다. next-pwa v5 는 등록 스크립트를
-  // pages/_document 에 주입하는데 이 프로젝트에는 _document 가 없다. 실제로
-  // 프로덕션 standalone 빌드를 띄우고 확인해도 navigator.serviceWorker
-  // .getRegistrations() 가 비어 있고, 응답 HTML 어디에도 sw.js 참조가 없다.
-  // 그래서 sw.js 는 생성·제공되지만 아무도 그걸 등록하지 않는다.
-  //
-  // 한때 "배포해도 옛 화면이 보이는" 문제의 원인을 next-pwa 의 기본
-  // StaleWhileRevalidate 로 지목하고 아래 설정을 넣었는데, 그 진단은 틀렸다.
-  // 등록조차 안 되는 워커가 캐시를 할 수는 없다. 실제 원인은 CDN 이나 브라우저
-  // 캐시 쪽으로 다시 봐야 한다.
-  //
-  // 설정을 지우지 않고 두는 이유: 서비스워커를 켜기로 결정하면 이 정책이
-  // 그대로 필요하다(정적 자산만 CacheFirst, 문서·API 는 NetworkFirst).
-  // 켤 때는 _document 추가 또는 직접 등록 코드가 함께 있어야 한다.
-  runtimeCaching: [
-    {
-      urlPattern: /^https?:\/\/[^/]+\/_next\/static\/.*/i,
-      handler: "CacheFirst",
-      options: {
-        cacheName: "next-static-immutable",
-        expiration: { maxEntries: 256, maxAgeSeconds: 30 * 24 * 60 * 60 },
-      },
-    },
-    {
-      urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|avif|ico|woff2?)$/i,
-      handler: "StaleWhileRevalidate",
-      options: {
-        cacheName: "static-assets",
-        expiration: { maxEntries: 128, maxAgeSeconds: 7 * 24 * 60 * 60 },
-      },
-    },
-    {
-      // 문서·RSC 페이로드·API — 최신이 항상 우선, 실패 시에만 캐시.
-      urlPattern: /^https?:\/\/[^/]+\/(?!_next\/static\/).*/i,
-      handler: "NetworkFirst",
-      options: {
-        cacheName: "app-runtime",
-        networkTimeoutSeconds: 5,
-        expiration: { maxEntries: 96, maxAgeSeconds: 24 * 60 * 60 },
-      },
-    },
-  ],
-});
-
-module.exports = withPWA(nextConfig);
+// next-pwa 는 제거했다. v5 는 pages/_document 에 등록 스크립트를 주입하는데
+// 이 App Router 프로젝트에는 _document 가 없어 서비스워커가 한 번도 등록된
+// 적이 없다(생성만 되고 사용 안 됨). 죽은 코드가 workbox 체인의 취약점
+// (serialize-javascript)만 끌고 와서 의존성째 제거했다. PWA 를 다시 켜려면
+// App Router 호환 방식(직접 등록 코드 + 정적 자산 CacheFirst, 문서·API
+// NetworkFirst 정책)으로 새로 구성해야 한다.
+module.exports = nextConfig;
