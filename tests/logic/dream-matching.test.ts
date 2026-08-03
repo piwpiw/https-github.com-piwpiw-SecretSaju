@@ -162,3 +162,138 @@ describe('복합어 오매칭 방지 (dda1c0d 리뷰 수정)', () => {
         expect(matchDreamSymbols('하늘로 날아올랐다').matches.map(m => m.symbol)).toContain('비행');
     });
 });
+
+describe('신규 상징 매칭 (사전 확장 78→120+)', () => {
+  it('곰이 들어오는 꿈은 곰(태몽) 상징으로 매칭된다', () => {
+    const result = matchDreamSymbols('큰 곰이 품으로 들어오는 꿈');
+    const top = result.matches.find((m) => m.symbol === '곰');
+    expect(top).toBeDefined();
+    expect(top?.category).toBe('태몽');
+  });
+
+  it('두꺼비가 들어오는 꿈은 두꺼비(재물) 상징으로 매칭된다', () => {
+    expect(symbolsOf('두꺼비가 마당으로 들어오는 꿈')).toContain('두꺼비');
+  });
+
+  it('지갑 분실은 어간형(잃어버리)과 과거형(잃어버렸) 모두 매칭된다', () => {
+    expect(symbolsOf('지갑을 잃어버리는 꿈을 꿨어요')).toContain('지갑');
+    expect(symbolsOf('지갑을 잃어버렸다가 되찾는 꿈')).toContain('지갑');
+  });
+
+  it('1글자 별칭 "칼"은 조사 문맥에서 매칭된다', () => {
+    expect(symbolsOf('칼이 반짝이는 꿈')).toContain('칼');
+  });
+
+  it('"배를 타고" 는 배(선박) 상징으로 매칭된다', () => {
+    expect(symbolsOf('배를 타고 바다를 건너는 꿈')).toContain('배(선박)');
+  });
+
+  it('태풍이 몰아치면 폭풍 상징으로 매칭된다', () => {
+    expect(symbolsOf('태풍이 몰아쳐서 무서웠던 꿈')).toContain('폭풍');
+  });
+
+  it('거울이 깨지는 꿈은 거울 상징으로 매칭된다', () => {
+    expect(symbolsOf('거울이 깨지는 꿈을 꿨다')).toContain('거울');
+  });
+
+  it('전남친이 나오면 옛 연인 상징으로 매칭된다', () => {
+    expect(symbolsOf('전남친이 나와서 이야기하는 꿈')).toContain('옛 연인');
+  });
+
+  it('쌀이 가득한 꿈은 쌀밥(재물) 상징으로 매칭된다', () => {
+    expect(symbolsOf('창고에 쌀이 가득 쌓여 있는 꿈')).toContain('쌀밥');
+  });
+
+  it('차에 치이는 꿈은 교통사고 상징으로 매칭된다', () => {
+    expect(symbolsOf('길을 걷다가 차에 치이는 꿈')).toContain('교통사고');
+  });
+
+  it('병원에 입원하는 꿈은 병원 상징으로 매칭된다', () => {
+    expect(symbolsOf('병원에 입원해서 치료받는 꿈')).toContain('병원');
+  });
+
+  it('샤워하는 꿈은 목욕 상징으로 매칭된다 (도구격 "물로"의 물도 정당 매칭)', () => {
+    // '로' 조사 허용 이후 "물로" 의 물은 정당한 매칭이다 — 물로 씻는 꿈에
+    // 물 상징이 붙는 것은 의미상 옳다. 핵심 단언은 목욕 매칭 유지.
+    const symbols = symbolsOf('따뜻한 물로 샤워하는 꿈');
+    expect(symbols).toContain('목욕');
+    expect(symbols).toContain('물');
+  });
+});
+
+describe('다의어 함정 방지 (사전 확장)', () => {
+  it('"배가 고파서"의 배는 선박도 과일도 아니다', () => {
+    const symbols = symbolsOf('배가 고파서 잠에서 깬 꿈');
+    expect(symbols).not.toContain('배(선박)');
+    expect(symbols).not.toContain('과일');
+  });
+
+  it('"배가 아파서 병원에 가는 꿈"은 병원만 매칭되고 선박은 아니다', () => {
+    const symbols = symbolsOf('배가 아파서 병원에 가는 꿈');
+    expect(symbols).toContain('병원');
+    expect(symbols).not.toContain('배(선박)');
+  });
+
+  it('"칼국수"의 칼은 칼 상징이 아니다', () => {
+    expect(symbolsOf('칼국수를 끓여 먹는 꿈')).not.toContain('칼');
+  });
+
+  it('"곰팡이"의 곰은 곰 상징이 아니다', () => {
+    expect(symbolsOf('벽에 곰팡이가 피어 있는 꿈')).not.toContain('곰');
+  });
+
+  it('"섬세한"의 섬은 섬 상징이 아니다', () => {
+    expect(symbolsOf('섬세하게 그림을 그리는 꿈')).not.toContain('섬');
+  });
+
+  it('"눈을 감았다"의 눈은 함박눈이 아니다', () => {
+    expect(symbolsOf('눈을 감았다 뜨는 꿈')).not.toContain('함박눈');
+  });
+
+  it('"책상"의 책은 책 상징이 아니고 "책을 읽"는 매칭된다', () => {
+    expect(symbolsOf('책상 앞에 앉아만 있는 꿈')).not.toContain('책');
+    expect(symbolsOf('두꺼운 책을 읽는 꿈')).toContain('책');
+  });
+});
+
+describe('신규 조합 규칙 (사전 확장)', () => {
+  it('폭풍+배(선박) 조합이 항해 시련 해석을 붙인다', () => {
+    const result = matchDreamSymbols('태풍이 몰아치는 밤에 배를 타고 버티는 꿈');
+    const symbols = result.matches.map((m) => m.symbol);
+    expect(symbols).toContain('폭풍');
+    expect(symbols).toContain('배(선박)');
+    expect(result.comboInsights.length).toBeGreaterThan(0);
+    expect(result.comboInsights.join(' ')).toContain('시련');
+  });
+
+  it('옛 연인+키스 조합이 관계 점검 해석을 붙인다', () => {
+    const result = matchDreamSymbols('전남친과 키스하는 꿈을 꿨어요');
+    const symbols = result.matches.map((m) => m.symbol);
+    expect(symbols).toContain('옛 연인');
+    expect(symbols).toContain('키스');
+    expect(result.comboInsights.length).toBeGreaterThan(0);
+  });
+});
+
+describe('사전 무결성 (확장판)', () => {
+  it('상징 수가 120개 이상이다', () => {
+    expect(DREAM_DICTIONARY.length).toBeGreaterThanOrEqual(120);
+  });
+
+  it('모든 카테고리에 최소 1개 이상의 상징이 존재한다', () => {
+    for (const category of DREAM_CATEGORIES) {
+      expect(
+        DREAM_DICTIONARY.some((entry) => entry.category === category)
+      ).toBe(true);
+    }
+  });
+});
+
+describe('도구격·한정 조사 허용 (로/만)', () => {
+    it('"물로 씻는 꿈" 은 물꿈이다', () => {
+        expect(matchDreamSymbols('물로 씻는 꿈').matches.map(m => m.symbol)).toContain('물');
+    });
+    it('"칼로리 계산" 은 칼꿈이 아니다 (조사 뒤 한글 연속 차단)', () => {
+        expect(matchDreamSymbols('칼로리 계산을 하는 꿈').matches.map(m => m.symbol)).not.toContain('칼');
+    });
+});

@@ -52,9 +52,9 @@
 ## 2. 데이터베이스 (Supabase)
 
 1. ⚠️ `supabase/schema.sql` 이 적용된 프로젝트인지 확인.
-2. ⚠️ `supabase/migrations/` 를 파일명 순서대로 SQL Editor 에서 실행 (신규: `gift_results` 테이블 포함).
+2. ⚠️ `supabase/migrations/` 를 파일명 순서대로 SQL Editor 에서 실행 — 현재 001~**010** (신규: 009 `gift_results`, 010 `ops_counters`+원자 증가 RPC).
 3. ✅ 잔액 변경 경로는 두 가지뿐이다 — RPC `deduct_jellies`(차감)와 라우트의 수동 `update`(적립). **트랜잭션 INSERT 로 잔액이 바뀌는 트리거는 없다** — 새 라우트를 만들 때 이 가정을 다시 들여오지 말 것.
-4. ⚠️ RLS 활성 상태 확인 (`saju_profiles`, `jelly_wallets`, `jelly_transactions`, `orders`, `gift_results`).
+4. ⚠️ RLS 활성 상태 확인 (`saju_profiles`, `jelly_wallets`, `jelly_transactions`, `orders`, `gift_results`, `ops_counters`).
 
 ---
 
@@ -117,7 +117,7 @@ node scripts/qa/free-launch-smoke.mjs http://localhost:3900
 - ✅ `/api/health` 헬스체크 존재 — ⚠️ 업타임 모니터(UptimeRobot 등)에 등록.
 - ✅ 보안 헤더 구성 완료 (HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy).
 - ✅ 결제 검증: 서명 timingSafeEqual + 콜백 도메인 allowlist + pending→completed 조건부 전이(중복 적립 방지).
-- ⚠️ 의존성: `npm audit fix` 를 릴리스마다 실행 (현재 잔여 취약점은 전부 빌드 도구 체인 — 런타임 노출 아님). `--force` 는 메이저 업그레이드를 동반하므로 별도 검증 없이 금지.
+- ⚠️ 의존성: `npm audit fix` 를 릴리스마다 실행. 현재 잔여 런타임 취약점은 Next 에 번들된 postcss 3건뿐 — 상류(Vercel) 수정 대기 항목. `--force` 는 메이저 업그레이드를 동반하므로 별도 검증 없이 금지.
 - ⚠️ **키 로테이션**: 개발 중 대화·로그에 노출된 `GEMINI_API_KEY` 는 즉시 재발급.
 - 참고: next-pwa 서비스워커는 현재 **등록되지 않는다** (next.config.mjs 주석 참조). 켜려면 등록 코드 추가 필요 — 캐시 정책은 이미 정의돼 있음.
 
@@ -125,6 +125,6 @@ node scripts/qa/free-launch-smoke.mjs http://localhost:3900
 
 ## 7. 알려진 잔여 한계 (판매 차단 요소 아님, 인지 필요)
 
-- 인메모리 idempotency 카운터(`payment/verify`)는 서버리스 다중 인스턴스에서 리셋된다 — 이중 지급은 DB 조건부 전이가 막고 있으므로 안전하지만, 모니터링 지표로는 best-effort.
+- ~~인메모리 idempotency 카운터~~ → `ops_counters` 테이블 + 원자 RPC 로 이전 완료 (마이그레이션 010). 카운터는 여전히 best-effort(DB 실패가 결제 검증을 막지 않음)이며, 안전장치의 본체는 orders 의 pending→completed 조건부 전이다.
 - 비로그인 사용자의 지갑·해금 기록은 기기(localStorage) 단위다 — 기기 변경 시 이전 불가. 로그인 유도가 해결책.
-- 영문 라벨 기준선 121건은 의도된 표기(카드 영문명 등) 포함 — 신규 유입만 가드가 차단.
+- 영문 라벨 기준선 116건은 전수 분류를 거친 의도된 표기(타로 카드 원명 78건 등) — 신규 유입만 가드가 차단.

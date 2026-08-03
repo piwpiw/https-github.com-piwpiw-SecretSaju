@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f0f1a" />
+  <title>오프라인 | Secret Saju</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0f0f1a;
+      color: #e2e2f0;
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      text-align: center;
+      padding: 24px;
+    }
+    .card {
+      max-width: 420px;
+      padding: 40px 32px;
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 20px;
+      background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.12), rgba(15, 15, 26, 0) 70%), #14142a;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    }
+    .moon { font-size: 44px; line-height: 1; margin-bottom: 18px; }
+    h1 { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #f4f4ff; }
+    p { font-size: 14px; line-height: 1.7; color: #a5a5c5; margin-bottom: 26px; }
+    button {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      padding: 12px 28px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+    }
+    button:active { transform: translateY(1px); }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="moon" aria-hidden="true">🌙</div>
+    <h1>지금은 오프라인이에요</h1>
+    <p>
+      네트워크 연결이 끊겨 최신 운세를 불러올 수 없습니다.<br />
+      연결이 돌아오면 다시 시도해 주세요.
+    </p>
+    <button type="button" onclick="location.reload()">다시 시도</button>
+  </main>
+</body>
+</html>
