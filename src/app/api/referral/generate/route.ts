@@ -13,7 +13,10 @@ import { generateReferralCode, REFERRAL_REWARDS } from '@/lib/referral/referrals
 
 function buildReferralUrl(referralCode: string) {
     const baseUrl = APP_CONFIG.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://secretsaju.example.com';
-    return `${baseUrl}/?ref=${encodeURIComponent(referralCode)}`;
+    // 공유 링크는 서버 랜딩(/api/referral/invite)을 거친다. 랜딩이 유입 코드를
+    // 쿠키로 보관한 뒤 기존 컨벤션인 /?ref=CODE 로 리다이렉트하므로, 로그인 후
+    // ReferralCard 의 자동 상환(useReferralAutoRedeem)이 코드를 이어받을 수 있다.
+    return `${baseUrl}/api/referral/invite?ref=${encodeURIComponent(referralCode)}`;
 }
 
 export async function POST(req: NextRequest) {

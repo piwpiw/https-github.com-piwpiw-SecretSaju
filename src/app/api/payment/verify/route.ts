@@ -5,13 +5,43 @@ import { insertNotionRow } from '@/lib/integrations/notion';
 import { sendPaymentReceiptEmail } from '@/lib/integrations/mail';
 import { buildErrorResponsePayload } from '@/lib/contracts/error-response';
 import { buildPaymentVerifySignature } from '@/lib/payment/payment-verify';
+import { isMockMode } from '@/lib/app/use-mock';
 
-const VERIFY_IDEMPOTENCY_COUNTER = new Map<string, number>();
-const WALLET_MISMATCH_COUNTER = new Map<string, number>();
-const VERIFY_FAILURE_COUNTER = new Map<string, number>();
 const VERIFY_IDEMPOTENCY_LIMIT = 30;
 const WALLET_MISMATCH_WARNING_THRESHOLD = 3;
 const VERIFY_FAILURE_ALERT_THRESHOLD = 3;
+
+// ─── Ops metric counters (DB-backed) ─────────────────────────────────
+// 아래 카운터들은 "관측 지표"이지 안전장치가 아니다 — 이중 지급 방지는
+// orders 의 조건부 상태 전이(pending → completed claim)가 담당한다.
+// 과거에는 인스턴스 로컬 Map 이었는데, 서버리스에서 인스턴스가 바뀔 때마다
+// 리셋되어 지표를 신뢰할 수 없었다. 지금은 ops_counters 테이블(마이그레이션
+// 010)에 increment_ops_counter RPC 로 원자 증가시킨다.
+//
+// 카운터 의미:
+// - payment_verify_attempts:{orderId}  — 주문별 verify 호출 횟수.
+//   VERIFY_IDEMPOTENCY_LIMIT(30) 초과 시 429 + Notion 경보 (재시도 폭주 감지).
+// - payment_verify_failures:{orderId}  — 주문별 검증 실패 횟수.
+//   VERIFY_FAILURE_ALERT_THRESHOLD(3) 이상이면 Notion 경보.
+// - payment_wallet_mismatch:{userId}   — 적립 후 지갑 잔액 불일치 감지 횟수.
+//   WALLET_MISMATCH_WARNING_THRESHOLD(3) 이상이면 Notion ERROR 경보.
+//
+// best-effort: 카운터 DB 실패가 결제 검증 흐름을 절대 막아서는 안 되므로,
+// 실패하면 null 을 반환하고 임계값 판정은 건너뛴다. mock 모드에서는 no-op.
+async function incrementOpsCounter(
+  supabase: { rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }> },
+  name: string,
+): Promise<number | null> {
+  if (isMockMode()) return null;
+  try {
+    const { data, error } = await supabase.rpc('increment_ops_counter', { p_name: name, p_delta: 1 });
+    if (error) return null;
+    const next = Number(data);
+    return Number.isFinite(next) ? next : null;
+  } catch {
+    return null;
+  }
+}
 
 function parseMetadata(metadata: unknown) {
   if (!metadata || typeof metadata !== 'object') return {} as Record<string, unknown>;
@@ -37,11 +67,17 @@ function verifyPaymentSignature(orderId: string, amount: number, token: string, 
   }
 }
 
-async function recordVerifyFailure(orderId: string, reason: string, metadata: Record<string, unknown>) {
+async function recordVerifyFailure(
+  supabase: Parameters<typeof incrementOpsCounter>[0],
+  orderId: string,
+  reason: string,
+  metadata: Record<string, unknown>,
+) {
   const key = orderId || 'missing';
-  const nextCount = (VERIFY_FAILURE_COUNTER.get(key) || 0) + 1;
-  VERIFY_FAILURE_COUNTER.set(key, nextCount);
-  if (nextCount >= VERIFY_FAILURE_ALERT_THRESHOLD) {
+  const nextCount = await incrementOpsCounter(supabase, `payment_verify_failures:${key}`);
+  // 카운터를 읽지 못하면(null) 임계값 판정 없이 조용히 넘어간다 — 지표용이므로
+  // 검증 흐름/응답에는 영향을 주지 않는다.
+  if (nextCount !== null && nextCount >= VERIFY_FAILURE_ALERT_THRESHOLD) {
     await insertNotionRow({
       category: 'PAYMENT_EVENT',
       title: `Payment verify failure threshold exceeded (${key})`,
@@ -129,11 +165,18 @@ export async function POST(req: NextRequest) {
     const verifyToken = String(payload.verifyToken || '').trim();
     const verifySignature = String(payload.verifySignature || '').trim();
 
-    const idempotencyFingerprint = `verify:${orderId || 'missing'}`;
-    const idempotentAttemptCount = (VERIFY_IDEMPOTENCY_COUNTER.get(idempotencyFingerprint) || 0) + 1;
-    VERIFY_IDEMPOTENCY_COUNTER.set(idempotencyFingerprint, idempotentAttemptCount);
+    const supabase = getSupabaseAdmin();
 
-    if (idempotentAttemptCount > VERIFY_IDEMPOTENCY_LIMIT) {
+    // 주문별 verify 시도 횟수 (DB 카운터, best-effort). 카운터를 읽지 못하면
+    // 1로 간주해 흐름을 막지 않는다 — 응답의 idempotent_attempt_count 도
+    // 그 폴백 값을 따른다.
+    const attemptCount = await incrementOpsCounter(
+      supabase,
+      `payment_verify_attempts:${orderId || 'missing'}`,
+    );
+    const idempotentAttemptCount = attemptCount ?? 1;
+
+    if (attemptCount !== null && attemptCount > VERIFY_IDEMPOTENCY_LIMIT) {
       await insertNotionRow({
         category: 'PAYMENT_EVENT',
         title: `Payment verify idempotency limit exceeded (${orderId || 'missing'})`,
@@ -153,7 +196,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (!paymentKey || !orderId || !verifyToken || !verifySignature || !Number.isFinite(amount)) {
-      await recordVerifyFailure(orderId, 'missing_required_data', {
+      await recordVerifyFailure(supabase, orderId, 'missing_required_data', {
         paymentKey,
         amount,
         verifyToken,
@@ -167,11 +210,10 @@ export async function POST(req: NextRequest) {
 
     const orderIdPattern = /^order_[a-zA-Z0-9]+_[a-z0-9]+$/;
     if (!orderIdPattern.test(orderId)) {
-      await recordVerifyFailure(orderId, 'invalid_order_id', { paymentKey, amount });
+      await recordVerifyFailure(supabase, orderId, 'invalid_order_id', { paymentKey, amount });
       return createErrorResponse('PAYMENT_INVALID_ORDER_ID', 'Invalid order ID format', 400);
     }
 
-    const supabase = getSupabaseAdmin();
     const { data: order, error: orderFetchError } = await supabase
       .from('orders')
       .select('*')
@@ -179,7 +221,7 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (orderFetchError || !order || !order.user_id) {
-      await recordVerifyFailure(orderId, 'order_not_found', {
+      await recordVerifyFailure(supabase, orderId, 'order_not_found', {
         paymentKey,
         amount,
         error: orderFetchError,
@@ -193,7 +235,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (orderAmount !== amount) {
-      await recordVerifyFailure(orderId, 'amount_mismatch', {
+      await recordVerifyFailure(supabase, orderId, 'amount_mismatch', {
         paymentKey,
         requestedAmount: amount,
         orderAmount,
@@ -224,7 +266,7 @@ export async function POST(req: NextRequest) {
       verifyPaymentSignature(orderId, amount, verifyToken, verifySignature);
 
     if (!isValidSignature) {
-      await recordVerifyFailure(orderId, 'invalid_verification_signature', {
+      await recordVerifyFailure(supabase, orderId, 'invalid_verification_signature', {
         paymentKey,
         verifyToken,
       });
@@ -251,7 +293,7 @@ export async function POST(req: NextRequest) {
 
     const verifyData = (await verifyResponse.json().catch(() => null)) as Record<string, unknown> | null;
     if (!verifyResponse.ok || !verifyData) {
-      await recordVerifyFailure(orderId, 'toss_verification_failed', {
+      await recordVerifyFailure(supabase, orderId, 'toss_verification_failed', {
         paymentKey,
         amount,
         errorData: verifyData,
@@ -273,7 +315,7 @@ export async function POST(req: NextRequest) {
     const normalizedTossAmount = Number(tossAmount);
 
     if (tossOrderId !== orderId) {
-      await recordVerifyFailure(orderId, 'toss_order_id_mismatch', {
+      await recordVerifyFailure(supabase, orderId, 'toss_order_id_mismatch', {
         paymentKey,
         expectedOrderId: orderId,
         tossOrderId,
@@ -282,7 +324,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (status !== 'DONE') {
-      await recordVerifyFailure(orderId, 'toss_status_not_done', {
+      await recordVerifyFailure(supabase, orderId, 'toss_status_not_done', {
         paymentKey,
         status,
       });
@@ -302,7 +344,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (!Number.isFinite(normalizedTossAmount) || normalizedTossAmount !== amount) {
-      await recordVerifyFailure(orderId, 'toss_amount_mismatch', {
+      await recordVerifyFailure(supabase, orderId, 'toss_amount_mismatch', {
         paymentKey,
         amount,
         tossAmount: normalizedTossAmount,
@@ -314,12 +356,12 @@ export async function POST(req: NextRequest) {
     }
 
     if (!tossPaymentKey || !tossPaymentKey.length) {
-      await recordVerifyFailure(orderId, 'toss_missing_payment_key', { paymentKey, verifyData });
+      await recordVerifyFailure(supabase, orderId, 'toss_missing_payment_key', { paymentKey, verifyData });
       return createErrorResponse('PAYMENT_TOSS_PAYLOAD_INVALID', 'Toss payment key missing', 400, verifyData);
     }
 
     if (tossPaymentKey !== paymentKey) {
-      await recordVerifyFailure(orderId, 'toss_payment_key_mismatch', {
+      await recordVerifyFailure(supabase, orderId, 'toss_payment_key_mismatch', {
         paymentKey,
         tossPaymentKey,
       });
@@ -465,14 +507,15 @@ export async function POST(req: NextRequest) {
       }
 
       if (refreshedWallet && refreshedWallet.balance !== expectedBalance) {
-        const mismatchCount = (WALLET_MISMATCH_COUNTER.get(userId) || 0) + 1;
-        WALLET_MISMATCH_COUNTER.set(userId, mismatchCount);
+        // 사용자별 불일치 지표 (DB 카운터, best-effort). 읽기 실패 시 1로 간주해
+        // 최초 감지 Notion 기록은 항상 남기되, 임계값 경보만 건너뛴다.
+        const mismatchCount = await incrementOpsCounter(supabase, `payment_wallet_mismatch:${userId}`);
         const walletMismatchPayload = {
           orderId,
           userId,
           expectedBalance,
           actualBalance: refreshedWallet.balance,
-          wallet_mismatch_count: mismatchCount,
+          wallet_mismatch_count: mismatchCount ?? 1,
           idempotentAttemptCount,
         };
         await insertNotionRow({
@@ -482,7 +525,7 @@ export async function POST(req: NextRequest) {
           metadata: walletMismatchPayload,
         });
 
-        if (mismatchCount >= WALLET_MISMATCH_WARNING_THRESHOLD) {
+        if (mismatchCount !== null && mismatchCount >= WALLET_MISMATCH_WARNING_THRESHOLD) {
           await insertNotionRow({
             category: 'ERROR',
             title: `Wallet mismatch threshold exceeded (${orderId})`,
