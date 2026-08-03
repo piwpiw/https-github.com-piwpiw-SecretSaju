@@ -103,7 +103,6 @@ export const JIJI_TO_WUXING: Record<string, { element: WuxingElement; hidden: Wu
 /**
  * 오행 관계
  */
-export type WuxingRelation = "상생" | "상극" | "동일" | "비화" | "누설";
 
 /**
  * 상생 (相生) - 생해주는 관계
@@ -128,72 +127,6 @@ const XIANGKE_MAP: Record<WuxingElement, WuxingElement> = {
     火: "金", // 불이 금을 극함
     金: "木", // 금이 나무를 극함
 };
-
-/**
- * 두 오행의 관계 계산
- */
-export function getWuxingRelation(from: WuxingElement, to: WuxingElement): WuxingRelation {
-    if (from === to) return "동일";
-    if (SHENGSHENG_MAP[from] === to) return "상생"; // from이 to를 생함
-    if (XIANGKE_MAP[from] === to) return "상극"; // from이 to를 극함
-    if (SHENGSHENG_MAP[to] === from) return "비화"; // to가 from을 생함 (역상생)
-    if (XIANGKE_MAP[to] === from) return "누설"; // to가 from을 극함 (역상극)
-    return "동일"; // fallback
-}
-
-/**
- * 관계의 점수화 (궁합 계산용)
- */
-export function getWuxingCompatibilityScore(from: WuxingElement, to: WuxingElement): number {
-    const relation = getWuxingRelation(from, to);
-
-    switch (relation) {
-        case "상생": return 85; // 내가 상대를 도와줌 (좋은 관계)
-        case "비화": return 80; // 상대가 나를 도와줌 (좋은 관계)
-        case "동일": return 60; // 비슷함 (우호적이지만 경쟁)
-        case "상극": return 40; // 내가 상대를 제약 (갈등)
-        case "누설": return 45; // 상대가 나를 제약 (압박)
-        default: return 50;
-    }
-}
-
-/**
- * 관계의 설명
- */
-export function getWuxingRelationDescription(
-    from: WuxingElement,
-    to: WuxingElement
-): { relation: WuxingRelation; description: string; emoji: string } {
-    const relation = getWuxingRelation(from, to);
-
-    const descriptions: Record<WuxingRelation, { description: string; emoji: string }> = {
-        상생: {
-            description: `${WUXING_INFO[from].name_kr}이 ${WUXING_INFO[to].name_kr}을 생해줌. 도움을 주는 관계.`,
-            emoji: "🌱",
-        },
-        비화: {
-            description: `${WUXING_INFO[to].name_kr}이 ${WUXING_INFO[from].name_kr}을 생해줌. 도움을 받는 관계.`,
-            emoji: "🌟",
-        },
-        상극: {
-            description: `${WUXING_INFO[from].name_kr}이 ${WUXING_INFO[to].name_kr}을 극함. 제약하는 관계.`,
-            emoji: "⚔️",
-        },
-        누설: {
-            description: `${WUXING_INFO[to].name_kr}이 ${WUXING_INFO[from].name_kr}을 극함. 억압받는 관계.`,
-            emoji: "🔒",
-        },
-        동일: {
-            description: `${WUXING_INFO[from].name_kr} 끼리. 친구이자 경쟁자.`,
-            emoji: "🤝",
-        },
-    };
-
-    return {
-        relation,
-        ...descriptions[relation],
-    };
-}
 
 /**
  * 60갑자 코드에서 오행 추출

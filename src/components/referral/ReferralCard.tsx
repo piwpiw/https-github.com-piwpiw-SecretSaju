@@ -7,6 +7,7 @@ import { Check, Copy, Gift, Sparkles, Ticket, Users } from 'lucide-react';
 import { trackEvent } from '@/lib/app/analytics';
 import { triggerBalanceUpdate } from '@/components/shop/JellyBalance';
 import { useAuthStatus } from '@/lib/auth/auth-status';
+import { useReferralAutoRedeem } from '@/components/referral/useReferralAutoRedeem';
 
 interface ReferralCardProps {
   className?: string;
@@ -14,6 +15,9 @@ interface ReferralCardProps {
 
 export default function ReferralCard({ className = '' }: ReferralCardProps) {
   const { isAuthenticated } = useAuthStatus();
+  // 초대 링크(/api/referral/invite?ref=CODE)로 유입된 뒤 로그인한 사용자의
+  // 보관 코드를 자동 상환한다. 성공 시 1회성 안내 문구를 돌려받는다.
+  const { autoRedeemNotice } = useReferralAutoRedeem(isAuthenticated);
   const [code, setCode] = useState<string | null>(null);
   const [referralUrl, setReferralUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -238,6 +242,9 @@ export default function ReferralCard({ className = '' }: ReferralCardProps) {
           </form>
         )}
 
+        {autoRedeemNotice && !redeemSuccess && (
+          <p role="status" className="mt-3 text-sm text-emerald-400 text-center font-bold">{autoRedeemNotice}</p>
+        )}
         {redeemSuccess && (
           <p role="status" className="mt-3 text-sm text-emerald-400 text-center font-bold">{redeemSuccess}</p>
         )}

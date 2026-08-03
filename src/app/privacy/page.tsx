@@ -17,7 +17,7 @@ export default function PrivacyPage() {
             </div>
             <div>
               <h1 className="text-4xl font-black text-foreground mb-2">개인정보 처리방침</h1>
-              <p className="text-sm font-bold text-muted uppercase tracking-widest leading-none">Last Modified: 2026.03.08</p>
+              <p className="text-sm font-bold text-muted uppercase tracking-widest leading-none">최종 수정일: 2026.03.08</p>
             </div>
           </div>
 

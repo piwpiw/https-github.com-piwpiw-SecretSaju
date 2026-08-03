@@ -44,6 +44,7 @@
 |---|---|
 | `CRON_SECRET` | `/api/cron/*` 인증 (⚠️ 미설정 시 prod 에서 크론이 401) |
 | `NEXT_PUBLIC_GA_ID` / `NEXT_PUBLIC_KAKAO_PIXEL_ID` | 분석 (선택) |
+| `NEXT_PUBLIC_POSTHOG_KEY` / `NEXT_PUBLIC_POSTHOG_HOST` | PostHog 제품 분석 (선택 — phc_ 공개 토큰, 미설정 시 no-op) |
 | `ADMIN_EMAILS` / `NEXT_PUBLIC_ADMIN_EMAILS` | 관리자 이메일 목록 |
 
 ---

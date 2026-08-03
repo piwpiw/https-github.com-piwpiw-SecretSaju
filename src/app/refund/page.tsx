@@ -3,7 +3,7 @@ import Link from "next/link";
 import { RefreshCw, ArrowLeft, CheckCircle, XCircle, Mail, ShieldAlert } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Refund Policy | Secret Saju",
+  title: "환불 정책 | Secret Saju",
   description: "Secret Saju 환불 및 결제 취소 정책",
 };
 
@@ -88,7 +88,9 @@ export default function RefundPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
                 <div className="space-y-2">
                   <p className="text-sm text-muted uppercase font-bold tracking-widest leading-none">문의 경로</p>
-                  <p className="text-primary font-black text-2xl break-all">/inquiry</p>
+                  <Link href="/inquiry" className="block text-primary font-black text-2xl break-keep underline underline-offset-4">
+                    1:1 문의하기
+                  </Link>
                 </div>
                 <div className="space-y-2">
                   <p className="text-sm text-muted uppercase font-bold tracking-widest leading-none">처리 시간</p>

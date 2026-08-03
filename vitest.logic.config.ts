@@ -33,6 +33,8 @@ export default defineConfig({
             'tests/logic/jelly-wallet.test.ts',
             'tests/routes/mcp-callback-route.test.ts',
             'tests/routes/persona-route.test.ts',
+            'tests/logic/referral-attribution.test.ts',
+            'tests/routes/referral-invite-route.test.ts',
         ],
         alias: {
             '@': path.resolve(__dirname, './src'),

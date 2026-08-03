@@ -210,12 +210,12 @@ function FortuneContent() {
               </label>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { val: yearInput, set: (v: string) => setYearInput(v), ph: "YYYY", id: "birth-year", max: 4 },
-                  { val: month, set: (v: string) => setMonth(v), ph: "MM", id: "birth-month", max: 2 },
-                  { val: day, set: (v: string) => setDay(v), ph: "DD", id: "birth-day", max: 2 },
+                  { val: yearInput, set: (v: string) => setYearInput(v), ph: "YYYY", srLabel: "태어난 연도(4자리)", id: "birth-year", max: 4 },
+                  { val: month, set: (v: string) => setMonth(v), ph: "MM", srLabel: "태어난 월", id: "birth-month", max: 2 },
+                  { val: day, set: (v: string) => setDay(v), ph: "DD", srLabel: "태어난 일", id: "birth-day", max: 2 },
                 ].map((inp) => (
                   <div key={inp.id}>
-                    <label htmlFor={inp.id} className="sr-only">{inp.ph}</label>
+                    <label htmlFor={inp.id} className="sr-only">{inp.srLabel}</label>
                     <input id={inp.id} type="number" placeholder={inp.ph} value={inp.val}
                       onChange={(e) => inp.set(e.target.value)} maxLength={inp.max}
                       autoComplete="off"

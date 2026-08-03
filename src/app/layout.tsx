@@ -4,6 +4,7 @@ import './globals.css';
 import { Nav } from '@/components/layout/Nav';
 import { Footer } from '@/components/layout/Footer';
 import { WalletProvider } from '@/components/payment/WalletProvider';
+import PostHogProvider from '@/components/analytics/PostHogProvider';
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
 import { LocaleProvider } from '@/lib/app/i18n';
 import { ProfileProvider } from '@/components/profile/ProfileProvider';
@@ -67,6 +68,7 @@ export default function RootLayout({
     <html lang="ko" suppressHydrationWarning>
       <body className={`antialiased min-h-screen flex flex-col ${notoSans.className}`}>
         <div className="bg-drift" />
+        <PostHogProvider>
         <LocaleProvider>
           <ThemeProvider>
             <WalletProvider>
@@ -95,6 +97,7 @@ export default function RootLayout({
             </WalletProvider>
           </ThemeProvider>
         </LocaleProvider>
+        </PostHogProvider>
         {GA_ID && (
           <>
             <Script
