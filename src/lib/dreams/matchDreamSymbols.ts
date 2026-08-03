@@ -273,7 +273,10 @@ export function matchDreamSymbols(rawText: string): DreamMatchResult {
     };
   }
 
-  const symbolSet = new Set(matches.map((m) => m.symbol));
+  // 조합 판정은 표시 상위 3개가 아니라 **매칭된 전체 상징** 기준이다.
+  // top-3 로 자르면 사전이 커질수록 고가중치 상징에 밀려 조합 멤버가
+  // 3위 밖으로 빠지고, 조합 해석이 조용히 사라진다.
+  const symbolSet = new Set(found.keys());
   const comboInsights = COMBO_RULES.filter(
     ({ pair }) => symbolSet.has(pair[0]) && symbolSet.has(pair[1])
   ).map(({ insight }) => insight);

@@ -119,7 +119,7 @@ node scripts/qa/free-launch-smoke.mjs http://localhost:3900
 - ✅ 결제 검증: 서명 timingSafeEqual + 콜백 도메인 allowlist + pending→completed 조건부 전이(중복 적립 방지).
 - ⚠️ 의존성: `npm audit fix` 를 릴리스마다 실행. 현재 잔여 런타임 취약점은 Next 에 번들된 postcss 3건뿐 — 상류(Vercel) 수정 대기 항목. `--force` 는 메이저 업그레이드를 동반하므로 별도 검증 없이 금지.
 - ⚠️ **키 로테이션**: 개발 중 대화·로그에 노출된 `GEMINI_API_KEY` 는 즉시 재발급.
-- 참고: next-pwa 서비스워커는 현재 **등록되지 않는다** (next.config.mjs 주석 참조). 켜려면 등록 코드 추가 필요 — 캐시 정책은 이미 정의돼 있음.
+- ✅ PWA 서비스워커 재구성 완료 (next-pwa 제거, 순수 SW): 정적 자산 CacheFirst, 문서 NetworkFirst, **결제·지갑·인증 경로 캐시 금지**, 오프라인 폴백. 정책은 `src/lib/pwa/route-policy.ts` 가 단일 원본.
 
 ---
 

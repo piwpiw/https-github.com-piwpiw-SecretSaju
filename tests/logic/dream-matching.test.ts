@@ -297,3 +297,41 @@ describe('도구격·한정 조사 허용 (로/만)', () => {
         expect(matchDreamSymbols('칼로리 계산을 하는 꿈').matches.map(m => m.symbol)).not.toContain('칼');
     });
 });
+
+describe('사전 무결성 — 별칭 포함 관계는 긴 쪽 우선으로 해소된다', () => {
+    it('다른 상징 별칭에 포함되는 별칭 전수: 긴 별칭 입력 시 긴 쪽 상징이 매칭된다', () => {
+        // "긴 별칭 우선 + 구간 소비" 불변식을 사전 전체에 대해 실행으로 고정한다.
+        // (예: '물' ⊂ '강물이 흐르' — 강(江) 상징이 이겨야 한다)
+        const pairs: Array<{ shortSym: string; longSym: string; longAlias: string }> = [];
+        for (const a of DREAM_DICTIONARY) {
+            for (const b of DREAM_DICTIONARY) {
+                if (a.symbol === b.symbol) continue;
+                for (const shortAlias of a.aliases) {
+                    for (const longAlias of b.aliases) {
+                        if (longAlias !== shortAlias && longAlias.includes(shortAlias)) {
+                            pairs.push({ shortSym: a.symbol, longSym: b.symbol, longAlias });
+                        }
+                    }
+                }
+            }
+        }
+        expect(pairs.length).toBeGreaterThan(0);
+        for (const p of pairs) {
+            const symbols = matchDreamSymbols(`${p.longAlias}는 꿈`).matches.map(m => m.symbol);
+            expect(symbols, `"${p.longAlias}" → ${p.longSym} (${p.shortSym} 가 가로채면 안 됨)`).toContain(p.longSym);
+        }
+    });
+});
+
+describe('조합 해석 — 표시 상위 3개 밖의 상징도 조합에 참여한다', () => {
+    it('고가중치 상징 3개에 밀려도 조합 멤버가 전체 매칭에 있으면 발화한다', () => {
+        // 돼지+돈 조합 멤버가 top-3 에서 밀리도록 고가중치 상징들을 함께 넣는다
+        const r = matchDreamSymbols('용이 하늘로 오르고 호랑이가 나타나고 돼지가 돈을 물고 왔다');
+        expect(r.matches.length).toBe(3);
+        const shown = r.matches.map(m => m.symbol);
+        const comboFired = r.comboInsights.some(t => t.includes('돼지와 돈'));
+        // 전제: 돼지·돈 중 최소 하나는 top-3 밖 (아니면 이 테스트는 게이트를 검증하지 못한다)
+        expect(shown.includes('돼지') && shown.includes('돈')).toBe(false);
+        expect(comboFired).toBe(true);
+    });
+});
