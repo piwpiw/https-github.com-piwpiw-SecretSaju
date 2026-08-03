@@ -12,6 +12,7 @@ import SystemIssueBanner from '@/components/system/SystemIssueBanner';
 import LuckyTicker from '@/components/layout/LuckyTicker';
 import LuckySecretModal from '@/components/home/LuckySecretModal';
 import RouteChangeTracker from '@/components/analytics/RouteChangeTracker';
+import ServiceWorkerRegistrar from '@/components/pwa/ServiceWorkerRegistrar';
 import Script from 'next/script';
 import { APP_CONFIG } from '@/config/env';
 
@@ -68,6 +69,7 @@ export default function RootLayout({
     <html lang="ko" suppressHydrationWarning>
       <body className={`antialiased min-h-screen flex flex-col ${notoSans.className}`}>
         <div className="bg-drift" />
+        <ServiceWorkerRegistrar />
         <PostHogProvider>
         <LocaleProvider>
           <ThemeProvider>

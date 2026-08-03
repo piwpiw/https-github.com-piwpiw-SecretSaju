@@ -59,7 +59,15 @@ const nextConfig = {
 // next-pwa 는 제거했다. v5 는 pages/_document 에 등록 스크립트를 주입하는데
 // 이 App Router 프로젝트에는 _document 가 없어 서비스워커가 한 번도 등록된
 // 적이 없다(생성만 되고 사용 안 됨). 죽은 코드가 workbox 체인의 취약점
-// (serialize-javascript)만 끌고 와서 의존성째 제거했다. PWA 를 다시 켜려면
-// App Router 호환 방식(직접 등록 코드 + 정적 자산 CacheFirst, 문서·API
-// NetworkFirst 정책)으로 새로 구성해야 한다.
+// (serialize-javascript)만 끌고 와서 의존성째 제거했다.
+//
+// PWA 는 App Router 호환 방식으로 재구성됐다:
+// - public/sw.js               : 수작성 서비스워커 (workbox 미사용).
+//   정적 자산(/_next/static/, 이미지·폰트) CacheFirst, 문서·RSC·API
+//   NetworkFirst, 결제·지갑·인증 API(/api/payment,/api/wallet,/api/auth)는
+//   NetworkOnly(캐시 금지). 문서 네트워크 실패 시 public/offline.html 폴백.
+// - src/lib/pwa/route-policy.ts: 위 분류 정책의 단일 원본(sw.js 는 사본).
+//   tests/logic/pwa-policy.test.ts 로 고정.
+// - src/components/pwa/ServiceWorkerRegistrar.tsx: production 에서만
+//   sw.js 를 등록 (layout.tsx 에 배선).
 module.exports = nextConfig;
