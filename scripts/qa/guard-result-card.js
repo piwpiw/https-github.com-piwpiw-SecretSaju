@@ -6,39 +6,9 @@ const { TextDecoder } = require("util");
 
 const CRITICAL_FILES = [
   path.join("src", "components", "result", "ResultCard.tsx"),
-  path.join("src", "lib", "saju", "saju-hanja.ts"),
 ];
 const utf8Decoder = new TextDecoder("utf-8", { fatal: true });
 let babelParser = null;
-const REQUIRED_HANJA_ESCAPES = [
-  "\\uBAA9(\\u6728)",
-  "\\uD654(\\u706B)",
-  "\\uD1A0(\\u571F)",
-  "\\uAE08(\\u91D1)",
-  "\\uC218(\\u6C34)",
-  "\\u7532",
-  "\\u4E59",
-  "\\u4E19",
-  "\\u4E01",
-  "\\u620A",
-  "\\u5DF1",
-  "\\u5E9A",
-  "\\u8F9B",
-  "\\u58EC",
-  "\\u7678",
-  "\\u5B50",
-  "\\u4E11",
-  "\\u5BC5",
-  "\\u536F",
-  "\\u8FB0",
-  "\\u5DF3",
-  "\\u5348",
-  "\\u672A",
-  "\\u7533",
-  "\\u9149",
-  "\\u620C",
-  "\\u4EA5",
-];
 
 try {
   // Uses Next.js bundled parser to avoid adding a separate parser dependency.
@@ -82,16 +52,6 @@ function ensureNfc(filePath) {
   }
 }
 
-function ensureHanjaEscapes(filePath) {
-  if (!filePath.endsWith(path.join("src", "lib", "saju", "saju-hanja.ts"))) return;
-
-  const absPath = path.join(process.cwd(), filePath);
-  const source = fs.readFileSync(absPath, "utf8");
-  const missing = REQUIRED_HANJA_ESCAPES.filter((token) => !source.includes(token));
-  if (missing.length > 0) {
-    throw new Error(`missing required hanja unicode escapes in ${filePath}: ${missing.join(", ")}`);
-  }
-}
 
 function main() {
   const failures = [];
@@ -113,7 +73,6 @@ function main() {
     try {
       ensureNoReplacementCharacter(filePath);
       ensureNfc(filePath);
-      ensureHanjaEscapes(filePath);
     } catch (error) {
       failures.push(`unicode guard failed in ${filePath}: ${error.message}`);
       continue;

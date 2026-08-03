@@ -154,7 +154,7 @@ export default function DestinyPage() {
                     <ArrowRight className="w-6 h-6 text-slate-400 group-hover:text-white transition-colors" />
                     {item.jelly && (
                       <div className="absolute top-4 right-8 flex items-center gap-1.5 px-3 py-1 bg-black/40 rounded-full border border-white/5 text-[13px] font-black text-rose-400 uppercase">
-                        <Zap className="w-3 h-3 fill-rose-400" /> {item.jelly} Jelly
+                        <Zap className="w-3 h-3 fill-rose-400" /> 젤리 {item.jelly}개
                       </div>
                     )}
                   </Link>
