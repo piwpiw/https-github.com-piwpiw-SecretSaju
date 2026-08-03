@@ -1178,6 +1178,11 @@ function ResultCard({
           {daewun?.pillars?.length ? (
             <div className="rounded-xl border border-indigo-300/20 bg-black/20 p-4 space-y-3">
               <p className="text-sm font-bold text-indigo-100 inline-flex items-center gap-2">📈 대운 기술 타임라인</p>
+              <p className="text-[13px] text-slate-400 leading-relaxed">
+                대운수는 출생 시각에서 절입(節入)까지의 일수를 3으로 나눠 구하며, 나머지가
+                6개월 이상이면 올립니다(유파에 따라 버리는 곳도 있어 ±1 차이가 날 수 있습니다).
+                나이는 세는나이 기준입니다.
+              </p>
               {currentUn ? (
                 <div className="flex flex-wrap gap-2 text-sm">
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-slate-100">
