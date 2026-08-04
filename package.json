@@ -60,7 +60,9 @@
     "auto:ux": "node scripts/qa/autonomous-ux-loop.js --once",
     "migrate:db": "node scripts/db/migrate-db.js",
     "pre-deploy": "node scripts/deploy/pre-deploy.js",
-    "predeploy:check": "bash scripts/deploy/deploy.sh"
+    "predeploy:check": "bash scripts/deploy/deploy.sh",
+    "preflight:launch": "node scripts/ops/launch-preflight.mjs",
+    "preflight:paid": "node scripts/ops/launch-preflight.mjs --paid"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
