@@ -3,6 +3,17 @@
 목표: 무료 오픈(FREE_LAUNCH) 상태의 SecretSaju 를 **유료 판매 가능한 운영 상태**로 전환하는 전체 절차.
 각 단계는 순서대로 수행한다. ✅ = 코드가 이미 준비된 것, ⚠️ = 운영자(사람)가 직접 해야 하는 것.
 
+## 🚀 먼저 이것부터 — 지금 뭐가 남았는지 1초에 확인
+
+```bash
+npm run preflight:launch   # 현재(무료 오픈) 기준 — 무엇이 미설정인지
+npm run preflight:paid     # 유료 전환 기준(엄격) — 판매 개시를 막는 것만
+```
+
+환경변수·사업자 정보·마이그레이션·FREE_LAUNCH 상태를 한 번에 점검하고, 차단 항목이 있으면 종료코드 1 을 낸다.
+
+DB 는 코드가 확인할 수 없으므로 **`scripts/ops/verify-db.sql`** 를 Supabase SQL Editor 에 붙여 넣어라 (읽기 전용·안전). 마이그레이션 001~010 중 무엇이 적용됐는지, RLS 가 켜져 있는지, 잔액 변경 트리거가 잘못 생기지 않았는지 표로 나온다. **"미적용"으로 나온 것만** 순서대로 실행하면 된다.
+
 ---
 
 ## 1. 필수 환경변수 (Vercel → Project Settings → Environment Variables)
@@ -52,7 +63,7 @@
 ## 2. 데이터베이스 (Supabase)
 
 1. ⚠️ `supabase/schema.sql` 이 적용된 프로젝트인지 확인.
-2. ⚠️ `supabase/migrations/` 를 파일명 순서대로 SQL Editor 에서 실행 — 현재 001~**010** (신규: 009 `gift_results`, 010 `ops_counters`+원자 증가 RPC).
+2. ⚠️ **먼저 `scripts/ops/verify-db.sql` 로 적용 상태를 확인**한 뒤, 미적용분만 파일명 순서대로 SQL Editor 에서 실행 — 현재 001~**010** (신규: 009 `gift_results`, 010 `ops_counters`+원자 증가 RPC).
 3. ✅ 잔액 변경 경로는 두 가지뿐이다 — RPC `deduct_jellies`(차감)와 라우트의 수동 `update`(적립). **트랜잭션 INSERT 로 잔액이 바뀌는 트리거는 없다** — 새 라우트를 만들 때 이 가정을 다시 들여오지 말 것.
 4. ⚠️ RLS 활성 상태 확인 (`saju_profiles`, `jelly_wallets`, `jelly_transactions`, `orders`, `gift_results`, `ops_counters`).
 
@@ -77,6 +88,7 @@
 
 ## 4. 법적 표기 (전자상거래법)
 
+- ✅ **안전장치**: `tests/logic/launch-readiness.test.ts` 가 FREE_LAUNCH=false 인데 자리표시자가 남아 있으면 **CI 를 실패시킨다** — 가짜 사업자 정보로 판매가 시작되는 사고가 구조적으로 불가능하다.
 - ⚠️ `src/config/constants.ts` 의 `BUSINESS_INFO` 가 **플레이스홀더 상태다** (등록번호 `123-45-67890`, 주소 `Seoul, Korea 123` 등). 실제 사업자등록번호·통신판매업 신고번호·대표자명·주소·연락처로 교체해야 판매 가능.
 - ✅ `/terms`, `/privacy`, `/refund`, `/legal` 페이지 존재 + 메뉴 등록 완료. ⚠️ 내용이 실제 사업 조건과 일치하는지 법률 검토.
 
