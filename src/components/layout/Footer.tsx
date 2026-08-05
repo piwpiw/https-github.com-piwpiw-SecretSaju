@@ -79,7 +79,12 @@ export function Footer() {
                 </div>
 
                 <div className="text-right">
-                    <span className="text-sm px-2 py-1 bg-white/5 rounded-md font-mono text-muted">v4.5.1 (시크릿사주)</span>
+                    {/* 빌드 스탬프 — 커밋 해시가 붙어 있어 "지금 보는 화면이 어느
+                        배포인지"를 화면만 보고 판별할 수 있다. 해시가 옛것이면
+                        기기 캐시(서비스워커)가 옛 빌드를 서빙 중이라는 뜻이다. */}
+                    <span className="text-sm px-2 py-1 bg-white/5 rounded-md font-mono text-muted">
+                        v4.5.1{process.env.NEXT_PUBLIC_BUILD_SHA ? ` · ${process.env.NEXT_PUBLIC_BUILD_SHA}` : ""} (시크릿사주)
+                    </span>
                 </div>
             </div>
         </footer>
