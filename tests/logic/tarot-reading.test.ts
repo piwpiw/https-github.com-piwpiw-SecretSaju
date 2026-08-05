@@ -49,6 +49,21 @@ describe('buildTopicReading — 1,872 조합 전수', () => {
         expect(violations, violations.slice(0, 5).join('\n')).toEqual([]);
     });
 
+    it('메이저 22장의 역방향 의미가 서로 다르고 카드 고유 내용을 담는다', () => {
+        // 예전에는 22장 전부 "○○의 정반대 축인 회피와 지연을 경계하세요"로
+        // 동일했다 — 이름 뒤 본문만 비교해 문장 재활용을 잡는다.
+        const majors = DECK.filter((card) => card.arcana === 'major');
+        const bodies = majors.map((card) => card.meaning_reversed.replace(card.name_kr, '').trim());
+        expect(new Set(bodies).size, '역방향 본문 중복').toBe(majors.length);
+        for (const card of majors) {
+            expect(card.meaning_reversed).not.toContain('정반대 축인 회피와 지연');
+            expect(card.meaning_reversed.length).toBeGreaterThan(30);
+        }
+        // 정방향도 함께 잠근다 — 전부 상이해야 한다.
+        const uprights = new Set(majors.map((card) => card.meaning_upright));
+        expect(uprights.size).toBe(majors.length);
+    });
+
     it('같은 카드라도 24개 변형(정/역×포지션×주제)이 전부 서로 다르다', () => {
         for (const card of [DECK[0], DECK[21], DECK[22], DECK[77]]) {
             const variants = new Set<string>();
