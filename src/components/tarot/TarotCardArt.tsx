@@ -342,7 +342,7 @@ export default function TarotCardArt({
         </div>
 
         {/* 아래: 수트 이름 (+ 역방향 표시 — 글자는 항상 정방향으로 읽힌다) */}
-        <span className="text-[11px] font-black tracking-[0.22em]" style={{ opacity: 0.75 }}>
+        <span className="text-[11px] font-black tracking-[0.08em]" style={{ opacity: 0.75 }}>
           {isReversed ? `${style.label} · 역` : style.label}
         </span>
       </div>
