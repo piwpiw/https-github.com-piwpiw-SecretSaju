@@ -15,8 +15,11 @@
  */
 
 import { calculateHighPrecisionSaju } from '@/core/api/saju-engine';
-import { getDayPillar, getHourPillar, getMonthPillar, getYearPillar } from '@/core/calendar/ganji';
-import { analyzeElements } from '@/core/myeongni/elements';
+import { getDayPillar, getHourPillar, getMonthPillar, getYearPillar, type FourPillars } from '@/core/calendar/ganji';
+import { analyzeElements, type ElementAnalysisResult } from '@/core/myeongni/elements';
+import { analyzeSipsong, type SipsongResult } from '@/core/myeongni/sipsong';
+import { calculateGangYak, type GangYakScore } from '@/lib/saju/advancedScoring';
+import { calculateYongshin, type YongshinAnalysis } from '@/core/myeongni/yongshin';
 import { KOREA_LOCATIONS } from '@/core/astronomy/true-solar-time';
 import { parseCivilDate, parseCivilTimeParts } from '@/lib/saju/civil-date';
 
@@ -286,6 +289,57 @@ function normalizeBirthDateOrFallback(value: Date): Date {
   return new Date(1990, 0, 1, 12, 0, 0, 0);
 }
 
+export type FallbackDerivedAnalyses = {
+  sipsong?: SipsongResult;
+  gangyak?: GangYakScore;
+  yongshin?: YongshinAnalysis;
+};
+
+/**
+ * 고정밀 엔진이 실패했을 때(타임아웃, 음력 변환 불가, 대운 절입 탐색 실패 등)
+ * 폴백으로 계산한 사주 네 기둥에서 십성·강약·용신을 직접 도출한다.
+ *
+ * 왜 필요한가: 세 값은 기둥(과 오행 분석)만으로 결정되는 순수 계산이라 엔진
+ * 없이도 같은 규칙으로 얻을 수 있다. 예전에는 폴백 경로에서 이 값들을 만들지
+ * 않아 결과 화면의 "행동 패턴 분석"이 영원히 로딩 문구에, "멘탈 게이지"가
+ * 0/100 에, "행운을 부르는 기운"이 "분석 중"에 멈춰 있었다.
+ *
+ * 날조 금지 원칙:
+ * - 기둥이 불완전하면(비상용 고정 기둥 포함, 호출부에서 null 전달) 아무것도
+ *   계산하지 않는다. 가짜 기둥으로 뽑은 십성·용신은 그럴듯한 거짓말이다.
+ * - elements 가 null 이면(오행 분석까지 실패해 균형 더미값만 있는 경우)
+ *   용신은 계산하지 않는다. 더미 입력으로 뽑은 용신도 마찬가지다.
+ * - 계산이 실패한 값은 undefined 로 남겨 화면이 정직한 빈 상태를 보여 주게 한다.
+ */
+export function buildFallbackAnalyses(
+  fourPillars: FourPillars | null | undefined,
+  elements: ElementAnalysisResult | null,
+): FallbackDerivedAnalyses {
+  const pillars = [fourPillars?.year, fourPillars?.month, fourPillars?.day, fourPillars?.hour];
+  const pillarsComplete = pillars.every(
+    (pillar) => typeof pillar?.stem === "string" && typeof pillar?.branch === "string",
+  );
+  if (!fourPillars || !pillarsComplete) {
+    return {};
+  }
+
+  const derived: FallbackDerivedAnalyses = {};
+  try {
+    derived.sipsong = analyzeSipsong(fourPillars);
+  } catch {
+    // 십성 실패는 강약·용신 계산과 독립적이므로 계속 진행한다
+  }
+  try {
+    derived.gangyak = calculateGangYak(fourPillars);
+    if (elements && derived.gangyak) {
+      derived.yongshin = calculateYongshin(elements, derived.gangyak);
+    }
+  } catch {
+    // 실패한 값은 undefined 로 두어 UI 가 빈 상태를 표시한다
+  }
+  return derived;
+}
+
 /**
  * 생년월일과 성별을 받아 고정밀 사주 분석을 수행
  */
@@ -345,19 +399,27 @@ export async function calculateSaju(
   }
 
   let fourPillars: any;
+  // 비상용 고정 기둥(갑자·을축·병인·정묘)은 실제 생년월일과 무관한 값이라,
+  // 여기서 파생 해석(십성·강약·용신)을 만들면 안 된다. 플래그로 구분한다.
+  let pillarsAreEmergency = false;
   try {
     fourPillars = hpResult?.fourPillars ?? buildFallbackPillars(baseDate, normalizedTime.hour, safeTimeUnknown ? 0 : normalizedTime.minute, safeTimeUnknown);
   } catch (error) {
     source = "fallback";
     warnings.push(`일반 사주 기반 기준으로 복구했습니다: ${(error as Error).message}`);
     fourPillars = buildEmergencyPillars();
+    pillarsAreEmergency = true;
   }
 
   if (!fourPillars?.year || !fourPillars?.month || !fourPillars?.day || !fourPillars?.hour) {
     warnings.push("사주 기둥 데이터가 불완전해 기본 보정값으로 대체했습니다.");
     fourPillars = buildEmergencyPillars();
+    pillarsAreEmergency = true;
   }
 
+  // 아래 catch 의 균형 더미 오행(20/20/20/20/20)으로 용신을 뽑으면 날조가 되므로,
+  // 오행이 실제 계산값인지도 추적한다.
+  let elementAnalysisIsReal = true;
   const elementSource = hpResult?.elements;
   const elementAnalysis = elementSource
     ? elementSource
@@ -366,6 +428,7 @@ export async function calculateSaju(
         return analyzeElements(fourPillars, baseDate);
       } catch (error) {
         warnings.push(`오행 분석 fallback: ${(error as Error).message}`);
+        elementAnalysisIsReal = false;
         return {
           scores: {
             "목": DEFAULT_FALLBACK_ELEMENTS.elementScores[0],
@@ -400,6 +463,15 @@ export async function calculateSaju(
         } as any;
       }
     })();
+
+  // 엔진 실패 시에도 폴백 기둥으로 십성·강약·용신을 계산한다.
+  // 비상용 고정 기둥이면 null 을 넘겨 아무것도 만들지 않는다(날조 금지).
+  const derivedFallback = hpResult
+    ? null
+    : buildFallbackAnalyses(
+      pillarsAreEmergency ? null : (fourPillars as FourPillars),
+      elementAnalysisIsReal ? (elementAnalysis as ElementAnalysisResult) : null,
+    );
 
   const qualityScore = source === "high-precision" ? (hpResult?.meta?.qualityScore ?? 100) : 72;
   const reliability: "high" | "medium" | "low" = source === "fallback"
@@ -481,10 +553,10 @@ export async function calculateSaju(
       fourPillars,
       daewun: hpResult?.daewun,
       gyeokguk: hpResult?.gyeokguk,
-      gangyak: hpResult?.gangyak,
-      yongshin: hpResult?.yongshin,
+      gangyak: hpResult?.gangyak ?? derivedFallback?.gangyak,
+      yongshin: hpResult?.yongshin ?? derivedFallback?.yongshin,
       sinsal: hpResult?.sinsal,
-      sipsong: hpResult?.sipsong,
+      sipsong: hpResult?.sipsong ?? derivedFallback?.sipsong,
       sibiwoonseong: hpResult?.sibiwoonseong,
       evidence: hpResult?.evidence,
       canonicalFeatures: hpResult?.canonicalFeatures,

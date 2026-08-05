@@ -260,6 +260,81 @@ function makeCardSvgImage(card: TarotDeckCard): string {
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
+/* ────────────────────────── 주제·포지션 렌즈 ────────────────────────── */
+
+/**
+ * 질문 주제. 카드 의미(위 테이블)는 그대로 두고, 그 의미를 "어느 영역에
+ * 적용해 읽을지"만 바꾼다 — 주제별로 새 점괘를 지어내는 것이 아니라
+ * 같은 카드 의미의 적용 렌즈만 달라진다는 것이 이 설계의 정직성 규칙이다.
+ */
+export type TarotTopic = "today" | "love" | "work" | "money";
+
+export const TAROT_TOPICS: Array<{ key: TarotTopic; label: string; frame: string }> = [
+  { key: "today", label: "오늘의 흐름", frame: "오늘 하루의 흐름으로 읽으면" },
+  { key: "love", label: "연애·관계", frame: "관계의 흐름으로 읽으면" },
+  { key: "work", label: "일·커리어", frame: "일과 커리어의 흐름으로 읽으면" },
+  { key: "money", label: "돈·재물", frame: "돈과 재물의 흐름으로 읽으면" },
+];
+
+/** 과거/현재/미래 포지션이 카드 의미에 붙이는 시간 프레임 */
+const POSITION_TAILS = [
+  "이 기운은 이미 지나온 자리에 깔려 있습니다. 지금을 만든 배경으로 읽으세요.",
+  "지금 한가운데서 작동하고 있는 기운입니다. 현재 선택에 가장 크게 걸립니다.",
+  "지금 흐름을 바꾸지 않으면 향하게 되는 방향입니다. 아직 정해진 결과는 아닙니다.",
+] as const;
+
+/**
+ * 카드 1장의 최종 리딩 문장: 주제 프레임 + 카드 고유 의미(정/역) + 포지션 꼬리.
+ * 78장 × 정/역 2 × 포지션 3 × 주제 4 = 1,872 조합이 전부 이 함수를 지나며,
+ * tests/logic/tarot-reading.test.ts 가 전수를 검사한다.
+ */
+export function buildTopicReading(
+  card: Pick<DrawnTarotCard, "meaning_upright" | "meaning_reversed" | "isReversed">,
+  positionIndex: 0 | 1 | 2,
+  topic: TarotTopic,
+): string {
+  const topicEntry = TAROT_TOPICS.find((entry) => entry.key === topic) ?? TAROT_TOPICS[0];
+  const core = card.isReversed ? card.meaning_reversed : card.meaning_upright;
+  return `${topicEntry.frame} — ${core} ${POSITION_TAILS[positionIndex]}`;
+}
+
+/**
+ * 스프레드 전체의 구조적 관찰. 점괘를 새로 만들지 않고, 뽑힌 3장의
+ * 구성(수트 지배·메이저 비중·역방향 수)에서 기계적으로 판정 가능한
+ * 사실만 문장으로 만든다.
+ */
+export function describeSpreadPattern(cards: DrawnTarotCard[]): string[] {
+  if (!cards.length) return [];
+  const notes: string[] = [];
+
+  const suitCounts = new Map<TarotSuit, number>();
+  cards.forEach((card) => {
+    if (card.suit) suitCounts.set(card.suit, (suitCounts.get(card.suit) ?? 0) + 1);
+  });
+  for (const [suit, count] of suitCounts) {
+    if (count >= 2) {
+      const meta = SUIT_MEANING[suit];
+      const label = MINOR_SUITS.find((item) => item.suit === suit)?.name_kr ?? suit;
+      notes.push(`${label} 카드가 ${count}장 — ${meta.area} 주제가 이 스프레드의 중심입니다.`);
+    }
+  }
+
+  const majorCount = cards.filter((card) => card.arcana === "major").length;
+  if (majorCount >= 2) {
+    notes.push(`메이저 아르카나가 ${majorCount}장 — 일상 단위보다 큰, 인생 단위의 흐름이 걸려 있다는 구성입니다.`);
+  }
+
+  const reversedCount = cards.filter((card) => card.isReversed).length;
+  if (reversedCount >= 2) {
+    notes.push(`역방향이 ${reversedCount}장 — 밀어붙이기보다 멈춰서 재정비하라는 신호가 겹쳐 있습니다.`);
+  }
+
+  if (!notes.length) {
+    notes.push("한쪽으로 쏠린 구성이 아닙니다 — 세 카드를 같은 무게로 읽으면 됩니다.");
+  }
+  return notes;
+}
+
 type DeckFilterOptions = {
   arcana?: TarotArcanaType[];
   suit?: TarotSuit[];
