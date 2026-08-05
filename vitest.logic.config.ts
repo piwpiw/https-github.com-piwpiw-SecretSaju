@@ -37,6 +37,7 @@ export default defineConfig({
             'tests/routes/referral-invite-route.test.ts',
             'tests/logic/pwa-policy.test.ts',
             'tests/logic/launch-readiness.test.ts',
+            'tests/logic/base-url-resolution.test.ts',
         ],
         alias: {
             '@': path.resolve(__dirname, './src'),
