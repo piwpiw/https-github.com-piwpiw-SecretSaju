@@ -126,6 +126,39 @@ export const KAKAO_CONFIG = {
     },
 } as const;
 
+/**
+ * Naver OAuth Configuration (서버 전용 표준 인가 코드 플로).
+ *
+ * 카카오와 달리 JS SDK 를 쓰지 않는다 — /api/auth/naver/login 이 네이버
+ * 인가 페이지로 302 시키고, /api/auth/naver/callback 이 토큰 교환·프로필
+ * 조회·세션 쿠키 설정까지 서버에서 끝낸다. 클라이언트에 노출되는 키가 없다.
+ *
+ * 등록: https://developers.naver.com/apps → 애플리케이션 등록 →
+ *   Callback URL 에 `${BASE_URL}/api/auth/naver/callback` 추가.
+ */
+export const NAVER_CONFIG = {
+    CLIENT_ID: process.env.NAVER_CLIENT_ID || '',
+    CLIENT_SECRET: process.env.NAVER_CLIENT_SECRET || '',
+
+    AUTH_URL: 'https://nid.naver.com/oauth2.0/authorize',
+    TOKEN_URL: 'https://nid.naver.com/oauth2.0/token',
+    PROFILE_URL: 'https://openapi.naver.com/v1/nid/me',
+
+    get REDIRECT_URI(): string {
+        return `${APP_CONFIG.BASE_URL}/api/auth/naver/callback`;
+    },
+
+    get isConfigured(): boolean {
+        return !!(this.CLIENT_ID && this.CLIENT_SECRET);
+    },
+
+    get error(): string | null {
+        if (!this.CLIENT_ID) return 'NAVER_CLIENT_ID is not configured';
+        if (!this.CLIENT_SECRET) return 'NAVER_CLIENT_SECRET is not configured';
+        return null;
+    },
+} as const;
+
 // ============================================
 // MCP AUTHENTICATION (OAuth 2.1 + PKCE)
 // ============================================

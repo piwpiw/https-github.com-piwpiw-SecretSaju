@@ -7,7 +7,7 @@
 --    보여준다. 그래서 이 파일은 의도적으로 **단일 쿼리**로 되어 있다.
 --    (여러 SELECT 로 쪼개면 앞의 결과가 화면에서 사라진다.)
 --
--- 아무것도 바꾸지 않는다. 마이그레이션 001~010 중 무엇이 적용됐는지,
+-- 아무것도 바꾸지 않는다. 마이그레이션 001~011 중 무엇이 적용됐는지,
 -- RLS 가 켜져 있는지, 잔액 변경 트리거가 잘못 생기지 않았는지만 확인한다.
 -- 결과의 "❌ 미적용" 항목에 해당하는 마이그레이션 파일만 순서대로 실행하라.
 --
@@ -52,6 +52,10 @@ UNION ALL SELECT 10,'마이그레이션','010 ops_counters (운영 지표)',
   CASE WHEN to_regclass('public.ops_counters') IS NOT NULL
         AND EXISTS(SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
                    WHERE n.nspname='public' AND p.proname='increment_ops_counter')
+       THEN '✅ 적용됨' ELSE '❌ 미적용' END
+UNION ALL SELECT 11,'마이그레이션','011 naver_id (네이버 로그인)',
+  CASE WHEN EXISTS(SELECT 1 FROM information_schema.columns
+                   WHERE table_schema='public' AND table_name='users' AND column_name='naver_id')
        THEN '✅ 적용됨' ELSE '❌ 미적용' END
 
 -- ── RLS 활성 상태 (꺼져 있으면 anon 키로 전체 열람 가능) ────

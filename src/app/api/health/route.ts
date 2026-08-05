@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { APP_CONFIG, KAKAO_CONFIG, MCP_CONFIG, PAYMENT_CONFIG } from '@/config';
+import { APP_CONFIG, KAKAO_CONFIG, MCP_CONFIG, NAVER_CONFIG, PAYMENT_CONFIG } from '@/config';
 import { getSupabaseAdmin } from '@/lib/integrations/supabase';
 import { isMockMode } from '@/lib/app/use-mock';
 
@@ -113,10 +113,11 @@ function checkPaymentConfigCompat(): Omit<HealthCheck, 'duration_ms'> {
 
 function checkAuthConfig(): Omit<HealthCheck, 'duration_ms'> {
   const kakaoReady = KAKAO_CONFIG.isConfigured;
+  const naverReady = NAVER_CONFIG.isConfigured;
   const mcpReady = MCP_CONFIG.isConfigured;
 
-  if (kakaoReady || mcpReady) {
-    return { status: 'ok', message: `auth_ready:kakao=${kakaoReady},mcp=${mcpReady}` };
+  if (kakaoReady || naverReady || mcpReady) {
+    return { status: 'ok', message: `auth_ready:kakao=${kakaoReady},naver=${naverReady},mcp=${mcpReady}` };
   }
 
   return { status: 'degraded', message: 'auth_provider_not_configured' };

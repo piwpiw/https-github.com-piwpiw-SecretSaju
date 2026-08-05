@@ -293,7 +293,13 @@ export function clearUserSession() {
         }
     };
 
+    // KAKAO_TOKEN/NAVER_TOKEN 은 httpOnly 라 document.cookie 로는 지워지지
+    // 않는다 — 서버 라우트가 만료시킨다. 아래 clearCookie 호출은 httpOnly 가
+    // 아닌 쿠키(USER_DATA 등)와 방어적 중복 제거용으로 유지한다.
+    void fetch('/api/auth/logout', { method: 'POST' }).catch(() => { });
+
     clearCookie(STORAGE_KEYS.KAKAO_TOKEN);
+    clearCookie(STORAGE_KEYS.NAVER_TOKEN);
     clearCookie(STORAGE_KEYS.USER_DATA);
     clearCookie(STORAGE_KEYS.MCP_TOKEN);
     clearCookie(STORAGE_KEYS.MCP_REFRESH_TOKEN);
