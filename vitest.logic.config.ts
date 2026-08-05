@@ -38,6 +38,7 @@ export default defineConfig({
             'tests/logic/pwa-policy.test.ts',
             'tests/logic/launch-readiness.test.ts',
             'tests/logic/base-url-resolution.test.ts',
+            'tests/logic/naver-auth.test.ts',
         ],
         alias: {
             '@': path.resolve(__dirname, './src'),

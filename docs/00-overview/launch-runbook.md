@@ -14,7 +14,7 @@ npm run preflight:paid     # 유료 전환 기준(엄격) — 판매 개시를 �
 
 **프로덕션이 실제로 어떤 상태인지는 `/api/health` 하나로 본다** — Supabase 연결·결제·인증·크론 설정이 한 JSON 에 다 나온다 (`supabase_ok` 면 환경변수·마이그레이션·서비스키가 전부 정상이라는 뜻).
 
-DB 내부 상세는 **`scripts/ops/verify-db.sql`** 를 Supabase SQL Editor 에 붙여 넣어라 (읽기 전용·안전, **단일 쿼리** — SQL Editor 가 마지막 결과만 보여주기 때문). 마이그레이션 001~010 중 무엇이 적용됐는지, RLS 가 켜져 있는지, 잔액 변경 트리거가 잘못 생기지 않았는지 표로 나온다.
+DB 내부 상세는 **`scripts/ops/verify-db.sql`** 를 Supabase SQL Editor 에 붙여 넣어라 (읽기 전용·안전, **단일 쿼리** — SQL Editor 가 마지막 결과만 보여주기 때문). 마이그레이션 001~011 중 무엇이 적용됐는지, RLS 가 켜져 있는지, 잔액 변경 트리거가 잘못 생기지 않았는지 표로 나온다.
 
 004~010 이 미적용이면 **`scripts/ops/apply-004-010.sql`** 한 파일을 붙여 넣고 Run 하면 된다 — 004~010 을 순서대로 적용하고 맨 끝의 검증 표로 결과를 보여준다. 전부 추가 전용(additive)이라 기존 데이터는 건드리지 않고, 몇 번을 다시 실행해도 안전하다.
 
@@ -45,6 +45,21 @@ DB 내부 상세는 **`scripts/ops/verify-db.sql`** 를 Supabase SQL Editor 에 
 |---|---|
 | `NEXT_PUBLIC_KAKAO_JS_KEY` | 카카오 JS SDK |
 | `KAKAO_REST_API_KEY` / `KAKAO_CLIENT_SECRET` | 서버 토큰 교환 |
+| `NAVER_CLIENT_ID` / `NAVER_CLIENT_SECRET` | 네이버 로그인 (서버 전용) |
+| `NEXT_PUBLIC_NAVER_LOGIN_ENABLED` | `true` 로 설정하면 로그인 모달의 네이버 버튼이 실제 플로로 동작 |
+
+### 로그인이 안 될 때 — 공급자별 콘솔 체크리스트
+
+환경변수가 있어도 **각 공급자 콘솔에 프로덕션 도메인이 등록돼 있지 않으면** 로그인이 실패한다. 도메인이 바뀌면 아래를 전부 다시 확인하라.
+
+| 공급자 | 어디서 | 확인할 것 |
+|---|---|---|
+| 카카오 | [developers.kakao.com](https://developers.kakao.com) → 내 애플리케이션 → 앱 설정 → 플랫폼 | **Web 사이트 도메인**에 프로덕션 도메인 등록 + 제품 설정 → 카카오 로그인 → **Redirect URI** 에 `https://도메인/api/auth/kakao/callback` 등록. 미등록 시 KOE006/redirect_uri mismatch |
+| 구글 | Supabase 대시보드 → Authentication → Providers → Google | 구글은 Supabase Auth 를 경유한다. ① Google provider **Enable** + Google Cloud Console 의 Client ID/Secret 입력, ② Google Cloud 쪽 승인된 리디렉션 URI 에 `https://<supabase-ref>.supabase.co/auth/v1/callback` 등록, ③ Supabase → Authentication → URL Configuration 의 **Site URL/Redirect URLs** 에 프로덕션 도메인 등록. 미설정 시 "provider is not enabled" |
+| 네이버 | [developers.naver.com](https://developers.naver.com/apps) → 애플리케이션 등록 | 네이버 로그인 API 선택, **Callback URL** 에 `https://도메인/api/auth/naver/callback` 등록 → 발급된 Client ID/Secret 을 `NAVER_CLIENT_ID`/`NAVER_CLIENT_SECRET` 에, `NEXT_PUBLIC_NAVER_LOGIN_ENABLED=true` 설정 → DB 마이그레이션 **011** 적용 |
+| 이메일 | Supabase → Authentication → Providers → Email | 기본 활성. "Email not confirmed" 오류가 잦으면 Confirm email 요구 설정을 확인 |
+
+**관리자 계정**: 별도의 관리자 비밀번호는 존재하지 않는다. `ADMIN_EMAILS`/`NEXT_PUBLIC_ADMIN_EMAILS` 에 등록된 이메일(기본값 `piwpiw@naver.com`)로 **어떤 방식으로든 로그인하면** 그 계정에 `is_admin` 이 부여된다.
 
 ### AI (해당 기능 사용 시)
 
@@ -67,7 +82,7 @@ DB 내부 상세는 **`scripts/ops/verify-db.sql`** 를 Supabase SQL Editor 에 
 ## 2. 데이터베이스 (Supabase)
 
 1. ⚠️ `supabase/schema.sql` 이 적용된 프로젝트인지 확인.
-2. ⚠️ **먼저 `scripts/ops/verify-db.sql` 로 적용 상태를 확인**한 뒤, 미적용분만 파일명 순서대로 SQL Editor 에서 실행 — 현재 001~**010** (신규: 009 `gift_results`, 010 `ops_counters`+원자 증가 RPC).
+2. ⚠️ **먼저 `scripts/ops/verify-db.sql` 로 적용 상태를 확인**한 뒤, 미적용분만 파일명 순서대로 SQL Editor 에서 실행 — 현재 001~**011** (신규: 009 `gift_results`, 010 `ops_counters`+원자 증가 RPC, 011 `naver_id`).
 3. ✅ 잔액 변경 경로는 두 가지뿐이다 — RPC `deduct_jellies`(차감)와 라우트의 수동 `update`(적립). **트랜잭션 INSERT 로 잔액이 바뀌는 트리거는 없다** — 새 라우트를 만들 때 이 가정을 다시 들여오지 말 것.
 4. ⚠️ RLS 활성 상태 확인 (`saju_profiles`, `jelly_wallets`, `jelly_transactions`, `orders`, `gift_results`, `ops_counters`).
 

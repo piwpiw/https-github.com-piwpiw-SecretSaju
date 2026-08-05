@@ -122,6 +122,7 @@ export const JELLY_PRICING = {
 export const STORAGE_KEYS = {
   // Authentication
     KAKAO_TOKEN: 'kakao_token',
+    NAVER_TOKEN: 'naver_token',
     AUTH_SESSION_TOKEN: 'secret_saju_auth_session',
     USER_DATA: 'user_data',
   MCP_TOKEN: 'mcp_access_token',

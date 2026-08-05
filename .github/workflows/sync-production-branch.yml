@@ -1,0 +1,36 @@
+# main → auto/agent 자동 미러링
+#
+# 2026-08-05 실사고의 구조적 재발 방지책이다. Vercel 프로젝트의 Production
+# Branch 가 `auto/agent` 로 설정돼 있어서, main 에 30여 개 PR 을 머지하는
+# 동안 프로덕션은 3월 11일 빌드에 머물러 있었다 (모든 머지가 프리뷰만 생성).
+#
+# 이 워크플로가 main 푸시마다 auto/agent 를 main 과 동일하게 강제 동기화하므로,
+# 어느 쪽이 Production Branch 든 main 머지 = 프로덕션 배포가 보장된다.
+# Vercel 설정을 main 으로 바꾼 뒤에도 무해하다(미러가 단순 일치 상태 유지).
+#
+# auto/agent 는 자동화 전용 브랜치다 — 여기에 직접 커밋하지 말 것.
+# (수동 커밋은 다음 main 푸시 때 덮어써진다.)
+name: Sync production branch
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-production-branch
+  cancel-in-progress: true
+
+jobs:
+  mirror:
+    name: Mirror main to auto/agent
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Force auto/agent to match main
+        run: git push --force origin HEAD:refs/heads/auto/agent

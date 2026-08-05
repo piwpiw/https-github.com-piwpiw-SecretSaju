@@ -11,6 +11,7 @@ export {
     ENV,
     APP_CONFIG,
     KAKAO_CONFIG,
+    NAVER_CONFIG,
     MCP_CONFIG,
     PAYMENT_CONFIG,
     DATABASE_CONFIG,
