@@ -470,6 +470,15 @@ function ResultCard({
     { key: "hour", label: "시주", value: sibiwoonseong?.hour || "-" },
   ];
 
+  // gangyak 이 아예 없으면(엔진 폴백 등) 0/100 게이지는 "극신약"이라는 거짓
+  // 정보가 된다. 합계 0점 자체는 정상 값이므로(극단적 신약), 값의 존재 여부로만
+  // 구분해 없을 때는 게이지 대신 정직한 빈 상태를 보여 준다.
+  const hasGangyak = typeof gangyak?.total === "number" && Number.isFinite(gangyak.total);
+  // yongshin 도 props 로 한 번에 들어오는 값이라 "분석 중"이 끝나는 시점이 없다.
+  // 없으면 빈 상태를 종결 상태로 보여 준다.
+  const hasYongshin =
+    typeof yongshin?.primary?.element === "string" && yongshin.primary.element.trim().length > 0;
+
   const gangyakBreakdown = canonicalFeatures?.strengthProfile?.components?.map((item) => ({
     label: item.label,
     value: item.value,
@@ -967,9 +976,13 @@ function ResultCard({
                 </div>
               </div>
             ) : (
+              /* sipsong 은 props 로 한 번에 들어오는 값이라 이 컴포넌트에서 더
+                 "로딩"될 일이 없다. 예전의 "불러오는 중" 문구는 엔진 폴백으로
+                 십성이 비어 있을 때 영원히 끝나지 않는 로딩처럼 보였다.
+                 종결 상태임을 정직하게 알린다. */
               <div className="h-full flex items-center justify-center p-5 bg-white/5 rounded-2xl border border-white/10">
                 <p className="text-sm text-slate-400 text-center">
-                  데이터를 불러오는 중입니다.<br />잠시만 기다려주세요.
+                  아직 분석 데이터가 없습니다.<br />분석을 다시 실행하면 행동 패턴이 표시됩니다.
                 </p>
               </div>
             )}
@@ -986,37 +999,52 @@ function ResultCard({
                 <h3 className="text-lg md:text-2xl font-black text-white break-keep">나의 멘탈 게이지</h3>
               </div>
 
-              <div className="flex items-center justify-between gap-4 mb-4">
-                <div>
-                  <p className="text-2xl font-black text-white drop-shadow-md">
-                    {Math.round(Number(gangyak?.total || 0))}
-                    <span className="text-sm text-slate-400 font-normal ml-1">/ 100</span>
+              {hasGangyak ? (
+                <>
+                  <div className="flex items-center justify-between gap-4 mb-4">
+                    <div>
+                      <p className="text-2xl font-black text-white drop-shadow-md">
+                        {Math.round(Number(gangyak?.total || 0))}
+                        <span className="text-sm text-slate-400 font-normal ml-1">/ 100</span>
+                      </p>
+                    </div>
+                    <div className={`rounded-full border px-4 py-2 text-sm font-black ${getGangyakTone(gangyak?.level)}`}>
+                      {gangyak?.level || "중화"}
+                    </div>
+                  </div>
+
+                  <div className="h-3 rounded-full overflow-hidden border border-white/10 bg-black/50 shadow-inner">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.max(0, Math.min(100, Math.round(Number(gangyak?.total || 0))))}%` }}
+                      transition={{ duration: 1.2, ease: "easeOut" }}
+                      className="h-full bg-gradient-to-r from-amber-200 via-amber-400 to-rose-400"
+                    />
+                  </div>
+
+                  <p className="mt-5 text-sm text-slate-300 leading-relaxed bg-white/5 p-4 rounded-2xl border border-white/10">
+                    에너지가 높은 분파는 주도적이고 뚝심이 있으며,
+                    에너지가 부드러운 분파는 주변 환경에 유연하게 적응하고 흡수력이 좋습니다.
+                  </p>
+                </>
+              ) : (
+                /* 강약 데이터 부재는 종결 상태다 — 0/100 으로 그리면 "극신약"이라는
+                   계산된 결과처럼 읽히므로 게이지 자체를 그리지 않는다. */
+                <div className="flex items-center justify-center p-5 bg-white/5 rounded-2xl border border-white/10">
+                  <p className="text-sm text-slate-400 text-center">
+                    아직 분석 데이터가 없습니다.<br />분석을 다시 실행하면 멘탈 게이지가 표시됩니다.
                   </p>
                 </div>
-                <div className={`rounded-full border px-4 py-2 text-sm font-black ${getGangyakTone(gangyak?.level)}`}>
-                  {gangyak?.level || "중화"}
-                </div>
-              </div>
-
-              <div className="h-3 rounded-full overflow-hidden border border-white/10 bg-black/50 shadow-inner">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${Math.max(0, Math.min(100, Math.round(Number(gangyak?.total || 0))))}%` }}
-                  transition={{ duration: 1.2, ease: "easeOut" }}
-                  className="h-full bg-gradient-to-r from-amber-200 via-amber-400 to-rose-400"
-                />
-              </div>
-
-              <p className="mt-5 text-sm text-slate-300 leading-relaxed bg-white/5 p-4 rounded-2xl border border-white/10">
-                에너지가 높은 분파는 주도적이고 뚝심이 있으며,
-                에너지가 부드러운 분파는 주변 환경에 유연하게 적응하고 흡수력이 좋습니다.
-              </p>
+              )}
             </div>
 
             {/* 이전에는 값만 덩그러니 찍어서 `멘탈력 0` 이 고장처럼 보였다.
                 세 항목은 만점이 서로 다르고(30/30/40), 0도 정상적으로 나올 수 있는
                 값이다(예: 금 일간이 여름에 나면 계절 기운을 못 받아 득령 0).
-                만점·막대·한 줄 설명을 함께 보여 0의 의미가 읽히게 한다. */}
+                만점·막대·한 줄 설명을 함께 보여 0의 의미가 읽히게 한다.
+                단, gangyak 데이터 자체가 없을 때의 0은 계산 결과가 아니므로
+                zeroHint("계절운 X" 등)가 날조가 된다 — 그때는 그리지 않는다. */}
+            {hasGangyak && (
             <div className="mt-4 grid grid-cols-3 gap-2 text-center text-sm text-slate-400">
               {GANGYAK_PARTS.map((part) => {
                 const raw = Math.round(Number(gangyak?.[part.key] || 0));
@@ -1043,6 +1071,7 @@ function ResultCard({
                 );
               })}
             </div>
+            )}
           </div>
 
           <div className="rounded-3xl border border-white/10 bg-black/30 p-4 md:p-6">
@@ -1053,6 +1082,7 @@ function ResultCard({
               <h3 className="text-lg md:text-2xl font-black text-white break-keep">행운을 부르는 기운</h3>
             </div>
 
+            {hasYongshin ? (
             <div className="grid gap-3">
               <div className={`rounded-2xl border p-4 transition-all duration-300 ${getElementGlow(yongshin?.primary?.element)} hover:scale-[1.02] cursor-default`}>
                 <div className="flex justify-between items-center mb-2">
@@ -1060,7 +1090,7 @@ function ResultCard({
                   <span className="text-[13px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">1순위</span>
                 </div>
                 <div className="flex items-end gap-3">
-                  <p className="text-3xl font-black text-white drop-shadow-md">{cleanText(yongshin?.primary?.element?.replace(/\(.*\)/, ''), "분석 중")}</p>
+                  <p className="text-3xl font-black text-white drop-shadow-md">{cleanText(yongshin?.primary?.element?.replace(/\(.*\)/, ''), "-")}</p>
                 </div>
                 <p className="mt-3 text-sm text-slate-200">나의 중심을 잡아주고 운을 트이게 하는 핵심 열쇠입니다.</p>
               </div>
@@ -1080,6 +1110,16 @@ function ResultCard({
                 </div>
               </div>
             </div>
+            ) : (
+              /* yongshin 도 props 로 한 번에 들어오는 값이다. 예전의 "분석 중"
+                 문구는 데이터가 없을 때 끝나지 않는 진행 상태처럼 보였다.
+                 종결 상태임을 정직하게 알린다. */
+              <div className="flex items-center justify-center p-5 bg-white/5 rounded-2xl border border-white/10">
+                <p className="text-sm text-slate-400 text-center">
+                  아직 분석 데이터가 없습니다.<br />분석을 다시 실행하면 행운 기운이 표시됩니다.
+                </p>
+              </div>
+            )}
           </div>
         </section>
 

@@ -39,6 +39,10 @@ export default defineConfig({
             'tests/logic/launch-readiness.test.ts',
             'tests/logic/base-url-resolution.test.ts',
             'tests/logic/naver-auth.test.ts',
+            'tests/logic/tarot-reading.test.ts',
+            'tests/logic/tojeong-content-coverage.test.ts',
+            'tests/logic/saju-content-coverage.test.ts',
+            'tests/logic/result-card-data.test.ts',
         ],
         alias: {
             '@': path.resolve(__dirname, './src'),

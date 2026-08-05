@@ -29,14 +29,28 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 import { saveAnalysisToHistory } from "@/lib/app/analysis-history";
-import { DrawnTarotCard, buildTarotDeckCards, pickCardsFromDeck, TarotSuit, objectParticle } from "@/data/tarotDeck";
+import {
+  DrawnTarotCard,
+  TAROT_TOPICS,
+  TarotSuit,
+  TarotTopic,
+  buildTarotDeckCards,
+  buildTopicReading,
+  describeSpreadPattern,
+  hasFinalConsonant,
+  pickCardsFromDeck,
+  objectParticle,
+} from "@/data/tarotDeck";
 import AmbientSoundPortal from "@/components/ui/AmbientSoundPortal";
 import ReadingProgressBar from "@/components/ui/ReadingProgressBar";
 import AIIntelligenceBadge from "@/components/ui/AIIntelligenceBadge";
 import JellyBalance from "@/components/shop/JellyBalance";
 import JellyShopModal from "@/components/shop/JellyShopModal";
 
-const SPREAD_POSITIONS = ["과거 (Past)", "현재 (Present)", "미래 (Future)"] as const;
+const SPREAD_POSITIONS = ["과거", "현재", "미래"] as const;
+
+/** 포지션별 안내 — 카드를 뒤집기 전에도 이 자리가 무엇을 뜻하는지 보이게 한다 */
+const POSITION_HINTS = ["지금을 만든 배경", "한가운데의 흐름", "이대로면 가는 방향"] as const;
 
 function MysticBackground() {
   const rawId = useId();
@@ -78,6 +92,12 @@ function toSuitLabelKo(suit?: string | null): string {
   return SUIT_LABELS_KO[suit] || suit;
 }
 
+/** 받침에 따라 이/가 를 고른다 ("소드 기사가", "달이"). undefined 는 중립 처리 */
+function topicParticleSafe(word?: string): string {
+  if (!word) return "가";
+  return hasFinalConsonant(word) === false ? "가" : "이";
+}
+
 function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard, index: number, isRevealed: boolean, onReveal: () => void }) {
   const effect = getSuitEffect(card.suit);
   const Icon = effect.icon;
@@ -95,10 +115,14 @@ function TarotCardFlip({ card, index, isRevealed, onReveal }: { card: SpreadCard
         transition={{ duration: 0.8, type: "spring", stiffness: 260, damping: 20 }}
         className="relative w-full aspect-[2/3.2] preserve-3d transition-transform duration-500"
       >
-        {/* Front: Card Back */}
+        {/* Front: Card Back — 뒤집기 전에도 이 자리가 무슨 자리인지 보여 준다.
+            예전에는 "눌러서 펼치기"만 있어 어느 카드가 과거/현재/미래인지
+            뒤집고 나서야 알 수 있었다. */}
         <div className="absolute inset-0 backface-hidden z-10">
           <div className="w-full h-full rounded-[2.5rem] bg-slate-900 border-4 border-indigo-500/20 flex flex-col items-center justify-center space-y-4 shadow-2xl overflow-hidden relative">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.1),transparent_70%)]" />
+            <div className="text-lg font-black tracking-[0.3em] text-indigo-200 break-keep">{card.position}</div>
+            <div className="text-[13px] text-slate-400 font-bold break-keep">{POSITION_HINTS[index] ?? ""}</div>
             <div className="w-16 h-16 rounded-full border border-indigo-500/30 flex items-center justify-center animate-spin-slow">
               <Orbit className="w-8 h-8 text-indigo-400 opacity-50" />
             </div>
@@ -191,8 +215,11 @@ type PersistPayload = {
   }>;
   positions: string[];
   deckVersion: string;
+  topic: TarotTopic;
+  topicLabel: string;
   summary: string;
   evidence: SpreadEvidence[];
+  patternNotes: string[];
   pulse: { reversedRate: string; majorCount: number; reversedCount: number; flowTone: string };
 };
 
@@ -246,16 +273,17 @@ function toneColor(tone: string) {
   return "text-emerald-300";
 }
 
-function buildPersistPayload(cards: DrawnTarotCard[]): PersistPayload {
+function buildPersistPayload(cards: DrawnTarotCard[], topic: TarotTopic): PersistPayload {
+  const topicLabel = TAROT_TOPICS.find((entry) => entry.key === topic)?.label ?? TAROT_TOPICS[0].label;
   const spreadCards = cards.map((card, index) => ({
     ...card,
     position: SPREAD_POSITIONS[index],
-    meaning: card.isReversed ? card.meaning_reversed : card.meaning_upright,
+    meaning: buildTopicReading(card, (index % 3) as 0 | 1 | 2, topic),
   }));
   const evidence = buildEvidence(spreadCards);
   const pulse = calcSpreadPulse(spreadCards);
   const summary = cards.length
-    ? `3장 전개: 역방향 ${pulse.reversedRate}, 메이저 ${pulse.majorCount} 장, 흐름 ${pulse.flowTone}`
+    ? `${topicLabel} 3장 전개: 역방향 ${pulse.reversedCount}장, 메이저 ${pulse.majorCount}장, 흐름 ${pulse.flowTone}`
     : "";
 
   return {
@@ -269,9 +297,12 @@ function buildPersistPayload(cards: DrawnTarotCard[]): PersistPayload {
       imageUrl: card.imageUrl,
     })),
     positions: [...SPREAD_POSITIONS],
-    deckVersion: "v1",
+    deckVersion: "v2-topic",
+    topic,
+    topicLabel,
     summary,
     evidence,
+    patternNotes: describeSpreadPattern(cards),
     pulse,
   };
 }
@@ -286,27 +317,29 @@ export default function TarotPage() {
   const [shopOpen, setShopOpen] = useState(false);
   const [revealedIndices, setRevealedIndices] = useState<number[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [topic, setTopic] = useState<TarotTopic>("today");
 
+  const topicLabel = useMemo(
+    () => TAROT_TOPICS.find((entry) => entry.key === topic)?.label ?? TAROT_TOPICS[0].label,
+    [topic],
+  );
   const spreadCards: SpreadCard[] = useMemo(
     () =>
       cards.map((card, index) => ({
         ...card,
         position: SPREAD_POSITIONS[index],
-        meaning: card.isReversed ? card.meaning_reversed : card.meaning_upright,
+        meaning: buildTopicReading(card, (index % 3) as 0 | 1 | 2, topic),
       })),
-    [cards],
+    [cards, topic],
   );
   const spreadEvidence = useMemo(() => buildEvidence(spreadCards), [spreadCards]);
   const spreadPulse = useMemo(() => calcSpreadPulse(spreadCards), [spreadCards]);
-  const summary = useMemo(() => {
-    if (!cards.length) return "";
-    return `3장 전개: 역방향 ${spreadPulse.reversedRate}, 메이저 ${spreadPulse.majorCount} 장, 흐름 ${spreadPulse.flowTone}`;
-  }, [cards.length, spreadPulse]);
+  const patternNotes = useMemo(() => describeSpreadPattern(cards), [cards]);
 
   const draw = () => {
     if (isDrawing) return;
     setIsDrawing(true);
-    setStatus("운명의 파동을 조율하는 중...");
+    setStatus("카드를 섞고 있습니다...");
     setShowEvidence(false);
     setRevealedIndices([]);
     setShowResults(false);
@@ -317,7 +350,7 @@ export default function TarotPage() {
 
       setCards([...picked]);
       setIsDrawing(false);
-      setStatus("운명의 신호가 감지되었습니다. 카드를 터치하여 확인하세요.");
+      setStatus("세 장이 놓였습니다. 카드를 눌러 한 장씩 공개하세요.");
       setShowResults(true);
       // 저장은 "리포트 저장" 버튼(saveCurrent)에서만 한다.
       // 예전에는 뽑을 때도 자동 저장해 같은 스프레드가 이력에 두 번 쌓였다.
@@ -336,12 +369,12 @@ export default function TarotPage() {
     if (!cards.length || isSaving) return;
     setIsSaving(true);
     try {
-      const payload = buildPersistPayload(cards);
+      const payload = buildPersistPayload(cards, topic);
       saveAnalysisToHistory(
         {
           type: "TAROT",
           title: "타로 리딩",
-          subtitle: "3장 전개 결과",
+          subtitle: `${topicLabel} 3장 전개`,
           resultPreview: payload.cards.map((card) => card.name).join(", "),
           result: payload,
         },
@@ -373,7 +406,7 @@ export default function TarotPage() {
 
           <div className="text-center space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[13px] font-black uppercase tracking-[0.24em] border border-indigo-500/20">
-              <Compass className="w-3 h-3" /> Tarot Oracle v1.0
+              <Compass className="w-3 h-3" /> RWS 3카드 리딩
             </div>
             <h1 className="text-4xl font-black tracking-tighter uppercase text-white leading-none break-keep">타로 인사이트</h1>
           </div>
@@ -383,7 +416,7 @@ export default function TarotPage() {
 
         {/* 좁은 화면에서 p-5 sm:p-8(좌우 80px)은 320px 뷰포트의 콘텐츠 폭을 238px까지 깎아
             카드 내용이 잘렸습니다. 모바일에서는 여백을 줄이고 sm 이상에서 원래 값으로 복귀. */}
-        <section className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-4 sm:rounded-[2rem] sm:p-5 sm:p-8 md:p-5 sm:p-8 relative overflow-hidden group">
+        <section className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-4 sm:p-8 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px] -mr-48 -mt-48 pointer-events-none group-hover:bg-indigo-600/20 transition-all duration-1000" />
 
           <div className="flex items-center gap-4 mb-6 relative z-10">
@@ -397,23 +430,30 @@ export default function TarotPage() {
           </div>
 
           <p className="text-slate-300 mb-6 leading-relaxed max-w-2xl px-2 break-keep">
-            3장의 카드로 당신의 무의식과 현실의 교차점을 읽어냅니다.<br />
-            위치별 핵심 신호를 분석하고, 당신의 다음 액션을 위한 직관적 가이드를 생성합니다.
+            과거·현재·미래 세 장으로 흐름을 읽습니다. 먼저 <strong className="text-indigo-200">무엇이 궁금한지</strong> 골라 주세요 —
+            같은 카드라도 질문에 따라 읽는 영역이 달라집니다.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <article className="p-4 sm:p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
-              <div className="text-[13px] text-slate-500 font-black uppercase tracking-widest mb-1">변칙성</div>
-              <div className="text-xl font-black text-rose-300">역방향 {spreadPulse.reversedRate}</div>
-            </article>
-            <article className="p-4 sm:p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
-              <div className="text-[13px] text-slate-500 font-black uppercase tracking-widest mb-1">에너지 밀도</div>
-              <div className="text-xl font-black text-indigo-300">메이저 {spreadPulse.majorCount}장</div>
-            </article>
-            <article className="p-4 sm:p-6 rounded-[2rem] border border-white/10 bg-black/40 text-center">
-              <div className="text-[13px] text-slate-500 font-black uppercase tracking-widest mb-1">흐름 성향</div>
-              <div className={`text-xl font-black ${toneColor(spreadPulse.flowTone)}`}>{spreadPulse.flowTone}</div>
-            </article>
+          {/* 질문 주제 — 뽑기 전에 고른다. 예전에는 주제 없이 뽑아 해석이
+              누구에게나 같은 일반론이었고, 여기에 의미 없는 수치 카드
+              (변칙성 0% 등)가 뽑기 전부터 떠 있었다. */}
+          <div className="flex flex-wrap gap-2.5 mb-6" role="radiogroup" aria-label="질문 주제 선택">
+            {TAROT_TOPICS.map((entry) => (
+              <button
+                key={entry.key}
+                type="button"
+                role="radio"
+                aria-checked={topic === entry.key}
+                onClick={() => setTopic(entry.key)}
+                className={`px-4 py-2.5 rounded-2xl border text-sm font-black transition-all break-keep ${
+                  topic === entry.key
+                    ? "border-indigo-400/60 bg-indigo-500/20 text-indigo-100 shadow-lg shadow-indigo-500/10"
+                    : "border-white/10 bg-black/30 text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                }`}
+              >
+                {entry.label}
+              </button>
+            ))}
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 relative z-10">
@@ -423,7 +463,7 @@ export default function TarotPage() {
               className="flex-1 py-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest shadow-xl hover:shadow-indigo-500/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50 group/btn break-keep"
             >
               <RefreshCw className={`w-5 h-5 ${isDrawing ? "animate-spin" : "group-hover/btn:rotate-180 transition-transform duration-500"}`} />
-              {isDrawing ? "조율 중..." : "새로운 운명 전개"}
+              {isDrawing ? "카드 섞는 중..." : "카드 뽑기"}
             </button>
 
             <AnimatePresence>
@@ -459,7 +499,7 @@ export default function TarotPage() {
             <div className="mt-16 flex items-center gap-4 justify-center">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-indigo-500/30" />
               <div className="px-6 py-2 rounded-full border border-indigo-500/20 bg-indigo-500/5 text-[13px] font-black text-indigo-300 uppercase tracking-[0.4em] flex items-center gap-2 backdrop-blur-xl shadow-lg shadow-indigo-500/10">
-                <Eye className="w-3.5 h-3.5" /> Ritual Revelation
+                <Eye className="w-3.5 h-3.5" /> 카드 공개
               </div>
               <div className="h-px flex-1 bg-gradient-to-l from-transparent to-indigo-500/30" />
             </div>
@@ -490,29 +530,64 @@ export default function TarotPage() {
                   <div className="flex items-center gap-4 justify-center">
                     <div className="h-px flex-1 bg-gradient-to-r from-transparent to-emerald-500/30" />
                     <div className="px-6 py-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 text-[13px] font-black text-emerald-300 uppercase tracking-[0.4em] flex items-center gap-2 backdrop-blur-xl">
-                      <Sparkles className="w-3.5 h-3.5" /> Insight & Analysis
+                      <Sparkles className="w-3.5 h-3.5" /> 종합 해석
                     </div>
                     <div className="h-px flex-1 bg-gradient-to-l from-transparent to-emerald-500/30" />
                   </div>
 
+                  {/* 숫자를 보여줄 때는 반드시 그 숫자가 무슨 뜻인지 함께 쓴다.
+                      "변칙성 33%" 같은 설명 없는 수치가 이해 불가라는 피드백의 답이다. */}
+                  <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <article className="p-4 sm:p-5 rounded-[2rem] border border-white/10 bg-black/40">
+                      <div className="text-[13px] text-slate-500 font-black tracking-widest mb-1">역방향 {spreadPulse.reversedCount}장 / 3장</div>
+                      <p className="text-sm text-slate-300 leading-relaxed break-keep">
+                        {spreadPulse.reversedCount >= 2
+                          ? "역방향이 절반을 넘습니다 — 밀어붙이기보다 멈춰서 정비하라는 신호로 읽습니다."
+                          : spreadPulse.reversedCount === 1
+                            ? "한 장만 역방향입니다 — 해당 자리에서만 속도 조절이 필요합니다."
+                            : "전부 정방향입니다 — 카드 의미가 그대로 순하게 흐르는 구성입니다."}
+                      </p>
+                    </article>
+                    <article className="p-4 sm:p-5 rounded-[2rem] border border-white/10 bg-black/40">
+                      <div className="text-[13px] text-slate-500 font-black tracking-widest mb-1">메이저 {spreadPulse.majorCount}장 / 3장</div>
+                      <p className="text-sm text-slate-300 leading-relaxed break-keep">
+                        메이저 아르카나는 일상보다 큰 흐름을 뜻합니다. {spreadPulse.majorCount >= 2
+                          ? "두 장 이상이면 인생 단위의 전환이 걸린 스프레드로 읽습니다."
+                          : spreadPulse.majorCount === 1
+                            ? "한 장이면 그 자리가 이번 리딩의 무게중심입니다."
+                            : "없으면 지금 문제는 일상 범위 안에서 움직입니다."}
+                      </p>
+                    </article>
+                    <article className="p-4 sm:p-5 rounded-[2rem] border border-white/10 bg-black/40">
+                      <div className={`text-[13px] font-black tracking-widest mb-1 ${toneColor(spreadPulse.flowTone)}`}>흐름 성향 · {spreadPulse.flowTone}</div>
+                      <p className="text-sm text-slate-300 leading-relaxed break-keep">
+                        {spreadPulse.flowTone === "주의"
+                          ? "역방향이 겹쳐 재정비가 우선인 흐름입니다."
+                          : spreadPulse.flowTone === "강한 집중"
+                            ? "메이저가 겹쳐 큰 결정에 집중되는 흐름입니다."
+                            : "쏠림 없이 세 카드를 같은 무게로 읽는 흐름입니다."}
+                      </p>
+                    </article>
+                  </section>
+
                   <section className="grid gap-6 md:grid-cols-3">
                     <ResultSummaryCard
-                      title="🔮 The Essence"
+                      title="🔮 핵심"
                       icon={Star}
                       tone="border-indigo-400/20 bg-indigo-500/5"
-                      body={`${spreadCards[1]?.name_kr}${objectParticle(spreadCards[1]?.name_kr ?? "")} 중심으로 보면, 지금의 당신은 상황을 피하기보다 의미를 읽고 방향을 다시 잡아야 하는 국면에 있습니다.`}
+                      body={`${topicLabel} 질문의 중심은 현재 자리의 ${spreadCards[1]?.name_kr}입니다. ${spreadCards[1]?.name_kr}${objectParticle(spreadCards[1]?.name_kr ?? "")} 축으로 과거·미래 카드를 이어서 읽으세요.`}
                     />
                     <ResultSummaryCard
-                      title="📚 The Insight"
+                      title="📚 구성 읽기"
                       icon={LayoutGrid}
                       tone="border-cyan-400/20 bg-cyan-500/5"
-                      body={`역방향 비율 ${spreadPulse.reversedRate}, 메이저 ${spreadPulse.majorCount}장의 배열은 흐름을 늦추고 재정렬하라는 신호입니다.`}
+                      body={patternNotes.join(" ")}
                     />
                     <ResultSummaryCard
-                      title="✨ The Action"
+                      title="✨ 오늘의 행동"
                       icon={Zap}
                       tone="border-emerald-400/20 bg-emerald-500/5"
-                      body={`${spreadCards[2]?.position} 카드는 조급한 단정 대신 오늘 한 가지 작은 실행에 집중할 것을 권합니다.`}
+                      body={`미래 자리의 ${spreadCards[2]?.name_kr}${topicParticleSafe(spreadCards[2]?.name_kr)} 방향입니다. 아직 정해진 결과가 아니니, 오늘 할 수 있는 한 가지부터 실행해 흐름을 만드세요.`}
                     />
                   </section>
 
@@ -522,7 +597,7 @@ export default function TarotPage() {
                         <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
                           <HistoryIcon className="w-5 h-5 text-indigo-400" />
                         </div>
-                        <h3 className="text-lg font-black tracking-tight text-white uppercase">Divine Grounds</h3>
+                        <h3 className="text-lg font-black tracking-tight text-white uppercase">카드별 근거</h3>
                       </div>
 
                       <div className="space-y-4">
@@ -546,14 +621,18 @@ export default function TarotPage() {
                         <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
                           <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                         </div>
-                        <h3 className="text-lg font-black tracking-tight text-white uppercase">Decision Support</h3>
+                        <h3 className="text-lg font-black tracking-tight text-white uppercase">행동 제안</h3>
                       </div>
-                      <p className="text-sm text-slate-300 leading-relaxed font-medium">
-                        분석된 {spreadPulse.majorCount}개의 고차원 아르카나 신호는 당신의 운명이 중대한 전환점에 있음을 시사합니다. 조급함을 버리고 내면의 목소리에 귀를 기울일 때 가장 선명한 길을 찾을 수 있습니다.
+                      <p className="text-sm text-slate-300 leading-relaxed font-medium break-keep">
+                        {spreadPulse.reversedCount >= 2
+                          ? `${topicLabel} 문제는 지금 속도를 올릴 때가 아니라 어긋난 부분을 바로잡을 때입니다. 역방향 자리의 문장을 먼저 다시 읽어 보세요.`
+                          : `${topicLabel} 문제에서 현재 카드의 문장이 지금 선택의 기준입니다. 미래 카드는 예언이 아니라 지금 흐름의 연장선이니, 마음에 들지 않으면 바꿀 수 있는 시점도 지금입니다.`}
                       </p>
-                      <div className="pt-4 flex flex-col gap-3">
-                        <AIIntelligenceBadge model="TAROT_ENGINE_V2" isEnsemble={true} />
-                        <div className="text-[13px] text-slate-500 font-bold uppercase tracking-[0.2em]">Validated by High-Precision Oracle Logic</div>
+                      <div className="pt-4">
+                        {/* 가짜 정밀성 문구("High-Precision Oracle") 대신 실제 방식 명시 */}
+                        <div className="text-[13px] text-slate-500 font-bold tracking-[0.08em] break-keep">
+                          라이더-웨이트(RWS) 전통 의미 기반의 규칙 해석입니다 — 같은 카드·같은 질문이면 항상 같은 해석이 나옵니다.
+                        </div>
                       </div>
                     </div>
                   </section>
