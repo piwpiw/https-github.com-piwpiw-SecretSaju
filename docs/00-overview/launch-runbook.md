@@ -122,6 +122,20 @@ node scripts/qa/free-launch-smoke.mjs http://localhost:3900
 ### 배포
 - main 머지 → Vercel 자동 배포. PR 은 Quality 체크(CI) 그린 확인 후 머지.
 
+### ⚠️ "고쳤는데 화면에 반영이 안 될 때" — 도메인이 어느 프로젝트를 보는지부터
+2026-08-05 실사고: 브라우저로 보던 도메인이 **이 리포가 아닌 다른(옛) 코드베이스의 배포**를
+서빙하고 있었다. 화면에는 이 리포에서 이미 제거된 영어 문자열("In-O-Sul fire frame detected")과
+이 리포에 존재한 적 없는 화면("RWS 기반 3카드 리딩")이 동시에 보였고, `/api/health` 는
+현재 코드가 낼 수 없는 500 을 냈다 — 셋 다 "다른 빌드" 신호다.
+
+수정이 반영 안 되는 것처럼 보이면 코드를 의심하기 전에 순서대로:
+1. **보고 있는 주소창 도메인**이 Vercel 의 어느 프로젝트에 붙어 있는지 확인
+   (대시보드 → 프로젝트 → Settings → Domains).
+2. 그 프로젝트의 **Settings → Git** 이 이 리포(`piwpiw/https-github.com-piwpiw-SecretSaju`),
+   Production Branch = `main` 인지 확인.
+3. 최신 Production 배포의 **커밋 해시**가 GitHub `main` HEAD 와 같은지 확인.
+4. 빠른 판별: `/api/health` 가 500 이면 옛 빌드다 (현재 코드는 실패해도 200/503 JSON 을 낸다).
+
 ### 롤백
 - Vercel 대시보드 → Deployments → 직전 배포 "Promote to Production" (1분 내).
 - DB 마이그레이션이 얽힌 경우: 마이그레이션은 additive-only 원칙 (컬럼/테이블 추가만) — 코드 롤백만으로 안전해야 한다.
