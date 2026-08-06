@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { type ReactNode, useState } from "react";
 import { AgeGroup } from "@/lib/saju/archetypes";
+import { buildSipsongPalaceReadings } from "@/lib/saju/sipsongPalace";
+import type { SipsongResult } from "@/core/myeongni/sipsong";
 import type { CanonicalSajuFeatures, EvidenceEntry } from "@/core/api/saju-canonical";
 import KeywordChips from "@/components/result/KeywordChips";
 import InteractiveInsightLab from "@/components/result/InteractiveInsightLab";
@@ -462,6 +464,20 @@ function ResultCard({
     (best, item) => (item.value > best.value ? item : best),
     tenGodSummary[0] ?? { label: "데이터 준비 중", value: 0 },
   );
+
+  // 궁위(자리)별 십성 리딩 — 7개 자리 값이 전부 유효한 십성일 때만 만든다.
+  // 폴백·부분 데이터에서 일부 자리만 그리면 "빠진 자리"가 고장처럼 보인다.
+  const SIPSONG_POSITION_KEYS = [
+    "yearStem", "yearBranch", "monthStem", "monthBranch", "dayBranch", "hourStem", "hourBranch",
+  ] as const;
+  const hasFullSipsong =
+    !!sipsong &&
+    SIPSONG_POSITION_KEYS.every(
+      (key) => typeof sipsong[key] === "string" && (SIPSONG_LABELS as readonly string[]).includes(sipsong[key]),
+    );
+  const palaceReadings = hasFullSipsong
+    ? buildSipsongPalaceReadings(sipsong as unknown as SipsongResult)
+    : [];
 
   const phaseEntries = [
     { key: "year", label: "년주", value: sibiwoonseong?.year || "-" },
@@ -974,6 +990,25 @@ function ResultCard({
                     </div>
                   ))}
                 </div>
+
+                {palaceReadings.length > 0 && (
+                  <div className="space-y-3 px-2">
+                    <p className="text-sm font-black text-slate-400 break-keep">
+                      궁위로 읽는 십성 — 같은 기운도 어느 자리에 있느냐로 다르게 작동합니다
+                    </p>
+                    {palaceReadings.map((reading) => (
+                      <div key={reading.positionKey} className="rounded-xl border border-white/10 bg-black/20 p-3">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="text-sm font-black text-fuchsia-200">
+                            {reading.positionLabel} · {reading.tenGod}
+                          </span>
+                          <span className="text-[13px] text-slate-500">{reading.period}운</span>
+                        </div>
+                        <p className="text-sm text-slate-300 leading-relaxed break-keep">{reading.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ) : (
               /* sipsong 은 props 로 한 번에 들어오는 값이라 이 컴포넌트에서 더

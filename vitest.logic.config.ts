@@ -43,6 +43,7 @@ export default defineConfig({
             'tests/logic/tojeong-content-coverage.test.ts',
             'tests/logic/saju-content-coverage.test.ts',
             'tests/logic/result-card-data.test.ts',
+            'tests/logic/sipsong-palace.test.ts',
         ],
         alias: {
             '@': path.resolve(__dirname, './src'),
