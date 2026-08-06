@@ -292,6 +292,13 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }: Au
 
     const handleNaverLogin = async () => {
         saveReturnTo();
+        // 서버 키(NAVER_CLIENT_ID/SECRET)는 클라이언트에서 볼 수 없으므로,
+        // 운영자가 키와 함께 이 공개 플래그를 켜면 실제 OAuth 플로로 전환된다.
+        if (process.env.NEXT_PUBLIC_NAVER_LOGIN_ENABLED === 'true') {
+            setIsLoading('naver');
+            window.location.href = '/api/auth/naver/login';
+            return;
+        }
         setAuthError('provider_error');
         setEmailMessage(
             locale === 'ko'

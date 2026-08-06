@@ -291,7 +291,6 @@ export default function TarotCardArt({
       style={{
         background: `radial-gradient(circle at 50% 32%, ${style.glow}, rgba(2,6,23,0.96) 72%)`,
         color: style.ink,
-        transform: isReversed ? 'rotate(180deg)' : undefined,
       }}
       aria-hidden="true"
     >
@@ -309,8 +308,14 @@ export default function TarotCardArt({
               : (number ?? '')}
         </span>
 
-        {/* 가운데: 상징 */}
-        <div className="flex flex-1 flex-col items-center justify-center gap-1.5">
+        {/* 가운데: 상징 — 역방향이면 상징만 뒤집는다.
+            예전에는 카드 전체를 180° 돌려 번호·수트 이름 글자까지 뒤집혔고,
+            "타로 이미지가 이상하다"는 피드백의 원인이었다. 실물 타로의
+            역방향 느낌은 상징 뒤집힘으로 남기고 글자는 읽히게 유지한다. */}
+        <div
+          className="flex flex-1 flex-col items-center justify-center gap-1.5"
+          style={{ transform: isReversed ? 'rotate(180deg)' : undefined }}
+        >
           {isMajor ? (
             <MajorMark number={typeof number === 'number' ? number : 0} />
           ) : court ? (
@@ -336,9 +341,9 @@ export default function TarotCardArt({
           )}
         </div>
 
-        {/* 아래: 수트 이름 */}
-        <span className="text-[11px] font-black tracking-[0.22em]" style={{ opacity: 0.75 }}>
-          {style.label}
+        {/* 아래: 수트 이름 (+ 역방향 표시 — 글자는 항상 정방향으로 읽힌다) */}
+        <span className="text-[11px] font-black tracking-[0.08em]" style={{ opacity: 0.75 }}>
+          {isReversed ? `${style.label} · 역` : style.label}
         </span>
       </div>
     </div>

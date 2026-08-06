@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { APP_CONFIG } from '@/config/env';
+import { resolveServerBaseUrl } from '@/config/env';
 
 /**
  * 공개(마케팅 가치가 있는) 라우트만 담는다.
@@ -46,7 +46,12 @@ const PUBLIC_ROUTES: Array<[string, 'daily' | 'weekly' | 'monthly', number]> = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = APP_CONFIG.BASE_URL || 'https://secret-saju.vercel.app';
+    const baseUrl = resolveServerBaseUrl();
+    // sitemap 은 절대 URL 만 허용한다. 기준 도메인을 못 구하면 잘못된 도메인의
+    // 목록을 내보내는 대신 빈 sitemap 을 낸다 (Vercel 에서는 시스템 환경변수로
+    // 항상 해결되므로 실질적으로 로컬 전용 경로다).
+    if (!baseUrl) return [];
+
     const lastModified = new Date();
 
     return PUBLIC_ROUTES.map(([path, changeFrequency, priority]) => ({

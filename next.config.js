@@ -3,6 +3,12 @@ const shouldUseStandalone =
   process.env.NEXT_FORCE_STANDALONE === "1" || process.platform !== "win32";
 
 const nextConfig = {
+  // 배포 커밋을 클라이언트에서 볼 수 있게 한다 — 푸터의 빌드 스탬프가
+  // "지금 보는 화면이 어느 배포인지"를 즉시 판별하는 용도로 쓴다.
+  // (옛 빌드가 기기 캐시에 남아 "고쳐도 옛날 화면"이 재현되던 사고의 진단 장치)
+  env: {
+    NEXT_PUBLIC_BUILD_SHA: (process.env.VERCEL_GIT_COMMIT_SHA || "").slice(0, 7),
+  },
   reactStrictMode: true,
   ...(shouldUseStandalone ? { output: "standalone" } : {}),
   pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],

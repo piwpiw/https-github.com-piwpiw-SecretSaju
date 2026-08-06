@@ -57,12 +57,43 @@ function getRenderBaseUrl(): string {
     return renderHost ? normalizeHostToUrl(renderHost) : '';
 }
 
+/**
+ * Vercel 이 배포마다 자동 주입하는 시스템 환경변수에서 기준 도메인을 얻는다.
+ *
+ * VERCEL_PROJECT_PRODUCTION_URL 은 **프로젝트의 프로덕션 도메인으로 고정**이라
+ * sitemap·robots 처럼 안정적인 절대 URL 이 필요한 곳에 쓸 수 있다.
+ * VERCEL_URL 은 배포마다 바뀌는 일회성 주소라 의도적으로 쓰지 않는다.
+ *
+ * NEXT_PUBLIC_ 접두사가 없어 **서버에서만** 채워진다 — 클라이언트 번들에서는
+ * 빈 문자열이 되며, 그래서 APP_CONFIG.BASE_URL 에는 넣지 않는다
+ * (넣으면 서버/클라이언트 렌더 결과가 갈린다).
+ */
+function getVercelBaseUrl(): string {
+    const host = process.env.VERCEL_PROJECT_PRODUCTION_URL || '';
+    return host ? normalizeHostToUrl(host) : '';
+}
+
 export const APP_CONFIG = {
     NAME: '시크릿사주 - 보헤미안 스튜디오',
     VERSION: '1.0.0',
     BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || getRenderBaseUrl(),
     API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || '/api',
 } as const;
+
+/**
+ * 서버에서 **절대 URL** 이 필요할 때 쓰는 기준 도메인.
+ * 우선순위: 명시 설정(NEXT_PUBLIC_BASE_URL 등) → Vercel 프로덕션 도메인 → Render.
+ *
+ * 어디서도 얻지 못하면 **빈 문자열**을 돌려준다. 존재하지 않는 도메인을
+ * 지어내지 않는 것이 핵심이다 — 예전에는 호출부마다
+ * 'https://secret-saju.vercel.app' / 'https://secretsaju.example.com' 같은
+ * 실재하지 않는 값을 fallback 으로 박아 두어, 환경변수가 비면 검색엔진에
+ * 엉뚱한 sitemap 을 알려주고 추천 링크가 조용히 깨진 주소로 발급됐다.
+ * 판단은 호출부가 한다(생략하거나 500 을 낸다).
+ */
+export function resolveServerBaseUrl(): string {
+    return APP_CONFIG.BASE_URL || getVercelBaseUrl();
+}
 
 // ============================================
 // KAKAO AUTHENTICATION
@@ -91,6 +122,39 @@ export const KAKAO_CONFIG = {
     get error(): string | null {
         if (!this.JS_KEY) return 'NEXT_PUBLIC_KAKAO_JS_KEY is not configured';
         if (!this.REST_API_KEY) return 'KAKAO_REST_API_KEY is not configured';
+        return null;
+    },
+} as const;
+
+/**
+ * Naver OAuth Configuration (서버 전용 표준 인가 코드 플로).
+ *
+ * 카카오와 달리 JS SDK 를 쓰지 않는다 — /api/auth/naver/login 이 네이버
+ * 인가 페이지로 302 시키고, /api/auth/naver/callback 이 토큰 교환·프로필
+ * 조회·세션 쿠키 설정까지 서버에서 끝낸다. 클라이언트에 노출되는 키가 없다.
+ *
+ * 등록: https://developers.naver.com/apps → 애플리케이션 등록 →
+ *   Callback URL 에 `${BASE_URL}/api/auth/naver/callback` 추가.
+ */
+export const NAVER_CONFIG = {
+    CLIENT_ID: process.env.NAVER_CLIENT_ID || '',
+    CLIENT_SECRET: process.env.NAVER_CLIENT_SECRET || '',
+
+    AUTH_URL: 'https://nid.naver.com/oauth2.0/authorize',
+    TOKEN_URL: 'https://nid.naver.com/oauth2.0/token',
+    PROFILE_URL: 'https://openapi.naver.com/v1/nid/me',
+
+    get REDIRECT_URI(): string {
+        return `${APP_CONFIG.BASE_URL}/api/auth/naver/callback`;
+    },
+
+    get isConfigured(): boolean {
+        return !!(this.CLIENT_ID && this.CLIENT_SECRET);
+    },
+
+    get error(): string | null {
+        if (!this.CLIENT_ID) return 'NAVER_CLIENT_ID is not configured';
+        if (!this.CLIENT_SECRET) return 'NAVER_CLIENT_SECRET is not configured';
         return null;
     },
 } as const;

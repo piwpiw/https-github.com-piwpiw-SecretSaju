@@ -364,6 +364,68 @@ export async function getAuthenticatedUser(request: NextRequest): Promise<AuthRe
         };
     }
 
+    // 네이버 세션 — 카카오와 동일한 모델(쿠키 토큰 → 프로필 API 검증 → upsert).
+    const naverToken = request.cookies.get(STORAGE_KEYS.NAVER_TOKEN)?.value;
+    if (naverToken) {
+        const { getNaverUser } = await import('@/lib/auth/naver-auth');
+        const naverUser = await getNaverUser(naverToken);
+        if (!naverUser) {
+            return {
+                user: null,
+                error: NextResponse.json({ error: 'Unauthorized: Invalid Naver session' }, { status: 401 })
+            };
+        }
+
+        const existingLookup = await selectUserWithColumnFallback(
+            supabase,
+            { column: 'naver_id', value: naverUser.id },
+            ['id', 'is_admin']
+        );
+        const existingUser = existingLookup.data as { id?: string; is_admin?: boolean | null } | null;
+        if (existingLookup.error) {
+            console.error('[API-AUTH] Naver user lookup failed:', existingLookup.error);
+        }
+
+        const shouldSetAdmin = shouldGrantAdminEmail(naverUser.email);
+        const nextAdminState = mergeAdminState(existingUser?.is_admin, shouldSetAdmin);
+        const isNewNaverUser = !existingUser;
+
+        const upsertResult = await upsertUserWithColumnFallback(
+            supabase,
+            {
+                naver_id: naverUser.id,
+                email: naverUser.email,
+                name: naverUser.nickname,
+                auth_provider: 'naver',
+                profile_image_url: naverUser.profileImage,
+                is_admin: nextAdminState,
+                last_login_at: new Date().toISOString(),
+            },
+            'naver_id'
+        );
+        const user = upsertResult.data as { id: string; is_admin?: boolean | null } | null;
+
+        if (upsertResult.error || !user) {
+            console.error('[API-AUTH] Naver user UPSERT failed:', upsertResult.error);
+            return {
+                user: null,
+                error: NextResponse.json({ error: 'User sync failed', code: 'USER_SYNC_ERROR' }, { status: 500 })
+            };
+        }
+
+        await ensureJellyWallet(supabase, user.id, isNewNaverUser);
+
+        return {
+            user: {
+                id: user.id,
+                kakaoId: 0,
+                email: naverUser.email,
+                isAdmin: mergeAdminState(user.is_admin, shouldSetAdmin) ?? false
+            },
+            error: null
+        };
+    }
+
     const sessionToken = getSessionTokenFromRequest(request);
     if (!sessionToken) {
         return {

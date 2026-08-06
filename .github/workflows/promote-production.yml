@@ -1,0 +1,49 @@
+# 최신 프로덕션 배포를 도메인에 강제 연결 (Instant Rollback 고정 해제)
+#
+# 2026-08-06 실사고: Vercel 에서 Instant Rollback 이 눌린 뒤로는 새 배포가
+# 아무리 쌓여도 도메인이 옛 배포에 고정된다. 해제는 Vercel API/대시보드의
+# Promote 뿐이라, 토큰만 등록해 두면 이 워크플로 실행 한 번으로 풀린다.
+#
+# 사전 준비(1회): Vercel 대시보드 → Account Settings → Tokens 에서 토큰 발급
+#   → GitHub 리포 Settings → Secrets and variables → Actions →
+#   New repository secret → 이름 VERCEL_TOKEN 으로 저장.
+#
+# 실행: GitHub → Actions → "Promote latest to production" → Run workflow.
+# (projectId/teamId 는 Vercel 봇 코멘트에 공개되는 식별자라 비밀이 아니다.)
+name: Promote latest to production
+
+on:
+  workflow_dispatch:
+  # GitHub 연동 앱에는 workflow_dispatch 권한이 없어(403) 푸시 트리거를
+  # 병행한다 — `git push origin main:ops/promote-production` 한 번이
+  # 곧 "최신 배포로 프로모트" 명령이 된다.
+  push:
+    branches: [ops/promote-production]
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Promote newest READY production deployment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          PROJECT_ID: prj_897Pu0sVvi0GD0NVIOFFPlEdVYa2
+          TEAM_ID: team_yTBPzB1b6eI4g5lbdtalf7z1
+        run: |
+          set -euo pipefail
+          if [ -z "${VERCEL_TOKEN}" ]; then
+            echo "::error::VERCEL_TOKEN secret 이 없습니다 — 워크플로 파일 상단의 사전 준비를 먼저 하세요."
+            exit 1
+          fi
+          DEPLOYMENT_ID=$(curl -sf -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+            "https://api.vercel.com/v6/deployments?projectId=${PROJECT_ID}&teamId=${TEAM_ID}&target=production&state=READY&limit=1" \
+            | jq -r '.deployments[0].uid')
+          if [ -z "${DEPLOYMENT_ID}" ] || [ "${DEPLOYMENT_ID}" = "null" ]; then
+            echo "::error::READY 상태의 프로덕션 배포를 찾지 못했습니다."
+            exit 1
+          fi
+          echo "Promoting deployment ${DEPLOYMENT_ID}"
+          curl -sf -X POST -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+            "https://api.vercel.com/v10/projects/${PROJECT_ID}/promote/${DEPLOYMENT_ID}?teamId=${TEAM_ID}" \
+            -H "Content-Type: application/json" -d '{}'
+          echo "완료 — 도메인이 최신 배포로 연결되고 Rollback 고정이 해제됩니다."

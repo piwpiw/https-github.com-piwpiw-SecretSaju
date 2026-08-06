@@ -31,6 +31,11 @@ export const NETWORK_ONLY_PREFIXES = [
   '/api/payment',
   '/api/wallet',
   '/api/auth',
+  // 기기 캐시 리셋 페이지·워커 스크립트는 어떤 캐시도 타면 안 된다 —
+  // 캐시가 문제인 상황의 탈출구가 캐시에 갇히면 복구 수단이 사라진다.
+  '/reset.html',
+  '/sw.js',
+  '/service-worker.js',
 ] as const;
 
 /** CacheFirst 로 취급하는 정적 파일 확장자 */

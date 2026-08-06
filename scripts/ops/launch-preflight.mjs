@@ -101,6 +101,11 @@ const ENV_GROUPS = [
         vars: ['NEXT_PUBLIC_KAKAO_JS_KEY', 'KAKAO_REST_API_KEY', 'KAKAO_CLIENT_SECRET'],
     },
     {
+        name: '인증 (네이버 로그인 — 선택)',
+        blocking: false,
+        vars: ['NAVER_CLIENT_ID', 'NAVER_CLIENT_SECRET', 'NEXT_PUBLIC_NAVER_LOGIN_ENABLED'],
+    },
+    {
         name: '운영 보조',
         blocking: false,
         vars: ['CRON_SECRET', 'NEXT_PUBLIC_POSTHOG_KEY'],
