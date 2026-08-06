@@ -38,7 +38,8 @@ describe('matchDreamSymbols — 부분문자열 오매칭 방지', () => {
   });
 
   it('매칭된 구간은 소비되어 같은 글자를 재사용하지 않는다 (물고기 ≠ 물+고기)', () => {
-    const symbols = symbolsOf('커다란 물고기를 잡는 꿈');
+    // '물고기를 잡'은 전용 상징(낚시)으로 이관됐다 — 소비 규칙 검증 의도는 유지한다
+    const symbols = symbolsOf('커다란 물고기가 나오는 꿈');
     expect(symbols).toContain('물고기');
     expect(symbols).not.toContain('물');
   });
@@ -154,9 +155,19 @@ describe('복합어 오매칭 방지 (dda1c0d 리뷰 수정)', () => {
     it('"별의별" 은 별꿈이 아니다', () => {
         expect(matchDreamSymbols('별의별 생각이 다 들었다').matches.map(m => m.symbol)).not.toContain('별');
     });
-    it('"이사님" 은 집꿈이 아니고 "이사하는" 은 집꿈이다', () => {
-        expect(matchDreamSymbols('이사님과 회의하는 꿈').matches.map(m => m.symbol)).not.toContain('집');
-        expect(matchDreamSymbols('이사하는 꿈을 꿨다').matches.map(m => m.symbol)).toContain('집');
+    it('"이사님" 은 이사꿈이 아니고 "이사하는" 은 이사꿈이다', () => {
+        // '이사하' 별칭은 범용 '집'에서 전용 상징 '이사'로 이관됐다.
+        // 직함(이사님) 오탐 차단 의도는 그대로 유지한다.
+        const boardMeeting = matchDreamSymbols('이사님과 회의하는 꿈').matches.map(m => m.symbol);
+        expect(boardMeeting).not.toContain('집');
+        expect(boardMeeting).not.toContain('이사');
+        expect(matchDreamSymbols('이사하는 꿈을 꿨다').matches.map(m => m.symbol)).toContain('이사');
+    });
+    it('신규 전용 상징(임신·왕관·파도·도장)이 실제로 매칭된다', () => {
+        expect(matchDreamSymbols('임신한 꿈을 꿨어요').matches.map(m => m.symbol)).toContain('임신');
+        expect(matchDreamSymbols('왕관을 쓰는 꿈').matches.map(m => m.symbol)).toContain('왕관');
+        expect(matchDreamSymbols('큰 파도가 밀려오는 꿈').matches.map(m => m.symbol)).toContain('파도');
+        expect(matchDreamSymbols('계약서에 도장을 찍는 꿈').matches.map(m => m.symbol)).toContain('도장');
     });
     it('르 불규칙 "날아올랐다" 도 비행으로 잡는다', () => {
         expect(matchDreamSymbols('하늘로 날아올랐다').matches.map(m => m.symbol)).toContain('비행');
