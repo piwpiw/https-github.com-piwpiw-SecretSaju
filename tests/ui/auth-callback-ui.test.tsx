@@ -60,10 +60,13 @@ describe("auth callback UI", () => {
     render(<AuthCallback />);
 
     expect(await screen.findByText("로그인 실패")).toBeInTheDocument();
+    // 화면은 영어 내부 오류 문자열을 숨기고 요청번호만 노출한다 —
+    // 사용자에게 provider_error_description 원문이 새지 않는 것이 의도다.
     expect(
       screen.getByText(
-        "로그인 보안 검증에 실패했습니다. 다시 시도해 주세요. (Invalid PKCE code_verifier / Req: req-123)",
+        "로그인 보안 검증에 실패했습니다. 다시 시도해 주세요. (요청번호 req-123)",
       ),
     ).toBeInTheDocument();
+    expect(screen.queryByText(/Invalid PKCE/)).toBeNull();
   });
 });
