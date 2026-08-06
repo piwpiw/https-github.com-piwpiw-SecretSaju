@@ -14,6 +14,11 @@ name: Promote latest to production
 
 on:
   workflow_dispatch:
+  # GitHub 연동 앱에는 workflow_dispatch 권한이 없어(403) 푸시 트리거를
+  # 병행한다 — `git push origin main:ops/promote-production` 한 번이
+  # 곧 "최신 배포로 프로모트" 명령이 된다.
+  push:
+    branches: [ops/promote-production]
 
 jobs:
   promote:
