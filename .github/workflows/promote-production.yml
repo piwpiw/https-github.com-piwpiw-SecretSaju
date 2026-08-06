@@ -5,6 +5,7 @@
 # Promote 뿐이라, 토큰만 등록해 두면 이 워크플로 실행 한 번으로 풀린다.
 #
 # 사전 준비(1회): Vercel 대시보드 → Account Settings → Tokens 에서 토큰 발급
+#   (Scope 는 프로젝트가 속한 팀/계정을 포함해야 한다)
 #   → GitHub 리포 Settings → Secrets and variables → Actions →
 #   New repository secret → 이름 VERCEL_TOKEN 으로 저장.
 #
@@ -29,21 +30,68 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           PROJECT_ID: prj_897Pu0sVvi0GD0NVIOFFPlEdVYa2
           TEAM_ID: team_yTBPzB1b6eI4g5lbdtalf7z1
+        # curl -f 는 4xx 의 응답 본문을 숨겨서 "exit 22" 만 남는다(실사고).
+        # 그래서 모든 호출은 상태코드+본문을 그대로 찍는다. Vercel 오류 본문은
+        # JSON 오류 객체라 비밀이 섞이지 않는다(토큰은 절대 echo 하지 않음).
         run: |
-          set -euo pipefail
+          set -uo pipefail
           if [ -z "${VERCEL_TOKEN}" ]; then
             echo "::error::VERCEL_TOKEN secret 이 없습니다 — 워크플로 파일 상단의 사전 준비를 먼저 하세요."
             exit 1
           fi
-          DEPLOYMENT_ID=$(curl -sf -H "Authorization: Bearer ${VERCEL_TOKEN}" \
-            "https://api.vercel.com/v6/deployments?projectId=${PROJECT_ID}&teamId=${TEAM_ID}&target=production&state=READY&limit=1" \
-            | jq -r '.deployments[0].uid')
-          if [ -z "${DEPLOYMENT_ID}" ] || [ "${DEPLOYMENT_ID}" = "null" ]; then
+
+          # vcall METHOD URL — 본문을 stdout 대신 변수에 담고 상태코드를 분리한다.
+          vcall() {
+            local method="$1" url="$2"
+            RESP=$(curl -s -w $'\n%{http_code}' -X "${method}" \
+              -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+              -H "Content-Type: application/json" \
+              "${url}")
+            STATUS="${RESP##*$'\n'}"
+            BODY="${RESP%$'\n'*}"
+          }
+
+          # 1) 최신 READY 프로덕션 배포 조회 — 팀 스코프로 먼저, 401/403 이면
+          #    개인 스코프 토큰일 수 있으니 teamId 없이 한 번 더 시도한다.
+          TEAM_QS="&teamId=${TEAM_ID}"
+          vcall GET "https://api.vercel.com/v6/deployments?projectId=${PROJECT_ID}&target=production&state=READY&limit=1${TEAM_QS}"
+          echo "deployments(team scope) HTTP ${STATUS}"
+          if [ "${STATUS}" != "200" ]; then
+            echo "응답: ${BODY}"
+            echo "teamId 없이 재시도합니다 (개인 스코프 토큰 가능성)…"
+            TEAM_QS=""
+            vcall GET "https://api.vercel.com/v6/deployments?projectId=${PROJECT_ID}&target=production&state=READY&limit=1"
+            echo "deployments(no team) HTTP ${STATUS}"
+            if [ "${STATUS}" != "200" ]; then
+              echo "응답: ${BODY}"
+              echo "::error::Vercel 배포 목록 조회 실패 (HTTP ${STATUS}). 위 응답 본문의 error.code 를 확인하세요 — forbidden 이면 토큰 스코프에 팀이 빠진 것이니 토큰을 팀 스코프로 재발급해야 합니다."
+              exit 1
+            fi
+          fi
+
+          DEPLOYMENT_ID=$(printf '%s' "${BODY}" | jq -r '.deployments[0].uid // empty')
+          if [ -z "${DEPLOYMENT_ID}" ]; then
+            echo "응답: ${BODY}"
             echo "::error::READY 상태의 프로덕션 배포를 찾지 못했습니다."
             exit 1
           fi
           echo "Promoting deployment ${DEPLOYMENT_ID}"
-          curl -sf -X POST -H "Authorization: Bearer ${VERCEL_TOKEN}" \
-            "https://api.vercel.com/v10/projects/${PROJECT_ID}/promote/${DEPLOYMENT_ID}?teamId=${TEAM_ID}" \
-            -H "Content-Type: application/json" -d '{}'
-          echo "완료 — 도메인이 최신 배포로 연결되고 Rollback 고정이 해제됩니다."
+
+          # 2) Promote — 조회에 성공한 스코프(팀/개인)를 그대로 쓴다.
+          if [ -n "${TEAM_QS}" ]; then
+            PROMOTE_URL="https://api.vercel.com/v10/projects/${PROJECT_ID}/promote/${DEPLOYMENT_ID}?teamId=${TEAM_ID}"
+          else
+            PROMOTE_URL="https://api.vercel.com/v10/projects/${PROJECT_ID}/promote/${DEPLOYMENT_ID}"
+          fi
+          vcall POST "${PROMOTE_URL}"
+          echo "promote HTTP ${STATUS}"
+          echo "응답: ${BODY}"
+          case "${STATUS}" in
+            2*|3*)
+              echo "완료 — 도메인이 최신 배포로 연결되고 Rollback 고정이 해제됩니다."
+              ;;
+            *)
+              echo "::error::Promote 호출 실패 (HTTP ${STATUS}). 위 응답 본문을 확인하세요."
+              exit 1
+              ;;
+          esac
